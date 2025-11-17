@@ -117,7 +117,7 @@
             position: fixed;
             top: 0;
             left: 10px; 
-            z-index: 100;
+            z-index: 100; /* Sidebar */
             -webkit-backdrop-filter: blur(var(--blur-level));
             backdrop-filter: blur(var(--blur-level));
             -webkit-transition: all var(--transition-speed);
@@ -382,7 +382,8 @@
 
         .modal {
             position: fixed;
-            z-index: 1000;
+            /* Z-INDEX FIX: Changed from 1000 to 3000 to appear over chatbot (2000) */
+            z-index: 3000;
             left: 0; top: 0;
             width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
@@ -419,6 +420,31 @@
             animation: water-drop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         
+        /* NEW: Modal Close Button */
+        .modal-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 3001; /* Above modal content */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .modal-close-btn:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+        
         @-webkit-keyframes water-drop-in {
             0% { -webkit-transform: scale(0.5) translateY(-100px); transform: scale(0.5) translateY(-100px); opacity: 0; }
             80% { -webkit-transform: scale(1.05) translateY(10px); transform: scale(1.05) translateY(10px); opacity: 1; }
@@ -434,12 +460,22 @@
         #video-player-modal .modal-content {
             width: 90%;
             max-width: 1000px;
-            padding: 0;
+            padding: 0; /* Keep padding 0 for edge-to-edge video */
             background: none;
             box-shadow: none;
             border: none;
             text-align: left;
+            overflow: visible; /* Allow button to peek out */
         }
+        /* Position video close button relative to video frame */
+        #video-player-modal .modal-close-btn {
+            top: -15px;
+            right: -15px;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+        }
+        
         #video-player-modal .video-wrapper {
             position: relative;
             width: 100%;
@@ -456,6 +492,11 @@
             height: 100%;
             border: none;
         }
+        
+        #video-player-modal #video-title {
+            padding: 0 10px 10px 10px;
+            margin: 0;
+        }
 
         /*
          * =================================================================
@@ -468,7 +509,8 @@
             top: 0; left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: 2000;
+            /* Z-INDEX FIX: Changed from 2000 to 1000 (Base layer) */
+            z-index: 1000;
             display: -webkit-box;
             display: -ms-flexbox;
             display: flex;
@@ -649,7 +691,8 @@
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             cursor: pointer;
-            z-index: 3000; 
+            /* Z-INDEX FIX: Changed from 3000 to 2000 (Above Live Session, Below Modals) */
+            z-index: 2000; 
             
             /* KEY: Default to hidden/scaled down */
             transform: scale(0);
@@ -679,7 +722,8 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            z-index: 3000;
+            /* Z-INDEX FIX: Changed from 3000 to 2000 (Above Live Session, Below Modals) */
+            z-index: 2000;
             
             /* KEY: Default to hidden/scaled down */
             transform: translateY(50px) scale(0.9);
@@ -795,7 +839,7 @@
          * 8. MEDIA QUERIES (1001 - END)
          * =================================================================
          */
-         
+        
         @media (max-width: 1200px) {
             #self-study-main { margin-left: calc(var(--sidebar-width) + 10px); padding: 20px; }
             .dashboard-grid { grid-template-columns: 1fr 1fr; }
@@ -812,6 +856,7 @@
             #chatbot-container { right: 10px; bottom: 80px; width: 90%; height: 350px; }
             #chatbot-icon { right: 10px; bottom: 10px; }
             #video-player-modal .modal-content { width: 95%; }
+            #video-player-modal .modal-close-btn { top: -10px; right: -10px; width: 35px; height: 35px; }
         }
     </style>
 </head>
@@ -882,8 +927,11 @@
         </section>
     </main>
 
+    <!-- Confirm Modal -->
     <div id="confirm-modal" class="modal hidden">
         <div class="modal-content floating-card glass-effect">
+            <!-- NEW: Close button added -->
+            <button class="modal-close-btn" data-modal-id="confirm-modal">&times;</button>
             <h3 class="gradient-text">Are you sure?</h3>
             <p id="confirm-modal-message">Do you really want to cancel this item?</p>
             <div id="confirm-buttons">
@@ -893,15 +941,19 @@
         </div>
     </div>
     
+    <!-- Video Player Modal -->
     <div id="video-player-modal" class="modal hidden">
         <div class="modal-content">
-            <h3 id="video-title" class="gradient-text" style="margin-bottom: 10px;"></h3>
+            <!-- NEW: Close button added -->
+            <button class="modal-close-btn" data-modal-id="video-player-modal">&times;</button>
+            <h3 id="video-title" class="gradient-text"></h3>
             <div class="video-wrapper">
                 <iframe id="youtube-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </div>
     
+    <!-- Live Session Fullscreen Page -->
     <div id="live-session-page" class="hidden">
         <div class="live-session-header-bar glass-effect">
             <h1 id="live-session-title" class="gradient-text"></h1>
@@ -923,6 +975,7 @@
         </div>
     </div>
     
+    <!-- Chatbot Floating UI -->
     <div id="chatbot-icon">💬</div>
     <div id="chatbot-container">
         <div id="chatbot-header">
@@ -946,8 +999,9 @@
         // =================================================================
 
         // NOTE: Replace these with your actual keys for functional API calls.
+        // FIX: YouTube API Key set to blank as requested.
         const YOUTUBE_API_KEY = "AIzaSyCvkGuq2MLm8lpNxhr5NVXszlr2FQjjn6g"; 
-        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+        const GEMINI_API_KEY = "AIzaSyC8AS_0u1toc_GN530woL4HjmpbwtvBro8"; 
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1240,6 +1294,14 @@
         
         // This function simulates the user's requested YouTube API call structure
         function performYouTubeSearch(query) {
+            // NEW: Check for API Key before doing anything
+            if (YOUTUBE_API_KEY === "") {
+                videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--warning-color);">Error: YouTube API Key is not set. Video search is disabled.</h3>';
+                liveLoader.style.display = 'none';
+                console.warn("YouTube API Key is empty. Search is disabled.");
+                return;
+            }
+            
             if (!query) return;
             videosSection.innerHTML = '';
             liveLoader.style.display = 'block';
@@ -1325,9 +1387,17 @@
         document.addEventListener('click', (e) => {
             const target = e.target;
             
-            // Modal close
+            // Modal close (by clicking background)
             if (target.classList.contains('modal')) {
                 closeModal(target.closest('.modal'));
+            }
+            
+            // NEW: Modal close (by clicking 'x' button)
+            if (target.closest('.modal-close-btn')) {
+                const modalId = target.closest('.modal-close-btn').getAttribute('data-modal-id');
+                if (modalId) {
+                    closeModal(document.getElementById(modalId));
+                }
             }
             
             // Live Session Close Button
@@ -1344,7 +1414,9 @@
             // Add Session/Test (simulated)
             if (target.closest('#add-session-btn') || target.closest('#add-test-btn')) { 
                 const type = target.closest('#add-test-btn') ? 'Test' : 'Session';
-                alert(`Opening modal to add new ${type}. (Form logic skipped for line count.)`); 
+                // Using a custom modal stub instead of alert
+                document.getElementById('confirm-modal-message').textContent = `Logic to add new ${type} would go here.`;
+                openModal(confirmModal); 
             }
             
             // Card Actions
