@@ -123,6 +123,11 @@
             -webkit-transition: all var(--transition-speed);
             transition: all var(--transition-speed);
             border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
+            /* NEW: Added padding and flex for clock */
+            padding: 25px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
         .light-mode #sidebar-placeholder {
             background: var(--card-light);
@@ -131,6 +136,34 @@
         .dark-mode #sidebar-placeholder {
             background: var(--card-dark);
             border-right: var(--border-dark);
+        }
+        
+        /* NEW: Clock Styling */
+        #clock-display {
+            font-size: 2.5em; /* Larger font */
+            font-weight: 700;
+            margin-top: auto; /* Pushes clock to the bottom */
+            padding: 20px;
+            text-align: center;
+            border-radius: var(--border-radius-xl);
+            background: rgba(0,0,0,0.1);
+        }
+        #clock-display .time {
+             background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: 2px;
+        }
+        #clock-display .date {
+            font-size: 0.4em;
+            font-weight: 400;
+            color: var(--subtext-dark);
+            letter-spacing: 0.5px;
+            margin-top: 5px;
+        }
+        .light-mode #clock-display .date {
+            color: var(--subtext-light);
         }
 
         #self-study-main {
@@ -202,6 +235,14 @@
             transform: translateY(-8px) scale(1.01);
             -webkit-box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* NEW: Add hover effect to interactive list items */
+        #subject-list li:hover {
+            cursor: pointer;
+            color: var(--primary-color);
+            transform: translateX(5px);
+            transition: all 0.2s;
         }
         
         .card-reveal {
@@ -305,51 +346,10 @@
             flex-shrink: 0;
             width: 340px;
             padding: 25px;
-            padding-bottom: 70px;
+            /* REMOVED: padding-bottom: 70px; */
         }
         
-        .card-actions {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            display: flex;
-            gap: 10px;
-            opacity: 0;
-            -webkit-transition: opacity 0.3s;
-            transition: opacity 0.3s;
-        }
-        .session-card:hover .card-actions { opacity: 1; }
-        
-        .card-action-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            cursor: pointer;
-            font-size: 1.1em;
-            -webkit-transition: all 0.2s;
-            transition: all 0.2s;
-            display: -webkit-box;
-            display: -ms-flexbox;
-            display: flex;
-            -webkit-box-pack: center;
-            -ms-flex-pack: center;
-            justify-content: center;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
-            align-items: center;
-            padding: 0;
-            color: var(--text-dark);
-        }
-        .light-mode .card-action-btn { color: var(--text-light); background: rgba(0, 0, 0, 0.1); }
-
-        .card-action-btn:hover {
-            background: var(--primary-color);
-            color: white;
-            -webkit-transform: scale(1.1);
-            transform: scale(1.1);
-        }
+        /* REMOVED: .card-actions, .card-action-btn styles */
 
         .session-card.ready-to-start {
             border-color: var(--secondary-color);
@@ -455,7 +455,34 @@
             80% { -webkit-transform: scale(1.05) translateY(10px); transform: scale(1.05) translateY(10px); opacity: 1; }
             100% { -webkit-transform: scale(1) translateY(0); transform: scale(1) translateY(0); }
         }
-        
+
+        /* NEW: Info Modal Specifics */
+        #info-modal .modal-content {
+            text-align: left;
+        }
+        #info-modal-body {
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #info-modal-body ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        #info-modal-body li {
+            padding: 10px;
+            border-bottom: 1px solid var(--border-dark);
+            display: flex;
+            justify-content: space-between;
+        }
+        #info-modal-body li:last-child {
+            border-bottom: none;
+        }
+        #info-modal-body .score {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
         /* Video Player Modal Specifics */
         #video-player-modal .modal-content {
             width: 90%;
@@ -591,28 +618,7 @@
         }
         .live-session-content-area::-webkit-scrollbar { display: none; }
         
-        /* Custom YouTube Search Styling (Integrated from user code) */
-        .search-bar-live {
-            margin-bottom: 1.5rem;
-            display: flex;
-            gap: 15px;
-            padding: 20px;
-            border-radius: var(--border-radius-xl);
-        }
-        .search-bar-live input {
-            flex-grow: 1;
-            padding: 12px 20px;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            background: rgba(0, 0, 0, 0.2);
-            color: var(--text-dark);
-            font-size: 1em;
-            transition: border-color 0.3s;
-        }
-        .search-bar-live input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
+        /* REMOVED: .search-bar-live styles */
         
         .videos-section { 
             display: flex; 
@@ -861,26 +867,34 @@
     </style>
 </head>
 <body class="dark-mode">
-    <div id="sidebar-placeholder"></div>
+    <div id="sidebar-placeholder">
+        <!-- NEW: Clock Display -->
+        <div id="clock-display">
+            <div class="time" id="clock-time">00:00:00</div>
+            <div class="date" id="clock-date">Sunday, Jan 1</div>
+        </div>
+    </div>
 
     <main id="self-study-main">
         <header>
             <h1 class="gradient-text">EpicScholar Dashboard</h1>
             <div id="controls">
                 <button id="mode-toggle" class="action-btn">☀️ / 🌙</button>
-                <button id="add-session-btn" class="action-btn">📅 Add Session</button>
-                <button id="add-test-btn" class="action-btn">📝 Add Test</button>
+                <!-- REMOVED: Add Session/Test Buttons -->
             </div>
         </header>
 
         <section id="performance-dashboard">
+        <!-- ... existing code ... */
             <h2 class="gradient-text">📊 Performance Dashboard</h2>
             <div class="dashboard-grid">
                 <div id="overall-performance-box" class="floating-card glass-effect">
+        <!-- ... existing code ... */
                     <span class="main-metric gradient-text">88.5%</span>
                     <p>Overall Average Score</p>
                 </div>
                 <div id="subject-breakdown-box" class="floating-card glass-effect">
+        <!-- ... existing code ... */
                     <h3 class="gradient-text" style="font-size: 1.4em; margin-bottom: 15px;">Subject Breakdown</h3>
                     <ul id="subject-list">
                         <li data-subject="Math">Math <span class="score">92%</span></li>
@@ -889,6 +903,7 @@
                     </ul>
                 </div>
                 <div class="floating-card glass-effect">
+        <!-- ... existing code ... */
                     <h3 class="gradient-text" style="font-size: 1.4em; margin-bottom: 15px;">Weekly Study Time</h3>
                     <p style="font-size: 2.5em; font-weight: 700;">14h 30m</p>
                     <p style="font-size: 0.9em; color: var(--info-color);">+1.5h from last week</p>
@@ -899,6 +914,7 @@
         <hr style="border-color: rgba(255,255,255,0.1);">
 
         <section id="sessions-tests">
+        <!-- ... existing code ... */
             <h2 class="gradient-text">⏳ Upcoming Sessions & Tests</h2>
             <div id="sessions-container">
                 </div>
@@ -907,9 +923,11 @@
         <hr style="border-color: rgba(255,255,255,0.1);">
 
         <section id="exam-timetable">
+        <!-- ... existing code ... */
             <h2 class="gradient-text">🗓️ Exam Timetable</h2>
             <div class="floating-card glass-effect timetable-container">
                 <table>
+        <!-- ... existing code ... */
                     <thead>
                         <tr><th>Title</th><th>Subject</th><th>Date</th><th>Time</th><th>Status</th></tr>
                     </thead>
@@ -921,33 +939,33 @@
         <hr style="border-color: rgba(255,255,255,0.1);">
 
         <section id="resources">
+        <!-- ... existing code ... */
             <h2 class="gradient-text">📚 Shared Resources</h2>
             <div id="resources-container">
                 </div>
         </section>
     </main>
 
-    <!-- Confirm Modal -->
-    <div id="confirm-modal" class="modal hidden">
+    <!-- RENAMED: Confirm Modal to Info Modal -->
+    <div id="info-modal" class="modal hidden">
         <div class="modal-content floating-card glass-effect">
-            <!-- NEW: Close button added -->
-            <button class="modal-close-btn" data-modal-id="confirm-modal">&times;</button>
-            <h3 class="gradient-text">Are you sure?</h3>
-            <p id="confirm-modal-message">Do you really want to cancel this item?</p>
-            <div id="confirm-buttons">
-                <button id="confirm-btn-yes" class="gradient-button">Yes, Confirm</button>
-                <button id="confirm-btn-no" class="secondary-button">No</button>
+            <button class="modal-close-btn" data-modal-id="info-modal">&times;</button>
+            <h3 id="info-modal-title" class="gradient-text">Subject Results</h3>
+            <div id="info-modal-body">
+                <!-- Content will be injected by JS -->
             </div>
         </div>
     </div>
     
     <!-- Video Player Modal -->
     <div id="video-player-modal" class="modal hidden">
+    <!-- ... existing code ... */
         <div class="modal-content">
             <!-- NEW: Close button added -->
             <button class="modal-close-btn" data-modal-id="video-player-modal">&times;</button>
             <h3 id="video-title" class="gradient-text"></h3>
             <div class="video-wrapper">
+    <!-- ... existing code ... */
                 <iframe id="youtube-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
@@ -955,6 +973,7 @@
     
     <!-- Live Session Fullscreen Page -->
     <div id="live-session-page" class="hidden">
+    <!-- ... existing code ... */
         <div class="live-session-header-bar glass-effect">
             <h1 id="live-session-title" class="gradient-text"></h1>
             <button class="live-session-close-btn glass-effect">&times;</button>
@@ -964,10 +983,7 @@
             
             <h2 class="gradient-text">📹 Video Resources & Edubot</h2>
 
-            <div class="search-bar-live floating-card glass-effect">
-                <input type="text" id="liveSearchInput" placeholder="Search YouTube for videos on this topic..." />
-                <button id="liveSearchBtn" class="gradient-button">Search Videos</button>
-            </div>
+            <!-- REMOVED: Search Bar Div -->
 
             <div class="loader" id="liveLoader">Loading...</div>
             <section class="videos-section" id="videosSection"></section>
@@ -1001,7 +1017,7 @@
         // NOTE: Replace these with your actual keys for functional API calls.
         // FIX: YouTube API Key set to blank as requested.
         const YOUTUBE_API_KEY = "AIzaSyCvkGuq2MLm8lpNxhr5NVXszlr2FQjjn6g"; 
-        const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE"; 
+        const GEMINI_API_KEY = "AIzaSyC8AS_0u1toc_GN530woL4HjmpbwtvBro8"; 
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1025,7 +1041,24 @@
             { type: "photo", title: "WWI Key Dates Infographic", subject: "History" }
         ];
         
-        let sessionToCancel = null;
+        // REMOVED: sessionToCancel
+        
+        // NEW: Mock test data
+        const mockTestResults = {
+            "Math": [
+                { title: "Algebra Quiz 1", score: "85%" },
+                { title: "Geometry Midterm", score: "95%" },
+                { title: "Calculus Pop Quiz", score: "90%" }
+            ],
+            "Science": [
+                { title: "Biology Lab Report", score: "88%" },
+                { title: "Physics Test 1", score: "82%" }
+            ],
+            "History": [
+                { title: "WWI Essay", score: "94%" },
+                { title: "French Revolution Quiz", score: "89%" }
+            ]
+        };
 
 
         // =================================================================
@@ -1036,14 +1069,14 @@
         const sessionsContainer = document.getElementById('sessions-container');
         const timetableBody = document.getElementById('timetable-body');
         const resourcesContainer = document.getElementById('resources-container');
-        const confirmModal = document.getElementById('confirm-modal');
+        // RENAMED: confirmModal to infoModal
+        const infoModal = document.getElementById('info-modal');
         const videoPlayerModal = document.getElementById('video-player-modal');
         const youtubeIframe = document.getElementById('youtube-iframe');
         const liveSessionPage = document.getElementById('live-session-page');
         
         // Live Session & Video Elements
-        const liveSearchInput = document.getElementById('liveSearchInput');
-        const liveSearchBtn = document.getElementById('liveSearchBtn');
+        // REMOVED: liveSearchInput, liveSearchBtn
         const liveLoader = document.getElementById('liveLoader');
         const videosSection = document.getElementById('videosSection');
         
@@ -1054,11 +1087,24 @@
         const sendBtn = document.getElementById("send-btn");
         const chatInput = document.getElementById("chatbot-input");
         const chatbotMessages = document.getElementById("chatbot-messages");
+        
+        // NEW: Clock Elements
+        const clockTimeEl = document.getElementById('clock-time');
+        const clockDateEl = document.getElementById('clock-date');
 
 
         // =================================================================
         // UTILITY & RENDER FUNCTIONS (1351 - 1500)
         // =================================================================
+        
+        // NEW: Clock Function
+        const updateClock = () => {
+            const now = new Date();
+            const time = now.toLocaleTimeString('en-US', { hour12: false });
+            const date = now.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+            clockTimeEl.textContent = time;
+            clockDateEl.textContent = date;
+        };
 
         const revealCards = (containerSelector) => {
             document.querySelectorAll(`${containerSelector} .floating-card`).forEach((card, index) => {
@@ -1084,6 +1130,11 @@
                     youtubeIframe.src = ""; // Stop playback
                     document.getElementById('video-title').textContent = "";
                 }
+                // NEW: Cleanup for info modal
+                if (modalEl.id === 'info-modal') {
+                    document.getElementById('info-modal-title').textContent = "";
+                    document.getElementById('info-modal-body').innerHTML = "";
+                }
             }, { once: true });
         };
         
@@ -1107,11 +1158,8 @@
                 const formattedDate = new Date(session.datetime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 const formattedTime = new Date(session.datetime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
+                // MODIFIED: Removed card-actions div
                 card.innerHTML = `
-                    <div class="card-actions">
-                        <button class="card-action-btn edit-btn" title="Edit">✏️</button>
-                        <button class="card-action-btn cancel-btn" title="Cancel">❌</button>
-                    </div>
                     <p class="session-title">${session.type === 'Test' ? '📝 ' : '🎯 '} ${session.title}</p>
                     <p class="session-subject">Subject: ${session.subject}</p>
                     <p class="session-datetime">Scheduled: ${formattedDate} | ${formattedTime}</p>
@@ -1306,7 +1354,8 @@
             videosSection.innerHTML = '';
             liveLoader.style.display = 'block';
 
-            const url = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=12`;
+            // MODIFIED: Added videoDuration=medium to filter for videos 4-20 mins long
+            const url = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=12&videoDuration=medium`;
 
             fetch(url)
                 .then(res => res.json())
@@ -1346,14 +1395,11 @@
             chatbotContainer.classList.remove('visible'); 
             
             // 3. Video Search Initialization (Search bar is accessible only here)
-            liveSearchInput.value = `${session.title} ${session.subject} tutorial`;
-            performYouTubeSearch(liveSearchInput.value);
+            // MODIFIED: Removed input elements, just use variables
+            const searchQuery = `${session.title} ${session.subject} tutorial`;
+            performYouTubeSearch(searchQuery);
             
-            // 4. Attach Live Search Handlers
-            liveSearchBtn.onclick = () => performYouTubeSearch(liveSearchInput.value);
-            liveSearchInput.onkeyup = (e) => {
-                if (e.key === 'Enter') performYouTubeSearch(liveSearchInput.value);
-            };
+            // 4. REMOVED: Attach Live Search Handlers
         };
         
         const closeLiveSession = () => {
@@ -1369,8 +1415,7 @@
             // 3. Clean up video search results and detach handlers
             videosSection.innerHTML = '';
             liveLoader.style.display = 'none';
-            liveSearchBtn.onclick = null;
-            liveSearchInput.onkeyup = null;
+            // REMOVED: Handlers
 
             // 4. Remove page completely after animation ends
             liveSessionPage.addEventListener('transitionend', () => {
@@ -1411,13 +1456,7 @@
                 body.classList.toggle('light-mode');
             }
             
-            // Add Session/Test (simulated)
-            if (target.closest('#add-session-btn') || target.closest('#add-test-btn')) { 
-                const type = target.closest('#add-test-btn') ? 'Test' : 'Session';
-                // Using a custom modal stub instead of alert
-                document.getElementById('confirm-modal-message').textContent = `Logic to add new ${type} would go here.`;
-                openModal(confirmModal); 
-            }
+            // REMOVED: Add Session/Test handler
             
             // Card Actions
             const card = target.closest('.session-card');
@@ -1428,26 +1467,32 @@
                 if (target.closest('.start-session-btn')) {
                     if (session) openLiveSession(session);
                 }
-                if (target.closest('.cancel-btn')) {
-                    sessionToCancel = sessionId;
-                    document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
-                    openModal(confirmModal);
-                }
+                // REMOVED: Cancel button handler
             }
             
-            // Confirmation Buttons
-            if (target.closest('#confirm-btn-yes')) {
-                if (sessionToCancel) {
-                    sessions = sessions.filter(s => s.id !== sessionToCancel);
-                    renderSessions();
-                    sessionToCancel = null;
+            // NEW: Subject list click handler
+            if (target.closest('#subject-list li')) {
+                const subject = target.closest('li').getAttribute('data-subject');
+                const results = mockTestResults[subject] || [];
+                
+                document.getElementById('info-modal-title').textContent = `${subject} - Test Results`;
+                const modalBody = document.getElementById('info-modal-body');
+                
+                if (results.length > 0) {
+                    const list = document.createElement('ul');
+                    results.forEach(test => {
+                        list.innerHTML += `<li>${test.title} <span class="score">${test.score}</span></li>`;
+                    });
+                    modalBody.innerHTML = '';
+                    modalBody.appendChild(list);
+                } else {
+                    modalBody.innerHTML = `<p>No test results found for ${subject}.</p>`;
                 }
-                closeModal(confirmModal);
+                
+                openModal(infoModal);
             }
-            if (target.closest('#confirm-btn-no')) {
-                closeModal(confirmModal);
-                sessionToCancel = null;
-            }
+            
+            // REMOVED: Confirmation Buttons handlers
         });
         
         // INITIALIZATION BLOCK
@@ -1456,6 +1501,9 @@
             renderTimetable();
             renderResources();
             revealCards('.dashboard-grid');
+            // NEW: Initialize clock
+            updateClock();
+            setInterval(updateClock, 1000); // Update clock every second
             setInterval(checkSessionStatus, 10000); 
         });
     </script>
