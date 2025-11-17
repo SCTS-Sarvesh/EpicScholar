@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Video Learning Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            padding: 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .search-section {
+            padding: 30px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #searchInput {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 30px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #764ba2;
+        }
+
+        .content-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 30px;
+            min-height: 600px;
+        }
+
+        .player-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .player-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        #player {
+            width: 100%;
+            aspect-ratio: 16/9;
+            background-color: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .video-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+        }
+
+        .video-info h3 {
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .video-info p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .videos-section {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .videos-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        #videosSection {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            overflow-y: auto;
+            max-height: 700px;
+            padding-right: 10px;
+        }
+
+        .video-card {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .video-card:hover {
+            background-color: #e8e8ff;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .video-card.active {
+            background-color: #e8e8ff;
+            border-color: #667eea;
+        }
+
+        .video-thumbnail {
+            width: 100px;
+            height: 60px;
+            background-color: #ddd;
+            border-radius: 4px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .video-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            font-size: 14px;
+        }
+
+        .video-channel {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 4px;
+        }
+
+        .video-stats {
+            color: #999;
+            font-size: 12px;
+        }
+
+        .no-videos {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        .loading {
+            text-align: center;
+            color: #667eea;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content-wrapper {
+                grid-template-columns: 1fr;
+            }
+
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            #videosSection {
+                max-height: 400px;
+            }
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .control-btn {
+            padding: 8px 16px;
+            background-color: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .control-btn:hover {
+            background-color: #764ba2;
+        }
+
+        .control-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 EpicScholar Learning</h1>
+            <p>Search and watch educational videos directly on your platform</p>
+        </div>
+
+        <div class="search-section">
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="Search YouTube videos..." 
+                    aria-label="Search YouTube videos"
+                >
+                <button onclick="searchVideos()">Search</button>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="player-section">
+                <h2>Now Playing</h2>
+                <div id="player"></div>
+                <div class="video-info">
+                    <h3 id="currentTitle">Select a video to play</h3>
+                    <p id="currentDescription">Video information will appear here</p>
+                </div>
+                <div class="controls">
+                    <button class="control-btn" onclick="playVideo()">▶ Play</button>
+                    <button class="control-btn" onclick="pauseVideo()">⏸ Pause</button>
+                    <button class="control-btn" onclick="stopVideo()">⏹ Stop</button>
+                </div>
+            </div>
+
+            <div class="videos-section">
+                <h2>Search Results</h2>
+                <div id="videosSection" class="no-videos">
+                    Search for videos to get started
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script>
+        let player;
+        let currentVideoData = null;
+        const API_KEY = 'AIzaSyCvkGuq2MLm8lpNxhr5NVXszlr2FQjjn6g'; // Replace with your YouTube API key
+
+        // Initialize YouTube player
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '390',
+                width: '640',
+                videoId: '', // Start with empty, will be set on video selection
+                playerVars: {
+                    'playsinline': 1,
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'controls': 1,
+                    'fs': 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            console.log('Player is ready');
+            // Player is ready, you can now interact with it
+        }
+
+        function onPlayerStateChange(event) {
+            const states = {
+                '-1': 'Unstarted',
+                '0': 'Ended',
+                '1': 'Playing',
+                '2': 'Paused',
+                '3': 'Buffering',
+                '5': 'Video cued'
+            };
+            console.log('Player state:', states[event.data]);
+        }
+
+        function onPlayerError(event) {
+            console.error('Player error:', event.data);
+            alert('Error loading video. Please try another one.');
+        }
+
+        // Search videos using YouTube API
+        async function searchVideos() {
+            const searchQuery = document.getElementById('searchInput').value.trim();
+            
+            if (!searchQuery) {
+                alert('Please enter a search query');
+                return;
+            }
+
+            const videosSection = document.getElementById('videosSection');
+            videosSection.innerHTML = '<div class="loading">Searching...</div>';
+
+            try {
+                const response = await fetch(
+                    `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${encodeURIComponent(searchQuery)}&type=video&key=${API_KEY}`
+                );
+
+                if (!response.ok) {
+                    throw new Error('API request failed. Check your API key.');
+                }
+
+                const data = await response.json();
+
+                if (!data.items || data.items.length === 0) {
+                    videosSection.innerHTML = '<div class="no-videos">No videos found. Try a different search.</div>';
+                    return;
+                }
+
+                displayVideos(data.items);
+            } catch (error) {
+                console.error('Error:', error);
+                videosSection.innerHTML = `<div class="no-videos">Error: ${error.message}</div>`;
+            }
+        }
+
+        // Display search results
+        function displayVideos(videos) {
+            const videosSection = document.getElementById('videosSection');
+            videosSection.innerHTML = '';
+
+            videos.forEach((video, index) => {
+                const videoId = video.id.videoId;
+                const title = video.snippet.title;
+                const channel = video.snippet.channelTitle;
+                const thumbnail = video.snippet.thumbnails.default.url;
+                const description = video.snippet.description;
+
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card';
+                videoCard.onclick = () => selectVideo(videoId, title, description, channel, index);
+
+                videoCard.innerHTML = `
+                    <div class="video-thumbnail">
+                        <img src="${thumbnail}" alt="${title}">
+                    </div>
+                    <div class="video-details">
+                        <div class="video-title">${title}</div>
+                        <div class="video-channel">${channel}</div>
+                        <div class="video-stats">Video ${index + 1}</div>
+                    </div>
+                `;
+
+                videosSection.appendChild(videoCard);
+            });
+        }
+
+        // Select and play a video
+        function selectVideo(videoId, title, description, channel, index) {
+            if (!player) {
+                alert('Player is not ready yet. Please wait...');
+                return;
+            }
+
+            // Load and play the video
+            player.loadVideoById(videoId);
+
+            // Update video info
+            document.getElementById('currentTitle').textContent = title;
+            document.getElementById('currentDescription').textContent = description || `By ${channel}`;
+
+            // Highlight selected video card
+            document.querySelectorAll('.video-card').forEach((card, i) => {
+                card.classList.remove('active');
+                if (i === index) {
+                    card.classList.add('active');
+                    card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            });
+
+            // Store current video data
+            currentVideoData = { videoId, title, description, channel };
+
+            console.log('Playing:', title);
+        }
+
+        // Player controls
+        function playVideo() {
+            if (player) player.playVideo();
+        }
+
+        function pauseVideo() {
+            if (player) player.pauseVideo();
+        }
+
+        function stopVideo() {
+            if (player) player.stopVideo();
+        }
+
+        // Allow Enter key to search
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchVideos();
+            }
+        });
+
+        // Initialize
+        console.log('YouTube Learning Platform Ready');
+    </script>
+</body>
+</html>
