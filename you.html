@@ -965,8 +965,7 @@
             <h2 class="gradient-text">📹 Video Resources & Edubot</h2>
 
             <div class="search-bar-live floating-card glass-effect">
-                <input type="text" id="liveSearchInput" placeholder="Search YouTube for videos on this topic..." />
-                <button id="liveSearchBtn" class="gradient-button">Search Videos</button>
+                <input type="text" id="liveSearchInput" placeholder="Search YouTube for videos on this topic..." disabled/>
             </div>
 
             <div class="loader" id="liveLoader">Loading...</div>
@@ -992,6 +991,48 @@
         </div>
     </div>
 
+    <!-- Insert: Session Add/Edit Modal (place near other modals like confirm-modal/video-player-modal) -->
+<div id="session-modal" class="modal hidden">
+  <div class="modal-content floating-card glass-effect" style="width:520px; max-width:94%;">
+    <button class="modal-close-btn" data-modal-id="session-modal">&times;</button>
+    <h3 class="gradient-text" id="session-modal-title">Create Session / Test</h3>
+
+    <form id="session-form" style="display:flex; flex-direction:column; gap:12px; margin-top:8px;">
+      <input type="text" id="session-title-input" class="auth-input" placeholder="Title or Topic (e.g. 'Laws of Motion')" style="height:44px; padding:8px; background:var(--bg-dark-tint); color:var(--text-dark); border:var(--gradient) 1px solid; border-radius:6px; font-size:1em;" required />
+      <input type="text" id="session-subject-input" class="auth-input" placeholder="Subject (e.g. Physics)" style="height: 44px; padding:8px; background:var(--bg-dark-tint); color:var(--text-dark); border:var(--gradient) 1px solid; border-radius:6px; font-size:1em;" required />
+      <select id="session-type-input" class="auth-input" style="height:44px; padding:8px;background:var(--bg-dark-tint); color:var(--text-dark); border:var(--gradient) 1px solid; border-radius:6px; font-size:1em;" required>
+        <option value="Session">Session</option>
+        <option value="Test">Test</option>
+      </select>
+      <input type="datetime-local" id="session-datetime-input" class="auth-input" style="height: 44px; padding:8px; background:var(--bg-dark-tint); color:var(--text-dark); border:var(--gradient) 1px solid; border-radius:6px; font-size:1em;"required />
+      <div style="display:flex; gap:12px; justify-content:flex-end; margin-top:6px;">
+        <button type="button" class="secondary-button" id="session-cancel-btn">Cancel</button>
+        <button type="submit" class="gradient-button" id="session-save-btn">Save</button>
+      </div>
+      <input type="hidden" id="session-id-input" />
+    </form>
+  </div>
+</div>
+
+<!-- Insert: Test Runner Section (place near live-session-page or resources) -->
+<section id="test-runner" class="hidden" style="padding:30px; max-width:1200px; margin: 20px auto;">
+  <div class="floating-card glass-effect" style="padding:22px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <h2 id="test-runner-title" class="gradient-text">Test Runner</h2>
+      <div>
+        <button id="test-runner-back" class="secondary-button">← Back</button>
+      </div>
+    </div>
+
+    <div id="test-runner-body" style="margin-top:16px;">
+      <p style="color:var(--subtext-dark);">This is a minimal test runner view created for redirecting from the dashboard when a Test is started. You can expand it to integrate your assessment flows.</p>
+      <div style="margin-top:18px; display:flex; gap:12px; align-items:center;">
+        <button id="begin-test-btn" class="action-btn">Begin Test</button>
+        <button id="preview-test-btn" class="secondary-button">Preview Questions</button>
+      </div>
+    </div>
+  </div>
+</section>
 
     <script>
         // =================================================================
@@ -1411,30 +1452,42 @@
                 body.classList.toggle('light-mode');
             }
             
-            // Add Session/Test (simulated)
-            if (target.closest('#add-session-btn') || target.closest('#add-test-btn')) { 
-                const type = target.closest('#add-test-btn') ? 'Test' : 'Session';
-                // Using a custom modal stub instead of alert
-                document.getElementById('confirm-modal-message').textContent = `Logic to add new ${type} would go here.`;
-                openModal(confirmModal); 
+            // Add Session/Test (open session modal, preselect type)
+            if (target.closest('#add-session-btn')) {
+                openSessionModal(null, 'Session');
             }
-            
-            // Card Actions
+            if (target.closest('#add-test-btn')) {
+                openSessionModal(null, 'Test');
+            }
+
+            // Card Actions (Edit / Cancel / Start)
             const card = target.closest('.session-card');
             if (card) {
                 const sessionId = parseInt(card.getAttribute('data-id'));
                 const session = sessions.find(s => s.id === sessionId);
-                
-                if (target.closest('.start-session-btn')) {
-                    if (session) openLiveSession(session);
+
+                if (target.closest('.edit-btn')) {
+                  // open edit modal with data
+                  openSessionModal(session);
                 }
+
                 if (target.closest('.cancel-btn')) {
-                    sessionToCancel = sessionId;
-                    document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
-                    openModal(confirmModal);
+                  sessionToCancel = sessionId;
+                  document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
+                  openModal(confirmModal);
+                }
+
+                if (target.closest('.start-session-btn')) {
+                  // When a Test starts, redirect to test-runner; otherwise open live session
+                  if (!session) return;
+                  if (session.type === 'Test') {
+                    openTestRunner(session);
+                  } else {
+                    openLiveSession(session);
+                  }
                 }
             }
-            
+
             // Confirmation Buttons
             if (target.closest('#confirm-btn-yes')) {
                 if (sessionToCancel) {
@@ -1458,6 +1511,214 @@
             revealCards('.dashboard-grid');
             setInterval(checkSessionStatus, 10000); 
         });
+
+        /* ===== SESSION MODAL: Add/Edit logic ===== */
+function openSessionModal(session = null, presetType = null) {
+  const modal = document.getElementById('session-modal');
+  const titleEl = document.getElementById('session-modal-title');
+  const idInput = document.getElementById('session-id-input');
+  const titleInput = document.getElementById('session-title-input');
+  const subjectInput = document.getElementById('session-subject-input');
+  const typeInput = document.getElementById('session-type-input');
+  const dtInput = document.getElementById('session-datetime-input');
+
+  // reset
+  idInput.value = "";
+  titleInput.value = "";
+  subjectInput.value = "";
+  typeInput.value = presetType || 'Session';
+  dtInput.value = "";
+
+  if (session) {
+    titleEl.textContent = 'Edit ' + (session.type || 'Session');
+    idInput.value = session.id;
+    titleInput.value = session.title;
+    subjectInput.value = session.subject;
+    typeInput.value = session.type;
+    // Convert Date to local ISO for datetime-local input
+    const d = new Date(session.datetime);
+    const isoLocal = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0,16);
+    dtInput.value = isoLocal;
+  } else {
+    titleEl.textContent = 'Create Session / Test';
+    if (presetType) typeInput.value = presetType;
+  }
+
+  openModal(modal);
+}
+
+// Save (create/update)
+document.getElementById('session-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const id = document.getElementById('session-id-input').value;
+  const title = document.getElementById('session-title-input').value.trim();
+  const subject = document.getElementById('session-subject-input').value.trim();
+  const type = document.getElementById('session-type-input').value;
+  const dtString = document.getElementById('session-datetime-input').value;
+
+  if (!title || !subject || !dtString) {
+    showToast('Please fill title, subject and date/time', 'error', 2500);
+    return;
+  }
+
+  const dt = new Date(dtString);
+  if (isNaN(dt)) { showToast('Invalid date/time', 'error', 2000); return; }
+
+  if (id) {
+    // Update existing
+    const idx = sessions.findIndex(s => String(s.id) === String(id));
+    if (idx !== -1) {
+      sessions[idx].title = title;
+      sessions[idx].subject = subject;
+      sessions[idx].type = type;
+      sessions[idx].datetime = dt;
+    }
+  } else {
+    // Create new id (timestamp)
+    const newSession = {
+      id: Date.now(),
+      title,
+      subject,
+      type,
+      datetime: dt
+    };
+    sessions.push(newSession);
+  }
+
+  renderSessions();
+  closeModal(document.getElementById('session-modal'));
+});
+
+/* Cancel button inside modal */
+document.getElementById('session-cancel-btn').addEventListener('click', () => {
+  closeModal(document.getElementById('session-modal'));
+});
+
+/* Wire edit button clicks and override add buttons in master click handler.
+   Replace previous Add/Test handling to open session modal instead of confirm modal.
+   We'll patch the generic document click listener below. */
+
+/* ...existing code... */
+
+/* Modify part of the big document click handler — replace add-session/add-test and edit action handling */
+/* Find the large document.addEventListener('click', (e) => { ... }) block and inside it replace the Add Session/Test and Card Actions handling with the following logic.
+   (Below is the new handling logic to merge into that listener) */
+document.addEventListener('click', (e) => {
+  const target = e.target;
+
+  // Modal close (background)
+  if (target.classList.contains('modal')) {
+    closeModal(target.closest('.modal'));
+  }
+  if (target.closest('.modal-close-btn')) {
+    const modalId = target.closest('.modal-close-btn').getAttribute('data-modal-id');
+    if (modalId) closeModal(document.getElementById(modalId));
+    // special-case session-modal close (if modalId not set)
+    if (!modalId && target.closest('#session-modal')) closeModal(document.getElementById('session-modal'));
+  }
+
+  // Live Session Close Button
+  if (target.closest('.live-session-close-btn')) {
+    closeLiveSession();
+  }
+
+  // Theme toggle
+  if (target.closest('#mode-toggle')) {
+    body.classList.toggle('dark-mode');
+    body.classList.toggle('light-mode');
+  }
+
+  // Add Session/Test (open session modal, preselect type)
+  if (target.closest('#add-session-btn')) {
+    openSessionModal(null, 'Session');
+  }
+  if (target.closest('#add-test-btn')) {
+    openSessionModal(null, 'Test');
+  }
+
+  // Card Actions (Edit / Cancel / Start)
+  const card = target.closest('.session-card');
+  if (card) {
+    const sessionId = parseInt(card.getAttribute('data-id'));
+    const session = sessions.find(s => s.id === sessionId);
+
+    if (target.closest('.edit-btn')) {
+      // open edit modal with data
+      openSessionModal(session);
+    }
+
+    if (target.closest('.cancel-btn')) {
+      sessionToCancel = sessionId;
+      document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
+      openModal(confirmModal);
+    }
+
+    if (target.closest('.start-session-btn')) {
+      // When a Test starts, redirect to test-runner; otherwise open live session
+      if (!session) return;
+      if (session.type === 'Test') {
+        openTestRunner(session);
+      } else {
+        openLiveSession(session);
+      }
+    }
+  }
+
+  // Confirmation Buttons
+  if (target.closest('#confirm-btn-yes')) {
+    if (sessionToCancel) {
+      sessions = sessions.filter(s => s.id !== sessionToCancel);
+      renderSessions();
+      sessionToCancel = null;
+    }
+    closeModal(confirmModal);
+  }
+  if (target.closest('#confirm-btn-no')) {
+    closeModal(confirmModal);
+    sessionToCancel = null;
+  }
+});
+
+/* ===== Test Runner functions (redirect target for Tests) ===== */
+function openTestRunner(session) {
+  // populate test-runner UI
+  document.getElementById('test-runner-title').textContent = `${session.title} — ${session.subject}`;
+  // show the section and hide main content (consistent with liveSession approach)
+  document.getElementById('test-runner').classList.remove('hidden');
+  document.getElementById('test-runner').classList.add('open');
+  document.getElementById('self-study-main').classList.add('hiding');
+
+  // simple behavior: begin-test triggers a small simulation
+  document.getElementById('begin-test-btn').onclick = () => {
+    showToast('Test started — launching assessment interface...', 'success', 2200);
+    // simulate redirect or deeper test flow here
+  };
+
+  // preview button
+  document.getElementById('preview-test-btn').onclick = () => {
+    showToast('Opening preview (demo)...', 'info', 1600);
+  };
+}
+
+document.getElementById('test-runner-back').addEventListener('click', () => {
+  // close runner
+  document.getElementById('test-runner').classList.add('hidden');
+  document.getElementById('self-study-main').classList.remove('hiding');
+  // cleanup handlers
+  document.getElementById('begin-test-btn').onclick = null;
+  document.getElementById('preview-test-btn').onclick = null;
+});
+
+/* Ensure Edit buttons show up on cards and open the modal (renderSessions already creates edit-btn) */
+
+/* ...existing code... */
+
+/* INITIALIZATION: ensure new modal markup is wired early (no changes to existing init) */
+document.addEventListener('DOMContentLoaded', () => {
+  // wire any remaining close buttons for session modal (safety)
+  const sessModal = document.getElementById('session-modal');
+  // already handled via modal-close-btn generic listener
+});
     </script>
 </body>
 </html>
