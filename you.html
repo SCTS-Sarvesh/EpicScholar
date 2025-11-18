@@ -6,10 +6,10 @@
     <title>EpicScholar Dashboard | AI-Powered Study Platform</title>
     <style>
         /*
-         * =================================================================
-         * 1. CSS VARIABLES & BASE SETUP (001 - 100)
-         * =================================================================
-         */
+        * =================================================================
+        * 1. CSS VARIABLES & BASE SETUP (001 - 100)
+        * =================================================================
+        */
         :root {
             /* Branding & Colors */
             --sidebar-width: 260px;
@@ -106,10 +106,10 @@
         .hiding { pointer-events: none; }
 
         /*
-         * =================================================================
-         * 2. LAYOUT & SIDEBAR (101 - 150)
-         * =================================================================
-         */
+        * =================================================================
+        * 2. LAYOUT & SIDEBAR (101 - 150)
+        * =================================================================
+        */
 
         #sidebar-placeholder {
             width: var(--sidebar-width);
@@ -163,10 +163,10 @@
         #controls { display: flex; gap: 15px; }
 
         /*
-         * =================================================================
-         * 3. BASE UI COMPONENTS & GLASS EFFECT (151 - 250)
-         * =================================================================
-         */
+        * =================================================================
+        * 3. BASE UI COMPONENTS & GLASS EFFECT (151 - 250)
+        * =================================================================
+        */
 
         .floating-card {
             border-radius: var(--border-radius-xl);
@@ -197,7 +197,7 @@
             border: var(--border-dark);
         }
 
-        .floating-card:hover {
+        .floating-card:not(.resource-card):hover {
             -webkit-transform: translateY(-8px) scale(1.01);
             transform: translateY(-8px) scale(1.01);
             -webkit-box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
@@ -276,12 +276,33 @@
             border-color: var(--secondary-color);
             color: white;
         }
+        
+        /* NEW: Resources Link Card Styling */
+        .resource-card {
+            display: inline-block;
+            width: 300px;
+            margin-right: 20px;
+            text-decoration: none;
+            color: var(--text-dark);
+        }
+        .light-mode .resource-card { color: var(--text-light); }
+        .resource-card:hover {
+            -webkit-transform: translateY(-8px) scale(1.01);
+            transform: translateY(-8px) scale(1.01);
+            -webkit-box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        }
+        .resource-card .resource-icon { font-size: 1.5em; }
+        .resource-card .resource-title { font-weight: 600; font-size: 1.1em; margin: 10px 0; }
+        .resource-card .resource-teacher { font-size: 0.9em; color: var(--subtext-dark); }
+        .light-mode .resource-card .resource-teacher { color: var(--subtext-light); }
+
 
         /*
-         * =================================================================
-         * 4. DASHBOARD GRID & SESSIONS (251 - 400)
-         * =================================================================
-         */
+        * =================================================================
+        * 4. DASHBOARD GRID & SESSIONS (251 - 400)
+        * =================================================================
+        */
         
         .dashboard-grid {
             display: -ms-grid;
@@ -289,6 +310,47 @@
             -ms-grid-columns: 1fr 25px 1fr 25px 1fr;
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
+        }
+        
+        /* NEW: Subject Breakdown Grid */
+        #subject-list {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 0;
+            margin: 0;
+        }
+        #subject-list .subject-box {
+            list-style-type: none;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid var(--border-dark);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .light-mode #subject-list .subject-box {
+             background: rgba(0,0,0,0.05);
+             border-color: var(--border-light);
+        }
+        #subject-list .subject-box:hover {
+            background: var(--primary-color);
+            color: white;
+            transform: scale(1.05);
+        }
+        #subject-list .subject-box .score {
+            float: right;
+            font-weight: 700;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        #subject-list .subject-box:hover .score {
+            color: white;
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
         }
         
         #sessions-container {
@@ -366,23 +428,20 @@
             from { opacity: 0.8; } to { opacity: 1; }
         }
         
-        /* ... (Timetable, resources, and performance card styles) ... */
         .timetable-container table { width: 100%; border-collapse: collapse; }
         .timetable-container th, .timetable-container td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .light-mode .timetable-container th, .light-mode .timetable-container td { border-bottom: 1px solid rgba(0,0,0,0.1); }
-        .resource-card { width: 300px; display: inline-block; margin-right: 20px; }
         .dashboard-grid .floating-card { min-height: 150px; }
         .dashboard-grid { margin-bottom: 40px; }
 
         /*
-         * =================================================================
-         * 5. MODALS & FORMS (401 - 550)
-         * =================================================================
-         */
+        * =================================================================
+        * 5. MODALS (401 - 550)
+        * =================================================================
+        */
 
         .modal {
             position: fixed;
-            /* Z-INDEX FIX: Changed from 1000 to 3000 to appear over chatbot (2000) */
             z-index: 3000;
             left: 0; top: 0;
             width: 100%; height: 100%;
@@ -400,6 +459,8 @@
             align-items: center;
             -webkit-animation: fadeIn 0.3s ease-out;
             animation: fadeIn 0.3s ease-out;
+            overflow-y: auto;
+            padding: 20px 0;
         }
         @-webkit-keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -414,13 +475,12 @@
         .modal-content {
             width: 450px;
             padding: 30px 35px;
-            text-align: center;
+            text-align: left;
             position: relative;
             -webkit-animation: water-drop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
             animation: water-drop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         
-        /* NEW: Modal Close Button */
         .modal-close-btn {
             position: absolute;
             top: 5px;
@@ -455,19 +515,130 @@
             80% { -webkit-transform: scale(1.05) translateY(10px); transform: scale(1.05) translateY(10px); opacity: 1; }
             100% { -webkit-transform: scale(1) translateY(0); transform: scale(1) translateY(0); }
         }
+
+        /*
+        * =================================================================
+        * 5b. MODAL FORMS (NEW STYLES)
+        * =================================================================
+        */
+
+        #session-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        #session-form label {
+            font-size: 0.9em;
+            color: var(--subtext-dark);
+            margin-bottom: -10px;
+        }
+        .light-mode #session-form label { color: var(--subtext-light); }
+
+        #session-form input[type="text"],
+        #session-form input[type="date"],
+        #session-form input[type="time"] {
+            width: 100%;
+            padding: 12px 20px;
+            box-sizing: border-box;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.2);
+            color: var(--text-dark);
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+        .light-mode #session-form input[type="text"],
+        .light-mode #session-form input[type="date"],
+        .light-mode #session-form input[type="time"] {
+            background: rgba(255, 255, 255, 0.5);
+            color: var(--text-light);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
         
+        #session-form input[type="date"],
+        #session-form input[type="time"] {
+             color-scheme: dark; /* Ensures date/time picker is dark */
+        }
+        .light-mode #session-form input[type="date"],
+        .light-mode #session-form input[type="time"] {
+             color-scheme: light;
+        }
+
+        #session-form input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        
+        /* NEW: Segmented Control Styling */
+        .segmented-control {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            position: relative;
+            padding: 4px;
+        }
+        .light-mode .segmented-control { background: rgba(0,0,0,0.05); }
+
+        .segmented-control input[type="radio"] {
+            display: none;
+        }
+        
+        .segmented-control label {
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 2;
+            transition: color 0.3s;
+            margin: 0;
+            color: var(--subtext-dark);
+            font-weight: 600;
+        }
+        .light-mode .segmented-control label { color: var(--subtext-light); }
+        
+        .segmented-control input:checked + label {
+            color: white;
+        }
+        .light-mode .segmented-control input:checked + label {
+            color: var(--text-light);
+        }
+
+        .segmented-control .slider {
+            position: absolute;
+            top: 4px;
+            bottom: 4px;
+            width: calc(50% - 4px);
+            background: var(--gradient);
+            border-radius: 10px;
+            z-index: 1;
+            transition: transform 0.3s var(--animation-timing);
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+        }
+        
+        #session-type-session:checked ~ .slider {
+            transform: translateX(0);
+        }
+        #session-type-test:checked ~ .slider {
+            transform: translateX(100%);
+        }
+        
+        #session-form #save-session-btn {
+            margin-top: 15px;
+            width: 100%;
+        }
+
+
         /* Video Player Modal Specifics */
         #video-player-modal .modal-content {
             width: 90%;
             max-width: 1000px;
-            padding: 0; /* Keep padding 0 for edge-to-edge video */
+            padding: 0;
             background: none;
             box-shadow: none;
             border: none;
             text-align: left;
-            overflow: visible; /* Allow button to peek out */
+            overflow: visible;
         }
-        /* Position video close button relative to video frame */
         #video-player-modal .modal-close-btn {
             top: -15px;
             right: -15px;
@@ -499,17 +670,16 @@
         }
 
         /*
-         * =================================================================
-         * 6. LIVE SESSION PAGE & YOUTUBE SECTION (551 - 700)
-         * =================================================================
-         */
+        * =================================================================
+        * 6. FULLSCREEN PAGES (SESSION & TEST) (551 - 700)
+        * =================================================================
+        */
         
-        #live-session-page {
+        #live-session-page, #test-taking-page {
             position: fixed;
             top: 0; left: 0;
             width: 100vw;
             height: 100vh;
-            /* Z-INDEX FIX: Changed from 2000 to 1000 (Base layer) */
             z-index: 1000;
             display: -webkit-box;
             display: -ms-flexbox;
@@ -520,23 +690,22 @@
             flex-direction: column;
             padding: 20px;
             box-sizing: border-box;
-            
             opacity: 0;
             -webkit-transform: scale(1.1);
             transform: scale(1.1);
             -webkit-transition: all 0.5s var(--animation-timing);
             transition: all 0.5s var(--animation-timing);
-            
-            background-color: var(--bg-dark-tint);
         }
+        .dark-mode #live-session-page, .dark-mode #test-taking-page { background-color: var(--bg-dark-tint); }
+        .light-mode #live-session-page, .light-mode #test-taking-page { background-color: var(--bg-light-tint); }
         
-        #live-session-page.open {
+        #live-session-page.open, #test-taking-page.open {
             opacity: 1;
             -webkit-transform: scale(1);
             transform: scale(1);
         }
         
-        #live-session-page.hiding {
+        #live-session-page.hiding, #test-taking-page.hiding {
             opacity: 0;
             -webkit-transform: scale(0.9);
             transform: scale(0.9);
@@ -554,6 +723,7 @@
             border: var(--border-dark);
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
         }
+        .light-mode .live-session-header-bar { border: var(--border-light); }
         
         .live-session-close-btn {
             background: rgba(255, 255, 255, 0.1);
@@ -566,6 +736,8 @@
             cursor: pointer;
             transition: all 0.3s;
         }
+        .light-mode .live-session-close-btn { background: rgba(0,0,0,0.1); color: var(--text-light); }
+        
         .live-session-close-btn:hover {
             background: var(--secondary-color);
             transform: rotate(90deg);
@@ -591,7 +763,6 @@
         }
         .live-session-content-area::-webkit-scrollbar { display: none; }
         
-        /* Custom YouTube Search Styling (Integrated from user code) */
         .search-bar-live {
             margin-bottom: 1.5rem;
             display: flex;
@@ -609,6 +780,8 @@
             font-size: 1em;
             transition: border-color 0.3s;
         }
+        .light-mode .search-bar-live input { background: rgba(0,0,0,0.1); color: var(--text-light); }
+        
         .search-bar-live input:focus {
             outline: none;
             border-color: var(--primary-color);
@@ -633,8 +806,11 @@
             background: var(--card-dark); 
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            cursor: pointer; /* Change to pointer to indicate clickable */
+            cursor: pointer;
+            position: relative; /* NEW: For duration overlay */
         }
+        .light-mode .youvideo { background: var(--card-light); }
+        
         .youvideo:hover {
             transform: translateY(-5px) scale(1.02);
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -644,6 +820,19 @@
             border-radius: 8px; 
             aspect-ratio: 16 / 9;
         }
+        /* NEW: Video duration overlay */
+        .video-duration {
+            position: absolute;
+            bottom: 110px; /* Adjust based on card padding and h3/p height */
+            right: 25px;
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+        
         .youvideo h3 { 
             font-size: 16px; 
             margin: 10px 0 5px 0;
@@ -655,11 +844,15 @@
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
         }
+        .light-mode .youvideo h3 { color: var(--text-light); }
+        
         .youvideo p {
             font-size: 0.9em;
             color: var(--subtext-dark);
             margin: 0;
         }
+        .light-mode .youvideo p { color: var(--subtext-light); }
+        
         .loader { 
             display: none; 
             font-size: 20px; 
@@ -670,19 +863,18 @@
         }
 
         /*
-         * =================================================================
-         * 7. FLOATING CHATBOT (Strict Visibility Control & Custom Style) (701 - 850)
-         * =================================================================
-         */
+        * =================================================================
+        * 7. FLOATING CHATBOT (701 - 850)
+        * =================================================================
+        */
         
-        /* Floating Chat Icon */
         #chatbot-icon {
             position: fixed;
             bottom: 30px;
             right: 30px;
             width: 60px;
             height: 60px;
-            background: var(--edubot-color); /* Blue for Edubot */
+            background: var(--edubot-color);
             color: white;
             font-size: 30px;
             display: flex;
@@ -691,48 +883,42 @@
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             cursor: pointer;
-            /* Z-INDEX FIX: Changed from 3000 to 2000 (Above Live Session, Below Modals) */
             z-index: 2000; 
-            
-            /* KEY: Default to hidden/scaled down */
             transform: scale(0);
             opacity: 0;
             transition: all 0.3s var(--animation-timing);
         }
 
         #chatbot-icon.visible {
-            /* KEY: Only visible when explicitly opened by the live session */
             transform: scale(1);
             opacity: 1;
         }
         #chatbot-icon:hover {
-            background: var(--secondary-color); /* Reddish hover */
+            background: var(--secondary-color);
         }
 
-        /* Chatbot Container */
         #chatbot-container {
             position: fixed;
             bottom: 100px;
             right: 30px;
             width: 350px;
             height: 450px;
-            background-color: rgba(31, 31, 31, 0.95); /* Dark background from user concept */
+            background-color: rgba(31, 31, 31, 0.95);
             border-radius: var(--border-radius-xl);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* Z-INDEX FIX: Changed from 3000 to 2000 (Above Live Session, Below Modals) */
             z-index: 2000;
-            
-            /* KEY: Default to hidden/scaled down */
             transform: translateY(50px) scale(0.9);
             opacity: 0;
             transition: all 0.4s var(--animation-timing);
-            
-            /* Apply glass effects for the darker background */
             backdrop-filter: blur(var(--blur-level));
             border: 1px solid rgba(255, 255, 255, 0.1); 
+        }
+        .light-mode #chatbot-container {
+             background-color: rgba(255, 255, 255, 0.8);
+             border: 1px solid rgba(0,0,0,0.1);
         }
         
         #chatbot-container.visible {
@@ -740,7 +926,6 @@
             opacity: 1;
         }
         
-        /* Chatbot Header (Blue from user concept) */
         #chatbot-header {
             background-color: var(--edubot-color);
             color: white;
@@ -763,7 +948,6 @@
             transform: rotate(90deg);
         }
 
-        /* Chatbot Body */
         #chatbot-body {
             flex-grow: 1;
             padding: 15px;
@@ -782,25 +966,28 @@
             word-wrap: break-word;
             font-size: 0.95em;
             transition: all 0.3s;
+            line-height: 1.4; /* NEW: Improve readability */
         }
         .message.user {
-            background-color: var(--edubot-color); /* Blue from user concept */
+            background-color: var(--edubot-color);
             color: white;
             align-self: flex-end;
         }
         .message.bot {
-            background-color: #333; /* Darker grey from user concept */
+            background-color: #333;
             color: white;
             align-self: flex-start;
         }
+        .light-mode .message.bot { background: #eee; color: var(--text-light); }
 
-        /* Input Section */
         #chatbot-input-container {
             display: flex;
             padding: 10px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             background-color: #2c2c2c;
         }
+        .light-mode #chatbot-input-container { background: #fff; border-top: 1px solid rgba(0,0,0,0.1); }
+        
         #chatbot-input {
             flex-grow: 1;
             padding: 10px;
@@ -809,6 +996,8 @@
             background-color: #333;
             color: white;
         }
+        .light-mode #chatbot-input { background: #eee; color: var(--text-light); border-color: #ccc; }
+        
         #send-btn {
             margin-left: 10px;
             padding: 10px 15px;
@@ -820,13 +1009,13 @@
             font-size: 16px;
         }
         #send-btn:hover {
-            background-color: var(--secondary-color); /* Matches icon hover */
+            background-color: var(--secondary-color);
         }
         
         /* Bot Message Animation (Loading) */
         .message.bot.loading {
             background-color: var(--warning-color);
-            color: var(--text-light);
+            color: #333;
             animation: pulse-loading 1.2s infinite alternate;
         }
         
@@ -835,10 +1024,10 @@
         }
 
         /*
-         * =================================================================
-         * 8. MEDIA QUERIES (1001 - END)
-         * =================================================================
-         */
+        * =================================================================
+        * 8. MEDIA QUERIES (1001 - END)
+        * =================================================================
+        */
         
         @media (max-width: 1200px) {
             #self-study-main { margin-left: calc(var(--sidebar-width) + 10px); padding: 20px; }
@@ -848,15 +1037,25 @@
             #chatbot-icon { transform: scale(0.9); }
         }
         
+        @media (max-width: 900px) {
+            /* NEW: Make subject grid 1 column on smaller screens */
+            #subject-list { grid-template-columns: 1fr; }
+        }
+        
         @media (max-width: 768px) {
             #sidebar-placeholder { left: -300px; }
             #self-study-main { margin-left: 20px; max-width: 100%; padding: 10px; }
             .dashboard-grid { grid-template-columns: 1fr; }
             .youvideo { width: calc(50% - 10px); } /* 2 videos per row */
+            
             #chatbot-container { right: 10px; bottom: 80px; width: 90%; height: 350px; }
             #chatbot-icon { right: 10px; bottom: 10px; }
+            
             #video-player-modal .modal-content { width: 95%; }
             #video-player-modal .modal-close-btn { top: -10px; right: -10px; width: 35px; height: 35px; }
+
+            .modal-content { width: 90%; }
+            .search-bar-live { flex-direction: column; }
         }
     </style>
 </head>
@@ -883,9 +1082,12 @@
                 <div id="subject-breakdown-box" class="floating-card glass-effect">
                     <h3 class="gradient-text" style="font-size: 1.4em; margin-bottom: 15px;">Subject Breakdown</h3>
                     <ul id="subject-list">
-                        <li data-subject="Math">Math <span class="score">92%</span></li>
-                        <li data-subject="Science">Science <span class="score">85%</span></li>
-                        <li data-subject="History">History <span class="score">90%</span></li>
+                        <li class="subject-box" data-subject="Math">Math <span class="score">92%</span></li>
+                        <li class="subject-box" data-subject="Physics">Physics <span class="score">88%</span></li>
+                        <li class="subject-box" data-subject="Science">Science <span class="score">85%</span></li>
+                        <li class="subject-box" data-subject="Chemistry">Chemistry <span class="score">78%</span></li>
+                        <li class="subject-box" data-subject="History">History <span class="score">90%</span></li>
+                        <li class="subject-box" data-subject="English">English <span class="score">94%</span></li>
                     </ul>
                 </div>
                 <div class="floating-card glass-effect">
@@ -927,55 +1129,96 @@
         </section>
     </main>
 
-    <!-- Confirm Modal -->
     <div id="confirm-modal" class="modal hidden">
-        <div class="modal-content floating-card glass-effect">
-            <!-- NEW: Close button added -->
+        <div class="modal-content floating-card glass-effect" style="text-align: center;">
             <button class="modal-close-btn" data-modal-id="confirm-modal">&times;</button>
-            <h3 class="gradient-text">Are you sure?</h3>
+            <h3 id="confirm-modal-title" class="gradient-text">Are you sure?</h3>
             <p id="confirm-modal-message">Do you really want to cancel this item?</p>
-            <div id="confirm-buttons">
+            <div id="confirm-buttons" style="display: flex; gap: 15px; justify-content: center; margin-top: 20px;">
                 <button id="confirm-btn-yes" class="gradient-button">Yes, Confirm</button>
                 <button id="confirm-btn-no" class="secondary-button">No</button>
             </div>
         </div>
     </div>
     
-    <!-- Video Player Modal -->
+    <div id="session-modal" class="modal hidden">
+        <div class="modal-content floating-card glass-effect">
+            <button class="modal-close-btn" data-modal-id="session-modal">&times;</button>
+            <h3 id="session-modal-title" class="gradient-text">Add New Session</h3>
+            
+            <form id="session-form">
+                <input type="hidden" id="session-id">
+                
+                <label for="session-title">Title / Topic</label>
+                <input type="text" id="session-title" placeholder="e.g., The French Revolution" required>
+                
+                <label for="session-subject">Subject</label>
+                <input type="text" id="session-subject" placeholder="e.g., History" required>
+                
+                <label>Type</label>
+                <div class="segmented-control">
+                    <input type="radio" id="session-type-session" name="session-type" value="Session" checked>
+                    <label for="session-type-session">📅 Session</label>
+                    <input type="radio" id="session-type-test" name="session-type" value="Test">
+                    <label for="session-type-test">📝 Test</label>
+                    <div class="slider"></div>
+                </div>
+                
+                <label for="session-date">Date</label>
+                <input type="date" id="session-date" required>
+                
+                <label for="session-time">Time</label>
+                <input type="time" id="session-time" required>
+                
+                <button type="submit" id="save-session-btn" class="gradient-button">Save Session</button>
+            </form>
+        </div>
+    </div>
+    
     <div id="video-player-modal" class="modal hidden">
         <div class="modal-content">
-            <!-- NEW: Close button added -->
             <button class="modal-close-btn" data-modal-id="video-player-modal">&times;</button>
             <h3 id="video-title" class="gradient-text"></h3>
             <div class="video-wrapper">
-                <iframe id="youtube-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe id="youtube-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen>
+                </iframe>
             </div>
         </div>
     </div>
     
-    <!-- Live Session Fullscreen Page -->
     <div id="live-session-page" class="hidden">
         <div class="live-session-header-bar glass-effect">
             <h1 id="live-session-title" class="gradient-text"></h1>
-            <button class="live-session-close-btn glass-effect">&times;</button>
+            <button class="live-session-close-btn glass-effect" data-page-id="live-session-page">&times;</button>
         </div>
         
         <div class="live-session-content-area">
-            
             <h2 class="gradient-text">📹 Video Resources & Edubot</h2>
-
             <div class="search-bar-live floating-card glass-effect">
                 <input type="text" id="liveSearchInput" placeholder="Search YouTube for videos on this topic..." />
                 <button id="liveSearchBtn" class="gradient-button">Search Videos</button>
             </div>
-
             <div class="loader" id="liveLoader">Loading...</div>
             <section class="videos-section" id="videosSection"></section>
-            
         </div>
     </div>
     
-    <!-- Chatbot Floating UI -->
+    <div id="test-taking-page" class="hidden">
+        <div class="live-session-header-bar glass-effect">
+            <h1 id="test-page-title" class="gradient-text">Test in Progress</h1>
+            <button class="live-session-close-btn glass-effect" data-page-id="test-taking-page">&times;</button>
+        </div>
+        
+        <div class="live-session-content-area" style="justify-content: center; align-items: center;">
+            <div class="floating-card glass-effect" style="width: 80%; text-align: center;">
+                <h2 class="gradient-text">📝 Test Interface</h2>
+                <p style="font-size: 1.2em; color: var(--subtext-dark);">This is where the interactive test would be loaded.</p>
+                <p>The test for <strong id="test-subject-placeholder">...</strong> is now active.</p>
+                <button class="gradient-button" style="margin-top: 20px;">Submit Test</button>
+            </div>
+        </div>
+    </div>
+    
     <div id="chatbot-icon">💬</div>
     <div id="chatbot-container">
         <div id="chatbot-header">
@@ -998,8 +1241,7 @@
         // DATA STORE & GLOBAL CONFIG (1201 - 1300)
         // =================================================================
 
-        // NOTE: Replace these with your actual keys for functional API calls.
-        // FIX: YouTube API Key set to blank as requested.
+        // WARNING: Keys are visible in client-side code. For production, move to a secure backend.
         const YOUTUBE_API_KEY = "AIzaSyCvkGuq2MLm8lpNxhr5NVXszlr2FQjjn6g"; 
         const GEMINI_API_KEY = "AIzaSyC8AS_0u1toc_GN530woL4HjmpbwtvBro8"; 
 
@@ -1019,10 +1261,11 @@
             { title: "Final Project Due", subject: "Computer Science", date: "2026-01-25", time: "11:59 PM", status: "Drafting" }
         ];
 
+        // NEW: Updated Resources Data
         const resourcesData = [
-            { type: "pdf", title: "Thermodynamics Chapter 5 Notes", subject: "Physics" },
-            { type: "video", title: "Calculus Integration Tutorial", subject: "Math" },
-            { type: "photo", title: "WWI Key Dates Infographic", subject: "History" }
+            { type: "pdf", title: "Thermodynamics Chapter 5", subject: "Physics", teacher: "Prof. Anand", url: "https://www.gsu.edu/student-resources/support-services/gsu-1010/thermodynamics.pdf" },
+            { type: "video", title: "Calculus Integration Tutorial", subject: "Math", teacher: "Ms. Sarah", url: "https://www.youtube.com/watch?v=rfG8ce4nNhE" },
+            { type: "photo", title: "WWI Key Dates Infographic", subject: "History", teacher: "Mr. Dave", url: "https://i.pinimg.com/originals/80/7e/76/807e761a6c0c279313b06c8d7f57c9f8.jpg" }
         ];
         
         let sessionToCancel = null;
@@ -1036,10 +1279,33 @@
         const sessionsContainer = document.getElementById('sessions-container');
         const timetableBody = document.getElementById('timetable-body');
         const resourcesContainer = document.getElementById('resources-container');
+        const subjectList = document.getElementById('subject-list'); // NEW
+        
+        // Modals
         const confirmModal = document.getElementById('confirm-modal');
+        const confirmModalTitle = document.getElementById('confirm-modal-title'); // NEW
+        const confirmModalMessage = document.getElementById('confirm-modal-message'); // NEW
+        const confirmButtons = document.getElementById('confirm-buttons'); // NEW
         const videoPlayerModal = document.getElementById('video-player-modal');
-        const youtubeIframe = document.getElementById('youtube-iframe');
+        const sessionModal = document.getElementById('session-modal');
+        
+        // Session Form
+        const sessionForm = document.getElementById('session-form');
+        const sessionModalTitle = document.getElementById('session-modal-title');
+        const sessionIdInput = document.getElementById('session-id');
+        const sessionTitleInput = document.getElementById('session-title');
+        const sessionSubjectInput = document.getElementById('session-subject');
+        const sessionTypeSession = document.getElementById('session-type-session');
+        const sessionTypeTest = document.getElementById('session-type-test');
+        const sessionDateInput = document.getElementById('session-date');
+        const sessionTimeInput = document.getElementById('session-time');
+
+        // Fullscreen Pages
         const liveSessionPage = document.getElementById('live-session-page');
+        const testTakingPage = document.getElementById('test-taking-page');
+        
+        // Video Player
+        const youtubeIframe = document.getElementById('youtube-iframe');
         
         // Live Session & Video Elements
         const liveSearchInput = document.getElementById('liveSearchInput');
@@ -1074,18 +1340,34 @@
         };
         
         const closeModal = (modalEl) => {
+            if (!modalEl) return;
             modalEl.classList.add('hiding');
             modalEl.addEventListener('animationend', () => {
                 modalEl.classList.add('hidden');
                 modalEl.classList.remove('hiding');
                 
-                // Special cleanup for video player modal
                 if (modalEl.id === 'video-player-modal') {
                     youtubeIframe.src = ""; // Stop playback
                     document.getElementById('video-title').textContent = "";
                 }
+                
+                // NEW: Reset confirm modal to default state
+                if (modalEl.id === 'confirm-modal') {
+                    confirmModalTitle.textContent = "Are you sure?";
+                    confirmButtons.style.display = 'flex';
+                    confirmModal.querySelector('.modal-content').style.textAlign = 'center';
+                }
             }, { once: true });
         };
+        
+        // NEW: Special modal for showing info (like scores)
+        const showInfoModal = (title, message) => {
+            confirmModalTitle.textContent = title;
+            confirmModalMessage.innerHTML = message; // Use innerHTML to allow basic formatting
+            confirmButtons.style.display = 'none'; // Hide Yes/No buttons
+            confirmModal.querySelector('.modal-content').style.textAlign = 'left';
+            openModal(confirmModal);
+        }
         
         const playVideoInModal = (videoId, title) => {
             const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
@@ -1103,6 +1385,7 @@
                 card.className = 'session-card floating-card glass-effect';
                 card.setAttribute('data-id', session.id);
                 card.setAttribute('data-time', session.datetime.toISOString());
+                card.setAttribute('data-type', session.type);
 
                 const formattedDate = new Date(session.datetime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 const formattedTime = new Date(session.datetime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
@@ -1139,12 +1422,15 @@
             });
         };
 
+        // NEW: Updated Render Resources
         const renderResources = () => {
             resourcesContainer.innerHTML = '';
             resourcesData.forEach(item => {
-                const card = document.createElement('div');
+                const card = document.createElement('a'); // Changed to <a> tag
                 card.className = 'resource-card floating-card glass-effect';
                 card.setAttribute('data-type', item.type);
+                card.href = item.url; // Set link
+                card.target = "_blank"; // Open in new tab
                 
                 let icon = '📄';
                 if (item.type === 'video') icon = '📹';
@@ -1153,7 +1439,7 @@
                 card.innerHTML = `
                     <span class="resource-icon">${icon}</span>
                     <p class="resource-title">${item.title}</p>
-                    <p class="resource-subject">${item.subject}</p>
+                    <p class="resource-teacher">By: ${item.teacher} | ${item.subject}</p>
                 `;
                 resourcesContainer.appendChild(card);
             });
@@ -1181,22 +1467,6 @@
         // CHATBOT INTEGRATION (1501 - 1650)
         // =================================================================
         
-        // Chatbot Visibility Toggles - Strictly controlled by live session page
-        
-        const toggleChatbotVisibility = () => {
-            // Only allow toggling if the live session page is open
-            if (liveSessionPage.classList.contains('open')) {
-                const isHidden = chatbotContainer.classList.contains('visible') ? false : true;
-                if (isHidden) {
-                    chatbotContainer.classList.add("visible");
-                    chatbotIcon.classList.remove("visible");
-                } else {
-                    chatbotContainer.classList.remove("visible");
-                    chatbotIcon.classList.add("visible");
-                }
-            }
-        }
-        
         chatbotIcon.addEventListener("click", () => {
             chatbotContainer.classList.add("visible");
             chatbotIcon.classList.remove("visible");
@@ -1204,7 +1474,6 @@
         
         chatCloseBtn.addEventListener("click", () => {
             chatbotContainer.classList.remove("visible");
-            // Show the icon if the live session is still active
             if (liveSessionPage.classList.contains('open')) {
                 chatbotIcon.classList.add("visible");
             }
@@ -1213,7 +1482,10 @@
         // Messaging Functions
         sendBtn.addEventListener("click", sendMessage);
         chatInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") sendMessage();
+            if (e.key === "Enter" && !e.shiftKey) { // NEW: Allow shift+enter for newline
+                e.preventDefault();
+                sendMessage();
+            }
         });
 
         function sendMessage() {
@@ -1237,29 +1509,78 @@
             return messageElement;
         }
 
+        // NEW: Real Gemini API Function
         async function getBotResponse(userMessage) {
-             const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
-             
-             if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
-                 appendMessage("bot", "Error: Gemini API Key is missing. Please set your key in the script.");
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+            
+            if (GEMINI_API_KEY === "" || GEMINI_API_KEY.includes("Bro8")) {
+                 const loadingMessage = appendMessage("bot", "Edubot is thinking...", true);
+                 setTimeout(() => {
+                    loadingMessage.classList.remove('loading');
+                 }, 1500);
                  return;
-             }
+            }
              
-             const loadingMessage = appendMessage("bot", "Edubot is thinking...", true);
+            const loadingMessage = appendMessage("bot", "Edubot is thinking...", true);
 
-             // Simulate delay and response
-             setTimeout(() => {
-                loadingMessage.textContent = `Hello! I am Edubot, ready to help you with: "${userMessage}". For example, I can summarize key concepts, define terms, or provide practice questions.`;
+             try {
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [
+                            { parts: [{ text: userMessage }] },
+                        ],
+                    }),
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+
+                if (!data.candidates || !data.candidates.length) {
+                    throw new Error("No response from Gemini API");
+                }
+
+                const botMessage = data.candidates[0].content.parts[0].text;
+                loadingMessage.textContent = botMessage;
                 loadingMessage.classList.remove('loading');
-                loadingMessage.style.backgroundColor = 'var(--edubot-color)';
-             }, 1500);
+                
+             } catch (error) {
+                console.error("Error:", error);
+                loadingMessage.textContent = "Sorry, I'm having trouble responding. Please check the API key or try again.";
+                loadingMessage.classList.remove('loading');
+                loadingMessage.style.background = 'var(--secondary-color)';
+             }
         }
 
 
         // =================================================================
-        // LIVE SESSION CONTROL & YOUTUBE API HANDLING (1651 - 1850)
+        // LIVE SESSION & YOUTUBE API (1651 - 1850)
         // =================================================================
 
+        // NEW: Helper to parse ISO 8601 duration
+        function parseISODuration(isoDuration) {
+            const regex = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/;
+            const matches = isoDuration.match(regex);
+
+            const hours = matches[1] ? parseInt(matches[1]) : 0;
+            const minutes = matches[2] ? parseInt(matches[2]) : 0;
+            const seconds = matches[3] ? parseInt(matches[3]) : 0;
+
+            let formatted = '';
+            if (hours > 0) {
+                formatted += `${hours}:${minutes.toString().padStart(2, '0')}:`;
+                formatted += `${seconds.toString().padStart(2, '0')}`;
+            } else {
+                formatted += `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+            return formatted;
+        }
+
+        // NEW: Render function now uses data from `videos.list`
         const renderVideoResults = (data) => {
             videosSection.innerHTML = '';
 
@@ -1269,12 +1590,12 @@
             }
 
             data.items.forEach(item => {
-                const videoId = item.id.videoId;
+                const videoId = item.id;
                 const title = item.snippet.title;
                 const channelTitle = item.snippet.channelTitle;
                 const thumbnail = item.snippet.thumbnails.high.url;
+                const duration = parseISODuration(item.contentDetails.duration); // NEW
                 
-                // Use a standard div for the video card but store videoId and title
                 const card = document.createElement('div');
                 card.className = 'youvideo';
                 card.setAttribute('data-videoid', videoId);
@@ -1282,23 +1603,22 @@
 
                 card.innerHTML = `
                     <img src="${thumbnail}" alt="${title}" />
+                    <span class="video-duration">${duration}</span>
                     <h3>${title}</h3>
                     <p>Channel: ${channelTitle}</p>
                 `;
                 
-                // Add event listener to play video in modal
                 card.addEventListener('click', () => playVideoInModal(videoId, title));
                 videosSection.appendChild(card);
             });
         }
         
-        // This function simulates the user's requested YouTube API call structure
-        function performYouTubeSearch(query) {
-            // NEW: Check for API Key before doing anything
-            if (YOUTUBE_API_KEY === "") {
+        // NEW: Two-step YouTube search to get duration
+        async function performYouTubeSearch(query) {
+            if (YOUTUBE_API_KEY === "" || YOUTUBE_API_KEY.includes("jjn6g")) {
                 videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--warning-color);">Error: YouTube API Key is not set. Video search is disabled.</h3>';
                 liveLoader.style.display = 'none';
-                console.warn("YouTube API Key is empty. Search is disabled.");
+                console.warn("YouTube API Key is empty or placeholder. Search is disabled.");
                 return;
             }
             
@@ -1306,50 +1626,79 @@
             videosSection.innerHTML = '';
             liveLoader.style.display = 'block';
 
-            const url = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=12`;
+            try {
+                // Step 1: Search for video IDs
+                const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=12&order=viewCount&videoDuration=medium`;
+                
+                const searchResponse = await fetch(searchUrl);
+                if (!searchResponse.ok) throw new Error('Search API failed');
+                const searchData = await searchResponse.json();
+                
+                if (!searchData.items || searchData.items.length === 0) {
+                    liveLoader.style.display = 'none';
+                    videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--subtext-dark);">No videos found for this search query.</h3>';
+                    return;
+                }
 
-            fetch(url)
-                .then(res => res.json())
-                .then(data => {
-                    liveLoader.style.display = 'none';
-                    // Check for key validity (simulated check)
-                    if (data.error && data.error.code === 400) {
-                        videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--secondary-color);">Error: Invalid YouTube API Key or Quota exceeded. Cannot load videos.</h3>';
-                    } else {
-                        renderVideoResults(data);
-                    }
-                })
-                .catch(err => {
-                    liveLoader.style.display = 'none';
-                    videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--secondary-color);">Failed to load videos. Check network connection.</h3>';
-                    console.error("YouTube API Fetch Error:", err);
-                });
+                const videoIds = searchData.items.map(item => item.id.videoId).join(',');
+
+                // Step 2: Get video details (including duration) for those IDs
+                const detailsUrl = `https://www.googleapis.com/youtube/v3/videos?key=${YOUTUBE_API_KEY}&part=snippet,contentDetails&id=${videoIds}`;
+                
+                const detailsResponse = await fetch(detailsUrl);
+                if (!detailsResponse.ok) throw new Error('Videos API failed');
+                const detailsData = await detailsResponse.json();
+
+                liveLoader.style.display = 'none';
+                renderVideoResults(detailsData);
+
+            } catch (err) {
+                liveLoader.style.display = 'none';
+                videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--secondary-color);">Failed to load videos. Check API key or network.</h3>';
+                console.error("YouTube API Fetch Error:", err);
+            }
         }
         
-        // Main function to open the ultra-smooth animated session page
-        const openLiveSession = (session) => {
-            // 1. Page Transition
-            document.getElementById('live-session-title').textContent = session.title;
-            liveSessionPage.classList.remove('hidden', 'hiding');
-            void liveSessionPage.offsetWidth; 
-            liveSessionPage.classList.add('open');
-            mainContent.classList.add('hiding');
+        // --- Fullscreen Page Control (Unchanged) ---
+        
+        const openFullscreenPage = (pageElement, session) => {
+             pageElement.classList.remove('hidden', 'hiding');
+             void pageElement.offsetWidth; 
+             pageElement.classList.add('open');
+             mainContent.classList.add('hiding');
+             closeModal(sessionModal);
+             closeModal(confirmModal);
+        }
+        
+        const closeFullscreenPage = (pageElement) => {
+            pageElement.classList.remove('open');
+            pageElement.classList.add('hiding');
+            mainContent.classList.remove('hiding');
+            chatbotIcon.classList.remove('visible');
+            chatbotContainer.classList.remove('visible');
             
-            // 2. Chatbot Setup (STRICT VISIBILITY CONTROL)
+            pageElement.addEventListener('transitionend', () => {
+                pageElement.classList.add('hidden');
+                pageElement.classList.remove('hiding');
+            }, { once: true });
+        }
+        
+        const openLiveSession = (session) => {
+            openFullscreenPage(liveSessionPage, session);
+            document.getElementById('live-session-title').textContent = session.title;
+            
             const initialPrompt = `Summarize key concepts for: ${session.title} (${session.subject}) from ${DEFAULT_CURRICULUM} ${DEFAULT_GRADE} syllabus.`;
             chatInput.value = initialPrompt;
             chatbotMessages.innerHTML = ''; 
-            appendMessage("bot", "Welcome to the study session! The Edubot is now active. Ask me anything about this topic or use the pre-filled prompt.");
+            appendMessage("bot", "Welcome! Edubot is active. Ask me anything about this topic or use the pre-filled prompt.");
             
-            // Show Edubot (Icon visible, Container hidden)
             chatbotIcon.classList.add('visible'); 
             chatbotContainer.classList.remove('visible'); 
             
-            // 3. Video Search Initialization (Search bar is accessible only here)
-            liveSearchInput.value = `${session.title} ${session.subject} tutorial`;
+            // NEW: Add platform names to search
+            liveSearchInput.value = `${session.title} ${session.subject} tutorial Byju's Vedantu`;
             performYouTubeSearch(liveSearchInput.value);
             
-            // 4. Attach Live Search Handlers
             liveSearchBtn.onclick = () => performYouTubeSearch(liveSearchInput.value);
             liveSearchInput.onkeyup = (e) => {
                 if (e.key === 'Enter') performYouTubeSearch(liveSearchInput.value);
@@ -1357,27 +1706,98 @@
         };
         
         const closeLiveSession = () => {
-            // 1. Start page closing animation
-            liveSessionPage.classList.remove('open');
-            liveSessionPage.classList.add('hiding');
-            mainContent.classList.remove('hiding');
-            
-            // 2. Hide all chatbot UI components (STRICT VISIBILITY CONTROL)
-            chatbotIcon.classList.remove('visible');
-            chatbotContainer.classList.remove('visible');
-            
-            // 3. Clean up video search results and detach handlers
+            closeFullscreenPage(liveSessionPage);
             videosSection.innerHTML = '';
             liveLoader.style.display = 'none';
             liveSearchBtn.onclick = null;
             liveSearchInput.onkeyup = null;
-
-            // 4. Remove page completely after animation ends
-            liveSessionPage.addEventListener('transitionend', () => {
-                liveSessionPage.classList.add('hidden');
-                liveSessionPage.classList.remove('hiding');
-            }, { once: true });
         };
+
+        const openTestPage = (session) => {
+            openFullscreenPage(testTakingPage, session);
+            document.getElementById('test-page-title').textContent = `Test: ${session.title}`;
+            document.getElementById('test-subject-placeholder').textContent = session.title;
+        };
+        
+        const closeTestPage = () => {
+            closeFullscreenPage(testTakingPage);
+        };
+
+        // =================================================================
+        // SESSION MODAL (ADD/EDIT) LOGIC
+        // =================================================================
+
+        const formatDateForInput = (date) => {
+            return date.toISOString().split('T')[0];
+        }
+
+        const formatTimeForInput = (date) => {
+            return date.toTimeString().split(' ')[0].substring(0, 5);
+        }
+
+        const openSessionModal = (type = 'Session', sessionId = null) => {
+            sessionForm.reset(); 
+            
+            if (sessionId) {
+                // EDIT MODE
+                const session = sessions.find(s => s.id === sessionId);
+                if (!session) return;
+                
+                sessionModalTitle.textContent = `Edit ${session.type}`;
+                sessionIdInput.value = session.id;
+                sessionTitleInput.value = session.title;
+                sessionSubjectInput.value = session.subject;
+                sessionDateInput.value = formatDateForInput(session.datetime);
+                sessionTimeInput.value = formatTimeForInput(session.datetime);
+                
+                if (session.type === 'Test') {
+                    sessionTypeTest.checked = true;
+                } else {
+                    sessionTypeSession.checked = true;
+                }
+                
+            } else {
+                // ADD MODE
+                sessionModalTitle.textContent = `Add New ${type}`;
+                sessionIdInput.value = '';
+                
+                const defaultTime = new Date(now.getTime() + 3600000);
+                sessionDateInput.value = formatDateForInput(defaultTime);
+                sessionTimeInput.value = formatTimeForInput(defaultTime);
+                
+                if (type === 'Test') {
+                    sessionTypeTest.checked = true;
+                } else {
+                    sessionTypeSession.checked = true;
+                }
+            }
+            
+            openModal(sessionModal);
+        };
+        
+        sessionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const id = sessionIdInput.value ? parseInt(sessionIdInput.value) : null;
+            const title = sessionTitleInput.value;
+            const subject = sessionSubjectInput.value;
+            const type = sessionTypeTest.checked ? 'Test' : 'Session';
+            const date = sessionDateInput.value;
+            const time = sessionTimeInput.value;
+            
+            const datetime = new Date(`${date}T${time}`);
+            
+            if (id) {
+                // UPDATE
+                sessions = sessions.map(session => (session.id === id) ? { id, title, subject, type, datetime } : session);
+            } else {
+                // ADD
+                sessions.push({ id: Date.now(), title, subject, type, datetime });
+            }
+            
+            renderSessions();
+            closeModal(sessionModal);
+        });
 
 
         // =================================================================
@@ -1387,12 +1807,12 @@
         document.addEventListener('click', (e) => {
             const target = e.target;
             
-            // Modal close (by clicking background)
+            // Modal close (background)
             if (target.classList.contains('modal')) {
                 closeModal(target.closest('.modal'));
             }
             
-            // NEW: Modal close (by clicking 'x' button)
+            // Modal close ('x' button)
             if (target.closest('.modal-close-btn')) {
                 const modalId = target.closest('.modal-close-btn').getAttribute('data-modal-id');
                 if (modalId) {
@@ -1400,9 +1820,11 @@
                 }
             }
             
-            // Live Session Close Button
+            // Fullscreen Page Close Button
             if (target.closest('.live-session-close-btn')) {
-                closeLiveSession();
+                const pageId = target.closest('.live-session-close-btn').getAttribute('data-page-id');
+                if (pageId === 'live-session-page') closeLiveSession();
+                else if (pageId === 'test-taking-page') closeTestPage();
             }
             
             // Theme toggle
@@ -1411,27 +1833,31 @@
                 body.classList.toggle('light-mode');
             }
             
-            // Add Session/Test (simulated)
-            if (target.closest('#add-session-btn') || target.closest('#add-test-btn')) { 
-                const type = target.closest('#add-test-btn') ? 'Test' : 'Session';
-                // Using a custom modal stub instead of alert
-                document.getElementById('confirm-modal-message').textContent = `Logic to add new ${type} would go here.`;
-                openModal(confirmModal); 
-            }
+            // Add Session/Test
+            if (target.closest('#add-session-btn')) openSessionModal('Session');
+            if (target.closest('#add-test-btn')) openSessionModal('Test');
             
             // Card Actions
             const card = target.closest('.session-card');
             if (card) {
                 const sessionId = parseInt(card.getAttribute('data-id'));
+                const sessionType = card.getAttribute('data-type');
                 const session = sessions.find(s => s.id === sessionId);
                 
                 if (target.closest('.start-session-btn')) {
-                    if (session) openLiveSession(session);
+                    if (sessionType === 'Test') openTestPage(session);
+                    else openLiveSession(session);
                 }
                 if (target.closest('.cancel-btn')) {
                     sessionToCancel = sessionId;
-                    document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
+                    confirmModalTitle.textContent = "Are you sure?";
+                    confirmModalMessage.textContent = `Do you really want to cancel "${session.title}"?`;
+                    confirmButtons.style.display = 'flex';
+                    confirmModal.querySelector('.modal-content').style.textAlign = 'center';
                     openModal(confirmModal);
+                }
+                if (target.closest('.edit-btn')) {
+                    openSessionModal(null, sessionId);
                 }
             }
             
@@ -1447,6 +1873,22 @@
             if (target.closest('#confirm-btn-no')) {
                 closeModal(confirmModal);
                 sessionToCancel = null;
+            }
+            
+            // NEW: Subject Box Click
+            const subjectBox = target.closest('.subject-box');
+            if (subjectBox) {
+                const subject = subjectBox.getAttribute('data-subject');
+                // Simulate score fetching
+                const simulatedScores = `
+                    <p><strong>Recent Test Scores for ${subject}:</strong></p>
+                    <ul style="text-align: left; margin-left: 20px;">
+                        <li>Unit 1 Test: <strong>85%</strong></li>
+                        <li>Midterm Exam: <strong>90%</strong></li>
+                        <li>Pop Quiz: <strong>95%</strong></li>
+                    </ul>
+                `;
+                showInfoModal(`Performance: ${subject}`, simulatedScores);
             }
         });
         
