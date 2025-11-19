@@ -1,179 +1,424 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Quiz Generator AI App</title>
-  <style>
-    body {
-  background: #212121;
-  margin: 0;
-  font-family: Arial, sans-serif;
-}
-.app {
-  background: #fff;
-  width: 90%;
-  max-width: 600px;
-  margin: 40px auto 0;
-  border-radius: 10px;
-  padding: 30px;
-}
-.app h1 {
-  font-size: 28px;
-  color: #001e4d;
-  margin-bottom: 16px;
-}
-label {
-  display: block;
-  margin: 10px 0 3px 0;
-}
-textarea, select {
-  width: 100%;
-  margin-bottom: 10px;
-  font-size: 16px;
-}
-button {
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 4px;
-  border: none;
-  background: #001e4d;
-  color: #fff;
-  font-weight: bold;
-  cursor: pointer;
-}
-button:disabled {
-  background: #aaa;
-  cursor: not-allowed;
-}
-#quiz {
-  margin-top: 20px;
-}
-.question-block {
-  margin-bottom: 20px;
-}
-.option {
-  margin-left: 20px;
-}
-.correct {
-  background-color: #9aeabc;
-}
-.incorrect {
-  background-color: #ff9393;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini AI Quiz Generator</title>
+    <script src="https://cdn.jsdelivr.net/npm/@google/genai@0.2.1/dist/index.umd.js"></script>
+    <style>
+        :root {
+            --primary-color: #4A90E2;
+            --secondary-color: #F7F7F7;
+            --text-color: #333;
+            --success-color: #50E3C2;
+            --error-color: #FF6666;
+            --correct-color: #00A300;
+        }
 
-  </style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        /* --- Input Section --- */
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        #topicInput {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        #generateButton {
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, opacity 0.3s;
+        }
+
+        #generateButton:hover:not(:disabled) {
+            background-color: #3a7bd5;
+        }
+
+        #generateButton:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        /* --- Loader and Status --- */
+        .status {
+            text-align: center;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            color: #666;
+        }
+
+        .loading {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        .error {
+            color: var(--error-color);
+            background-color: #ffeaea;
+            border: 1px solid var(--error-color);
+        }
+
+        /* --- Quiz Section --- */
+        #quizDisplay {
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        h2 {
+            color: var(--text-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
+            margin-bottom: 25px;
+        }
+
+        .question {
+            background: var(--secondary-color);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .question p {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .option-label {
+            display: block;
+            background: white;
+            padding: 10px;
+            margin-bottom: 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            transition: background-color 0.2s, border-color 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .option-label input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        /* Result Styles (Applied dynamically by JS) */
+        .correct-answer {
+            background-color: #d4edda !important; /* Light green */
+            border-color: var(--correct-color) !important;
+            font-weight: bold;
+        }
+
+        .incorrect-answer {
+            background-color: #f8d7da !important; /* Light red */
+            border-color: var(--error-color) !important;
+        }
+
+        /* --- Submit Button --- */
+        #submitButton {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: var(--success-color);
+            color: var(--text-color);
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        #submitButton:hover {
+            background-color: #3ac8a9;
+        }
+
+        #scoreDisplay {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 15px;
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            display: none; /* Initially hidden */
+        }
+    </style>
 </head>
 <body>
-  <div class="app">
-    <h1>Quiz Generator AI App</h1>
-    <label>Paste learning content:</label>
-    <textarea id="content" rows="6" cols="50"></textarea>
-    <label>Difficulty:</label>
-    <select id="difficulty">
-      <option value="easy">Easy</option>
-      <option value="medium">Medium</option>
-      <option value="hard">Hard</option>
-    </select>
-    <button id="generateBtn">Generate Quiz</button>
-    <div id="quiz"></div>
-    <button id="submitBtn" style="display:none;">Submit Quiz</button>
-    <div id="result"></div>
-  </div>
-  <script>
-    const OPENAI_API_KEY = "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"; // Replace with your OpenAI API key
+    <div class="container">
+        <h1>🧠 AI Quiz Generator with Gemini</h1>
+        
+        <div class="input-group">
+            <input type="text" id="topicInput" placeholder="Enter a topic (e.g., Quantum Computing, Roman History)" value="The Solar System">
+            <button id="generateButton" onclick="generateQuiz()">Generate Quiz</button>
+        </div>
+        
+        <div id="statusMessage" class="status"></div>
 
-document.getElementById("generateBtn").onclick = async function () {
-  const content = document.getElementById("content").value.trim();
-  const level = document.getElementById("difficulty").value;
-  if (!content) {
-    alert("Content required");
-    return;
-  }
-  document.getElementById("quiz").innerHTML = "Generating questions...";
-  document.getElementById("result").innerHTML = "";
-  document.getElementById("submitBtn").style.display = "none";
+        <div id="quizDisplay">
+            </div>
 
-  // Prepare the prompt
-  const prompt = `
-Given the following text, create a quiz of three multiple choice questions (MCQ) at ${level} difficulty. 
-Do not repeat questions and only use information from the text.
-Format the response as JSON:
-{
-  "mcqs": [
-    {
-      "question": "Question text",
-      "options": ["A", "B", "C", "D"],
-      "correct_answer": "A"
-    },
-    ...
-  ]
-}
-Text:
-${content}
-`;
+        <button id="submitButton" onclick="submitQuiz()" style="display: none;">Submit Quiz & See Score</button>
+        
+        <div id="scoreDisplay"></div>
+    </div>
 
-  // Call OpenAI GPT3.5
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${OPENAI_API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "gpt-3.5-turbo",
-      messages: [{ role: "user", content: prompt }],
-      max_tokens: 700,
-      temperature: 0.8
-    })
-  });
-  const data = await response.json();
-  let mcqs;
-  try {
-    // Find the MCQ JSON part in the response
-    const match = data.choices[0].message.content.match(/({[\s\S]*})/);
-    mcqs = JSON.parse(match[1]).mcqs;
-  } catch (e) {
-    document.getElementById("quiz").innerHTML = "Failed to parse quiz questions. Try different input.";
-    return;
-  }
+    <script>
+        // ⚠️ IMPORTANT: Replace 'YOUR_API_KEY_HERE' with your actual Gemini API Key.
+        // For a secure, production app, this key should be on a backend server.
+        const API_KEY = "AIzaSyC8AS_0u1toc_GN530woL4HjmpbwtvBro8"; 
+        
+        // --- Global Variables (will be initialized inside DOMContentLoaded) ---
+        let ai;
+        const model = "gemini-2.5-flash";
+        let currentQuizData = null;
 
-  // Render quiz
-  let quizHtml = "";
-  mcqs.forEach((q, idx) => {
-    quizHtml += `<div class="question-block">
-      <div><b>Q${idx + 1}:</b> ${q.question}</div>
-      ${q.options.map((opt, i) =>
-        `<label class="option"><input name="q${idx}" type="radio" value="${opt}"> ${opt}</label>`
-      ).join("<br>")}
-    </div>`;
-  });
+        // Define the structured JSON schema for the quiz output
+        const quizSchema = {
+            type: "object",
+            properties: {
+                title: {
+                    type: "string",
+                    description: "A creative title for the quiz."
+                },
+                questions: {
+                    type: "array",
+                    description: "A list of multiple-choice questions for the quiz.",
+                    items: {
+                        type: "object",
+                        properties: {
+                            question: {
+                                type: "string",
+                                description: "The text of the quiz question."
+                            },
+                            options: {
+                                type: "array",
+                                items: {
+                                    type: "string"
+                                },
+                                description: "A list of 4 possible answers."
+                            },
+                            correct_answer_index: {
+                                type: "number",
+                                description: "The zero-based index of the correct answer in the options array (0 for the first, 1 for the second, etc.)."
+                            }
+                        },
+                        required: ["question", "options", "correct_answer_index"]
+                    }
+                }
+            },
+            required: ["title", "questions"]
+        };
 
-  document.getElementById("quiz").innerHTML = quizHtml;
-  document.getElementById("submitBtn").style.display = "block";
 
-  document.getElementById("submitBtn").onclick = function () {
-    let score = 0;
-    mcqs.forEach((q, idx) => {
-      const selected = (
-        document.querySelector(`input[name="q${idx}"]:checked`) || {}
-      ).value;
-      const correct = q.correct_answer;
-      if (selected === correct) score++;
-    });
-    document.getElementById("result").innerHTML =
-      `Score: ${score} / ${mcqs.length}<br><br>` +
-      mcqs.map((q, idx) => {
-        const selected = (
-          document.querySelector(`input[name="q${idx}"]:checked`) || {}
-        ).value;
-        let color = selected === q.correct_answer ? "correct" : "incorrect";
-        return `<div class="question-block ${selected ? color : ""}">
-          <b>Q${idx + 1}:</b> ${q.question}<br>
-          Selected: ${selected || "-"}<br>Correct: ${q.correct_answer}
-        </div>`;
-      }).join("");
-  };
-};
-  </script>
+        /**
+         * 1. Calls the Gemini API to generate the quiz JSON.
+         */
+        async function generateQuiz() {
+            // Check if the AI client is initialized (addresses the TDZ error)
+            if (!ai) {
+                console.error("AI client not initialized. Check API Key or SDK loading.");
+                return;
+            }
+
+            const topic = document.getElementById('topicInput').value.trim();
+            const statusMessage = document.getElementById('statusMessage');
+            const generateButton = document.getElementById('generateButton');
+            const quizDisplay = document.getElementById('quizDisplay');
+            const submitButton = document.getElementById('submitButton');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            const numQuestions = 5; 
+
+            if (!topic) {
+                statusMessage.className = 'status error';
+                statusMessage.textContent = 'Please enter a topic to generate a quiz!';
+                return;
+            }
+
+            // --- UI State: Loading ---
+            statusMessage.className = 'status loading';
+            statusMessage.textContent = `Generating a ${numQuestions}-question quiz on "${topic}"...`;
+            generateButton.disabled = true;
+            submitButton.disabled = false;
+            quizDisplay.innerHTML = '';
+            submitButton.style.display = 'none';
+            scoreDisplay.style.display = 'none';
+
+            const prompt = `Generate a multiple-choice quiz about "${topic}". The quiz must have exactly ${numQuestions} questions. Each question must have exactly 4 options. Ensure the output strictly follows the provided JSON schema.`;
+
+            try {
+                const response = await ai.models.generateContent({
+                    model: model,
+                    contents: [{ role: "user", parts: [{ text: prompt }] }],
+                    config: {
+                        responseMimeType: "application/json",
+                        responseSchema: quizSchema,
+                    },
+                });
+
+                // The response.text is a JSON string
+                currentQuizData = JSON.parse(response.text);
+                
+                // --- UI State: Success ---
+                statusMessage.className = 'status';
+                statusMessage.textContent = 'Quiz successfully generated! Take the quiz below.';
+                displayQuiz(currentQuizData);
+                submitButton.style.display = 'block';
+
+            } catch (error) {
+                console.error("Gemini API Error:", error);
+                // Check for common API key error
+                let errorMessage = `Error generating quiz: ${error.message}.`;
+                if (error.message.includes('API_KEY_INVALID')) {
+                    errorMessage = "Error: Invalid API Key. Please check the 'API_KEY' variable in the script.";
+                }
+                statusMessage.className = 'status error';
+                statusMessage.textContent = errorMessage;
+                currentQuizData = null; 
+            } finally {
+                generateButton.disabled = false;
+            }
+        }
+
+        /**
+         * 2. Renders the generated quiz data into the HTML.
+         */
+        function displayQuiz(quizData) {
+            const quizDisplay = document.getElementById('quizDisplay');
+            let html = `<h2>${quizData.title}</h2><form id="quizForm">`;
+            
+            quizData.questions.forEach((q, qIndex) => {
+                html += `
+                    <div class="question" data-question-index="${qIndex}">
+                        <p>${qIndex + 1}. ${q.question}</p>
+                `;
+                
+                q.options.forEach((optionText, oIndex) => {
+                    const optionId = `q${qIndex}o${oIndex}`;
+                    html += `
+                        <label for="${optionId}" class="option-label">
+                            <input type="radio" id="${optionId}" name="question${qIndex}" value="${oIndex}">
+                            ${optionText}
+                        </label>
+                    `;
+                });
+                
+                html += `</div>`;
+            });
+
+            html += `</form>`;
+            quizDisplay.innerHTML = html;
+        }
+
+        /**
+         * 3. Checks the user's answers against the correct answers and shows the score.
+         */
+        function submitQuiz() {
+            if (!currentQuizData) return;
+
+            const quizForm = document.getElementById('quizForm');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+            let score = 0;
+            const totalQuestions = currentQuizData.questions.length;
+
+            currentQuizData.questions.forEach((q, qIndex) => {
+                const questionContainer = document.querySelector(`.question[data-question-index="${qIndex}"]`);
+                // Use querySelector to safely get the selected radio button value
+                const selectedRadio = quizForm.elements[`question${qIndex}`].value;
+                const correctAnswerIndex = q.correct_answer_index;
+                
+                // Get all option labels for this question
+                const optionLabels = questionContainer.querySelectorAll('.option-label');
+
+                // 1. Highlight the correct answer
+                if (optionLabels[correctAnswerIndex]) {
+                    optionLabels[correctAnswerIndex].classList.add('correct-answer');
+                }
+
+                // 2. Check and highlight the user's answer
+                if (selectedRadio !== undefined && selectedRadio !== null) {
+                    const userSelectedIndex = parseInt(selectedRadio);
+
+                    if (userSelectedIndex === correctAnswerIndex) {
+                        score++;
+                    } else if (optionLabels[userSelectedIndex]) {
+                        // Highlight the user's wrong selection
+                        optionLabels[userSelectedIndex].classList.add('incorrect-answer');
+                    }
+                }
+                
+                // 3. Disable all radio buttons after submission
+                questionContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
+                    radio.disabled = true;
+                });
+            });
+
+            // --- UI State: Score Display ---
+            scoreDisplay.textContent = `Your Score: ${score} / ${totalQuestions}`;
+            scoreDisplay.style.display = 'block';
+            document.getElementById('submitButton').disabled = true; // Disable submit after first click
+        }
+
+        // 2. CORRECTED: Use DOMContentLoaded to ensure all elements and the SDK are ready
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialize the AI client only after the DOM and SDK are loaded
+            // This fixes the 'GoogleGenAI is not defined' error
+            if (typeof GoogleGenAI !== 'undefined' && API_KEY !== "YOUR_API_KEY_HERE") {
+                 ai = new GoogleGenAI(API_KEY);
+                 // Automatically generate an initial quiz
+                 generateQuiz();
+            } else if (API_KEY === "YOUR_API_KEY_HERE") {
+                 document.getElementById('statusMessage').className = 'status error';
+                 document.getElementById('statusMessage').textContent = "ERROR: Please replace 'YOUR_API_KEY_HERE' with your actual Gemini API Key in the script.";
+                 document.getElementById('generateButton').disabled = true;
+            } else {
+                 document.getElementById('statusMessage').className = 'status error';
+                 document.getElementById('statusMessage').textContent = "ERROR: Failed to load GoogleGenAI SDK. Check your internet connection.";
+                 document.getElementById('generateButton').disabled = true;
+            }
+        });
+    </script>
 </body>
 </html>
