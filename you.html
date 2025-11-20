@@ -3,422 +3,593 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini AI Quiz Generator</title>
-    <script src="https://cdn.jsdelivr.net/npm/@google/genai@0.2.1/dist/index.umd.js"></script>
+    <title>AI Quiz Generator - Gemini</title>
     <style>
-        :root {
-            --primary-color: #4A90E2;
-            --secondary-color: #F7F7F7;
-            --text-color: #333;
-            --success-color: #50E3C2;
-            --error-color: #FF6666;
-            --correct-color: #00A300;
+        /* CSS is unchanged */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: var(--secondary-color);
-            color: var(--text-color);
-            line-height: 1.6;
+            background: linear-gradient(135deg, #f5f3ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            padding: 2rem;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
+        }
+
+        .card {
             background: white;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 1.5rem;
         }
 
-        h1 {
-            color: var(--primary-color);
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        /* --- Input Section --- */
-        .input-group {
+        .header {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
         }
 
-        #topicInput {
-            flex-grow: 1;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 16px;
+        .header h1 {
+            font-size: 2rem;
+            color: #333;
         }
 
-        #generateButton {
-            padding: 12px 25px;
-            background-color: var(--primary-color);
-            color: white;
+        .icon {
+            width: 2rem;
+            height: 2rem;
+            color: #8b5cf6;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
             border: none;
-            border-radius: 6px;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s, opacity 0.3s;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        #generateButton:hover:not(:disabled) {
-            background-color: #3a7bd5;
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6 0%, #3b82f6 100%);
+            color: white;
         }
 
-        #generateButton:disabled {
-            opacity: 0.6;
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
             cursor: not-allowed;
         }
-        
-        /* --- Loader and Status --- */
-        .status {
-            text-align: center;
-            padding: 10px;
-            margin-bottom: 20px;
-            border-radius: 6px;
-            color: #666;
+
+        .btn-success {
+            background: #10b981;
+            color: white;
         }
 
-        .loading {
-            color: var(--primary-color);
-            font-weight: bold;
+        .btn-success:hover:not(:disabled) {
+            background: #059669;
         }
 
-        .error {
-            color: var(--error-color);
-            background-color: #ffeaea;
-            border: 1px solid var(--error-color);
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
         }
 
-        /* --- Quiz Section --- */
-        #quizDisplay {
-            margin-top: 30px;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
+        .btn-secondary:hover {
+            background: #4b5563;
         }
 
-        h2 {
-            color: var(--text-color);
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 5px;
-            margin-bottom: 25px;
+        .error-box {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 0.5rem;
+            color: #991b1b;
         }
 
-        .question {
-            background: var(--secondary-color);
-            padding: 20px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        .question-card {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            background: #f9fafb;
+            margin-bottom: 1.5rem;
         }
 
-        .question p {
-            font-weight: bold;
-            font-size: 1.1em;
-            margin-top: 0;
-            margin-bottom: 15px;
+        .question-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 1rem;
         }
 
-        .option-label {
-            display: block;
-            background: white;
-            padding: 10px;
-            margin-bottom: 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            transition: background-color 0.2s, border-color 0.2s;
-        }
-
-        .option-label:hover {
-            background-color: #f0f0f0;
-        }
-        
-        .option-label input[type="radio"] {
-            margin-right: 10px;
-        }
-
-        /* Result Styles (Applied dynamically by JS) */
-        .correct-answer {
-            background-color: #d4edda !important; /* Light green */
-            border-color: var(--correct-color) !important;
-            font-weight: bold;
-        }
-
-        .incorrect-answer {
-            background-color: #f8d7da !important; /* Light red */
-            border-color: var(--error-color) !important;
-        }
-
-        /* --- Submit Button --- */
-        #submitButton {
-            display: block;
+        .option-btn {
             width: 100%;
-            padding: 15px;
-            background-color: var(--success-color);
-            color: var(--text-color);
-            font-size: 18px;
-            font-weight: bold;
-            border: none;
-            border-radius: 6px;
+            text-align: left;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            border: 2px solid #d1d5db;
+            border-radius: 0.5rem;
+            background: white;
             cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.3s;
+            transition: all 0.2s;
+            font-size: 0.95rem;
         }
 
-        #submitButton:hover {
-            background-color: #3ac8a9;
+        .option-btn:hover:not(:disabled) {
+            background: #f9fafb;
+            border-color: #8b5cf6;
         }
 
-        #scoreDisplay {
-            text-align: center;
-            font-size: 1.5em;
-            font-weight: bold;
-            margin-top: 20px;
-            padding: 15px;
-            border: 2px solid var(--primary-color);
-            border-radius: 8px;
-            display: none; /* Initially hidden */
+        .option-btn.selected {
+            background: #f3e8ff;
+            border-color: #8b5cf6;
+        }
+
+        .option-btn.correct {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .option-btn.incorrect {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .explanation-box {
+            background: #dbeafe;
+            border: 2px solid #93c5fd;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .explanation-box strong {
+            color: #1e40af;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .explanation-box p {
+            color: #1e3a8a;
+            font-size: 0.875rem;
+        }
+
+        .score-display {
+            text-align: right;
+        }
+
+        .score-display p:first-child {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+
+        .score-display p:last-child {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #8b5cf6;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .quiz-header h2 {
+            font-size: 1.5rem;
+            color: #1f2937;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .button-group .btn {
+            flex: 1;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        #quizSection {
+            display: none;
+        }
+
+        #quizSection.active {
+            display: block;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🧠 AI Quiz Generator with Gemini</h1>
-        
-        <div class="input-group">
-            <input type="text" id="topicInput" placeholder="Enter a topic (e.g., Quantum Computing, Roman History)" value="The Solar System">
-            <button id="generateButton" onclick="generateQuiz()">Generate Quiz</button>
-        </div>
-        
-        <div id="statusMessage" class="status"></div>
-
-        <div id="quizDisplay">
+        <div class="card">
+            <div class="header">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                </svg>
+                <h1>AI Quiz Generator</h1>
             </div>
 
-        <button id="submitButton" onclick="submitQuiz()" style="display: none;">Submit Quiz & See Score</button>
-        
-        <div id="scoreDisplay"></div>
+            <div class="form-group">
+                <label for="topic">Quiz Topic</label>
+                <input type="text" id="topic" placeholder="e.g., World War II, Python Programming, Solar System">
+            </div>
+
+            <div class="grid-2">
+                <div class="form-group">
+                    <label for="numQuestions">Number of Questions</label>
+                    <select id="numQuestions">
+                        <option value="3">3 Questions</option>
+                        <option value="5" selected>5 Questions</option>
+                        <option value="10">10 Questions</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="difficulty">Difficulty Level</label>
+                    <select id="difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="errorBox"></div>
+
+            <button class="btn btn-primary" id="generateBtn" onclick="generateQuiz()">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                </svg>
+                Generate Quiz
+            </button>
+        </div>
+
+        <div id="quizSection" class="card">
+            <div class="quiz-header">
+                <h2 id="quizTitle">Quiz</h2>
+                <div id="scoreDisplay" class="score-display" style="display: none;">
+                    <p>Your Score</p>
+                    <p id="scoreText">0 / 0</p>
+                </div>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <div class="button-group" id="quizButtons">
+                <button class="btn btn-success" id="submitBtn" onclick="submitQuiz()" style="display: none;">
+                    Submit Quiz
+                </button>
+                <button class="btn btn-secondary" id="retryBtn" onclick="retryQuiz()" style="display: none;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                    </svg>
+                    Retry Quiz
+                </button>
+                <button class="btn btn-primary" id="newQuizBtn" onclick="newQuiz()" style="display: none;">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                    </svg>
+                    New Quiz
+                </button>
+            </div>
+        </div>
     </div>
 
     <script>
-        // ⚠️ IMPORTANT: Replace 'YOUR_API_KEY_HERE' with your actual Gemini API Key.
-        // For a secure, production app, this key should be on a backend server.
-        const API_KEY = "AIzaSyC8AS_0u1toc_GN530woL4HjmpbwtvBro8"; 
+        let questions = [];
+        let selectedAnswers = {};
+        let showResults = false;
         
-        // --- Global Variables (will be initialized inside DOMContentLoaded) ---
-        let ai;
-        const model = "gemini-2.5-flash";
-        let currentQuizData = null;
+        // --- API Configuration ---
+        // ⚠️ IMPORTANT: Replace 'YOUR_API_KEY' with your actual Gemini API Key
+        const API_KEY = "AIzaSyAwJv89OjQgZuEeJX-8xV1aZ49K-b6TfCY";
+        const MODEL_NAME = "gemini-2.5-flash"; 
+        
+        // ⭐ THE FIX: Increased token limit to 16384
+        const MAX_OUTPUT_TOKENS = 16384; 
 
-        // Define the structured JSON schema for the quiz output
-        const quizSchema = {
-            type: "object",
-            properties: {
-                title: {
-                    type: "string",
-                    description: "A creative title for the quiz."
-                },
-                questions: {
-                    type: "array",
-                    description: "A list of multiple-choice questions for the quiz.",
-                    items: {
-                        type: "object",
-                        properties: {
-                            question: {
-                                type: "string",
-                                description: "The text of the quiz question."
-                            },
-                            options: {
-                                type: "array",
-                                items: {
-                                    type: "string"
-                                },
-                                description: "A list of 4 possible answers."
-                            },
-                            correct_answer_index: {
-                                type: "number",
-                                description: "The zero-based index of the correct answer in the options array (0 for the first, 1 for the second, etc.)."
-                            }
-                        },
-                        required: ["question", "options", "correct_answer_index"]
-                    }
-                }
-            },
-            required: ["title", "questions"]
-        };
+        // --- DOM Element Caching (Optimization) ---
+        const generateBtn = document.getElementById('generateBtn');
+        const topicInput = document.getElementById('topic');
+        const numQuestionsSelect = document.getElementById('numQuestions');
+        const difficultySelect = document.getElementById('difficulty');
+        const errorBox = document.getElementById('errorBox');
+        
+        const quizSection = document.getElementById('quizSection');
+        const quizTitle = document.getElementById('quizTitle');
+        const questionsContainer = document.getElementById('questionsContainer');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const scoreText = document.getElementById('scoreText');
+        
+        const submitBtn = document.getElementById('submitBtn');
+        const retryBtn = document.getElementById('retryBtn');
+        const newQuizBtn = document.getElementById('newQuizBtn');
 
-
-        /**
-         * 1. Calls the Gemini API to generate the quiz JSON.
-         */
         async function generateQuiz() {
-            // Check if the AI client is initialized (addresses the TDZ error)
-            if (!ai) {
-                console.error("AI client not initialized. Check API Key or SDK loading.");
+            // Read values from cached elements
+            const topic = topicInput.value.trim();
+            const numQuestions = numQuestionsSelect.value;
+            const difficulty = difficultySelect.value;
+
+            // Check if placeholder API Key is used
+            if (API_KEY === "YOUR_API_KEY") {
+                showError('Please replace "YOUR_API_KEY" in the script with your actual Gemini API key.');
                 return;
             }
-
-            const topic = document.getElementById('topicInput').value.trim();
-            const statusMessage = document.getElementById('statusMessage');
-            const generateButton = document.getElementById('generateButton');
-            const quizDisplay = document.getElementById('quizDisplay');
-            const submitButton = document.getElementById('submitButton');
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            const numQuestions = 5; 
 
             if (!topic) {
-                statusMessage.className = 'status error';
-                statusMessage.textContent = 'Please enter a topic to generate a quiz!';
+                showError('Please enter a topic');
                 return;
             }
 
-            // --- UI State: Loading ---
-            statusMessage.className = 'status loading';
-            statusMessage.textContent = `Generating a ${numQuestions}-question quiz on "${topic}"...`;
-            generateButton.disabled = true;
-            submitButton.disabled = false;
-            quizDisplay.innerHTML = '';
-            submitButton.style.display = 'none';
-            scoreDisplay.style.display = 'none';
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<svg class="spinner" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg> Generating Quiz...';
 
-            const prompt = `Generate a multiple-choice quiz about "${topic}". The quiz must have exactly ${numQuestions} questions. Each question must have exactly 4 options. Ensure the output strictly follows the provided JSON schema.`;
+            hideError();
+            questions = [];
+            selectedAnswers = {};
+            showResults = false;
 
             try {
-                const response = await ai.models.generateContent({
-                    model: model,
-                    contents: [{ role: "user", parts: [{ text: prompt }] }],
-                    config: {
-                        responseMimeType: "application/json",
-                        responseSchema: quizSchema,
-                    },
-                });
-
-                // The response.text is a JSON string
-                currentQuizData = JSON.parse(response.text);
+                // Prompt for JSON mode
+                const prompt = `Generate ${numQuestions} multiple-choice quiz questions about "${topic}" at ${difficulty} difficulty level.
                 
-                // --- UI State: Success ---
-                statusMessage.className = 'status';
-                statusMessage.textContent = 'Quiz successfully generated! Take the quiz below.';
-                displayQuiz(currentQuizData);
-                submitButton.style.display = 'block';
-
-            } catch (error) {
-                console.error("Gemini API Error:", error);
-                // Check for common API key error
-                let errorMessage = `Error generating quiz: ${error.message}.`;
-                if (error.message.includes('API_KEY_INVALID')) {
-                    errorMessage = "Error: Invalid API Key. Please check the 'API_KEY' variable in the script.";
-                }
-                statusMessage.className = 'status error';
-                statusMessage.textContent = errorMessage;
-                currentQuizData = null; 
-            } finally {
-                generateButton.disabled = false;
-            }
-        }
-
-        /**
-         * 2. Renders the generated quiz data into the HTML.
-         */
-        function displayQuiz(quizData) {
-            const quizDisplay = document.getElementById('quizDisplay');
-            let html = `<h2>${quizData.title}</h2><form id="quizForm">`;
-            
-            quizData.questions.forEach((q, qIndex) => {
-                html += `
-                    <div class="question" data-question-index="${qIndex}">
-                        <p>${qIndex + 1}. ${q.question}</p>
-                `;
+                For each question, provide:
+                1. The question text
+                2. Four answer options (A, B, C, D)
+                3. The correct answer (specify which letter)
+                4. A brief explanation of why that answer is correct
                 
-                q.options.forEach((optionText, oIndex) => {
-                    const optionId = `q${qIndex}o${oIndex}`;
-                    html += `
-                        <label for="${optionId}" class="option-label">
-                            <input type="radio" id="${optionId}" name="question${qIndex}" value="${oIndex}">
-                            ${optionText}
-                        </label>
-                    `;
-                });
-                
-                html += `</div>`;
-            });
-
-            html += `</form>`;
-            quizDisplay.innerHTML = html;
-        }
-
-        /**
-         * 3. Checks the user's answers against the correct answers and shows the score.
-         */
-        function submitQuiz() {
-            if (!currentQuizData) return;
-
-            const quizForm = document.getElementById('quizForm');
-            const scoreDisplay = document.getElementById('scoreDisplay');
-            let score = 0;
-            const totalQuestions = currentQuizData.questions.length;
-
-            currentQuizData.questions.forEach((q, qIndex) => {
-                const questionContainer = document.querySelector(`.question[data-question-index="${qIndex}"]`);
-                // Use querySelector to safely get the selected radio button value
-                const selectedRadio = quizForm.elements[`question${qIndex}`].value;
-                const correctAnswerIndex = q.correct_answer_index;
-                
-                // Get all option labels for this question
-                const optionLabels = questionContainer.querySelectorAll('.option-label');
-
-                // 1. Highlight the correct answer
-                if (optionLabels[correctAnswerIndex]) {
-                    optionLabels[correctAnswerIndex].classList.add('correct-answer');
-                }
-
-                // 2. Check and highlight the user's answer
-                if (selectedRadio !== undefined && selectedRadio !== null) {
-                    const userSelectedIndex = parseInt(selectedRadio);
-
-                    if (userSelectedIndex === correctAnswerIndex) {
-                        score++;
-                    } else if (optionLabels[userSelectedIndex]) {
-                        // Highlight the user's wrong selection
-                        optionLabels[userSelectedIndex].classList.add('incorrect-answer');
+                Format your response as valid JSON with this exact structure:
+                {
+                  "questions": [
+                    {
+                      "question": "Question text here?",
+                      "options": {
+                        "A": "First option",
+                        "B": "Second option",
+                        "C": "Third option",
+                        "D": "Fourth option"
+                      },
+                      "correct": "A",
+                      "explanation": "Explanation here"
                     }
-                }
-                
-                // 3. Disable all radio buttons after submission
-                questionContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
-                    radio.disabled = true;
-                });
-            });
+                  ]
+                }`;
 
-            // --- UI State: Score Display ---
-            scoreDisplay.textContent = `Your Score: ${score} / ${totalQuestions}`;
-            scoreDisplay.style.display = 'block';
-            document.getElementById('submitButton').disabled = true; // Disable submit after first click
+                const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+                
+                const response = await fetch(API_URL,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            contents: [{
+                                parts: [{
+                                    text: prompt
+                                }]
+                            }],
+                            generationConfig: {
+                                // Updated to 16384 to handle "medium" difficulty
+                                maxOutputTokens: MAX_OUTPUT_TOKENS,
+                                temperature: 0.5,
+                                responseMimeType: 'application/json' 
+                            }
+                        })
+                    }
+                );
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    const errorMessage = errorData.error && errorData.error.message ? errorData.error.message : 'Failed to generate quiz. Check API key and network.';
+                    throw new Error(errorMessage);
+                }
+
+                const data = await response.json();
+
+                // Optimized Parsing (JSON mode guarantees valid JSON)
+                const generatedText = data.candidates[0].content.parts[0].text;
+                const quizData = JSON.parse(generatedText);
+                
+                questions = quizData.questions;
+                
+                // Show Quiz Section
+                quizTitle.textContent = 'Quiz: ' + topic;
+                renderQuestions();
+                quizSection.classList.add('active');
+                submitBtn.style.display = 'block';
+                retryBtn.style.display = 'none';
+                newQuizBtn.style.display = 'none';
+                scoreDisplay.style.display = 'none';
+
+            } catch (err) {
+                showError(err.message || 'Failed to generate quiz. Check your API key and network connection.');
+                console.error('Error:', err);
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg> Generate Quiz';
+            }
         }
 
-        // 2. CORRECTED: Use DOMContentLoaded to ensure all elements and the SDK are ready
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initialize the AI client only after the DOM and SDK are loaded
-            // This fixes the 'GoogleGenAI is not defined' error
-            if (typeof GoogleGenAI !== 'undefined' && API_KEY !== "YOUR_API_KEY_HERE") {
-                 ai = new GoogleGenAI(API_KEY);
-                 // Automatically generate an initial quiz
-                 generateQuiz();
-            } else if (API_KEY === "YOUR_API_KEY_HERE") {
-                 document.getElementById('statusMessage').className = 'status error';
-                 document.getElementById('statusMessage').textContent = "ERROR: Please replace 'YOUR_API_KEY_HERE' with your actual Gemini API Key in the script.";
-                 document.getElementById('generateButton').disabled = true;
-            } else {
-                 document.getElementById('statusMessage').className = 'status error';
-                 document.getElementById('statusMessage').textContent = "ERROR: Failed to load GoogleGenAI SDK. Check your internet connection.";
-                 document.getElementById('generateButton').disabled = true;
+        function renderQuestions() {
+            questionsContainer.innerHTML = '';
+
+            questions.forEach(function(q, qIdx) {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-card';
+                
+                let optionsHTML = '';
+                const optionEntries = Object.entries(q.options || {}); 
+                for (let i = 0; i < optionEntries.length; i++) {
+                    const letter = optionEntries[i][0];
+                    const option = optionEntries[i][1];
+                    const isSelected = selectedAnswers[qIdx] === letter;
+                    const isCorrect = letter === q.correct;
+                    
+                    let btnClass = 'option-btn';
+                    if (showResults) {
+                        if (isCorrect) btnClass += ' correct';
+                        else if (isSelected && !isCorrect) btnClass += ' incorrect';
+                    } else if (isSelected) {
+                        btnClass += ' selected';
+                    }
+
+                    optionsHTML += `<button class="${btnClass}" onclick="selectAnswer(${qIdx}, '${letter}')" ${showResults ? 'disabled' : ''}><strong>${letter}.</strong> ${option}</button>`;
+                }
+
+                let explanationHTML = '';
+                if (showResults) {
+                    explanationHTML = `<div class="explanation-box"><strong>Explanation:</strong><p>${q.explanation || 'No explanation provided.'}</p></div>`;
+                }
+
+                questionDiv.innerHTML = `<h3 class="question-title">${qIdx + 1}. ${q.question}</h3>${optionsHTML}${explanationHTML}`;
+
+                questionsContainer.appendChild(questionDiv);
+            });
+
+            updateSubmitButton();
+        }
+
+        function selectAnswer(questionIndex, answer) {
+            if (!showResults) {
+                selectedAnswers[questionIndex] = answer;
+                renderQuestions();
             }
-        });
+        }
+
+        function updateSubmitButton() {
+            if (submitBtn && !showResults) {
+                submitBtn.disabled = Object.keys(selectedAnswers).length !== questions.length;
+            }
+        }
+
+        function submitQuiz() {
+            showResults = true;
+            renderQuestions();
+            
+            const correct = calculateScore();
+            scoreDisplay.style.display = 'block';
+            scoreText.textContent = `${correct} / ${questions.length}`;
+            
+            submitBtn.style.display = 'none';
+            retryBtn.style.display = 'block';
+            newQuizBtn.style.display = 'block';
+        }
+
+        function retryQuiz() {
+            selectedAnswers = {};
+            showResults = false;
+            renderQuestions();
+            
+            scoreDisplay.style.display = 'none';
+            submitBtn.style.display = 'block';
+            retryBtn.style.display = 'none';
+            newQuizBtn.style.display = 'none';
+        }
+
+        function newQuiz() {
+            questions = [];
+            selectedAnswers = {};
+            showResults = false;
+            questionsContainer.innerHTML = ''; 
+            quizSection.classList.remove('active');
+            submitBtn.style.display = 'none';
+            retryBtn.style.display = 'none';
+            newQuizBtn.style.display = 'none';
+        }
+
+        function calculateScore() {
+            let correct = 0;
+            questions.forEach(function(q, idx) {
+                if (selectedAnswers[idx] === q.correct) {
+                    correct++;
+                }
+            });
+            return correct;
+        }
+
+        function showError(message) {
+            errorBox.innerHTML = `<div class="error-box"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>${message}</span></div>`;
+        }
+
+        function hideError() {
+            errorBox.innerHTML = '';
+        }
     </script>
 </body>
 </html>
