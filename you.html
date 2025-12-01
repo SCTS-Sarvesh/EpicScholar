@@ -11,14 +11,12 @@
          * =================================================================
          */
         :root {
-            /* Branding & Colors */
-            --sidebar-width: 260px;
             --gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
-            --primary-color: #0072ff; /* Used for main actions, Edubot header */
+            --primary-color: #0072ff;
             --secondary-color: #ff416c;
             --info-color: #4CAF50;
-            --warning-color: #FFC107;
-            --edubot-color: #0072ff; /* Edubot specific color */
+            --warning-color: #FFC107; /* Used for PDF icon */
+            --edubot-color: #0072ff;
             
             /* Light Mode */
             --bg-light: #f5f7fa;
@@ -42,7 +40,21 @@
             --border-radius-xl: 20px;
             --transition-speed: 0.4s;
             --blur-level: 16px;
-            --animation-timing: cubic-bezier(0.4, 0, 0.2, 1);
+            --animation-timing: cubic-bezier(0.34, 1.56, 0.64, 1);
+            /* Dark Theme */
+--bg-color: #0d0d0d;
+--text-color: #e9eef8;
+--primary-color: #0072ff;
+--secondary-color: #ff416c;
+--primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+--card-glass-bg: rgba(28, 28, 28, 0.4); /* Frosted dark glass */
+--card-glass-border: rgba(255, 255, 255, 0.15);
+--secondary-glass: rgba(51, 51, 51, 0.6);
+--shadow-light: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.05);
+--shadow-deep: 0 10px 40px 0 rgba(0, 0, 0, 0.5); /* Deeper shadow for depth */
+--modal-bg: rgba(0, 0, 0, 0.85);
+--toast-bg: rgba(255, 255, 255, 0.15);
+--scroll-color: rgba(255, 255, 255, 0.2);
         }
 
         /* Base Body Styling */
@@ -57,7 +69,7 @@
             transition: color var(--transition-speed);
         }
         
-        /* Animated Gradient Background (z-index: -2) */
+        /* Animated Gradient Background */
         body::before {
             content: '';
             position: fixed;
@@ -69,7 +81,7 @@
             animation: liquid-gradient 25s ease infinite;
         }
 
-        /* Tint Overlay (z-index: -1) */
+        /* Tint Overlay */
         body::after {
             content: '';
             position: fixed;
@@ -117,34 +129,25 @@
             position: fixed;
             top: 0;
             left: 10px; 
-            z-index: 100; /* Sidebar */
+            z-index: 100;
             -webkit-backdrop-filter: blur(var(--blur-level));
             backdrop-filter: blur(var(--blur-level));
             -webkit-transition: all var(--transition-speed);
             transition: all var(--transition-speed);
             border-radius: 0 var(--border-radius-xl) var(--border-radius-xl) 0;
         }
-        .light-mode #sidebar-placeholder {
-            background: var(--card-light);
-            border-right: var(--border-light);
-        }
-        .dark-mode #sidebar-placeholder {
-            background: var(--card-dark);
-            border-right: var(--border-dark);
-        }
 
         #self-study-main {
             margin-left: calc(var(--sidebar-width) + 30px);
-            padding: 20px 40px;
+            padding: 20px 50px;
             max-width: 1400px;
-            -webkit-transition: opacity 0.4s var(--animation-timing), -webkit-transform 0.4s var(--animation-timing);
-            transition: opacity 0.4s var(--animation-timing), transform 0.4s var(--animation-timing);
+            transition: opacity 0.6s var(--animation-timing), transform 0.6s var(--animation-timing);
+            overflow: auto;
         }
         
         #self-study-main.hiding {
             opacity: 0;
-            -webkit-transform: scale(0.95);
-            transform: scale(0.95);
+            transform: scale(0.9);
             pointer-events: none;
         }
 
@@ -160,11 +163,11 @@
              border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         }
 
-        #controls { display: flex; gap: 15px; }
+        #controls { display: flex; align-items: center; gap: 15px; }
 
         /*
          * =================================================================
-         * 3. BASE UI COMPONENTS & GLASS EFFECT (151 - 250)
+         * 3. BASE UI COMPONENTS (151 - 300)
          * =================================================================
          */
 
@@ -205,18 +208,20 @@
         }
         
         .card-reveal {
-            -webkit-animation: card-load-in 0.6s var(--animation-timing) forwards;
             animation: card-load-in 0.6s var(--animation-timing) forwards;
             opacity: 0;
-            -webkit-transform: translateY(30px);
             transform: translateY(30px);
         }
-        @-webkit-keyframes card-load-in {
-            to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
-        }
         @keyframes card-load-in {
-            to { opacity: 1; -webkit-transform: translateY(0); transform: translateY(0); }
+            to { opacity: 1; transform: translateY(0); }
         }
+
+        .card-deleting {
+            /* Animation is handled by JS now for immediate removal */
+            /* This class is for potential future use if needed */
+            transition: opacity 0.3s, transform 0.3s;
+        }
+
 
         .gradient-text {
             background: var(--gradient);
@@ -227,7 +232,8 @@
             font-size: 1.8em;
             margin: 0 0 10px 0;
         }
-        h2.gradient-text { font-size: 1.6em; margin-bottom: 20px; }
+        h2.gradient-text { font-size: 1.6em; margin-bottom: 0; }
+        h3.gradient-text { font-size: 1.4em; }
 
         .action-btn, .gradient-button {
             padding: 12px 22px;
@@ -239,23 +245,17 @@
             font-weight: bold;
             font-size: 1em;
             letter-spacing: 0.5px;
-            -webkit-box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
             box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
-            -webkit-transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .action-btn:hover, .gradient-button:hover {
-            -webkit-transform: translateY(-3px) scale(1.05);
             transform: translateY(-3px) scale(1.05);
-            -webkit-box-shadow: 0 8px 25px rgba(0, 114, 255, 0.5);
             box-shadow: 0 8px 25px rgba(0, 114, 255, 0.5);
         }
         
         .action-btn:active, .gradient-button:active, .card-action-btn:active {
-            -webkit-transform: translateY(0) scale(0.95) !important;
             transform: translateY(0) scale(0.95) !important;
-            -webkit-box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             transition-duration: 0.1s;
         }
@@ -268,7 +268,6 @@
             border-radius: 12px;
             cursor: pointer;
             font-weight: bold;
-            -webkit-transition: all 0.3s;
             transition: all 0.3s;
         }
         .light-mode .secondary-button {
@@ -282,21 +281,70 @@
             transform: translateY(-3px) scale(1.05);
         }
 
+        /* Theme Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .toggle-switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #333;
+            transition: 0.4s;
+            border-radius: 34px;
+            border: var(--border-dark);
+        }
+        .toggle-slider:before {
+            position: absolute;
+            content: "🌙";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .light-mode .toggle-slider {
+            background-color: #ccc;
+            border: var(--border-light);
+        }
+        input:checked + .toggle-slider {
+            background-color: var(--primary-color);
+        }
+        input:checked + .toggle-slider:before {
+            content: "☀️";
+            transform: translateX(26px);
+        }
+
         /*
          * =================================================================
-         * 4. DASHBOARD GRID & SESSIONS (251 - 400)
+         * 4. DASHBOARD GRID & SESSIONS (301 - 400)
          * =================================================================
          */
         
         .dashboard-grid {
-            display: -ms-grid;
             display: grid;
-            -ms-grid-columns: 1fr 25px 1fr 25px 1fr;
             grid-template-columns: repeat(3, 1fr);
             gap: 25px;
         }
 
-        /* NEW: Subject Grid Styling */
+        /* Subject Grid Styling */
         .subject-grid {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
@@ -310,6 +358,7 @@
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s;
+            cursor: pointer;
         }
         .light-mode .subject-score-box {
             background: rgba(0, 0, 0, 0.03);
@@ -318,7 +367,6 @@
         .subject-score-box:hover {
             transform: scale(1.05);
             background: var(--primary-color);
-            color: white;
         }
         .subject-score-box .score {
             font-size: 1.8em;
@@ -334,24 +382,30 @@
         .light-mode .subject-score-box .subject-name {
             color: var(--subtext-light);
         }
-        .subject-score-box:hover .subject-name,
-        .subject-score-box:hover .score {
+        .subject-score-box:hover .subject-name {
             color: white !important;
         }
-        .score.math { color: #3498db; }
-        .score.science { color: #2ecc71; }
-        .score.history { color: #e67e22; }
-        .score.physics { color: #9b59b6; }
-        .score.english { color: #f1c40f; }
-        .score.chem { color: #e74c3c; }
+        .subject-score-box:hover .score {
+            background: none;
+            -webkit-background-clip: unset;
+            background-clip: unset;
+            color: white;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
         
         #sessions-container {
             display: flex;
             overflow-x: auto;
             gap: 25px;
             padding-bottom: 20px;
-            -ms-overflow-style: none; /* IE and Edge */
-            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
         #sessions-container::-webkit-scrollbar { display: none; }
 
@@ -359,7 +413,8 @@
             flex-shrink: 0;
             width: 340px;
             padding: 25px;
-            padding-bottom: 70px; /* Space for button */
+            padding-bottom: 70px;
+            transition: all 0.3s, height 0s, margin 0s, padding 0s;
         }
         .session-card .session-duration {
             font-size: 0.9em;
@@ -374,7 +429,6 @@
             display: flex;
             gap: 10px;
             opacity: 0;
-            -webkit-transition: opacity 0.3s;
             transition: opacity 0.3s;
         }
         .session-card:hover .card-actions { opacity: 1; }
@@ -387,16 +441,9 @@
             height: 32px;
             cursor: pointer;
             font-size: 1.1em;
-            -webkit-transition: all 0.2s;
             transition: all 0.2s;
-            display: -webkit-box;
-            display: -ms-flexbox;
             display: flex;
-            -webkit-box-pack: center;
-            -ms-flex-pack: center;
             justify-content: center;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
             align-items: center;
             padding: 0;
             color: var(--text-dark);
@@ -406,26 +453,19 @@
         .card-action-btn:hover {
             background: var(--primary-color);
             color: white;
-            -webkit-transform: scale(1.1);
             transform: scale(1.1);
         }
 
         .session-card.ready-to-start {
             border-color: var(--secondary-color);
-            -webkit-box-shadow: 0 0 25px rgba(255, 65, 108, 0.6);
             box-shadow: 0 0 25px rgba(255, 65, 108, 0.6);
-            -webkit-animation: pulse-border 1.5s infinite alternate;
             animation: pulse-border 1.5s infinite alternate;
         }
         
-        @-webkit-keyframes pulse-border {
-            from { opacity: 0.8; } to { opacity: 1; }
-        }
         @keyframes pulse-border {
             from { opacity: 0.8; } to { opacity: 1; }
         }
         
-        /* ... (Timetable, resources, and performance card styles) ... */
         .timetable-container table { width: 100%; border-collapse: collapse; }
         .timetable-container th, .timetable-container td { padding: 12px; text-align: left; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .light-mode .timetable-container th, .light-mode .timetable-container td { border-bottom: 1px solid rgba(0,0,0,0.1); }
@@ -439,35 +479,25 @@
          * =================================================================
          */
 
+        /* Base Modal (for Confirm, Session Form) */
         .modal {
             position: fixed;
-            /* Z-INDEX FIX: Changed from 1000 to 3000 to appear over chatbot (2000) */
             z-index: 3000;
             left: 0; top: 0;
             width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             -webkit-backdrop-filter: blur(8px);
             backdrop-filter: blur(8px);
-            display: -webkit-box;
-            display: -ms-flexbox;
             display: flex;
-            -webkit-box-pack: center;
-            -ms-flex-pack: center;
             justify-content: center;
-            -webkit-box-align: center;
-            -ms-flex-align: center;
             align-items: center;
-            -webkit-animation: fadeIn 0.3s ease-out;
             animation: fadeIn 0.3s ease-out;
         }
-        @-webkit-keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
         .modal.hiding {
-            -webkit-animation: fadeOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
             animation: fadeOut 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
         }
-        @-webkit-keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
 
         .modal-content {
@@ -475,8 +505,7 @@
             padding: 30px 35px;
             text-align: center;
             position: relative;
-            -webkit-animation: water-drop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            animation: water-drop-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation: water-drop-in 0.6s var(--animation-timing) forwards;
         }
         
         .modal-close-btn {
@@ -493,7 +522,7 @@
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
-            z-index: 3001; /* Above modal content */
+            z-index: 3001;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -503,18 +532,58 @@
             transform: scale(1.1) rotate(90deg);
         }
         
-        @-webkit-keyframes water-drop-in {
-            0% { -webkit-transform: scale(0.5) translateY(-100px); transform: scale(0.5) translateY(-100px); opacity: 0; }
-            80% { -webkit-transform: scale(1.05) translateY(10px); transform: scale(1.05) translateY(10px); opacity: 1; }
-            100% { -webkit-transform: scale(1) translateY(0); transform: scale(1) translateY(0); }
-        }
         @keyframes water-drop-in {
-            0% { -webkit-transform: scale(0.5) translateY(-100px); transform: scale(0.5) translateY(-100px); opacity: 0; }
-            80% { -webkit-transform: scale(1.05) translateY(10px); transform: scale(1.05) translateY(10px); opacity: 1; }
-            100% { -webkit-transform: scale(1) translateY(0); transform: scale(1) translateY(0); }
+            0% { transform: scale(0.5) translateY(-100px); opacity: 0; }
+            80% { transform: scale(1.05) translateY(10px); opacity: 1; }
+            100% { transform: scale(1) translateY(0); }
         }
         
-        /* NEW: Session Form Styling */
+        /* NEW: Marks Modal (Emerge from box) */
+        #marks-modal {
+            position: fixed;
+            z-index: 3001;
+            width: 500px;
+            max-width: 90%;
+            max-height: 400px;
+            overflow-y: auto;
+            
+            /* Start hidden and small */
+            opacity: 0;
+            transform: scale(0.8);
+            transform-origin: center;
+            transition: all 0.4s var(--animation-timing);
+            
+            /* Cannot be clicked when hidden */
+            pointer-events: none;
+        }
+        #marks-modal.visible {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1); /* Move to center */
+            top: 50% !important;
+            left: 50% !important;
+            pointer-events: auto;
+        }
+        #marks-modal-content {
+            text-align: left;
+        }
+        .mark-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1em;
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .light-mode .mark-item {
+            border-bottom-color: rgba(0, 0, 0, 0.1);
+        }
+        .mark-item:last-child { border-bottom: none; }
+        .mark-item .mark-score {
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        
+        /* Session Form Styling */
         #session-form {
             display: flex;
             flex-direction: column;
@@ -570,14 +639,13 @@
         #video-player-modal .modal-content {
             width: 90%;
             max-width: 1000px;
-            padding: 0; /* Keep padding 0 for edge-to-edge video */
+            padding: 0;
             background: none;
             box-shadow: none;
             border: none;
             text-align: left;
-            overflow: visible; /* Allow button to peek out */
+            overflow: visible;
         }
-        /* Position video close button relative to video frame */
         #video-player-modal .modal-close-btn {
             top: -15px;
             right: -15px;
@@ -589,7 +657,7 @@
         #video-player-modal .video-wrapper {
             position: relative;
             width: 100%;
-            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            padding-top: 56.25%;
             border-radius: var(--border-radius-xl);
             overflow: hidden;
             box-shadow: var(--shadow-dark);
@@ -619,23 +687,15 @@
             top: 0; left: 0;
             width: 100vw;
             height: 100vh;
-            /* Z-INDEX FIX: Changed from 2000 to 1000 (Base layer) */
             z-index: 1000;
-            display: -webkit-box;
-            display: -ms-flexbox;
             display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -ms-flex-direction: column;
             flex-direction: column;
             padding: 20px;
             box-sizing: border-box;
             
             opacity: 0;
-            -webkit-transform: scale(1.1);
             transform: scale(1.1);
-            -webkit-transition: all 0.5s var(--animation-timing);
-            transition: all 0.5s var(--animation-timing);
+            transition: all 0.6s var(--animation-timing);
             
             background-color: var(--bg-dark-tint);
         }
@@ -645,13 +705,11 @@
         
         #live-session-page.open {
             opacity: 1;
-            -webkit-transform: scale(1);
             transform: scale(1);
         }
         
         #live-session-page.hiding {
             opacity: 0;
-            -webkit-transform: scale(0.9);
             transform: scale(0.9);
         }
         
@@ -671,48 +729,63 @@
             border: var(--border-light);
             box-shadow: var(--shadow-light);
         }
+        .live-session-header-controls {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
         
-        .live-session-close-btn {
-            background: rgba(255, 255, 255, 0.1);
+        #live-session-timer {
+            font-size: 1.2em;
+            font-weight: 600;
             color: var(--text-dark);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: var(--border-dark);
+            min-width: 50px;
+            text-align: center;
         }
-        .light-mode .live-session-close-btn {
-             background: rgba(0, 0, 0, 0.1);
-             color: var(--text-light);
+        .light-mode #live-session-timer {
+            color: var(--text-light);
+            background: rgba(0, 0, 0, 0.05);
+            border: var(--border-light);
         }
-        .live-session-close-btn:hover {
+        
+        /* Session Control Buttons */
+        #pause-session-btn,
+        #live-take-test-btn {
+            padding: 10px 20px;
+            font-size: 0.9em;
+        }
+        #end-session-btn {
+            padding: 10px 20px;
+            font-size: 0.9em;
             background: var(--secondary-color);
-            transform: rotate(90deg);
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+        }
+        #end-session-btn:hover {
+            background: var(--secondary-color);
+            box-shadow: 0 8px 25px rgba(255, 65, 108, 0.5);
         }
 
+
         .live-session-content-area {
-            -webkit-box-flex: 1;
-            -ms-flex-positive: 1;
             flex-grow: 1;
             width: 100%;
             max-width: 1600px;
             margin: 0 auto;
             overflow-y: auto;
-            display: -webkit-box;
-            display: -ms-flexbox;
             display: flex;
-            -webkit-box-orient: vertical;
-            -webkit-box-direction: normal;
-            -ms-flex-direction: column;
             flex-direction: column;
             gap: 20px;
             padding-bottom: 100px;
+            transition: filter 0.5s var(--animation-timing);
+            position: relative;
         }
         .live-session-content-area::-webkit-scrollbar { display: none; }
         
-        /* Custom YouTube Search Styling (Integrated from user code) */
+        /* YouTube Search Styling */
         .search-bar-live {
             margin-bottom: 1.5rem;
             display: flex;
@@ -739,6 +812,15 @@
             outline: none;
             border-color: var(--primary-color);
         }
+        .search-bar-live input:disabled {
+            background: rgba(0, 0, 0, 0.1);
+            color: var(--subtext-dark);
+            cursor: not-allowed;
+        }
+        .light-mode .search-bar-live input:disabled {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--subtext-light);
+        }
         
         .videos-section { 
             display: flex; 
@@ -749,7 +831,7 @@
         }
         
         .youvideo { 
-            width: calc(25% - 15px); /* 4 videos per row on large screens */
+            width: calc(25% - 15px);
             max-width: 300px;
             display: block; 
             text-decoration: none; 
@@ -759,8 +841,8 @@
             background: var(--card-dark); 
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            cursor: pointer; /* Change to pointer to indicate clickable */
-            position: relative; /* For duration */
+            cursor: pointer;
+            position: relative;
         }
         .light-mode .youvideo {
             background: var(--card-light);
@@ -780,7 +862,6 @@
             aspect-ratio: 16 / 9;
             display: block;
         }
-        /* NEW: Video Duration Badge */
         .video-duration {
             position: absolute;
             bottom: 8px;
@@ -812,29 +893,43 @@
             margin: 0;
         }
         .light-mode .youvideo p { color: var(--subtext-light); }
-        .loader { 
-            display: none; 
-            font-size: 20px; 
-            text-align: center;
+        
+        .loader {
+            display: none;
+            justify-content: center;
+            align-items: center;
             padding: 50px;
             width: 100%;
-            color: var(--warning-color);
         }
+        .theme-loader {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.2);
+            border-top-color: var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        .light-mode .theme-loader {
+             border: 5px solid rgba(0, 0, 0, 0.1);
+             border-top-color: var(--primary-color);
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
 
         /*
          * =================================================================
-         * 7. FLOATING CHATBOT (Strict Visibility Control & Custom Style) (701 - 850)
+         * 7. FLOATING CHATBOT & ICONS (701 - 850)
          * =================================================================
          */
         
-        /* Floating Chat Icon */
-        #chatbot-icon {
+        /* Floating Icon Base (for bot and PDF) */
+        .floating-action-icon {
             position: fixed;
-            bottom: 30px;
             right: 30px;
             width: 60px;
             height: 60px;
-            background: var(--edubot-color); /* Blue for Edubot */
             color: white;
             font-size: 30px;
             display: flex;
@@ -843,61 +938,71 @@
             border-radius: 50%;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
             cursor: pointer;
-            /* Z-INDEX FIX: Changed from 3000 to 2000 (Above Live Session, Below Modals) */
             z-index: 2000; 
-            
-            /* KEY: Default to hidden/scaled down */
             transform: scale(0);
             opacity: 0;
             transition: all 0.3s var(--animation-timing);
         }
-
-        #chatbot-icon.visible {
-            /* KEY: Only visible when explicitly opened by the live session */
+        .floating-action-icon.visible {
             transform: scale(1);
             opacity: 1;
         }
+
+        #pdf-icon {
+            bottom: 100px;
+            background: var(--warning-color);
+        }
+        #pdf-icon:hover {
+            background: #ffdb58;
+        }
+        
+        #chatbot-icon {
+            bottom: 30px;
+            background: var(--edubot-color);
+        }
         #chatbot-icon:hover {
-            background: var(--secondary-color); /* Reddish hover */
+            background: var(--secondary-color);
         }
 
-        /* Chatbot Container */
-        #chatbot-container {
+        /* Floating Window Base (for Chat and PDF) */
+        .floating-window {
             position: fixed;
             bottom: 100px;
             right: 30px;
             width: 350px;
             height: 450px;
-            background-color: rgba(31, 31, 31, 0.95); /* Dark background from user concept */
             border-radius: var(--border-radius-xl);
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            /* Z-INDEX FIX: Changed from 3000 to 2000 (Above Live Session, Below Modals) */
             z-index: 2000;
-            
-            /* KEY: Default to hidden/scaled down */
             transform: translateY(50px) scale(0.9);
             opacity: 0;
             transition: all 0.4s var(--animation-timing);
+            pointer-events: none;
             
-            /* Apply glass effects for the darker background */
             backdrop-filter: blur(var(--blur-level));
             border: 1px solid rgba(255, 255, 255, 0.1); 
         }
-        .light-mode #chatbot-container {
-            background-color: var(--card-light);
+        .light-mode .floating-window {
             border: var(--border-light);
             box-shadow: var(--shadow-light);
         }
-        
-        #chatbot-container.visible {
+        .floating-window.visible {
             transform: translateY(0) scale(1);
             opacity: 1;
+            pointer-events: auto;
         }
         
-        /* Chatbot Header (Blue from user concept) */
+        /* Chatbot Container */
+        #chatbot-container {
+             background-color: rgba(31, 31, 31, 0.95);
+        }
+        .light-mode #chatbot-container {
+             background-color: var(--card-light);
+        }
+        
         #chatbot-header {
             background-color: var(--edubot-color);
             color: white;
@@ -920,16 +1025,15 @@
             transform: rotate(90deg);
         }
 
-        /* Chatbot Body */
         #chatbot-body {
             flex-grow: 1;
-            padding: 15px;
+            padding: 10px;
             overflow-y: auto;
+        }
+        #chatbot-messages {
             display: flex;
             flex-direction: column;
         }
-        #chatbot-body::-webkit-scrollbar { width: 5px; }
-        #chatbot-body::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
 
         .message {
             margin-bottom: 15px;
@@ -937,16 +1041,15 @@
             border-radius: 8px;
             max-width: 85%;
             word-wrap: break-word;
-            font-size: 0.95em;
-            transition: all 0.3s;
+            line-height: 1.5;
         }
         .message.user {
-            background-color: var(--edubot-color); /* Blue from user concept */
+            background-color: var(--edubot-color);
             color: white;
             align-self: flex-end;
         }
         .message.bot {
-            background-color: #333; /* Darker grey from user concept */
+            background-color: #333;
             color: white;
             align-self: flex-start;
         }
@@ -955,7 +1058,6 @@
             color: var(--text-light);
         }
 
-        /* Input Section */
         #chatbot-input-container {
             display: flex;
             padding: 10px;
@@ -979,14 +1081,6 @@
              color: var(--text-light);
              border-color: #ccc;
         }
-        #chatbot-input:disabled {
-            background-color: #444;
-            color: #888;
-            cursor: not-allowed;
-        }
-        .light-mode #chatbot-input:disabled {
-            background-color: #ddd;
-        }
 
         #send-btn {
             margin-left: 10px;
@@ -999,23 +1093,83 @@
             font-size: 16px;
         }
         #send-btn:hover {
-            background-color: var(--secondary-color); /* Matches icon hover */
+            background-color: var(--secondary-color);
         }
         #send-btn:disabled {
             background-color: #555;
             cursor: not-allowed;
         }
         
-        /* Bot Message Animation (Loading) */
-        .message.bot.loading {
+        /* NEW: PDF Viewer Container */
+        #pdf-container {
+             background-color: rgba(40, 40, 40, 0.95);
+        }
+        .light-mode #pdf-container {
+             background-color: var(--card-light);
+        }
+        #pdf-header {
             background-color: var(--warning-color);
             color: #333;
-            animation: pulse-loading 1.2s infinite alternate;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 600;
         }
-        
-        @keyframes pulse-loading {
-            from { opacity: 0.7; } to { opacity: 1; }
+        #pdf-header #pdf-close-btn {
+            background: none;
+            border: none;
+            color: #333;
+            font-size: 1.5em;
+            cursor: pointer;
+            line-height: 1;
+            transition: transform 0.2s;
         }
+        #pdf-header #pdf-close-btn:hover {
+            transform: rotate(90deg);
+        }
+        #pdf-body {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .pdf-item {
+            background: rgba(0,0,0,0.2);
+            border: 1px solid var(--border-dark);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .light-mode .pdf-item {
+            background: rgba(0,0,0,0.05);
+            border-color: var(--border-light);
+        }
+        .pdf-item:hover {
+            background: var(--warning-color);
+            color: #333;
+            border-color: var(--warning-color);
+        }
+        .pdf-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 1em;
+        }
+        .pdf-item p {
+            margin: 0;
+            font-size: 0.85em;
+            color: var(--subtext-dark);
+        }
+        .light-mode .pdf-item p {
+            color: var(--subtext-light);
+        }
+        .pdf-item:hover p {
+            color: #333;
+        }
+
 
         /*
          * =================================================================
@@ -1026,43 +1180,273 @@
         @media (max-width: 1200px) {
             #self-study-main { margin-left: calc(var(--sidebar-width) + 10px); padding: 20px; }
             .dashboard-grid { grid-template-columns: 1fr 1fr; }
-            .youvideo { width: calc(33.33% - 14px); } /* 3 videos per row */
-            #chatbot-container { transform: scale(0.9); }
-            #chatbot-icon { transform: scale(0.9); }
+            .youvideo { width: calc(33.33% - 14px); }
+            .floating-window { transform: scale(0.9); }
+            .floating-action-icon { transform: scale(0.9); }
         }
         
         @media (max-width: 900px) {
             .subject-grid { grid-template-columns: 1fr 1fr; }
+            .live-session-header-bar h1 { font-size: 1.5em; }
         }
         
         @media (max-width: 768px) {
             #sidebar-placeholder { left: -300px; }
             #self-study-main { margin-left: 20px; max-width: 100%; padding: 10px; }
             .dashboard-grid { grid-template-columns: 1fr; }
-            .youvideo { width: calc(50% - 10px); } /* 2 videos per row */
-            #chatbot-container { right: 10px; bottom: 80px; width: 90%; height: 350px; }
-            #chatbot-icon { right: 10px; bottom: 10px; }
+            .youvideo { width: calc(50% - 10px); }
+            .floating-window { right: 10px; bottom: 80px; width: 90%; height: 350px; }
+            .floating-action-icon { right: 10px; }
+            #pdf-icon { bottom: 80px; }
+            #chatbot-icon { bottom: 10px; }
+            
             #video-player-modal .modal-content { width: 95%; }
             #video-player-modal .modal-close-btn { top: -10px; right: -10px; width: 35px; height: 35px; }
             #controls { flex-wrap: wrap; justify-content: flex-end; }
+            .live-session-header-bar { flex-direction: column; gap: 10px; }
+            .live-session-header-controls { width: 100%; justify-content: space-between; }
+            .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
         }
         @media (max-width: 480px) {
-             .youvideo { width: 100%; } /* 1 video per row */
+             .youvideo { width: 100%; }
              .subject-grid { grid-template-columns: 1fr; }
         }
+
+::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+::-webkit-scrollbar-thumb {
+background: var(--scroll-color);
+border-radius: 10px;
+transition: background 0.3s;
+}
+::-webkit-scrollbar-thumb:hover {
+background: var(--primary-color);
+}
+::-webkit-scrollbar-track {
+background: transparent;
+}
+
+
+/* --- 2. Global Base and Typography --- */
+body {
+font-family: 'Inter', sans-serif;
+margin: 0;
+padding: 0;
+background-color: var(--bg-color);
+color: var(--text-color);
+transition: background-color 0.5s, color 0.5s;
+display: flex;
+height: 100vh;
+overflow: hidden; /* Only the designated section will scroll */
+-webkit-font-smoothing: antialiased;
+}
+        
+        /* --- 3. Liquid Glass Background (Ambient Shimmer) --- */
+        #liquid-glass-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; overflow: hidden;
+        }
+
+        .glass-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            opacity: 0.18; /* Increased opacity for more presence */
+            filter: blur(150px);
+            animation: moveBlob 30s infinite alternate;
+        }
+        .blob-1 { top: -20%; left: -20%; animation-duration: 34s; }
+        .blob-2 { bottom: -25%; right: -25%; background: var(--secondary-color); opacity: 0.12; filter: blur(120px); animation-duration: 28s; }
+        .blob-3 { top: 60%; left: 40%; width: 400px; height: 400px; opacity: 0.25; animation-duration: 32s; }
+
+        @keyframes moveBlob {
+            0% { transform: translate(0, 0) scale(1.0); filter: hue-rotate(0deg) blur(150px); }
+            50% { transform: translate(150px, -100px) scale(1.1); filter: hue-rotate(10deg) blur(180px); }
+            100% { transform: translate(-80px, 80px) scale(0.9); filter: hue-rotate(0deg) blur(150px); }
+        }
+
+        /* --- 4. Glass Element Base Style (Applied to Header, Sidebar, Cards, Modal) --- */
+        .glass-element {
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px); /* Increased blur for stronger effect */
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: var(--shadow-deep);
+            border-radius: 18px; /* Slightly larger radius */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* --- 6. Sidebar & Navigation (Glass) --- */
+        .sidebar {
+            width: 260px;
+            top: 15px;
+            left: 0px;
+            padding: 20px 0;
+            z-index: 500;
+            position: relative;
+            height: 90vh;
+        }
+
+        .nav-wrap {
+            padding: 10px 0;
+            position: relative;
+        }
+        
+        .nav-item {
+            padding: 15px 20px 15px 30px; 
+            margin: 8px 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        .nav-item.active, .nav-item:hover {
+            background-color: var(--secondary-glass);
+            transform: scale(1.05); /* Aggressive lift animation */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .nav-item.active {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+.settings-wrap {
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+    text-align: left;
+}
+/* --- NEW: Entry Animations --- */
+@keyframes slideInDown {
+    from { transform: translateY(-100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInLeft {
+    from { transform: translateX(-100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInRight {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.sidebar {
+    animation: slideInLeft 0.7s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; 
+}
+.nav-wrap {
+    position: relative;
+    bottom: 50px;
+}
+
+.nav-item {
+    padding: 15px 20px 15px 30px; 
+    margin: 8px 10px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    cursor: pointer;
+    border-radius: 12px;
+}
+.nav-item.active {
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+/* --- Styling for the Menubar Wrappers --- */
+.nav-wrap {
+    padding: 10px 0;
+    position: relative;
+}
+
+.settings-wrap {
+    position: absolute;
+    bottom: 75px;
+    width: 100%;
+    text-align: left;
+}
+
+/* --- Styling for the Nav Items (<a> tags) --- */
+.nav-item {
+    padding: 15px 20px 15px 30px; 
+    margin: 8px 10px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    top: 50px;
+    cursor: pointer;
+    border-radius: 12px;
+    
+    /* This makes the <a> tags behave like the original <div>s */
+    display: block; 
+    text-decoration: none; 
+}
+
+/* --- Hover Effect (for all items) --- */
+.nav-item:hover {
+    background-color: var(--secondary-glass);
+    transform: scale(1.05); /* Aggressive lift animation */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* * --- Active Text Effect (for the current page) --- 
+ * The JavaScript 'setActiveNav()' function will automatically
+ * add the .active class to the link of the page you are on.
+*/
+.nav-item-active {
+    background-color: var(--secondary-glass);
+    color:  #ff416c;
+    font-weight: 700;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    padding: 15px 20px 15px 30px; 
+    margin: 8px 10px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    top: 50px;
+    cursor: pointer;
+    border-radius: 12px;
+    display: block; 
+    text-decoration: none; 
+}
     </style>
 </head>
 <body class="dark-mode">
-    <div id="sidebar-placeholder"></div>
+    <div id="sidebar-placeholder">
+        <div class="sidebar glass-element fixed-top-layer">
+        <div class="nav-wrap" id="navWrap">
+            <a class="nav-item" href="home.html" data-icon="🏠">🏠 Home </a>
+            <a class="nav-item" href="messages.html" data-icon="✉️">✉️ Messages</a>
+            <a class="nav-item-active" href="self-study.html" data-icon="📖">📖 Self-Study</a>
+            <a class="nav-item" href="edubot.html" data-icon="🤖">🤖 EduBot</a>
+            <a class="nav-item" href="mini-games.html" data-icon="🎮">🎮 Mini-Games</a>
+        </div>
+        
+        <div class="settings-wrap">
+            <a class="nav-item" href="profile.html" data-icon="👤">👤 Profile</a>
+        </div>
+    </div>
+    </div>
 
     <main id="self-study-main">
         <header>
             <h1 class="gradient-text">EpicScholar Dashboard</h1>
             <div id="controls">
-                <button id="mode-toggle" class="action-btn">☀️ / 🌙</button>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="mode-toggle-checkbox">
+                    <span class="toggle-slider"></span>
+                </label>
                 <button id="add-session-btn" class="action-btn">📅 Add Session</button>
                 <button id="add-test-btn" class="action-btn">📝 Add Test</button>
-                <button id="take-test-btn" class="secondary-button">Take Test</button>
             </div>
         </header>
 
@@ -1075,37 +1459,37 @@
                 </div>
                 
                 <div id="subject-breakdown-box" class="floating-card glass-effect">
-                    <h3 class="gradient-text" style="font-size: 1.4em; margin-bottom: 15px;">Subject Breakdown</h3>
-                    <div class="subject-grid">
-                        <div class="subject-score-box">
-                            <span class="score math">92%</span>
+                    <h3 class="gradient-text">Subject Breakdown</h3>
+                    <div class="subject-grid" id="subject-grid-container">
+                        <div class="subject-score-box" data-action="toggle-marks" data-subject="Math">
+                            <span class="score gradient-text">92%</span>
                             <span class="subject-name">Math</span>
                         </div>
-                        <div class="subject-score-box">
-                            <span class="score science">85%</span>
+                        <div class="subject-score-box" data-action="toggle-marks" data-subject="Science">
+                            <span class="score gradient-text">85%</span>
                             <span class="subject-name">Science</span>
                         </div>
-                        <div class="subject-score-box">
-                            <span class="score history">90%</span>
+                        <div class="subject-score-box" data-action="toggle-marks" data-subject="History">
+                            <span class="score gradient-text">90%</span>
                             <span class="subject-name">History</span>
                         </div>
-                        <div class="subject-score-box">
-                            <span class="score physics">88%</span>
+                        <div class="subject-score-box" data-action="toggle-marks" data-subject="Physics">
+                            <span class="score gradient-text">88%</span>
                             <span class="subject-name">Physics</span>
                         </div>
-                        <div class="subject-score-box">
-                            <span class="score english">95%</span>
+                        <div class="subject-score-box" data-action="toggle-marks" data-subject="English">
+                            <span class="score gradient-text">95%</span>
                             <span class="subject-name">English</span>
                         </div>
-                        <div class="subject-score-box">
-                            <span class="score chem">83%</span>
+                        <div class="subject-score-box" data-action="toggle-marks" data-subject="Chemistry">
+                            <span class="score gradient-text">83%</span>
                             <span class="subject-name">Chemistry</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="floating-card glass-effect">
-                    <h3 class="gradient-text" style="font-size: 1.4em; margin-bottom: 15px;">Weekly Study Time</h3>
+                    <h3 class="gradient-text">Weekly Study Time</h3>
                     <p style="font-size: 2.5em; font-weight: 700;">14h 30m</p>
                     <p style="font-size: 0.9em; color: var(--info-color);">+1.5h from last week</p>
                 </div>
@@ -1115,7 +1499,9 @@
         <hr style="border-color: rgba(255,255,255,0.1);">
 
         <section id="sessions-tests">
-            <h2 class="gradient-text">⏳ Upcoming Sessions & Tests</h2>
+            <div class="section-header">
+                <h2 class="gradient-text">⏳ Upcoming Sessions & Tests</h2>
+            </div>
             <div id="sessions-container">
                 </div>
         </section>
@@ -1123,7 +1509,9 @@
         <hr style="border-color: rgba(255,255,255,0.1);">
 
         <section id="exam-timetable">
-            <h2 class="gradient-text">🗓️ Exam Timetable</h2>
+            <div class="section-header">
+                <h2 class="gradient-text">🗓️ Exam Timetable</h2>
+            </div>
             <div class="floating-card glass-effect timetable-container">
                 <table>
                     <thead>
@@ -1137,7 +1525,9 @@
         <hr style="border-color: rgba(255,255,255,0.1);">
 
         <section id="resources">
-            <h2 class="gradient-text">📚 Shared Resources</h2>
+            <div class="section-header">
+                <h2 class="gradient-text">📚 Shared Resources</h2>
+            </div>
             <div id="resources-container">
                 </div>
         </section>
@@ -1198,45 +1588,75 @@
             <button class="modal-close-btn" data-modal-id="video-player-modal">&times;</button>
             <h3 id="video-title" class="gradient-text"></h3>
             <div class="video-wrapper">
-                <iframe id="youtube-iframe" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                <iframe id="youtube-iframe" src="" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe>
             </div>
         </div>
     </div>
     
+    <div id="marks-modal" class="floating-card glass-effect">
+        <button class="modal-close-btn" data-modal-id="marks-modal">&times;</button>
+        <h3 id="marks-modal-title" class="gradient-text"></h3>
+        <div id="marks-modal-content">
+            </div>
+    </div>
+
     <div id="live-session-page" class="hidden">
         <div class="live-session-header-bar glass-effect">
             <h1 id="live-session-title" class="gradient-text"></h1>
-            <button class="live-session-close-btn glass-effect">&times;</button>
+            <div class="live-session-header-controls">
+                <span id="live-session-timer">00:00</span>
+                <button id="live-take-test-btn" class="secondary-button">Take Test</button>
+                <button id="pause-session-btn" class="secondary-button">Pause Session</button>
+                <button id="end-session-btn" class="action-btn">End Session</button>
+            </div>
         </div>
         
         <div class="live-session-content-area">
-            
             <h2 class="gradient-text">📹 Video Resources & Edubot</h2>
 
             <div class="search-bar-live floating-card glass-effect">
                 <input type="text" id="liveSearchInput" placeholder="Search YouTube for videos on this topic..." />
-                <button id="liveSearchBtn" class="gradient-button">Search Videos</button>
+                <button id="liveSearchBtn" class="gradient-button">Refresh Videos</button>
             </div>
 
-            <div class="loader" id="liveLoader">Loading...</div>
+            <div class="loader" id="liveLoader">
+                <div class="theme-loader"></div>
+            </div>
             <section class="videos-section" id="videosSection"></section>
-            
         </div>
     </div>
     
-    <div id="chatbot-icon">💬</div>
-    <div id="chatbot-container">
+    <div id="pdf-icon" class="floating-action-icon">📄</div>
+    <div id="chatbot-icon" class="floating-action-icon">💬</div>
+    
+    <div id="chatbot-container" class="floating-window">
         <div id="chatbot-header">
             <span>Edubot</span>
             <button id="close-btn">&times;</button>
         </div>
         <div id="chatbot-body">
-            <div id="chatbot-messages">
-                </div>
+            <div id="chatbot-messages"></div>
         </div>
         <div id="chatbot-input-container">
-            <input type="text" id="chatbot-input" placeholder="Type a message or use the pre-filled prompt..." />
+            <input type="text" id="chatbot-input" placeholder="Type a message..." />
             <button id="send-btn">Send</button>
+        </div>
+    </div>
+
+    <div id="pdf-container" class="floating-window">
+        <div id="pdf-header">
+            <span>Notes & PDFs</span>
+            <button id="pdf-close-btn">&times;</button>
+        </div>
+        <div id="pdf-body">
+            <div class="pdf-item">
+                <h4>Chapter 5 - Thermodynamics.pdf</h4>
+                <p>Uploaded 3 days ago</p>
+            </div>
+            <div class="pdf-item">
+                <h4>WW1 Key Dates.pdf</h4>
+                <p>Uploaded 1 week ago</p>
+            </div>
         </div>
     </div>
 
@@ -1246,33 +1666,65 @@
         // DATA STORE & GLOBAL CONFIG (1201 - 1300)
         // =================================================================
 
-        // NOTE: Replace these with your actual keys for functional API calls.
+        // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyCvkGuq2MLm8lpNxhr5NVXszlr2FQjjn6g"; 
         const GEMINI_API_KEY = "AIzaSyC8AS_0u1toc_GN530woL4HjmpbwtvBro8"; 
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
 
-        // Initial Data Structure
-        const now = new Date();
-        let sessions = [
-            { id: 1, title: "Quick Geometry Recap", type: "Session", subject: "Math", duration: 45, datetime: new Date(now.getTime() - 3600000) }, 
-            { id: 2, title: "The French Revolution", type: "Test", subject: "History", duration: 60, datetime: new Date(now.getTime() + 120000) },
-            { id: 3, title: "Laws of Motion (Revision)", type: "Session", subject: "Physics", duration: 90, datetime: new Date(now.getTime() + 86400000) }
+        // Default Data
+        const defaultSessions = [
+            { id: 1, title: "Quick Geometry Recap", type: "Session", subject: "Math", duration: 45, datetime: new Date(new Date().getTime() - 3600000).toISOString() }, 
+            { id: 2, title: "The French Revolution", type: "Test", subject: "History", duration: 60, datetime: new Date(new Date().getTime() + 120000).toISOString() },
+            { id: 3, title: "Laws of Motion (Revision)", type: "Session", subject: "Physics", duration: 90, datetime: new Date(new Date().getTime() + 86400000).toISOString() }
         ];
-
-        const examTimetableData = [
+        const defaultTimetable = [
             { title: "Midterm Exam", subject: "Calculus", date: "2026-01-10", time: "09:00 AM", status: "Upcoming" },
             { title: "Final Project Due", subject: "Computer Science", date: "2026-01-25", time: "11:59 PM", status: "Drafting" }
         ];
-
-        const resourcesData = [
+        const defaultResources = [
             { type: "pdf", title: "Thermodynamics Chapter 5 Notes", subject: "Physics" },
             { type: "video", title: "Calculus Integration Tutorial", subject: "Math" },
             { type: "photo", title: "WWI Key Dates Infographic", subject: "History" }
         ];
+        // NEW: Placeholder data for marks
+        const previousMarksData = {
+            "Math": [
+                { name: "Test 1: Algebra", score: "95%" },
+                { name: "Test 2: Geometry", score: "89%" }
+            ],
+            "Science": [
+                { name: "Test 1: Biology", score: "88%" },
+                { name: "Test 2: Physics", score: "82%" }
+            ],
+            "History": [
+                { name: "Test 1: WW1", score: "90%" }
+            ],
+             "Physics": [
+                { name: "Test 1: Motion", score: "90%" },
+                { name: "Test 2: Optics", score: "86%" }
+            ],
+            "English": [
+                { name: "Essay 1", score: "94%" },
+                { name: "Grammar Test", score: "96%" }
+            ],
+            "Chemistry": [
+                { name: "Test 1: Moles", score: "80%" },
+                { name: "Test 2: Bonds", score: "86%" }
+            ]
+        };
+
+        // Main Data Arrays
+        let sessions = [];
+        let examTimetableData = [];
+        let resourcesData = [];
         
         let sessionToCancel = null;
+        let currentSessionId = null;
+        let currentNextPageToken = null;
+        let sessionTimerInterval = null;
+        let sessionStartTime = 0;
 
 
         // =================================================================
@@ -1280,6 +1732,7 @@
         // =================================================================
         const body = document.body;
         const mainContent = document.getElementById('self-study-main');
+        const modeToggleCheckbox = document.getElementById('mode-toggle-checkbox');
         const sessionsContainer = document.getElementById('sessions-container');
         const timetableBody = document.getElementById('timetable-body');
         const resourcesContainer = document.getElementById('resources-container');
@@ -1290,27 +1743,57 @@
         const sessionFormModal = document.getElementById('session-form-modal');
         const sessionForm = document.getElementById('session-form');
         const sessionFormTitle = document.getElementById('session-form-title');
+        const marksModal = document.getElementById('marks-modal');
         
         const youtubeIframe = document.getElementById('youtube-iframe');
         const liveSessionPage = document.getElementById('live-session-page');
         
-        // Live Session & Video Elements
+        // Live Session
+        const liveSessionTimer = document.getElementById('live-session-timer');
+        const pauseSessionBtn = document.getElementById('pause-session-btn');
+        const endSessionBtn = document.getElementById('end-session-btn');
+        const liveTakeTestBtn = document.getElementById('live-take-test-btn');
         const liveSearchInput = document.getElementById('liveSearchInput');
         const liveSearchBtn = document.getElementById('liveSearchBtn');
         const liveLoader = document.getElementById('liveLoader');
         const videosSection = document.getElementById('videosSection');
         
-        // Chatbot Elements
+        // Chatbot & PDF Icons
+        const pdfIcon = document.getElementById("pdf-icon");
         const chatbotIcon = document.getElementById("chatbot-icon");
         const chatbotContainer = document.getElementById("chatbot-container");
         const chatCloseBtn = document.getElementById("close-btn");
         const sendBtn = document.getElementById("send-btn");
         const chatInput = document.getElementById("chatbot-input");
         const chatbotMessages = document.getElementById("chatbot-messages");
+        
+        // NEW: PDF Viewer Elements
+        const pdfContainer = document.getElementById("pdf-container");
+        const pdfCloseBtn = document.getElementById("pdf-close-btn");
 
 
         // =================================================================
-        // UTILITY & RENDER FUNCTIONS (1351 - 1500)
+        // LOCAL STORAGE FUNCTIONS (1351 - 1400)
+        // =================================================================
+
+        function saveDataToLocalStorage() {
+            localStorage.setItem('epicScholarSessions', JSON.stringify(sessions));
+            localStorage.setItem('epicScholarTimetable', JSON.stringify(examTimetableData));
+            localStorage.setItem('epicScholarResources', JSON.stringify(resourcesData));
+        }
+
+        function loadDataFromLocalStorage() {
+            const savedSessions = localStorage.getItem('epicScholarSessions');
+            const savedTimetable = localStorage.getItem('epicScholarTimetable');
+            const savedResources = localStorage.getItem('epicScholarResources');
+
+            sessions = savedSessions ? JSON.parse(savedSessions) : defaultSessions;
+            examTimetableData = savedTimetable ? JSON.parse(savedTimetable) : defaultTimetable;
+            resourcesData = savedResources ? JSON.parse(savedResources) : defaultResources;
+        }
+
+        // =================================================================
+        // UTILITY & RENDER FUNCTIONS (1401 - 1500)
         // =================================================================
 
         const revealCards = (containerSelector) => {
@@ -1331,9 +1814,8 @@
             modalEl.addEventListener('animationend', () => {
                 modalEl.classList.add('hidden');
                 modalEl.classList.remove('hiding');
-                
                 if (modalEl.id === 'video-player-modal') {
-                    youtubeIframe.src = ""; // Stop playback
+                    youtubeIframe.src = "";
                     document.getElementById('video-title').textContent = "";
                 }
                 if (modalEl.id === 'session-form-modal') {
@@ -1343,59 +1825,54 @@
         };
         
         const playVideoInModal = (videoId, title) => {
-            const embedUrl = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+            // UPDATED: Removed autoplay=1
+            const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0`;
             youtubeIframe.src = embedUrl;
             document.getElementById('video-title').textContent = title;
             openModal(videoPlayerModal);
         };
 
-        // NEW: Utility to parse ISO 8601 duration (e.g., PT1M35S)
         const parseISODuration = (duration) => {
             const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
             if (!match) return "0:00";
-
             const hours = parseInt(match[1] || 0);
             const minutes = parseInt(match[2] || 0);
             const seconds = parseInt(match[3] || 0);
-
             let result = "";
             if (hours > 0) {
                 result += `${hours}:`;
+                result += `${minutes.toString().padStart(2, '0')}:`;
+            } else {
+                result += `${minutes}:`;
             }
-            result += `${minutes.toString().padStart(2, '0')}:`;
             result += seconds.toString().padStart(2, '0');
-            
-            // Handle cases like "00:30" -> "0:30"
-            if (hours === 0) {
-                 result = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-            }
-
             return result;
         };
 
         const renderSessions = () => {
             sessionsContainer.innerHTML = '';
-            sessions.sort((a, b) => a.datetime - b.datetime);
+            sessions.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
 
             sessions.forEach(session => {
                 const card = document.createElement('div');
                 card.className = 'session-card floating-card glass-effect';
                 card.setAttribute('data-id', session.id);
-                card.setAttribute('data-time', session.datetime.toISOString());
+                card.setAttribute('data-time', session.datetime);
 
-                const formattedDate = new Date(session.datetime).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                const formattedTime = new Date(session.datetime).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+                const sessionDate = new Date(session.datetime);
+                const formattedDate = sessionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const formattedTime = sessionDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
                 card.innerHTML = `
                     <div class="card-actions">
                         <button class="card-action-btn edit-btn" title="Edit">✏️</button>
-                        <button class="card-action-btn cancel-btn" title="Cancel">❌</button>
+                        <button class="card-action-btn cancel-btn" title="Cancel" data-action="cancel-session">❌</button>
                     </div>
                     <p class="session-title">${session.type === 'Test' ? '📝 ' : '🎯 '} ${session.title}</p>
                     <p class="session-subject">Subject: ${session.subject}</p>
                     <p class="session-datetime">Scheduled: ${formattedDate} | ${formattedTime}</p>
                     <p class="session-duration">Duration: ${session.duration} minutes</p>
-                    <button class="start-session-btn action-btn hidden">Start ${session.type}</button>
+                    <button class="start-session-btn action-btn hidden" data-action="start-session">Start ${session.type}</button>
                 `;
                 sessionsContainer.appendChild(card);
             });
@@ -1458,101 +1935,102 @@
 
 
         // =================================================================
-        // CHATBOT INTEGRATION (1501 - 1650)
+        // CHATBOT & PDF INTEGRATION (1501 - 1650)
         // =================================================================
         
         chatbotIcon.addEventListener("click", () => {
+            pdfContainer.classList.remove("visible"); // Close PDF
             chatbotContainer.classList.add("visible");
             chatbotIcon.classList.remove("visible");
+            pdfIcon.classList.add("visible");
         });
         
         chatCloseBtn.addEventListener("click", () => {
             chatbotContainer.classList.remove("visible");
-            // Show the icon if the live session is still active
             if (liveSessionPage.classList.contains('open')) {
                 chatbotIcon.classList.add("visible");
+                pdfIcon.classList.add("visible");
+            }
+        });
+        
+        // NEW: PDF Viewer Toggle
+        pdfIcon.addEventListener("click", () => {
+            chatbotContainer.classList.remove("visible"); // Close Chat
+            pdfContainer.classList.add("visible");
+            pdfIcon.classList.remove("visible");
+            chatbotIcon.classList.add("visible");
+        });
+
+        pdfCloseBtn.addEventListener("click", () => {
+            pdfContainer.classList.remove("visible");
+            if (liveSessionPage.classList.contains('open')) {
+                chatbotIcon.classList.add("visible");
+                pdfIcon.classList.add("visible");
             }
         });
 
-        // Messaging Functions
-        sendBtn.addEventListener("click", sendMessage);
+        sendBtn.addEventListener("click", sendChatMessage);
         chatInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") sendMessage();
+            if (e.key === "Enter") sendChatMessage();
         });
 
-        function sendMessage() {
-            // UPDATED: Read value but do not clear it, as it's pre-filled
+        function sendChatMessage() {
             const userMessage = chatInput.value.trim();
             if (userMessage) {
-                appendMessage("user", userMessage);
-                // chatInput.value = ""; // DO NOT CLEAR
+                appendChatMessage("user", userMessage);
+                chatInput.value = "";
                 getBotResponse(userMessage);
             }
         }
 
-        function appendMessage(sender, message, isLoading = false) {
+        function appendChatMessage(sender, message) {
             const messageElement = document.createElement("div");
             messageElement.classList.add("message", sender);
-            if (isLoading) {
-                messageElement.classList.add("loading");
-            }
-            // Simple text content, no markdown parsing for this simple bot
-            messageElement.textContent = message; 
+            messageElement.textContent = message;
             chatbotMessages.appendChild(messageElement);
             chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-            return messageElement;
         }
 
-        // UPDATED: Use live Gemini API instead of simulation
         async function getBotResponse(userMessage) {
-             const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
-             
-             if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE") {
-                 appendMessage("bot", "Error: Gemini API Key is missing. Please set your key in the script.");
+             if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
+                 appendChatMessage("bot", "Error: Gemini API Key is missing. Please set your key in the script.");
                  return;
              }
-             
-             const loadingMessage = appendMessage("bot", "Edubot is thinking...", true);
-             sendBtn.disabled = true; // Disable send button while waiting
 
-             const payload = {
-                contents: [{
-                    role: 'user',
-                    parts: [{ text: userMessage }]
-                }]
-             };
+             const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+             sendBtn.disabled = true;
+             chatInput.disabled = true;
 
              try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                const response = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: userMessage }] }],
+                    }),
                 });
 
-                if (!res.ok) {
-                    throw new Error(`API Error: ${res.status} ${res.statusText}`);
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error?.message || "Unknown API error");
                 }
-                
-                const data = await res.json();
-                
-                if (data.candidates && data.candidates.length > 0) {
-                    const reply = data.candidates[0].content.parts[0].text;
-                    loadingMessage.textContent = reply;
-                    loadingMessage.classList.remove('loading');
-                } else if (data.promptFeedback) {
-                     loadingMessage.textContent = "Sorry, your prompt was blocked. Please try a different question.";
-                     loadingMessage.classList.remove('loading');
-                     console.warn("Prompt blocked:", data.promptFeedback);
-                } else {
-                    throw new Error("Invalid response structure from API.");
+                if (!data.candidates || !data.candidates.length) {
+                    if (data.promptFeedback) {
+                        console.warn("Prompt blocked:", data.promptFeedback);
+                        throw new Error("Prompt was blocked. Please try a different question.");
+                    }
+                    throw new Error("No response from Gemini API");
                 }
 
-             } catch (err) {
-                loadingMessage.textContent = `Error: ${err.message}. Please check the console and your API Key.`;
-                loadingMessage.classList.remove('loading');
-                console.error("Gemini API Fetch Error:", err);
+                const botMessage = data.candidates[0].content.parts[0].text;
+                appendChatMessage("bot", botMessage);
+             } catch (error) {
+                console.error("Error:", error);
+                appendChatMessage("bot", `Sorry, I'm having trouble responding: ${error.message}`);
              } finally {
-                sendBtn.disabled = false; // Re-enable send button
+                sendBtn.disabled = false;
+                chatInput.disabled = false;
              }
         }
 
@@ -1560,64 +2038,55 @@
         // =================================================================
         // LIVE SESSION CONTROL & YOUTUBE API HANDLING (1651 - 1850)
         // =================================================================
+        
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+            const secs = (seconds % 60).toString().padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+        
+        function updateSessionTimer() {
+            const elapsedSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
+            liveSessionTimer.textContent = formatTime(elapsedSeconds);
+        }
 
-        // UPDATED: Render video results with duration
         const renderVideoResults = (videoItems) => {
             videosSection.innerHTML = '';
-
             if (!videoItems || videoItems.length === 0) {
                 videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--subtext-dark);">No videos found for this search query.</h3>';
                 return;
             }
-
             videoItems.forEach(item => {
-                const videoId = item.id; // Now using video item 'id'
-                const title = item.snippet.title;
-                const channelTitle = item.snippet.channelTitle;
-                const thumbnail = item.snippet.thumbnails.high.url;
-                const durationISO = item.contentDetails.duration;
-                const formattedDuration = parseISODuration(durationISO);
-                
                 const card = document.createElement('div');
                 card.className = 'youvideo';
-                card.setAttribute('data-videoid', videoId);
-                card.setAttribute('data-title', title);
-
+                card.setAttribute('data-videoid', item.id);
+                card.setAttribute('data-title', item.snippet.title);
                 card.innerHTML = `
                     <div class="thumbnail-container">
-                        <img src="${thumbnail}" alt="${title}" />
-                        <span class="video-duration">${formattedDuration}</span>
+                        <img src="${item.snippet.thumbnails.high.url}" alt="${item.snippet.title}" />
+                        <span class="video-duration">${parseISODuration(item.contentDetails.duration)}</span>
                     </div>
-                    <h3>${title}</h3>
-                    <p>Channel: ${channelTitle}</p>
+                    <h3>${item.snippet.title}</h3>
+                    <p>Channel: ${item.snippet.channelTitle}</p>
                 `;
-                
-                card.addEventListener('click', () => playVideoInModal(videoId, title));
+                card.addEventListener('click', () => playVideoInModal(item.id, item.snippet.title));
                 videosSection.appendChild(card);
             });
         }
         
-        // NEW: Function to fetch full video details (for duration)
         async function fetchVideoDetails(videoIds) {
-            if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY_HERE") {
+            if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY_HERE" || !YOUTUBE_API_KEY) {
                 videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--warning-color);">Error: YouTube API Key is not set. Video search is disabled.</h3>';
                 liveLoader.style.display = 'none';
                 return;
             }
-            
             const url = `https://www.googleapis.com/youtube/v3/videos?key=${YOUTUBE_API_KEY}&part=snippet,contentDetails&id=${videoIds}`;
-            
             try {
                 const res = await fetch(url);
                 const data = await res.json();
                 liveLoader.style.display = 'none';
-                
-                if (data.error) {
-                    throw new Error(data.error.message);
-                }
-                
+                if (data.error) throw new Error(data.error.message);
                 renderVideoResults(data.items);
-
             } catch (err) {
                  liveLoader.style.display = 'none';
                  videosSection.innerHTML = `<h3 style="grid-column: 1 / -1; color: var(--secondary-color);">Failed to load video details: ${err.message}</h3>`;
@@ -1625,37 +2094,37 @@
             }
         }
 
-        // UPDATED: YouTube search now has a 2-step fetch
-        async function performYouTubeSearch(query) {
-            if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY_HERE") {
+        async function performYouTubeSearch(query, pageToken = null) {
+            if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY_HERE" || !YOUTUBE_API_KEY) {
                 videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--warning-color);">Error: YouTube API Key is not set. Video search is disabled.</h3>';
                 liveLoader.style.display = 'none';
-                console.warn("YouTube API Key is empty. Search is disabled.");
                 return;
             }
             
             if (!query) return;
             videosSection.innerHTML = '';
-            liveLoader.style.display = 'block';
-
-            // Step 1: Search for video IDs
-            const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&maxResults=12`;
+            liveLoader.style.display = 'flex';
+            
+            let searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&videoDuration=medium&maxResults=12`;
+            if (pageToken) {
+                searchUrl += `&pageToken=${pageToken}`;
+            }
 
             try {
                 const res = await fetch(searchUrl);
                 const data = await res.json();
                 
-                if (data.error) {
-                    throw new Error(data.error.message);
-                }
+                if (data.error) throw new Error(data.error.message);
+
+                currentNextPageToken = data.nextPageToken;
+                liveSearchBtn.disabled = !currentNextPageToken;
 
                 if (data.items && data.items.length > 0) {
-                    // Step 2: Get video IDs and fetch details
                     const videoIds = data.items.map(item => item.id.videoId).join(',');
                     await fetchVideoDetails(videoIds);
                 } else {
                     liveLoader.style.display = 'none';
-                    videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--subtext-dark);">No videos found for this search query.</h3>';
+                    videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--subtext-dark);">No more videos found.</h3>';
                 }
 
             } catch (err) {
@@ -1666,53 +2135,59 @@
         }
         
         const openLiveSession = (session) => {
-            // 1. Page Transition
+            currentSessionId = session.id;
+            
             document.getElementById('live-session-title').textContent = session.title;
             liveSessionPage.classList.remove('hidden', 'hiding');
             void liveSessionPage.offsetWidth; 
             liveSessionPage.classList.add('open');
             mainContent.classList.add('hiding');
             
-            // 2. Chatbot Setup (UPDATED)
+            sessionStartTime = Date.now();
+            updateSessionTimer();
+            sessionTimerInterval = setInterval(updateSessionTimer, 1000);
+            
             const initialPrompt = `Summarize key concepts for: ${session.title} (${session.subject}) from ${DEFAULT_CURRICULUM} ${DEFAULT_GRADE} syllabus.`;
             chatInput.value = initialPrompt;
-            chatInput.disabled = true; // Lock the input
+            chatInput.disabled = false;
             chatbotMessages.innerHTML = ''; 
-            appendMessage("bot", "Welcome! The Edubot is active. Press 'Send' to get an AI summary for this topic.");
+            appendChatMessage("bot", "Welcome! The Edubot is active. Ask me anything or use the pre-filled prompt to start.");
             
+            pdfIcon.classList.add('visible');
             chatbotIcon.classList.add('visible'); 
-            chatbotContainer.classList.remove('visible'); 
+            chatbotContainer.classList.remove('visible');
+            pdfContainer.classList.remove('visible');
             
-            // 3. Video Search Initialization
             liveSearchInput.value = `${session.title} ${session.subject} tutorial`;
+            liveSearchInput.disabled = true;
+            liveSearchBtn.textContent = "Refresh Videos";
+            liveSearchBtn.disabled = false;
             performYouTubeSearch(liveSearchInput.value);
             
-            // 4. Attach Live Search Handlers
-            liveSearchBtn.onclick = () => performYouTubeSearch(liveSearchInput.value);
-            liveSearchInput.onkeyup = (e) => {
-                if (e.key === 'Enter') performYouTubeSearch(liveSearchInput.value);
-            };
+            liveSearchBtn.onclick = () => performYouTubeSearch(liveSearchInput.value, currentNextPageToken);
         };
         
         const closeLiveSession = () => {
-            // 1. Start page closing animation
             liveSessionPage.classList.remove('open');
             liveSessionPage.classList.add('hiding');
             mainContent.classList.remove('hiding');
             
-            // 2. Hide all chatbot UI components
+            clearInterval(sessionTimerInterval);
+            sessionTimerInterval = null;
+            
+            pdfIcon.classList.remove('visible');
             chatbotIcon.classList.remove('visible');
             chatbotContainer.classList.remove('visible');
-            chatInput.disabled = false; // Re-enable input
-            chatInput.value = ""; // Clear input
+            pdfContainer.classList.remove('visible');
+            chatInput.disabled = false;
+            chatInput.value = "";
             
-            // 3. Clean up video search results
             videosSection.innerHTML = '';
             liveLoader.style.display = 'none';
             liveSearchBtn.onclick = null;
-            liveSearchInput.onkeyup = null;
+            currentNextPageToken = null;
+            currentSessionId = null;
 
-            // 4. Remove page completely after animation ends
             liveSessionPage.addEventListener('transitionend', () => {
                 liveSessionPage.classList.add('hidden');
                 liveSessionPage.classList.remove('hiding');
@@ -1724,13 +2199,11 @@
         // MASTER EVENT HANDLERS & INITIALIZATION (1851 - END)
         // =================================================================
 
-        // NEW: Function to open session form
         const openSessionForm = (type) => {
             sessionFormTitle.textContent = `Add New ${type}`;
             sessionForm.dataset.type = type;
             openModal(sessionFormModal);
             
-            // Set default date/time to now
             const now = new Date();
             const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
             const localTime = now.toTimeString().split(' ')[0].substring(0, 5);
@@ -1738,95 +2211,151 @@
             document.getElementById('session-time').value = localTime;
         };
 
-        // NEW: Handle Session Form Submit
         sessionForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const formData = new FormData(sessionForm);
-            const type = sessionForm.dataset.type;
-            
-            const title = formData.get('title');
-            const subject = formData.get('subject');
-            const date = formData.get('date');
-            const time = formData.get('time');
-            const duration = parseInt(formData.get('duration'));
-            
-            // Combine date and time into a single Date object
-            const datetime = new Date(`${date}T${time}`);
-            
             const newSession = {
-                id: Date.now(), // Simple unique ID
-                title: title,
-                type: type,
-                subject: subject,
-                duration: duration,
-                datetime: datetime
+                id: Date.now(),
+                title: formData.get('title'),
+                type: sessionForm.dataset.type,
+                subject: formData.get('subject'),
+                duration: parseInt(formData.get('duration')),
+                datetime: new Date(`${formData.get('date')}T${formData.get('time')}`).toISOString()
             };
-            
             sessions.push(newSession);
+            saveDataToLocalStorage();
             renderSessions();
             closeModal(sessionFormModal);
         });
 
+        // Live Session: Pause
+        pauseSessionBtn.addEventListener('click', () => {
+            closeLiveSession();
+        });
+
+        // Live Session: End
+        endSessionBtn.addEventListener('click', () => {
+            if (currentSessionId) {
+                // UPDATED: Remove immediately, then save and re-render
+                sessions = sessions.filter(s => s.id !== currentSessionId);
+                saveDataToLocalStorage();
+                renderSessions();
+            }
+            closeLiveSession();
+        });
+
+        liveTakeTestBtn.addEventListener('click', () => {
+            alert("The 'Take Test' module is not yet implemented.");
+        });
+
+        pdfIcon.addEventListener('click', () => {
+            chatbotContainer.classList.remove("visible");
+            chatbotIcon.classList.add("visible");
+            pdfContainer.classList.add("visible");
+            pdfIcon.classList.remove("visible");
+        });
+        
+        pdfCloseBtn.addEventListener('click', () => {
+            pdfContainer.classList.remove("visible");
+            pdfIcon.classList.add("visible");
+        });
+
+        // Global Click Handler
         document.addEventListener('click', (e) => {
             const target = e.target;
-            
-            // Modal close (by clicking background)
+            const action = target.closest('[data-action]')?.dataset.action;
+
+            // Modal Close
             if (target.classList.contains('modal')) {
                 closeModal(target.closest('.modal'));
             }
-            
-            // Modal close (by clicking 'x' button)
             if (target.closest('.modal-close-btn')) {
                 const modalId = target.closest('.modal-close-btn').getAttribute('data-modal-id');
                 if (modalId) {
-                    closeModal(document.getElementById(modalId));
+                    // Special case for marks-modal
+                    if (modalId === 'marks-modal') {
+                        marksModal.classList.remove('visible');
+                    } else {
+                        closeModal(document.getElementById(modalId));
+                    }
                 }
             }
             
-            // Live Session Close Button
-            if (target.closest('.live-session-close-btn')) {
-                closeLiveSession();
-            }
-            
-            // Theme toggle
-            if (target.closest('#mode-toggle')) {
-                body.classList.toggle('dark-mode');
-                body.classList.toggle('light-mode');
-            }
-            
-            // NEW: Add Session/Test buttons
+            // Header Buttons
             if (target.closest('#add-session-btn')) { 
                 openSessionForm('Session');
             }
             if (target.closest('#add-test-btn')) { 
                 openSessionForm('Test');
             }
-
-            // NEW: Take Test button
-            if (target.closest('#take-test-btn')) {
-                 alert("The 'Take Test' module is not yet implemented.");
-            }
             
-            // Card Actions
-            const card = target.closest('.session-card');
-            if (card) {
+            // Expandable Marks
+            if (action === 'toggle-marks') {
+                const box = target.closest('.subject-score-box');
+                const subject = box.dataset.subject;
+                const marks = previousMarksData[subject] || [];
+                const marksContent = document.getElementById('marks-modal-content');
+                
+                document.getElementById('marks-modal-title').textContent = `${subject} - Test History`;
+                marksContent.innerHTML = '';
+                
+                if (marks.length > 0) {
+                    marks.forEach(mark => {
+                        marksContent.innerHTML += `
+                            <div class="mark-item">
+                                <span>${mark.name}</span>
+                                <span class="mark-score">${mark.score}</span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    marksContent.innerHTML = `<p style="padding: 12px;">No test history found for ${subject}.</p>`;
+                }
+                
+                // Position and animate modal
+                const rect = box.getBoundingClientRect();
+                marksModal.style.top = `${rect.top + (rect.height / 2)}px`;
+                marksModal.style.left = `${rect.left + (rect.width / 2)}px`;
+                marksModal.style.transform = 'scale(0.8)';
+                marksModal.style.opacity = '0';
+                
+                // Use setTimeout to allow the browser to apply initial styles
+                setTimeout(() => {
+                    marksModal.classList.add('visible');
+                }, 10);
+            }
+
+// Session Card Actions
+            if (action === 'start-session' || action === 'cancel-session') {
+                const card = target.closest('.session-card');
                 const sessionId = parseInt(card.getAttribute('data-id'));
                 const session = sessions.find(s => s.id === sessionId);
-                
-                if (target.closest('.start-session-btn')) {
-                    if (session) openLiveSession(session);
+
+                if (action === 'start-session' && session) {
+                    // --- START MODIFICATION HERE ---
+                    if (session.type === 'Test') {
+                        // Redirect to quiz.html for Test sessions
+                        window.location.href = 'quiz.html';
+                    } else {
+                        // Open the live session for 'Session' type
+                        openLiveSession(session);
+                    }
+                    // --- END MODIFICATION HERE ---
                 }
-                if (target.closest('.cancel-btn')) {
+                
+                if (action === 'cancel-session' && session) {
                     sessionToCancel = sessionId;
                     document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
                     openModal(confirmModal);
                 }
             }
             
-            // Confirmation Buttons
+            // Confirmation Modal Buttons
             if (target.closest('#confirm-btn-yes')) {
                 if (sessionToCancel) {
+                    // Remove immediately, save, and re-render
                     sessions = sessions.filter(s => s.id !== sessionToCancel);
+                    saveDataToLocalStorage();
                     renderSessions();
                     sessionToCancel = null;
                 }
@@ -1838,12 +2367,33 @@
             }
         });
         
+        // Theme Toggle Logic
+        modeToggleCheckbox.addEventListener('change', () => {
+            body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode');
+            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+        });
+        
         // INITIALIZATION BLOCK
         document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                modeToggleCheckbox.checked = true;
+            } else {
+                body.classList.add('dark-mode');
+                body.classList.remove('light-mode');
+                modeToggleCheckbox.checked = false;
+            }
+
+            loadDataFromLocalStorage();
+
             renderSessions();
             renderTimetable();
             renderResources();
             revealCards('.dashboard-grid');
+            
             setInterval(checkSessionStatus, 10000); 
         });
     </script>
