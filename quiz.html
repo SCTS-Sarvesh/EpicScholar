@@ -1,1366 +1,1092 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rock Paper Scissors - Ultimate Edition</title>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700;800&family=Material+Icons&display=swap" rel="stylesheet">
-  <style>
-    /*
-     * ----------------------------------------------------
-     * 1. THEME & VARIABLE DEFINITIONS
-     * ----------------------------------------------------
-     */
-    :root {
-      /* Shared Gradient for Blobs, Titles, and Accents */
-      --primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
-      --primary-color: #0072ff;
-      --accent-color: #ff416c;
-      
-      /* Theme Variables (Light/Dark Switch) */
-      --bg-color-light: #f5f5f5;
-      --bg-color-dark: #000; /* Requested Black Background */
-      --text-light: #222;
-      --text-dark: #eee;
-      --container-light: rgba(255, 255, 255, 0.9);
-      --container-dark: rgba(25, 25, 25, 0.9);
-      
-      /* Glassmorphism/iOS Polish */
-      --blur: blur(25px);
-      --card-shadow: 0 10px 40px rgba(0,0,0,0.3);
-      --pop-transform: translateY(-4px) scale(1.02);
-      /* Custom cubic-bezier for snappy, bouncy feel */
-      --transition-fast: all 0.2s cubic-bezier(0.4, 0.8, 0.6, 1.2);
-      --transition-smooth: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      --transition-bouncy: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Quiz Generator - Animated</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* ----------------------------------------------------
-     * 2. BASE STYLING & BACKGROUND ANIMATION
-     * ----------------------------------------------------
-     */
-    body {
-      font-family: 'Google Sans', 'Segoe UI', sans-serif;
-      background-color: var(--bg-color-light);
-      color: var(--text-light);
-      text-align: center;
-      min-height: 100vh;
-      overflow: hidden;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      flex-direction: column;
-      transition: background-color 0.8s ease, color 0.8s ease;
-      position: relative;
-    }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #000;
+            min-height: 100vh;
+            overflow: hidden;
+            color: #fff;
+            position: relative;
+        }
 
-    body.dark-mode {
-      background-color: var(--bg-color-dark);
-      color: var(--text-dark);
-    }
-    
-    /* Blob Animation Keyframes */
-    @keyframes moveBlob1 {
-      0%, 100% { transform: translate(0, 0) scale(1.1); }
-      30% { transform: translate(-5vw, 15vh) scale(0.9); }
-      60% { transform: translate(5vw, -10vh) scale(1.2); }
-    }
-    
-    @keyframes moveBlob2 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      40% { transform: translate(10vw, -10vh) scale(1.1); }
-      70% { transform: translate(-10vw, 10vh) scale(0.9); }
-    }
+        /* Gradient Blobs */
+        .blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.3;
+            pointer-events: none;
+            z-index: 0;
+        }
 
-    @keyframes moveBlob3 {
-      0%, 100% { transform: translate(0, 0) scale(1.2); }
-      25% { transform: translate(5vw, 5vh) scale(1); }
-      80% { transform: translate(-15vw, -5vh) scale(1.1); }
-    }
+        .blob-1 {
+            width: 400px;
+            height: 400px;
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            top: -100px;
+            left: -100px;
+            animation: float 20s ease-in-out infinite;
+        }
 
-    /* The Glass Blobs Containers */
-    .blob-container {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      overflow: hidden;
-      z-index: 0;
-      opacity: 0.8;
-      transition: opacity 0.8s ease;
-    }
+        .blob-2 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, #ff416c 0%, #0072ff 100%);
+            bottom: -50px;
+            right: -50px;
+            animation: float 25s ease-in-out infinite reverse;
+        }
 
-    body.dark-mode .blob-container {
-      opacity: 0.5;
-    }
+        .blob-3 {
+            width: 350px;
+            height: 350px;
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            top: 50%;
+            right: -100px;
+            animation: float 22s ease-in-out infinite;
+        }
 
-    .blob {
-      position: absolute;
-      width: 400px;
-      height: 400px;
-      border-radius: 50%;
-      background: var(--primary-gradient); 
-      filter: blur(150px);
-      transition: opacity 0.5s ease;
-    }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(30px, 30px); }
+        }
 
-    #blob1 {
-      top: 10%;
-      left: 10%;
-      animation: moveBlob1 20s infinite alternate;
-    }
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    #blob2 {
-      bottom: 20%;
-      right: 15%;
-      animation: moveBlob2 24s infinite alternate-reverse;
-    }
+        .container {
+            max-width: 900px;
+            height: 100vh;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 10;
+            padding: 2rem;
+        }
 
-    #blob3 {
-      top: 60%;
-      left: 30%;
-      animation: moveBlob3 18s infinite alternate;
-    }
-    
-    /* ----------------------------------------------------
-     * 3. UI CONTROLS & UTILITY
-     * ----------------------------------------------------
-     */
-    
-    .ui-controls-top {
-      position: fixed;
-      top: 20px;
-      left: 20px; 
-      right: auto;
-      display: flex;
-      gap: 12px;
-      z-index: 100;
-    }
+        .card {
+            background: rgba(20, 20, 20, 0.9);
+            border-radius: 2rem;
+            padding: 3rem;
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideUp 0.6s ease-out;
+            width: 100%;
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 114, 255, 0.3) transparent;
+        }
 
-    .ui-controls-right {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        gap: 12px;
-        z-index: 100;
-    }
+        .card::-webkit-scrollbar {
+            width: 8px;
+        }
 
-    .icon-btn {
-      background: var(--container-light);
-      border: none;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: var(--transition-smooth);
-      color: var(--primary-color);
-      font-size: 1.5rem;
-      text-decoration: none;
-    }
+        .card::-webkit-scrollbar-track {
+            background: transparent;
+        }
 
-    .dark-mode .icon-btn {
-      background: var(--container-dark);
-      color: var(--text-dark);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    }
+        .card::-webkit-scrollbar-thumb {
+            background: rgba(0, 114, 255, 0.3);
+            border-radius: 4px;
+        }
 
-    .icon-btn:hover {
-      transform: scale(1.1) rotate(10deg);
-      box-shadow: 0 8px 20px rgba(0, 114, 255, 0.4);
-    }
-    
-    /* Hidden utility class with smooth transition */
-    .hidden-fade {
-        opacity: 0;
-        max-height: 0;
-        padding: 0;
-        margin: 0;
-        overflow: hidden;
-        pointer-events: none;
-        transition: opacity 0.5s ease, max-height 0.5s ease;
-    }
-    
-    .visible-fade {
-        opacity: 1;
-        max-height: 1000px; /* Sufficient height to show content */
-        transition: opacity 0.8s ease 0.3s, max-height 0.5s ease;
-    }
-    
-    .game-container {
-      background: var(--container-light);
-      padding: 2.5rem;
-      border-radius: 2rem;
-      box-shadow: var(--card-shadow);
-      width: 90%;
-      max-width: 500px;
-      position: relative;
-      backdrop-filter: var(--blur);
-      -webkit-backdrop-filter: var(--blur);
-      display: flex;
-      flex-direction: column;
-      align-items: center; 
-      transition: var(--transition-smooth), box-shadow 0.5s;
-      z-index: 10;
-      animation: fadeIn 0.8s var(--transition-smooth);
-    }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-    .dark-mode .game-container {
-      background: var(--container-dark);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-    }
+        .header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
 
-    .game-title {
-      margin-top: 0;
-      font-weight: 800;
-      font-size: 2.5rem;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 1.5rem;
-      letter-spacing: -1px;
-      transition: var(--transition-smooth);
-    }
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+        }
 
-    /* --- Buttons & Inputs --- */
-    .btn {
-      padding: 18px;
-      border: none;
-      border-radius: 18px;
-      font-size: 1.1rem;
-      font-weight: 800;
-      cursor: pointer;
-      transition: var(--transition-fast);
-      width: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      text-decoration: none;
-      box-sizing: border-box;
-      letter-spacing: 0.5px;
-    }
+        .icon {
+            width: 3rem;
+            height: 3rem;
+            animation: float 3s ease-in-out infinite;
+        }
 
-    .primary-btn {
-      background: var(--primary-gradient);
-      color: white;
-      box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
-    }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
 
-    .primary-btn:hover {
-      transform: var(--pop-transform);
-      box-shadow: 0 10px 25px rgba(255, 65, 108, 0.4);
-    }
+        label {
+            display: block;
+            font-weight: 600;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
 
-    .secondary-btn {
-      background: transparent;
-      border: 2px solid var(--accent-color); 
-      color: var(--accent-color);
-      margin-top: 10px;
-      transition: var(--transition-fast);
-    }
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+        }
 
-    .secondary-btn:hover {
-      background: var(--accent-color);
-      color: white;
-      transform: var(--pop-transform);
-      box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
-    }
+        input:focus,
+        select:focus {
+            outline: none;
+            border-color: #0072ff;
+            box-shadow: 0 0 0 4px rgba(0, 114, 255, 0.2);
+            transform: translateY(-2px);
+        }
 
-    .pop-input {
-      width: 100%;
-      padding: 18px;
-      border-radius: 16px;
-      border: 3px solid rgba(0, 114, 255, 0.1); 
-      background: #ffffff;
-      font-family: 'Google Sans', sans-serif;
-      font-size: 1.4rem;
-      font-weight: 800;
-      text-align: center;
-      color: var(--primary-color);
-      transition: var(--transition-fast);
-      box-sizing: border-box;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    }
+        .btn {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
 
-    .dark-mode .pop-input {
-      background: rgba(255, 255, 255, 0.05);
-      border-color: rgba(255, 255, 255, 0.1);
-      color: var(--text-dark);
-    }
-    
-    .pop-input::placeholder {
-        color: rgba(0, 114, 255, 0.4); 
-    }
-    .dark-mode .pop-input::placeholder {
-        color: rgba(255, 255, 255, 0.6); 
-    }
-    
-    /* Difficulty Selector */
-    .difficulty-selector {
-      display: flex;
-      gap: 10px;
-    }
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
 
-    .diff-btn {
-      flex: 1;
-      padding: 14px;
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      border-radius: 16px;
-      background: transparent;
-      cursor: pointer;
-      font-weight: 700;
-      transition: var(--transition-fast);
-      color: #888;
-      font-size: 1rem;
-    }
+        .btn:hover::before {
+            left: 100%;
+        }
 
-    .dark-mode .diff-btn {
-      border-color: rgba(255, 255, 255, 0.1);
-      color: #aaa;
-    }
+        .btn-primary {
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            color: white;
+        }
 
-    .diff-btn.selected {
-      background: var(--primary-gradient);
-      color: white;
-      border-color: transparent;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
-    }
-    
-    .diff-btn:hover:not(.selected) {
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    
-    /* ----------------------------------------------------
-     * 4. GAME PLAY SECTION
-     * ----------------------------------------------------
-     */
-    
-    #game-area {
-        width: 100%; 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0 10px; 
-        box-sizing: border-box;
-        transition: var(--transition-smooth);
-    }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 114, 255, 0.4);
+        }
 
-    /* Scoreboard */
-    .scoreboard {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        width: 100%; 
-        max-width: 400px; 
-    }
-    
-    .score-box {
-        background: rgba(255,255,255,0.1);
-        padding: 1rem;
-        border-radius: 1rem;
-        min-width: 90px;
-        transition: var(--transition-smooth);
-        animation: scorePop 0.3s ease-out; /* Score update animation */
-    }
-    
-    .dark-mode .score-box {
-        background: rgba(255,255,255,0.05); 
-    }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
 
-    .score-box p {
-      font-weight: 600;
-      margin: 0;
-      color: var(--text-light); 
-      transition: color 0.5s;
-    }
+        /* Quiz Section */
+        #quizSection {
+            display: none;
+        }
 
-    .dark-mode .score-box p {
-      color: var(--text-dark); 
-    }
+        #quizSection.active {
+            display: flex;
+            flex-direction: column;
+        }
 
-    .score-number {
-      font-size: 3rem;
-      font-weight: 800;
-      background: var(--primary-gradient);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      transition: var(--transition-smooth);
-    }
-    
-    @keyframes scorePop {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
-    }
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            position: absolute;
+            top: 15px;
+        }
 
-    /* Hands Animation Stage */
-    .hands-stage {
-      display: flex;
-      justify-content: space-between;
-      margin: 2rem 0;
-      height: 150px;
-      align-items: center;
-      width: 100%;
-      max-width: 400px;
-      transition: var(--transition-smooth);
-    }
+        .quiz-header h2 {
+            font-size: 1.8rem;
+        }
 
-    .hand {
-      font-size: 5rem;
-      display: block;
-      transition: transform 0.2s;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
-    }
+        /* Question Navigation */
+        .question-nav {
+            display: flex;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
 
-    #playerHand { transform: rotate(90deg); }
-    #computerHand { transform: rotate(-90deg) scaleX(-1); }
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
 
-    /* Shake Animation - Smoother 1s shake */
-    .shake-player { animation: shakePlayer 1s ease-in-out; }
-    .shake-computer { animation: shakeComputer 1s ease-in-out; }
+        .nav-dot.active {
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            transform: scale(1.5);
+        }
 
-/* Shake Animation - Adjusted to 3 distinct back-and-forth movements (6 steps) */
-.shake-player { animation: shakePlayer 1s ease-in-out; }
-.shake-computer { animation: shakeComputer 1s ease-in-out; }
+        .nav-dot.answered {
+            background: rgba(0, 114, 255, 0.5);
+        }
 
-@keyframes shakePlayer {
-  /* 0: Start */
-  0% { transform: rotate(90deg) translateY(0); }
-  /* 1st shake out */
-  20% { transform: rotate(90deg) translateY(-20px) scale(1.05); } 
-  /* 1st shake in */
-  40% { transform: rotate(90deg) translateY(0) scale(1); }
-  /* 2nd shake out */
-  60% { transform: rotate(90deg) translateY(-20px) scale(1.05); }
-  /* 2nd shake in */
-  80% { transform: rotate(90deg) translateY(0) scale(1); }
-  /* 3rd shake out (final position, ready for result) */
-  100% { transform: rotate(90deg) translateY(-20px) scale(1.05); } 
-}
+        /* Questions Container */
+        .questions-wrapper {
+            position: relative;
+            overflow: hidden;
+            min-height: 400px;
+            flex-grow: 1;
+        }
 
-@keyframes shakeComputer {
-  /* 0: Start */
-  0% { transform: rotate(-90deg) scaleX(-1) translateY(0); }
-  /* 1st shake out */
-  20% { transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05); }
-  /* 1st shake in */
-  40% { transform: rotate(-90deg) scaleX(-1) translateY(0) scale(1); }
-  /* 2nd shake out */
-  60% { transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05); }
-  /* 2nd shake in */
-  80% { transform: rotate(-90deg) scaleX(-1) translateY(0) scale(1); }
-  /* 3rd shake out (final position, ready for result) */
-  100% { transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05); }
-}
+        .question-card {
+            position: absolute;
+            width: 100%;
+            padding: 2rem;
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+            transform: translateX(100%);
+        }
 
-    /* Round Status */
-    #round-status {
-        font-size: 1.5rem; 
-        color: var(--text-light);
-        transition: color 0.5s, transform 0.3s;
-        min-height: 40px; /* Prevent layout shift */
-        line-height: 1.2;
-    }
+        .question-card.active {
+            opacity: 1;
+            transform: translateX(0);
+            position: relative;
+        }
 
-    .dark-mode #round-status {
-        color: var(--text-dark);
-    }
-    
-    /* Choice Buttons */
-    .choices {
-      display: flex;
-      justify-content: center;
-      gap: 1.5rem;
-      margin-top: 2rem;
-      width: 100%;
-      max-width: 400px;
-      transition: var(--transition-smooth);
-    }
-    
-    .choice-btn {
-      background: var(--container-light);
-      border: 2px solid transparent;
-      border-radius: 24px;
-      padding: 16px;
-      width: 110px;
-      cursor: pointer;
-      transition: var(--transition-fast);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    }
-    
-    .dark-mode .choice-btn {
-      background: rgba(255,255,255,0.05);
-    }
-    
-    .choice-btn span {
-        font-weight: 700;
-        color: #555;
-        font-size: 0.9rem;
-        transition: color 0.5s;
-    }
+        .question-card.prev {
+            transform: translateX(-100%);
+        }
 
-    .dark-mode .choice-btn span {
-        color: var(--text-dark);
-    }
+        .question-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
 
-    .choice-btn:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 15px 30px rgba(0, 114, 255, 0.15);
-      border-color: var(--primary-color);
-    }
-    
-    .choice-btn.disabled {
-        pointer-events: none;
-        opacity: 0.5;
-        transform: none !important;
-        box-shadow: none !important;
-    }
+        .option-btn {
+            width: 100%;
+            text-align: left;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
 
-    /* --- Timer Styles --- */
-    .timer-display {
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      font-weight: 800; 
-      color: var(--accent-color); 
-      font-size: 1.1rem;
-      transition: var(--transition-smooth);
-    }
-    
-    /* ----------------------------------------------------
-     * 5. MODALS & OVERLAYS
-     * ----------------------------------------------------
-     */
-    
-    .modal-overlay, .overlay-result {
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(10px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 300;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.4s ease, visibility 0s 0.4s;
-    }
+        .option-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(0, 114, 255, 0.2) 0%, rgba(255, 65, 108, 0.2) 100%);
+            transition: width 0.4s;
+            z-index: -1;
+        }
 
-    .modal-overlay.active, .overlay-result:not(.hidden) {
-      opacity: 1;
-      visibility: visible;
-      transition: opacity 0.4s ease;
-    }
+        .option-btn:hover:not(:disabled) {
+            transform: translateX(10px);
+            border-color: #0072ff;
+        }
 
-    .modal-card, .result-card {
-      background: var(--container-light);
-      padding: 2.5rem;
-      border-radius: 2rem;
-      width: 90%;
-      max-width: 450px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
-      transform: translateY(20px) scale(0.95);
-      transition: var(--transition-bouncy);
-      text-align: left;
-      color: var(--text-light);
-    }
+        .option-btn:hover::before {
+            width: 100%;
+        }
 
-    .dark-mode .modal-card, .dark-mode .result-card {
-        background: var(--container-dark);
-        color: var(--text-dark);
-    }
-    
-    .modal-overlay.active .modal-card, .overlay-result:not(.hidden) .result-card {
-      transform: translateY(0) scale(1);
-    }
+        .option-btn.selected {
+            background: linear-gradient(135deg, rgba(0, 114, 255, 0.3) 0%, rgba(255, 65, 108, 0.3) 100%);
+            border-color: #0072ff;
+            transform: scale(1.02);
+        }
 
-    /* Guide Steps Styling */
-    .guide-steps .step {
-        display: flex;
-        align-items: flex-start;
-        gap: 15px;
-        margin-bottom: 20px;
-        background: rgba(0, 114, 255, 0.05);
-        padding: 12px;
-        border-radius: 12px;
-        transition: background 0.5s;
-    }
+        .option-btn.correct {
+            background: rgba(16, 185, 129, 0.3);
+            border-color: #10b981;
+        }
 
-    .dark-mode .guide-steps .step {
-        background: rgba(255, 255, 255, 0.05);
-    }
+        .option-btn.incorrect {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: #ef4444;
+        }
 
-    .guide-steps .step p {
-        margin: 0;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: var(--text-light);
-        transition: color 0.5s;
-    }
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
 
-    .dark-mode .guide-steps .step p {
-        color: var(--text-dark);
-    }
+        .nav-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            border-radius: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
 
-    .final-message {
-        background: var(--primary-gradient); 
-        -webkit-background-clip: text; 
-        -webkit-text-fill-color: transparent; 
-        font-size: 2.5rem; 
-        margin: 10px 0;
-        animation: pulseGradient 4s infinite;
-    }
+        .nav-btn:hover:not(:disabled) {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
 
-    @keyframes pulseGradient {
-        0% { filter: hue-rotate(0deg); }
-        50% { filter: hue-rotate(45deg); }
-        100% { filter: hue-rotate(0deg); }
-    }
-    
-    .hidden { display: none !important; }
-    
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-/* --- TIMER MODE TOGGLE SWITCH STYLING --- */
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
 
-/* The switch container setup */
-.setting-group .switch {
-  position: relative;
-  display: inline-block;
-  width: 60px; /* Width of the switch track */
-  height: 34px; /* Height of the switch track */
-}
+        /* Results */
+        .results-container {
+            text-align: center;
+            animation: scaleIn 0.6s ease-out;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+        }
 
-/* Hide the default HTML checkbox */
-.setting-group .switch input { 
-  opacity: 0; 
-  width: 0; 
-  height: 0; 
-}
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 
-/* The slider/track */
-.setting-group .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  /* Default (OFF) state background color */
-  background-color: #ccc; 
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth slide transition */
-  border-radius: 34px; /* Rounded pill shape */
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
-}
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            animation: pulse 2s ease-in-out infinite;
+        }
 
-/* Dark Mode OFF State */
-.dark-mode .setting-group .slider {
-    background-color: #555; /* Darker off state in dark mode */
-}
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
 
-/* The circular thumb/handle */
-.setting-group .slider:before {
-  position: absolute;
-  content: "";
-  height: 26px; /* Size of the handle */
-  width: 26px;
-  left: 4px; 
-  bottom: 4px;
-  background-color: white; /* White handle */
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border-radius: 50%; /* Perfect circle */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow on the handle */
-}
+        .score-number {
+            font-size: 4rem;
+            font-weight: 800;
+        }
 
-/* ON State: When the checkbox is checked */
-input#timerToggle:checked + .slider { 
-  background: var(--primary-gradient); /* Use the theme gradient when ON */
-  box-shadow: 0 0 10px rgba(0, 114, 255, 0.5); /* Outer glow when ON */
-}
+        .score-label {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
 
-/* Move the handle to the right for the ON state */
-input#timerToggle:checked + .slider:before { 
-  transform: translateX(26px); 
-}
+        .commentary {
+            font-size: 1.5rem;
+            margin: 2rem 0;
+            font-weight: 600;
+        }
 
-/* Optional: Bouncy feedback on hover for the whole track/slider */
-.setting-group .slider:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-/* --- SECONDARY BUTTON STYLING (.secondary-btn) --- */
+        .commentary-detail {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 2rem;
+        }
 
-.secondary-btn {
-  height: 20px;
-  padding: 18px;
-  border-radius: 18px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  box-sizing: border-box;
-  letter-spacing: 0.5px;
-  background: transparent;
-  border: 2px solid var(--accent-color); /* Light mode: Uses accent-color border (e.g., #ff416c) */
-  color: var(--accent-color);
-  margin-top: 10px; /* Default spacing */
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
-}
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            width: 100%;
+        }
 
-/* Dark Mode Adaptation */
-.dark-mode .secondary-btn {
-    /* In dark mode, border and text should be subtle white/light gray */
-    border-color: rgba(255, 255, 255, 0.2); 
-    color: var(--text-dark); /* Match the main body text color */
-}
+        .button-group .btn {
+            flex: 1;
+        }
 
-/* Hover/Focus States: The Bouncy Effect */
-.secondary-btn:hover {
-  background: var(--accent-color); /* Fills with accent color */
-  color: white; /* Text turns white on hover */
-  transform: translateY(-5px) scale(1.02); /* Bouncy lift */
-  /* Consistent shadow effect */
-  box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
-}
+        /* Review Section */
+        .review-container {
+            width: 100%;
+            max-height: 70vh;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0, 114, 255, 0.3) transparent;
+            margin-bottom: 2rem;
+        }
 
-/* Active State: The Press Down Effect */
-.secondary-btn:active {
-    transform: translateY(-2px) scale(0.98); /* Press down effect */
-    box-shadow: none;
-}
-  </style>
+        .review-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .review-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .review-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 114, 255, 0.3);
+            border-radius: 4px;
+        }
+
+        .review-card {
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .review-card.correct {
+            border-left-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .review-card.incorrect {
+            border-left-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .review-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 30px rgba(0, 114, 255, 0.2);
+        }
+
+        .review-question-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .review-status-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .review-status-badge.correct {
+            background: rgba(16, 185, 129, 0.3);
+            color: #10b981;
+            border: 2px solid #10b981;
+        }
+
+        .review-status-badge.incorrect {
+            background: rgba(239, 68, 68, 0.3);
+            color: #ef4444;
+            border: 2px solid #ef4444;
+        }
+
+        .review-question-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+            flex-grow: 1;
+        }
+
+        .review-options {
+            margin: 1rem 0;
+        }
+
+        .review-option {
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0.75rem;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .review-option.correct {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .review-option.incorrect {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .review-option.user-wrong {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: #ef4444;
+        }
+
+        .review-option-label {
+            font-weight: 700;
+            min-width: 30px;
+        }
+
+        .option-indicator {
+            margin-left: auto;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .review-explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 114, 255, 0.1);
+            border-radius: 0.75rem;
+            border-left: 4px solid #0072ff;
+        }
+
+        .explanation-title {
+            color: #0072ff;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .explanation-text {
+            color: #ccc;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .review-footer {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center;
+        }
+
+        .review-footer .btn {
+            max-width: 300px;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .error-box {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            border-radius: 1rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            color: #fca5a5;
+            animation: shake 0.5s;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 1.5rem;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .question-title {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
 </head>
 <body>
-  
-  <div class="blob-container">
-    <div class="blob" id="blob1"></div>
-    <div class="blob" id="blob2"></div>
-    <div class="blob" id="blob3"></div>
-  </div>
-  
-  <div class="ui-controls-right">
-    <button class="icon-btn" onclick="toggleMusic()" id="music-btn" title="Toggle Music">
-      <span class="material-icons">music_note</span>
-    </button>
-    <button class="icon-btn" onclick="showGuide()" title="How to Play">
-      <span class="material-icons">help_outline</span>
-    </button>
-    <button class="mode-toggle icon-btn" onclick="toggleMode()" title="Switch Theme">
-      <span class="material-icons">brightness_6</span>
-    </button>
-  </div>
+    <!-- Gradient Blobs -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
 
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <svg class="icon gradient-text" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path>
+                </svg>
+                <h1 class="gradient-text">AI Quiz Generator</h1>
+            </div>
 
-  <div class="game-container">
-    <h1 class="game-title">Rock Paper Scissors</h1>
-    
-    <div class="settings visible-fade" id="settings-panel">
-      <div class="setting-group">
-        <label>Target Score (Max 10)</label>
-        <input type="number" id="targetPoints" min="1" max="10" value="5" class="pop-input" placeholder="e.g. 5"/>
-      </div>
-      
-      <div class="setting-group" style="margin-top: 1.5rem;">
-        <label>Difficulty</label>
-        <div class="difficulty-selector">
-          <button class="diff-btn selected" onclick="setDifficulty('easy')">Easy</button>
-          <button class="diff-btn" onclick="setDifficulty('medium')">Medium</button>
-          <button class="diff-btn" onclick="setDifficulty('hard')">Hard</button>
+            <div class="form-group">
+                <label for="topic">Quiz Topic</label>
+                <input type="text" id="topic" placeholder="e.g., World War II, Python Programming, Solar System">
+            </div>
+
+            <div id="errorBox"></div>
+
+            <button class="btn btn-primary" id="generateBtn" onclick="generateQuiz()">
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                </svg>
+                Generate Quiz
+            </button>
         </div>
-      </div>
 
-      <div class="setting-group" style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-        <label style="margin-bottom: 0;">Timer Mode (10s Limit)</label>
-        <label class="switch">
-          <input type="checkbox" id="timerToggle" checked>
-          <span class="slider round"></span>
-        </label>
-      </div>
+        <div id="quizSection" class="card">
+            <div class="quiz-header">
+                <h2 id="quizTitle" class="gradient-text">Quiz</h2>
+            </div>
 
-      <button id="startGame" class="btn primary-btn" style="margin-top: 2rem;">Start Game</button>
-      <button onclick="location.href='mini-games.html'" class="exit btn secondary-btn">Go to mini-games</button>
+            <div class="question-nav" id="questionNav"></div>
+
+            <div class="questions-wrapper" id="questionsWrapper"></div>
+
+            <div class="nav-buttons" id="navButtons" style="display: none;">
+                <button class="nav-btn" id="prevBtn" onclick="prevQuestion()">← Previous</button>
+                <button class="nav-btn" id="nextBtn" onclick="nextQuestion()">Next →</button>
+                <button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()" style="display: none;">
+                    Submit Quiz
+                </button>
+            </div>
+
+            <div id="resultsContainer" style="display: none;"></div>
+        </div>
     </div>
 
-    <div id="game-area" class="hidden-fade">
-      
-      <div class="scoreboard">
-        <div class="score-box player">
-          <p style="margin-bottom: 5px;">You</p>
-          <div class="score-number" id="playerScore">0</div>
-        </div>
+    <script>
+        let questions = [];
+        let selectedAnswers = {};
+        let currentQuestion = 0;
+        let showResults = false;
         
-        <div class="timer-display hidden" id="timer-display">
-          <span class="material-icons">timer</span>
-          <span id="time-left">10</span>s
-        </div>
-
-        <div class="score-box computer">
-          <p style="margin-bottom: 5px;">Bot <span class="badge" id="bot-badge" style="font-size: 0.7rem; background: var(--primary-gradient); color: white; padding: 3px 8px; border-radius: 6px; vertical-align: middle; font-weight: bold;">Easy</span></p>
-          <div class="score-number" id="computerScore">0</div>
-        </div>
-      </div>
-
-      <div class="hands-stage">
-        <div class="hand-container">
-          <span class="hand" id="playerHand">✊</span>
-        </div>
-        <div class="hand-container">
-          <span class="hand" id="computerHand">✊</span>
-        </div>
-      </div>
-
-      <div class="message-area">
-        <h2 id="round-status">Choose your weapon!</h2>
-      </div>
-
-      <div class="choices">
-        <button class="choice-btn" data-choice="rock">
-          <div class="emoji">✊</div>
-          <span>Rock</span>
-        </button>
-        <button class="choice-btn" data-choice="paper">
-          <div class="emoji">📄</div>
-          <span>Paper</span>
-        </button>
-        <button class="choice-btn" data-choice="scissors">
-          <div class="emoji">✂️</div>
-          <span>Scissors</span>
-        </button>
-      </div>
-      <button onclick="returnToSettings()" class="secondary-btn" style="margin-top: 20px; max-width: 400px;">Return to Settings</button>
-    </div>
-  </div>
-
-  <div id="overlay" class="overlay-result hidden">
-    <div class="result-card">
-      <div id="result-emoji" style="font-size: 4rem; margin-bottom: 1rem;">🏆</div>
-      <h2 class="final-message" id="finalMessage">VICTORY ACHIEVED!</h2>
-      <p id="final-score" style="font-size: 1.5rem; font-weight: 700;"></p>
-      <button class="btn primary-btn" onclick="location.reload()">Play Again</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="guide-modal">
-    <div class="modal-card">
-      <h2 style="text-align: center; font-size: 2rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📖 How to Play</h2>
-      <div class="guide-steps">
-        <div class="step">
-          <span class="step-icon" style="font-size: 1.8rem;">🎯</span>
-          <p><strong>Objective:</strong> Reach the **Target Score** before the Bot does.</p>
-        </div>
-        <div class="step">
-          <span class="step-icon" style="font-size: 1.8rem;">🧠</span>
-          <p><strong>Difficulty - Hard:</strong> The bot analyzes your move history to **predict your next choice** and counter it!</p>
-        </div>
-        <div class="step">
-          <span class="step-icon" style="font-size: 1.8rem;">⚔️</span>
-          <p><strong>Rules:</strong> Rock crushes Scissors, Scissors cuts Paper, Paper covers Rock.</p>
-        </div>
-        <div class="step">
-          <span class="step-icon" style="font-size: 1.8rem;">⏱️</span>
-          <p><strong>Timer Mode:</strong> Make a move within **10 seconds**, or a random one is chosen!</p>
-        </div>
-      </div>
-      <button class="btn primary-btn" onclick="closeGuide()">Got it!</button>
-    </div>
-  </div>
-
-  <canvas id="fireworks" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 150;"></canvas>
-
-  <audio id="bgm" src="sounds/bgm.mp3" loop></audio>
-  <audio id="winSound" src="sounds/win.mp3"></audio>
-  <audio id="loseSound" src="sounds/lose.mp3"></audio>
-  <audio id="clickSound" src="sounds/click.mp3"></audio>
-  <audio id="gameOverSound" src="sounds/gameover.mp3"></audio>
-  <audio id="timerSound" src="sounds/timer.mp3"></audio>
-
-  <script>
-    
-    /*
-     * ----------------------------------------------------
-     * JAVASCRIPT LOGIC - STATE & ELEMENTS
-     * ----------------------------------------------------
-     */
-
-    const state = {
-      playerScore: 0,
-      computerScore: 0,
-      targetPoints: 5,
-      difficulty: 'easy',
-      timerEnabled: true,
-      timerDuration: 10,
-      timeLeft: 10,
-      isPlaying: false,
-      musicEnabled: false,
-      playerHistory: [],
-      timerInterval: null
-    };
-
-    const choices = ['rock', 'paper', 'scissors'];
-    const emojis = { rock: '✊', paper: '📄', scissors: '✂️' };
-
-    // Elements
-    const startBtn = document.getElementById('startGame');
-    const settingsPanel = document.getElementById('settings-panel');
-    const gameArea = document.getElementById('game-area');
-    const overlay = document.getElementById('overlay');
-    const playerHand = document.getElementById('playerHand');
-    const computerHand = document.getElementById('computerHand');
-    const roundStatus = document.getElementById('round-status');
-    const timerDisplay = document.getElementById('timer-display');
-    const timeLeftEl = document.getElementById('time-left');
-    const choiceButtons = document.querySelectorAll('.choice-btn');
-    const playerScoreEl = document.getElementById('playerScore');
-    const computerScoreEl = document.getElementById('computerScore');
-
-    // Sounds
-    const sounds = {
-      win: document.getElementById('winSound'),
-      lose: document.getElementById('loseSound'),
-      click: document.getElementById('clickSound'),
-      gameover: document.getElementById('gameOverSound'),
-      timer: document.getElementById('timerSound'),
-      bgm: document.getElementById('bgm')
-    };
-    
-    // Utility for smooth transitions on visibility change
-    function togglePanelVisibility(showPanel, hidePanel) {
-        hidePanel.classList.remove('visible-fade');
-        hidePanel.classList.add('hidden-fade');
+        // Default values - hidden from user
+        const DEFAULT_NUM_QUESTIONS = 10;
+        const DEFAULT_DIFFICULTY = "medium";
         
-        // Wait for fade-out to finish before making the panel display: none
-        setTimeout(() => {
-            hidePanel.classList.add('hidden');
+        const API_KEY = "AIzaSyAwJv89OjQgZuEeJX-8xV1aZ49K-b6TfCY";
+        const MODEL_NAME = "gemini-2.5-flash"; 
+        const MAX_OUTPUT_TOKENS = 16384;
+
+        async function generateQuiz() {
+            const topic = document.getElementById('topic').value.trim();
+
+            if (!topic) {
+                showError('Please enter a topic');
+                return;
+            }
+
+            const generateBtn = document.getElementById('generateBtn');
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<svg class="spinner" width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none"/></svg> Generating Quiz...';
+
+            hideError();
+            questions = [];
+            selectedAnswers = {};
+            currentQuestion = 0;
+            showResults = false;
+
+            try {
+                const prompt = `Generate ${DEFAULT_NUM_QUESTIONS} multiple-choice quiz questions about "${topic}" at ${DEFAULT_DIFFICULTY} difficulty level.
+                
+                For each question, provide:
+                1. The question text
+                2. Four answer options (A, B, C, D)
+                3. The correct answer (specify which letter)
+                4. A brief explanation of why that answer is correct
+                
+                Format your response as valid JSON with this exact structure:
+                {
+                  "questions": [
+                    {
+                      "question": "Question text here?",
+                      "options": {
+                        "A": "First option",
+                        "B": "Second option",
+                        "C": "Third option",
+                        "D": "Fourth option"
+                      },
+                      "correct": "A",
+                      "explanation": "Explanation here"
+                    }
+                  ]
+                }`;
+
+                const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL_NAME}:generateContent?key=${API_KEY}`;
+                
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: {
+                            maxOutputTokens: MAX_OUTPUT_TOKENS,
+                            temperature: 0.5,
+                            responseMimeType: 'application/json' 
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error?.message || 'Failed to generate quiz');
+                }
+
+                const data = await response.json();
+                const generatedText = data.candidates[0].content.parts[0].text;
+                const quizData = JSON.parse(generatedText);
+                
+                questions = quizData.questions;
+                
+                document.getElementById('quizTitle').textContent = 'Quiz: ' + topic;
+                renderQuiz();
+                document.querySelector('.container').style.display = 'none';
+                document.getElementById('quizSection').classList.add('active');
+                document.querySelector('.container').parentElement.insertBefore(document.getElementById('quizSection'), document.querySelector('.container').nextSibling);
+
+            } catch (err) {
+                showError(err.message || 'Failed to generate quiz');
+                console.error('Error:', err);
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.innerHTML = '<svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg> Generate Quiz';
+            }
+        }
+
+        function renderQuiz() {
+            renderNavDots();
+            renderQuestions();
+            document.getElementById('navButtons').style.display = 'flex';
+            document.getElementById('resultsContainer').style.display = 'none';
+        }
+
+        function renderNavDots() {
+            const nav = document.getElementById('questionNav');
+            nav.innerHTML = '';
+            questions.forEach((_, idx) => {
+                const dot = document.createElement('div');
+                dot.className = 'nav-dot';
+                if (idx === currentQuestion) dot.classList.add('active');
+                if (selectedAnswers[idx]) dot.classList.add('answered');
+                dot.onclick = () => goToQuestion(idx);
+                nav.appendChild(dot);
+            });
+        }
+
+        function renderQuestions() {
+            const wrapper = document.getElementById('questionsWrapper');
+            wrapper.innerHTML = '';
+
+            questions.forEach((q, idx) => {
+                const card = document.createElement('div');
+                card.className = 'question-card';
+                if (idx === currentQuestion) card.classList.add('active');
+                else if (idx < currentQuestion) card.classList.add('prev');
+
+                let optionsHTML = '';
+                Object.entries(q.options).forEach(([letter, option]) => {
+                    const isSelected = selectedAnswers[idx] === letter;
+                    const btnClass = isSelected ? 'option-btn selected' : 'option-btn';
+                    optionsHTML += `<button class="${btnClass}" onclick="selectAnswer(${idx}, '${letter}')"><strong>${letter}.</strong> ${option}</button>`;
+                });
+
+                card.innerHTML = `
+                    <div class="question-title gradient-text">${idx + 1}. ${q.question}</div>
+                    ${optionsHTML}
+                `;
+
+                wrapper.appendChild(card);
+            });
+
+            updateNavigationButtons();
+        }
+
+        function selectAnswer(questionIndex, answer) {
+            if (!showResults) {
+                selectedAnswers[questionIndex] = answer;
+                renderNavDots();
+                renderQuestions();
+            }
+        }
+
+        function goToQuestion(idx) {
+            currentQuestion = idx;
+            renderQuestions();
+            renderNavDots();
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestions();
+                renderNavDots();
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestions();
+                renderNavDots();
+            }
+        }
+
+        function updateNavigationButtons() {
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').style.display = currentQuestion === questions.length - 1 ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = 
+                Object.keys(selectedAnswers).length === questions.length && currentQuestion === questions.length - 1 ? 'block' : 'none';
+        }
+
+        function submitQuiz() {
+            showResults = true;
+            const score = calculateScore();
+            const percentage = (score / questions.length) * 100;
             
-            showPanel.classList.remove('hidden');
-            // Small delay before fade-in starts
-            setTimeout(() => {
-                showPanel.classList.remove('hidden-fade');
-                showPanel.classList.add('visible-fade');
-            }, 50); 
+            let commentary, detail;
+            if (percentage === 100) {
+                commentary = "🎉 Perfect Score! Incredible!";
+                detail = "You've mastered this topic completely. Outstanding performance!";
+            } else if (percentage >= 80) {
+                commentary = "🌟 Excellent Work!";
+                detail = "You have a strong understanding of this topic. Keep it up!";
+            } else if (percentage >= 60) {
+                commentary = "👍 Good Job!";
+                detail = "You're on the right track. A bit more practice will make you excel!";
+            } else if (percentage >= 40) {
+                commentary = "📚 Keep Learning!";
+                detail = "You've got the basics down. Review the material and try again!";
+            } else {
+                commentary = "💪 Don't Give Up!";
+                detail = "Learning takes time. Review the explanations and practice more!";
+            }
 
-        }, 500); // Must match CSS transition duration of hidden-fade
-    }
-
-    /* --- Initialization --- */
-    document.addEventListener('DOMContentLoaded', () => {
-      // Apply saved theme
-      if(localStorage.getItem('rps-theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-      }
-      
-      choiceButtons.forEach(btn => {
-        btn.addEventListener('click', () => makeMove(btn.dataset.choice));
-      });
-      
-      startBtn.addEventListener('click', startGame);
-      
-      if(sounds.bgm) sounds.bgm.volume = 0.3;
-      document.getElementById('bot-badge').innerText = 'Easy';
-      
-      // Initial state setup to ensure animations work correctly
-      gameArea.classList.add('hidden', 'hidden-fade');
-      settingsPanel.classList.remove('hidden', 'hidden-fade');
-      settingsPanel.classList.add('visible-fade');
-    });
-
-    /* --- UI Functions --- */
-
-    function toggleMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('rps-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-    }
-
-    function toggleMusic() {
-      state.musicEnabled = !state.musicEnabled;
-      const btn = document.getElementById('music-btn');
-      btn.innerHTML = `<span class="material-icons">${state.musicEnabled ? 'music_note' : 'music_off'}</span>`;
-      
-      if (state.musicEnabled) {
-        sounds.bgm.play().catch(e => console.warn("Audio blocked:", e));
-      } else {
-        sounds.bgm.pause();
-      }
-    }
-
-    function showGuide() {
-      document.getElementById('guide-modal').classList.add('active');
-    }
-
-    function closeGuide() {
-      document.getElementById('guide-modal').classList.remove('active');
-    }
-
-    function setDifficulty(level) {
-      state.difficulty = level;
-      playSound('click');
-      document.querySelectorAll('.diff-btn').forEach(btn => {
-        btn.classList.toggle('selected', btn.innerText.toLowerCase() === level);
-      });
-      document.getElementById('bot-badge').innerText = level.charAt(0).toUpperCase() + level.slice(1);
-    }
-    
-    function playSound(name) {
-      const sound = sounds[name];
-      if (sound) {
-        sound.currentTime = 0;
-        sound.play().catch(()=>{});
-      }
-    }
-    
-    function returnToSettings() {
-        if(state.timerInterval) clearInterval(state.timerInterval);
-        state.isPlaying = false;
-        playSound('click');
-        togglePanelVisibility(settingsPanel, gameArea);
-    }
-
-    /* --- Core Game Logic --- */
-
-    function startGame() {
-      playSound('click');
-      
-      let inputVal = parseInt(document.getElementById('targetPoints').value);
-      if (inputVal > 10) inputVal = 10;
-      if (inputVal < 1 || isNaN(inputVal)) inputVal = 1;
-      
-      document.getElementById('targetPoints').value = inputVal;
-      state.targetPoints = inputVal;
-
-      state.timerEnabled = document.getElementById('timerToggle').checked;
-      state.playerScore = 0;
-      state.computerScore = 0;
-      state.playerHistory = [];
-      state.isPlaying = true;
-      
-      updateScoreboard();
-      
-      togglePanelVisibility(gameArea, settingsPanel);
-      overlay.classList.add('hidden');
-      
-      if(state.timerEnabled) {
-        timerDisplay.classList.remove('hidden');
-        startTimer();
-      } else {
-        timerDisplay.classList.add('hidden');
-      }
-      
-      roundStatus.innerText = "Choose your weapon!";
-      roundStatus.style.color = '';
-      enableChoiceButtons(true);
-      playerHand.innerText = '✊';
-      computerHand.innerText = '✊';
-    }
-
-    function startTimer() {
-      state.timeLeft = state.timerDuration;
-      timeLeftEl.innerText = state.timeLeft;
-      timeLeftEl.style.color = 'inherit';
-      clearInterval(state.timerInterval);
-      
-      state.timerInterval = setInterval(() => {
-        state.timeLeft--;
-        timeLeftEl.innerText = state.timeLeft;
-        
-        if(state.timeLeft <= 3 && state.timeLeft > 0) {
-          playSound('timer');
-          timeLeftEl.style.color = '#ff416c'; 
-          timerDisplay.classList.add('score-pop'); // Animated pulse on timer
-        } else {
-          timeLeftEl.style.color = 'inherit';
-          timerDisplay.classList.remove('score-pop');
+            document.getElementById('navButtons').style.display = 'none';
+            document.getElementById('questionNav').style.display = 'none';
+            document.getElementById('questionsWrapper').style.display = 'none';
+            
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.style.display = 'flex';
+            resultsContainer.innerHTML = `
+                <div class="results-container">
+                    <div class="score-circle">
+                        <div class="score-number">${score}/${questions.length}</div>
+                        <div class="score-label">${percentage.toFixed(0)}%</div>
+                    </div>
+                    <div class="commentary gradient-text">${commentary}</div>
+                    <div class="commentary-detail">${detail}</div>
+                    <div class="button-group">
+                        <button class="btn btn-primary" onclick="reviewAnswers()">
+                            Review Answers
+                        </button>
+                        <button class="btn btn-primary" onclick="newQuiz()">
+                            New Quiz
+                        </button>
+                    </div>
+                </div>
+            `;
         }
-        
-        if(state.timeLeft <= 0) {
-          clearInterval(state.timerInterval);
-          handleTimeout();
+
+        function reviewAnswers() {
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('questionNav').style.display = 'none';
+            document.getElementById('questionsWrapper').style.display = 'none';
+            
+            const wrapper = document.getElementById('questionsWrapper');
+            wrapper.innerHTML = '';
+
+            let correctCount = 0;
+            let reviewHTML = '<div class="review-container">';
+
+            questions.forEach((q, idx) => {
+                const userAnswer = selectedAnswers[idx];
+                const isCorrect = userAnswer === q.correct;
+                const cardClass = isCorrect ? 'correct' : 'incorrect';
+                
+                if (isCorrect) correctCount++;
+
+                reviewHTML += `
+                    <div class="review-card ${cardClass}">
+                        <div class="review-question-header">
+                            <div class="review-status-badge ${cardClass}">
+                                ${isCorrect ? '✓' : '✕'}
+                            </div>
+                            <div class="review-question-text">
+                                ${idx + 1}. ${q.question}
+                            </div>
+                        </div>
+                        
+                        <div class="review-options">
+                `;
+
+                Object.entries(q.options).forEach(([letter, option]) => {
+                    const isUserSelected = userAnswer === letter;
+                    const isCorrectAnswer = letter === q.correct;
+                    
+                    let optionClass = 'review-option';
+                    let indicator = '';
+
+                                    if (isCorrectAnswer) {
+                        optionClass += ' correct';
+                        indicator = '✓ Correct Answer';
+                    } else if (isUserSelected && !isCorrect) {
+                        optionClass += ' incorrect';
+                        indicator = '✕ Your Answer';
+                    }
+
+                    if (isUserSelected || isCorrectAnswer) {
+                        reviewHTML += `
+                            <div class="${optionClass}">
+                                <span class="review-option-label">${letter}.</span>
+                                <span>${option}</span>
+                                <span class="option-indicator">${indicator}</span>
+                            </div>
+                        `;
+                    }
+                });
+
+                reviewHTML += `
+                        </div>
+                        <div class="review-explanation">
+                            <div class="explanation-title">📚 Explanation</div>
+                            <div class="explanation-text">${q.explanation}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            reviewHTML += '</div>';
+
+            const resultsContainer = document.getElementById('resultsContainer');
+            resultsContainer.innerHTML = `
+                <div class="results-container" style="flex-direction: column;">
+                    <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
+                        <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
+                        <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem;">
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="font-size: 2rem; color: #10b981; font-weight: 700;">
+                                    ${correctCount}
+                                </div>
+                                <div style="color: #aaa; font-size: 0.9rem;">Correct</div>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center;">
+                                <div style="font-size: 2rem; color: #ef4444; font-weight: 700;">
+                                    ${questions.length - correctCount}
+                                </div>
+                                <div style="color: #aaa; font-size: 0.9rem;">Incorrect</div>
+                            </div>
+                        </div>
+                    </div>
+                    ${reviewHTML}
+                    <div class="review-footer">
+                        <button class="btn btn-primary" onclick="backToResults()" style="max-width: 200px;">
+                            ← Back to Results
+                        </button>
+                        <button class="btn btn-primary" onclick="newQuiz()" style="max-width: 200px;">
+                            New Quiz →
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            resultsContainer.style.display = 'flex';
         }
-      }, 1000);
-    }
 
-    function handleTimeout() {
-      roundStatus.innerText = "Time's up! Random move selected.";
-      const randomMove = choices[Math.floor(Math.random() * choices.length)];
-      makeMove(randomMove);
-    }
-    
-    function enableChoiceButtons(enable) {
-        choiceButtons.forEach(btn => {
-            btn.classList.toggle('disabled', !enable);
-        });
-    }
-
-    function makeMove(playerChoice) {
-      if(!state.isPlaying) return;
-      
-      clearInterval(state.timerInterval);
-      state.isPlaying = false; 
-      enableChoiceButtons(false); 
-
-      playSound('click');
-      playerHand.innerText = '✊';
-      computerHand.innerText = '✊';
-      
-      // Start the animated shake immediately
-      playerHand.classList.add('shake-player');
-      computerHand.classList.add('shake-computer');
-      
-      // Delay the result reveal by 1 second (matches shake animation duration)
-      setTimeout(() => { 
-        const computerChoice = getComputerMove(playerChoice);
-        resolveRound(playerChoice, computerChoice);
-        
-        // Remove shake classes after the animation is complete
-        playerHand.classList.remove('shake-player');
-        computerHand.classList.remove('shake-computer');
-        
-        state.playerHistory.push(playerChoice);
-      }, 1000); 
-    }
-    
-    /* ----------------------------------------------------
-     * BOT LOGIC (MEDIUM & HARD IMPLEMENTATION)
-     * ----------------------------------------------------
-     */
-
-    function getCounterMove(move) {
-      if (move === 'rock') return 'paper';
-      if (move === 'paper') return 'scissors';
-      return 'rock';
-    }
-
-    function getPredictedMove() {
-      if (state.playerHistory.length < 2) return null;
-
-      const lastMove = state.playerHistory[state.playerHistory.length - 1]; 
-      const historyPairs = {};
-
-      for (let i = 0; i < state.playerHistory.length - 1; i++) {
-        if (state.playerHistory[i] === lastMove) {
-          const nextMove = state.playerHistory[i + 1];
-          historyPairs[nextMove] = (historyPairs[nextMove] || 0) + 1;
+        function calculateScore() {
+            let correct = 0;
+            questions.forEach((q, idx) => {
+                if (selectedAnswers[idx] === q.correct) correct++;
+            });
+            return correct;
         }
-      }
 
-      let predictedMove = null;
-      let maxCount = 0;
-      for (const move in historyPairs) {
-        if (historyPairs[move] >= 2 && historyPairs[move] > maxCount) {
-          maxCount = historyPairs[move];
-          predictedMove = move;
+        function newQuiz() {
+            questions = [];
+            selectedAnswers = {};
+            currentQuestion = 0;
+            showResults = false;
+            document.getElementById('quizSection').classList.remove('active');
+            document.querySelector('.container').style.display = 'flex';
+            document.getElementById('questionsWrapper').innerHTML = '';
+            document.getElementById('resultsContainer').style.display = 'none';
+            document.getElementById('topic').value = '';
         }
-      }
 
-      return predictedMove;
-    }
-
-
-    function getComputerMove(playerMove) {
-      const r = Math.random();
-      const previousPlayerMove = state.playerHistory[state.playerHistory.length - 1]; 
-
-      if (state.difficulty === 'easy') {
-        return choices[Math.floor(Math.random() * choices.length)];
-      } 
-      else if (state.difficulty === 'medium') {
-        // 40% chance to counter the player's PREVIOUS move
-        if (previousPlayerMove && r > 0.6) { 
-          return getCounterMove(previousPlayerMove);
+        function backToResults() {
+            submitQuiz();
         }
-        return choices[Math.floor(Math.random() * choices.length)];
-      } 
-      else { // Hard
-        const predictedMove = getPredictedMove();
-        
-        // 70% chance to counter the predicted pattern move
-        if (predictedMove && r > 0.3) { 
-          return getCounterMove(predictedMove);
+
+        function showError(message) {
+            document.getElementById('errorBox').innerHTML = 
+                `<div class="error-box"><svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg><span>${message}</span></div>`;
         }
-        
-        // 20% chance to counter the CURRENT player move 
-        if (r > 0.8) { 
-            return getCounterMove(playerMove);
+
+        function hideError() {
+            document.getElementById('errorBox').innerHTML = '';
         }
-        
-        return choices[Math.floor(Math.random() * choices.length)];
-      }
-    }
-
-    /* ----------------------------------------------------
-     * ROUND RESOLUTION & ENDGAME
-     * ----------------------------------------------------
-     */
-
-    function resolveRound(pChoice, cChoice) {
-      playerHand.innerText = emojis[pChoice];
-      computerHand.innerText = emojis[cChoice];
-      
-      let result = '';
-      let resultColor = '';
-      
-      if (pChoice === cChoice) {
-        result = 'draw';
-        roundStatus.innerText = `It's a Draw! (${emojis[pChoice]})`;
-        resultColor = '#888';
-      } else if (
-        (pChoice === 'rock' && cChoice === 'scissors') ||
-        (pChoice === 'paper' && cChoice === 'rock') ||
-        (pChoice === 'scissors' && cChoice === 'paper')
-      ) {
-        result = 'win';
-        state.playerScore++;
-        roundStatus.innerText = `You Win! ${emojis[pChoice]} beats ${emojis[cChoice]}`;
-        resultColor = '#0072ff';
-        playSound('win');
-        playerScoreEl.parentElement.classList.add('score-pop');
-      } else {
-        result = 'lose';
-        state.computerScore++;
-        roundStatus.innerText = `Bot Wins! ${emojis[cChoice]} beats ${emojis[pChoice]}`;
-        resultColor = '#ff416c';
-        playSound('lose');
-        computerScoreEl.parentElement.classList.add('score-pop');
-      }
-      
-      roundStatus.style.color = resultColor;
-      updateScoreboard();
-      
-      if (state.playerScore >= state.targetPoints || state.computerScore >= state.targetPoints) {
-        endGame();
-      } else {
-        // Wait for 1.5s, then restart round
-        setTimeout(() => {
-          state.isPlaying = true;
-          enableChoiceButtons(true);
-          playerHand.innerText = '✊';
-          computerHand.innerText = '✊';
-          roundStatus.innerText = "Choose your weapon!";
-          roundStatus.style.color = 'inherit';
-          playerScoreEl.parentElement.classList.remove('score-pop');
-          computerScoreEl.parentElement.classList.remove('score-pop');
-          if(state.timerEnabled) startTimer();
-        }, 1500);
-      }
-    }
-
-    function updateScoreboard() {
-      playerScoreEl.innerText = state.playerScore;
-      computerScoreEl.innerText = state.computerScore;
-    }
-
-    function endGame() {
-      const won = state.playerScore > state.computerScore;
-      playSound('gameover');
-      
-      document.getElementById('result-emoji').innerText = won ? '🏆' : '🤖';
-      document.getElementById('finalMessage').innerText = won ? 'VICTORY ACHIEVED!' : 'DEFEAT... BOT WINS';
-      document.getElementById('final-score').innerText = `Final Score: ${state.playerScore} - ${state.computerScore}`;
-      
-      overlay.classList.remove('hidden');
-      
-      if (won) {
-        startFireworks();
-      }
-    }
-
-    /* --- Fireworks System --- */
-    const canvas = document.getElementById('fireworks');
-    const ctx = canvas.getContext('2d');
-    let fireworks = [];
-    let animationId = null;
-
-    function resizeCanvas() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    }
-    window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
-
-    class Particle {
-      constructor(x, y, color) {
-        this.x = x;
-        this.y = y;
-        this.color = color;
-        this.velocity = {
-          x: (Math.random() - 0.5) * 10,
-          y: (Math.random() - 0.5) * 10
-        };
-        this.alpha = 1;
-        this.friction = 0.95;
-      }
-
-      draw() {
-        ctx.globalAlpha = this.alpha;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      }
-
-      update() {
-        this.velocity.x *= this.friction;
-        this.velocity.y *= this.friction;
-        this.x += this.velocity.x;
-        this.y += this.velocity.y;
-        this.alpha -= 0.02;
-      }
-    }
-
-    function startFireworks() {
-      if (animationId) cancelAnimationFrame(animationId);
-      fireworks = [];
-      
-      const animate = () => {
-        // Stop animation if overlay is hidden
-        if(overlay.classList.contains('hidden')) {
-             if (animationId) cancelAnimationFrame(animationId);
-             ctx.clearRect(0, 0, canvas.width, canvas.height);
-             return;
-        }
-        
-        animationId = requestAnimationFrame(animate);
-        
-        // Trail effect
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
-        if (Math.random() < 0.08) {
-          const x = Math.random() * canvas.width;
-          const y = Math.random() * canvas.height * 0.4 + (canvas.height * 0.1); 
-          const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
-          
-          for (let i = 0; i < 60; i++) {
-            fireworks.push(new Particle(x, y, color));
-          }
-        }
-        
-        fireworks.forEach((p, index) => {
-          if (p.alpha > 0) {
-            p.update();
-            p.draw();
-          } else {
-            fireworks.splice(index, 1);
-          }
-        });
-      };
-      
-      animate();
-    }
-  </script>
+    </script>
 </body>
 </html>
