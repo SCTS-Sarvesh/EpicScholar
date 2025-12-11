@@ -15,7 +15,7 @@
             --primary-color: #0072ff;
             --secondary-color: #ff416c;
             --info-color: #4CAF50;
-            --warning-color: #FFC107; /* Used for PDF icon */
+            --warning-color: #FFC107;
             --edubot-color: #0072ff;
             
             /* Light Mode */
@@ -41,20 +41,20 @@
             --transition-speed: 0.4s;
             --blur-level: 16px;
             --animation-timing: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --sidebar-width: 260px;
+            
             /* Dark Theme */
---bg-color: #0d0d0d;
---text-color: #e9eef8;
---primary-color: #0072ff;
---secondary-color: #ff416c;
---primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
---card-glass-bg: rgba(28, 28, 28, 0.4); /* Frosted dark glass */
---card-glass-border: rgba(255, 255, 255, 0.15);
---secondary-glass: rgba(51, 51, 51, 0.6);
---shadow-light: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.05);
---shadow-deep: 0 10px 40px 0 rgba(0, 0, 0, 0.5); /* Deeper shadow for depth */
---modal-bg: rgba(0, 0, 0, 0.85);
---toast-bg: rgba(255, 255, 255, 0.15);
---scroll-color: rgba(255, 255, 255, 0.2);
+            --bg-color: #0d0d0d;
+            --text-color: #e9eef8;
+            --primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            --card-glass-bg: rgba(28, 28, 28, 0.4);
+            --card-glass-border: rgba(255, 255, 255, 0.15);
+            --secondary-glass: rgba(51, 51, 51, 0.6);
+            --shadow-light: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.05);
+            --shadow-deep: 0 10px 40px 0 rgba(0, 0, 0, 0.5);
+            --modal-bg: rgba(0, 0, 0, 0.85);
+            --toast-bg: rgba(255, 255, 255, 0.15);
+            --scroll-color: rgba(255, 255, 255, 0.2);
         }
 
         /* Base Body Styling */
@@ -217,8 +217,6 @@
         }
 
         .card-deleting {
-            /* Animation is handled by JS now for immediate removal */
-            /* This class is for potential future use if needed */
             transition: opacity 0.3s, transform 0.3s;
         }
 
@@ -538,48 +536,93 @@
             100% { transform: scale(1) translateY(0); }
         }
         
-        /* NEW: Marks Modal (Emerge from box) */
+        /* Marks Modal Popup - Enhanced Styling */
         #marks-modal {
             position: fixed;
             z-index: 3001;
             width: 500px;
-            max-width: 90%;
-            max-height: 400px;
+            height: 500px;
             overflow-y: auto;
             
             /* Start hidden and small */
             opacity: 0;
-            transform: scale(0.8);
+            transform: scale(0.5);
             transform-origin: center;
-            transition: all 0.4s var(--animation-timing);
-            
-            /* Cannot be clicked when hidden */
+            transition: all 0.5s var(--animation-timing);
             pointer-events: none;
+            
+            /* Enhanced glass effect */
+            background: var(--card-dark);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 2px solid var(--card-glass-border);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            border-radius: var(--border-radius-xl);
         }
+        
+        .light-mode #marks-modal {
+            background: var(--card-light);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-light);
+        }
+        
         #marks-modal.visible {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1); /* Move to center */
+            transform: translate(-50%, -50%) scale(1);
             top: 50% !important;
             left: 50% !important;
             pointer-events: auto;
         }
+        
         #marks-modal-content {
             text-align: left;
+            margin-top: 15px;
         }
+        
         .mark-item {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             font-size: 1em;
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
         }
+        
         .light-mode .mark-item {
-            border-bottom-color: rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(0, 0, 0, 0.05);
         }
-        .mark-item:last-child { border-bottom: none; }
+        
+        .mark-item:hover {
+            background: rgba(0, 114, 255, 0.1);
+            border-color: var(--primary-color);
+            transform: translateX(5px);
+        }
+        
+        .mark-item .mark-name {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        
+        .light-mode .mark-item .mark-name {
+            color: var(--text-light);
+        }
+        
         .mark-item .mark-score {
             font-weight: 700;
-            color: var(--primary-color);
+            font-size: 1.2em;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        #marks-modal h3 {
+            margin-top: 0;
         }
 
         
@@ -1100,7 +1143,7 @@
             cursor: not-allowed;
         }
         
-        /* NEW: PDF Viewer Container */
+        /* PDF Viewer Container */
         #pdf-container {
              background-color: rgba(40, 40, 40, 0.95);
         }
@@ -1173,7 +1216,255 @@
 
         /*
          * =================================================================
-         * 8. MEDIA QUERIES (1001 - END)
+         * 8. SIDEBAR STYLING (851 - 950)
+         * =================================================================
+         */
+        
+        .sidebar {
+            width: 260px;
+            top: 15px;
+            left: 0px;
+            padding: 20px 0;
+            z-index: 500;
+            position: relative;
+            height: 90vh;
+        }
+
+        .nav-wrap {
+            padding: 10px 0;
+            position: relative;
+        }
+        
+        .nav-item {
+            padding: 15px 20px 15px 30px; 
+            margin: 8px 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        .nav-item.active, .nav-item:hover {
+            background-color: var(--secondary-glass);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .nav-item.active {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+        
+        .settings-wrap {
+            position: absolute;
+            bottom: 50px;
+            width: 100%;
+            text-align: left;
+        }
+        
+        /* Entry Animations */
+        @keyframes slideInDown {
+            from { transform: translateY(-100px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes slideInLeft {
+            from { transform: translateX(-100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .sidebar {
+            animation: slideInLeft 0.7s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0; 
+        }
+        .nav-wrap {
+            position: relative;
+            bottom: 50px;
+        }
+
+        .nav-item {
+            padding: 15px 20px 15px 30px; 
+            margin: 8px 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+        .nav-item.active {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+        
+        .nav-wrap {
+            padding: 10px 0;
+            position: relative;
+        }
+
+        .settings-wrap {
+            position: absolute;
+            bottom: 75px;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-item {
+            padding: 15px 20px 15px 30px; 
+            margin: 8px 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            top: 50px;
+            cursor: pointer;
+            border-radius: 12px;
+            display: block; 
+            text-decoration: none; 
+        }
+
+        .nav-item:hover {
+            background-color: var(--secondary-glass);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-item-active {
+            background-color: var(--secondary-glass);
+            color:  #ff416c;
+            font-weight: 700;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            padding: 15px 20px 15px 30px; 
+            margin: 8px 10px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            top: 50px;
+            cursor: pointer;
+            border-radius: 12px;
+            display: block; 
+            text-decoration: none; 
+        }
+        
+        /*
+         * =================================================================
+         * 9. CIRCULAR PROGRESS (951 - 1050)
+         * =================================================================
+         */
+        
+        /* Circular Progress Performance Box */
+        #overall-performance-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            position: relative;
+        }
+
+        .circular-progress-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .circular-progress {
+            transform: rotate(-90deg);
+        }
+
+        .progress-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 12;
+        }
+
+        .light-mode .progress-circle-bg {
+            stroke: rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-circle {
+            fill: none;
+            stroke-width: 12;
+            stroke-linecap: round;
+            transition: stroke-dashoffset 1s ease-in-out, stroke 0.5s ease;
+            animation: progressAnimation 2s ease-out forwards;
+        }
+
+        @keyframes progressAnimation {
+            from {
+                stroke-dashoffset: 502;
+            }
+        }
+
+        /* Color based on percentage */
+        .progress-circle.excellent {
+            stroke: url(#gradient-excellent);
+        }
+
+        .progress-circle.good {
+            stroke: url(#gradient-good);
+        }
+
+        .progress-circle.average {
+            stroke: url(#gradient-average);
+        }
+
+        .progress-circle.poor {
+            stroke: url(#gradient-poor);
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .progress-percentage {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1;
+            display: block;
+        }
+
+        .progress-label {
+            font-size: 0.85em;
+            color: var(--subtext-dark);
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .light-mode .progress-label {
+            color: var(--subtext-light);
+        }
+
+        #overall-performance-box > p {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        .light-mode #overall-performance-box > p {
+            color: var(--text-light);
+        }
+
+        /*
+         * =================================================================
+         * 10. MEDIA QUERIES (1051 - END)
          * =================================================================
          */
         
@@ -1206,44 +1497,15 @@
             .live-session-header-bar { flex-direction: column; gap: 10px; }
             .live-session-header-controls { width: 100%; justify-content: space-between; }
             .section-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .circular-progress-container { width: 150px; height: 150px; }
+            .progress-percentage { font-size: 2em; }
         }
         @media (max-width: 480px) {
              .youvideo { width: 100%; }
              .subject-grid { grid-template-columns: 1fr; }
         }
 
-::-webkit-scrollbar {
-width: 8px;
-height: 8px;
-}
-::-webkit-scrollbar-thumb {
-background: var(--scroll-color);
-border-radius: 10px;
-transition: background 0.3s;
-}
-::-webkit-scrollbar-thumb:hover {
-background: var(--primary-color);
-}
-::-webkit-scrollbar-track {
-background: transparent;
-}
-
-
-/* --- 2. Global Base and Typography --- */
-body {
-font-family: 'Inter', sans-serif;
-margin: 0;
-padding: 0;
-background-color: var(--bg-color);
-color: var(--text-color);
-transition: background-color 0.5s, color 0.5s;
-display: flex;
-height: 100vh;
-overflow: hidden; /* Only the designated section will scroll */
--webkit-font-smoothing: antialiased;
-}
-        
-        /* --- 3. Liquid Glass Background (Ambient Shimmer) --- */
+        /* Liquid Glass Background */
         #liquid-glass-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; overflow: hidden;
         }
@@ -1254,7 +1516,7 @@ overflow: hidden; /* Only the designated section will scroll */
             height: 600px;
             background: var(--primary-gradient);
             border-radius: 50%;
-            opacity: 0.18; /* Increased opacity for more presence */
+            opacity: 0.18;
             filter: blur(150px);
             animation: moveBlob 30s infinite alternate;
         }
@@ -1268,155 +1530,124 @@ overflow: hidden; /* Only the designated section will scroll */
             100% { transform: translate(-80px, 80px) scale(0.9); filter: hue-rotate(0deg) blur(150px); }
         }
 
-        /* --- 4. Glass Element Base Style (Applied to Header, Sidebar, Cards, Modal) --- */
         .glass-element {
             background: var(--card-glass-bg);
             border: 1px solid var(--card-glass-border);
-            backdrop-filter: blur(25px); /* Increased blur for stronger effect */
+            backdrop-filter: blur(25px);
             -webkit-backdrop-filter: blur(25px);
             box-shadow: var(--shadow-deep);
-            border-radius: 18px; /* Slightly larger radius */
+            border-radius: 18px;
             transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-
-        /* --- 6. Sidebar & Navigation (Glass) --- */
-        .sidebar {
-            width: 260px;
-            top: 15px;
-            left: 0px;
-            padding: 20px 0;
-            z-index: 500;
-            position: relative;
-            height: 90vh;
-        }
-
-        .nav-wrap {
-            padding: 10px 0;
-            position: relative;
-        }
-        
-        .nav-item {
-            padding: 15px 20px 15px 30px; 
-            margin: 8px 10px;
-            font-weight: 500;
-            color: var(--text-color);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            cursor: pointer;
-            border-radius: 12px;
-        }
-
-        .nav-item.active, .nav-item:hover {
-            background-color: var(--secondary-glass);
-            transform: scale(1.05); /* Aggressive lift animation */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        .nav-item.active {
-            color: var(--secondary-color);
-            font-weight: 700;
-        }
-.settings-wrap {
-    position: absolute;
-    bottom: 50px;
+        /* Marks Modal Popup - Enhanced Styling */
+.marks-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
-    text-align: left;
-}
-/* --- NEW: Entry Animations --- */
-@keyframes slideInDown {
-    from { transform: translateY(-100px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-@keyframes slideInLeft {
-    from { transform: translateX(-100px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-@keyframes slideInRight {
-    from { transform: translateX(100px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-.sidebar {
-    animation: slideInLeft 0.7s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-    opacity: 0; 
-}
-.nav-wrap {
-    position: relative;
-    bottom: 50px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 3001;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
-.nav-item {
-    padding: 15px 20px 15px 30px; 
-    margin: 8px 10px;
-    font-weight: 500;
-    color: var(--text-color);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    cursor: pointer;
-    border-radius: 12px;
-}
-.nav-item.active {
-    color: var(--secondary-color);
-    font-weight: 700;
-}
-/* --- Styling for the Menubar Wrappers --- */
-.nav-wrap {
-    padding: 10px 0;
-    position: relative;
+.marks-modal-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
 }
 
-.settings-wrap {
-    position: absolute;
-    bottom: 75px;
+.marks-modal-content {
     width: 100%;
-    text-align: left;
-}
-
-/* --- Styling for the Nav Items (<a> tags) --- */
-.nav-item {
-    padding: 15px 20px 15px 30px; 
-    margin: 8px 10px;
-    font-weight: 500;
-    color: var(--text-color);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    top: 50px;
-    cursor: pointer;
-    border-radius: 12px;
+    height: 100%;
+    overflow-y: auto;
     
-    /* This makes the <a> tags behave like the original <div>s */
-    display: block; 
-    text-decoration: none; 
+    /* Start hidden and small */
+    transform: scale(0.5);
+    transition: transform 0.5s var(--animation-timing);
+    
+    /* Enhanced glass effect */
+    background: var(--card-dark);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 2px solid var(--card-glass-border);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+    border-radius: var(--border-radius-xl);
+    position: absolute;
+    top: 0;
 }
 
-/* --- Hover Effect (for all items) --- */
-.nav-item:hover {
-    background-color: var(--secondary-glass);
-    transform: scale(1.05); /* Aggressive lift animation */
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+.marks-modal-overlay.visible .marks-modal-content {
+    transform: scale(1);
 }
 
-/* * --- Active Text Effect (for the current page) --- 
- * The JavaScript 'setActiveNav()' function will automatically
- * add the .active class to the link of the page you are on.
-*/
-.nav-item-active {
-    background-color: var(--secondary-glass);
-    color:  #ff416c;
+.light-mode .marks-modal-content {
+    background: var(--card-light);
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-light);
+}
+
+#marks-modal-content {
+    text-align: left;
+    margin-top: 15px;
+}
+
+.mark-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1em;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s;
+}
+
+.light-mode .mark-item {
+    background: rgba(0, 0, 0, 0.02);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.mark-item:hover {
+    background: rgba(0, 114, 255, 0.1);
+    border-color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.mark-item .mark-name {
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.light-mode .mark-item .mark-name {
+    color: var(--text-light);
+}
+
+.mark-item .mark-score {
     font-weight: 700;
-    transform: scale(1.05);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    padding: 15px 20px 15px 30px; 
-    margin: 8px 10px;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    position: relative;
-    top: 50px;
-    cursor: pointer;
-    border-radius: 12px;
-    display: block; 
-    text-decoration: none; 
+    font-size: 1.2em;
+    background: var(--gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+#marks-modal-content h3 {
+    margin-top: 0;
+}
+/* Enhanced Marks Modal Animation - Appears from clicked box */
+.marks-modal-overlay.closing .marks-modal-content {
+    transform: scale(0);
+    opacity: 0;
+    transition: transform 0.4s cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 0.3s ease;
 }
     </style>
 </head>
@@ -1454,7 +1685,45 @@ overflow: hidden; /* Only the designated section will scroll */
             <h2 class="gradient-text">📊 Performance Dashboard</h2>
             <div class="dashboard-grid">
                 <div id="overall-performance-box" class="floating-card glass-effect">
-                    <span class="main-metric gradient-text">88.5%</span>
+                    <div class="circular-progress-container">
+                        <svg class="circular-progress" width="180" height="180">
+                            <defs>
+                                <linearGradient id="gradient-excellent" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#4CAF50;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#8BC34A;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="gradient-good" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#0072ff;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#00d4ff;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="gradient-average" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#FFC107;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#FF9800;stop-opacity:1" />
+                                </linearGradient>
+                                <linearGradient id="gradient-poor" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#ff416c;stop-opacity:1" />
+                                    <stop offset="100%" style="stop-color:#FF5252;stop-opacity:1" />
+                                </linearGradient>
+                            </defs>
+                            
+                            <circle class="progress-circle-bg" cx="90" cy="90" r="80"></circle>
+                            
+                            <circle 
+                                class="progress-circle excellent" 
+                                cx="90" 
+                                cy="90" 
+                                r="80"
+                                id="progress-circle"
+                                stroke-dasharray="502"
+                                stroke-dashoffset="502">
+                            </circle>
+                        </svg>
+                        
+                        <div class="progress-text">
+                            <span class="progress-percentage" id="overall-percentage">88.5%</span>
+                            <span class="progress-label">Overall</span>
+                        </div>
+                    </div>
                     <p>Overall Average Score</p>
                 </div>
                 
@@ -1533,6 +1802,7 @@ overflow: hidden; /* Only the designated section will scroll */
         </section>
     </main>
 
+    <!-- Session Form Modal -->
     <div id="session-form-modal" class="modal hidden">
         <div class="modal-content floating-card glass-effect">
             <button class="modal-close-btn" data-modal-id="session-form-modal">&times;</button>
@@ -1571,6 +1841,7 @@ overflow: hidden; /* Only the designated section will scroll */
         </div>
     </div>
     
+    <!-- Confirm Modal -->
     <div id="confirm-modal" class="modal hidden">
         <div class="modal-content floating-card glass-effect">
             <button class="modal-close-btn" data-modal-id="confirm-modal">&times;</button>
@@ -1583,6 +1854,7 @@ overflow: hidden; /* Only the designated section will scroll */
         </div>
     </div>
     
+    <!-- Video Player Modal -->
     <div id="video-player-modal" class="modal hidden">
         <div class="modal-content">
             <button class="modal-close-btn" data-modal-id="video-player-modal">&times;</button>
@@ -1593,13 +1865,18 @@ overflow: hidden; /* Only the designated section will scroll */
         </div>
     </div>
     
-    <div id="marks-modal" class="floating-card glass-effect">
-        <button class="modal-close-btn" data-modal-id="marks-modal">&times;</button>
-        <h3 id="marks-modal-title" class="gradient-text"></h3>
+<!-- Marks Modal Popup - Enhanced with Better Styling -->
+<div id="marks-modal" class="marks-modal-overlay hidden">
+    <div class="marks-modal-content floating-card glass-effect">
+        <button class="modal-close-btn" onclick="closeMarksModal()">&times;</button>
+        <h3 id="marks-modal-title" class="gradient-text">Subject Test History</h3>
         <div id="marks-modal-content">
-            </div>
+            <!-- Test history items will be populated here by JavaScript -->
+        </div>
     </div>
+</div>
 
+    <!-- Live Session Page -->
     <div id="live-session-page" class="hidden">
         <div class="live-session-header-bar glass-effect">
             <h1 id="live-session-title" class="gradient-text"></h1>
@@ -1626,9 +1903,11 @@ overflow: hidden; /* Only the designated section will scroll */
         </div>
     </div>
     
+    <!-- Floating Icons -->
     <div id="pdf-icon" class="floating-action-icon">📄</div>
     <div id="chatbot-icon" class="floating-action-icon">💬</div>
     
+    <!-- Chatbot Container -->
     <div id="chatbot-container" class="floating-window">
         <div id="chatbot-header">
             <span>Edubot</span>
@@ -1643,6 +1922,7 @@ overflow: hidden; /* Only the designated section will scroll */
         </div>
     </div>
 
+    <!-- PDF Container -->
     <div id="pdf-container" class="floating-window">
         <div id="pdf-header">
             <span>Notes & PDFs</span>
@@ -1660,560 +1940,1310 @@ overflow: hidden; /* Only the designated section will scroll */
         </div>
     </div>
 
+<script>
+    // Global variable to store the origin position
+let marksModalOrigin = { x: 0, y: 0 };
+    // =================================================================
+    // DATA STORE & GLOBAL CONFIG
+    // =================================================================
 
-    <script>
-        // =================================================================
-        // DATA STORE & GLOBAL CONFIG (1201 - 1300)
-        // =================================================================
+    // ⚠️ IMPORTANT: Replace these with your actual keys
+    const YOUTUBE_API_KEY = "AIzaSyCvkGuq2MLm8lpNxhr5NVXszlr2FQjjn6g"; 
+    const GEMINI_API_KEY = "AIzaSyDk2gJJ_R436QlHAZqxyaWbbq_aA6U5ZXQ"; 
 
-        // ⚠️ IMPORTANT: Replace these with your actual keys
-        const YOUTUBE_API_KEY = "AIzaSyCvkGuq2MLm8lpNxhr5NVXszlr2FQjjn6g"; 
-        const GEMINI_API_KEY = "AIzaSyC8AS_0u1toc_GN530woL4HjmpbwtvBro8"; 
+    const DEFAULT_GRADE = "Grade 9";
+    const DEFAULT_CURRICULUM = "NCERT";
 
-        const DEFAULT_GRADE = "Grade 9";
-        const DEFAULT_CURRICULUM = "NCERT";
+    // Default Data
+    const defaultSessions = [
+        { id: 1, title: "Quick Geometry Recap", type: "Session", subject: "Math", duration: 45, datetime: new Date(new Date().getTime() - 3600000).toISOString() }, 
+        { id: 2, title: "The French Revolution", type: "Test", subject: "History", duration: 60, datetime: new Date(new Date().getTime() + 120000).toISOString() },
+        { id: 3, title: "Laws of Motion (Revision)", type: "Session", subject: "Physics", duration: 90, datetime: new Date(new Date().getTime() + 86400000).toISOString() }
+    ];
+    const defaultTimetable = [
+        { title: "Midterm Exam", subject: "Calculus", date: "2026-01-10", time: "09:00 AM", status: "Upcoming" },
+        { title: "Final Project Due", subject: "Computer Science", date: "2026-01-25", time: "11:59 PM", status: "Drafting" }
+    ];
+    const defaultResources = [
+        { type: "pdf", title: "Thermodynamics Chapter 5 Notes", subject: "Physics" },
+        { type: "video", title: "Calculus Integration Tutorial", subject: "Math" },
+        { type: "photo", title: "WWI Key Dates Infographic", subject: "History" }
+    ];
+    
+    // ✨ NEW: Placeholder data for previous marks/test history
+    const previousMarksData = {
+        "Math": [
+            { name: "Test 1: Algebra", score: "95%" },
+            { name: "Test 2: Geometry", score: "89%" },
+            { name: "Quiz 1: Trigonometry", score: "93%" }
+        ],
+        "Science": [
+            { name: "Test 1: Biology", score: "88%" },
+            { name: "Test 2: Physics", score: "82%" }
+        ],
+        "History": [
+            { name: "Test 1: WW1", score: "90%" },
+            { name: "Test 2: Ancient Civilizations", score: "91%" }
+        ],
+         "Physics": [
+            { name: "Test 1: Motion", score: "90%" },
+            { name: "Test 2: Optics", score: "86%" }
+        ],
+        "English": [
+            { name: "Essay 1", score: "94%" },
+            { name: "Grammar Test", score: "96%" }
+        ],
+        "Chemistry": [
+            { name: "Test 1: Moles", score: "80%" },
+            { name: "Test 2: Bonds", score: "86%" }
+        ]
+    };
 
-        // Default Data
-        const defaultSessions = [
-            { id: 1, title: "Quick Geometry Recap", type: "Session", subject: "Math", duration: 45, datetime: new Date(new Date().getTime() - 3600000).toISOString() }, 
-            { id: 2, title: "The French Revolution", type: "Test", subject: "History", duration: 60, datetime: new Date(new Date().getTime() + 120000).toISOString() },
-            { id: 3, title: "Laws of Motion (Revision)", type: "Session", subject: "Physics", duration: 90, datetime: new Date(new Date().getTime() + 86400000).toISOString() }
-        ];
-        const defaultTimetable = [
-            { title: "Midterm Exam", subject: "Calculus", date: "2026-01-10", time: "09:00 AM", status: "Upcoming" },
-            { title: "Final Project Due", subject: "Computer Science", date: "2026-01-25", time: "11:59 PM", status: "Drafting" }
-        ];
-        const defaultResources = [
-            { type: "pdf", title: "Thermodynamics Chapter 5 Notes", subject: "Physics" },
-            { type: "video", title: "Calculus Integration Tutorial", subject: "Math" },
-            { type: "photo", title: "WWI Key Dates Infographic", subject: "History" }
-        ];
-        // NEW: Placeholder data for marks
-        const previousMarksData = {
-            "Math": [
-                { name: "Test 1: Algebra", score: "95%" },
-                { name: "Test 2: Geometry", score: "89%" }
-            ],
-            "Science": [
-                { name: "Test 1: Biology", score: "88%" },
-                { name: "Test 2: Physics", score: "82%" }
-            ],
-            "History": [
-                { name: "Test 1: WW1", score: "90%" }
-            ],
-             "Physics": [
-                { name: "Test 1: Motion", score: "90%" },
-                { name: "Test 2: Optics", score: "86%" }
-            ],
-            "English": [
-                { name: "Essay 1", score: "94%" },
-                { name: "Grammar Test", score: "96%" }
-            ],
-            "Chemistry": [
-                { name: "Test 1: Moles", score: "80%" },
-                { name: "Test 2: Bonds", score: "86%" }
-            ]
-        };
-
-        // Main Data Arrays
-        let sessions = [];
-        let examTimetableData = [];
-        let resourcesData = [];
-        
-        let sessionToCancel = null;
-        let currentSessionId = null;
-        let currentNextPageToken = null;
-        let sessionTimerInterval = null;
-        let sessionStartTime = 0;
-
-
-        // =================================================================
-        // DOM ELEMENT REFERENCES (1301 - 1350)
-        // =================================================================
-        const body = document.body;
-        const mainContent = document.getElementById('self-study-main');
-        const modeToggleCheckbox = document.getElementById('mode-toggle-checkbox');
-        const sessionsContainer = document.getElementById('sessions-container');
-        const timetableBody = document.getElementById('timetable-body');
-        const resourcesContainer = document.getElementById('resources-container');
-        
-        // Modals
-        const confirmModal = document.getElementById('confirm-modal');
-        const videoPlayerModal = document.getElementById('video-player-modal');
-        const sessionFormModal = document.getElementById('session-form-modal');
-        const sessionForm = document.getElementById('session-form');
-        const sessionFormTitle = document.getElementById('session-form-title');
-        const marksModal = document.getElementById('marks-modal');
-        
-        const youtubeIframe = document.getElementById('youtube-iframe');
-        const liveSessionPage = document.getElementById('live-session-page');
-        
-        // Live Session
-        const liveSessionTimer = document.getElementById('live-session-timer');
-        const pauseSessionBtn = document.getElementById('pause-session-btn');
-        const endSessionBtn = document.getElementById('end-session-btn');
-        const liveTakeTestBtn = document.getElementById('live-take-test-btn');
-        const liveSearchInput = document.getElementById('liveSearchInput');
-        const liveSearchBtn = document.getElementById('liveSearchBtn');
-        const liveLoader = document.getElementById('liveLoader');
-        const videosSection = document.getElementById('videosSection');
-        
-        // Chatbot & PDF Icons
-        const pdfIcon = document.getElementById("pdf-icon");
-        const chatbotIcon = document.getElementById("chatbot-icon");
-        const chatbotContainer = document.getElementById("chatbot-container");
-        const chatCloseBtn = document.getElementById("close-btn");
-        const sendBtn = document.getElementById("send-btn");
-        const chatInput = document.getElementById("chatbot-input");
-        const chatbotMessages = document.getElementById("chatbot-messages");
-        
-        // NEW: PDF Viewer Elements
-        const pdfContainer = document.getElementById("pdf-container");
-        const pdfCloseBtn = document.getElementById("pdf-close-btn");
+    // Main Data Arrays
+    let sessions = [];
+    let examTimetableData = [];
+    let resourcesData = [];
+    
+let sessionToCancel = null;
+let sessionToEdit = null;
+let currentSessionId = null;
+let currentNextPageToken = null;
+let sessionTimerInterval = null;
+let sessionStartTime = 0;
+let sessionElapsedSeconds = 0;
+let sessionTotalDuration = 0;
+let sessionPaused = false;
+let pausedSessionData = null; // NEW: Store paused session data
 
 
-        // =================================================================
-        // LOCAL STORAGE FUNCTIONS (1351 - 1400)
-        // =================================================================
+    // =================================================================
+    // DOM ELEMENT REFERENCES
+    // =================================================================
+    const body = document.body;
+    const mainContent = document.getElementById('self-study-main');
+    const modeToggleCheckbox = document.getElementById('mode-toggle-checkbox');
+    const sessionsContainer = document.getElementById('sessions-container');
+    const timetableBody = document.getElementById('timetable-body');
+    const resourcesContainer = document.getElementById('resources-container');
+    
+    // Modals
+    const confirmModal = document.getElementById('confirm-modal');
+    const videoPlayerModal = document.getElementById('video-player-modal');
+    const sessionFormModal = document.getElementById('session-form-modal');
+    const sessionForm = document.getElementById('session-form');
+    const sessionFormTitle = document.getElementById('session-form-title');
+    const marksModal = document.getElementById('marks-modal');
+    
+    const youtubeIframe = document.getElementById('youtube-iframe');
+    const liveSessionPage = document.getElementById('live-session-page');
+    
+    // Live Session
+    const liveSessionTimer = document.getElementById('live-session-timer');
+    const pauseSessionBtn = document.getElementById('pause-session-btn');
+    const endSessionBtn = document.getElementById('end-session-btn');
+    const liveTakeTestBtn = document.getElementById('live-take-test-btn');
+    const liveSearchInput = document.getElementById('liveSearchInput');
+    const liveSearchBtn = document.getElementById('liveSearchBtn');
+    const liveLoader = document.getElementById('liveLoader');
+    const videosSection = document.getElementById('videosSection');
+    
+    // Chatbot & PDF Icons
+    const pdfIcon = document.getElementById("pdf-icon");
+    const chatbotIcon = document.getElementById("chatbot-icon");
+    const chatbotContainer = document.getElementById("chatbot-container");
+    const chatCloseBtn = document.getElementById("close-btn");
+    const sendBtn = document.getElementById("send-btn");
+    const chatInput = document.getElementById("chatbot-input");
+    const chatbotMessages = document.getElementById("chatbot-messages");
+    
+    const pdfContainer = document.getElementById("pdf-container");
+    const pdfCloseBtn = document.getElementById("pdf-close-btn");
 
-        function saveDataToLocalStorage() {
-            localStorage.setItem('epicScholarSessions', JSON.stringify(sessions));
-            localStorage.setItem('epicScholarTimetable', JSON.stringify(examTimetableData));
-            localStorage.setItem('epicScholarResources', JSON.stringify(resourcesData));
-        }
 
-        function loadDataFromLocalStorage() {
-            const savedSessions = localStorage.getItem('epicScholarSessions');
-            const savedTimetable = localStorage.getItem('epicScholarTimetable');
-            const savedResources = localStorage.getItem('epicScholarResources');
+    // =================================================================
+    // LOCAL STORAGE FUNCTIONS
+    // =================================================================
 
-            sessions = savedSessions ? JSON.parse(savedSessions) : defaultSessions;
-            examTimetableData = savedTimetable ? JSON.parse(savedTimetable) : defaultTimetable;
-            resourcesData = savedResources ? JSON.parse(savedResources) : defaultResources;
-        }
+    function saveDataToLocalStorage() {
+        localStorage.setItem('epicScholarSessions', JSON.stringify(sessions));
+        localStorage.setItem('epicScholarTimetable', JSON.stringify(examTimetableData));
+        localStorage.setItem('epicScholarResources', JSON.stringify(resourcesData));
+    }
 
-        // =================================================================
-        // UTILITY & RENDER FUNCTIONS (1401 - 1500)
-        // =================================================================
+    function loadDataFromLocalStorage() {
+        const savedSessions = localStorage.getItem('epicScholarSessions');
+        const savedTimetable = localStorage.getItem('epicScholarTimetable');
+        const savedResources = localStorage.getItem('epicScholarResources');
 
-        const revealCards = (containerSelector) => {
-            document.querySelectorAll(`${containerSelector} .floating-card`).forEach((card, index) => {
-                card.classList.remove('card-reveal');
-                void card.offsetWidth; 
-                card.style.animationDelay = `${index * 100}ms`;
-                card.classList.add('card-reveal');
-            });
-        };
+        sessions = savedSessions ? JSON.parse(savedSessions) : defaultSessions;
+        examTimetableData = savedTimetable ? JSON.parse(savedTimetable) : defaultTimetable;
+        resourcesData = savedResources ? JSON.parse(savedResources) : defaultResources;
+    }
 
-        const openModal = (modalEl) => {
-            modalEl.classList.remove('hidden', 'hiding');
-        };
-        
-        const closeModal = (modalEl) => {
-            modalEl.classList.add('hiding');
-            modalEl.addEventListener('animationend', () => {
-                modalEl.classList.add('hidden');
-                modalEl.classList.remove('hiding');
-                if (modalEl.id === 'video-player-modal') {
-                    youtubeIframe.src = "";
-                    document.getElementById('video-title').textContent = "";
-                }
-                if (modalEl.id === 'session-form-modal') {
-                    sessionForm.reset();
-                }
-            }, { once: true });
-        };
-        
-        const playVideoInModal = (videoId, title) => {
-            // UPDATED: Removed autoplay=1
-            const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0`;
-            youtubeIframe.src = embedUrl;
-            document.getElementById('video-title').textContent = title;
-            openModal(videoPlayerModal);
-        };
+    // =================================================================
+    // UTILITY & RENDER FUNCTIONS
+    // =================================================================
 
-        const parseISODuration = (duration) => {
-            const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
-            if (!match) return "0:00";
-            const hours = parseInt(match[1] || 0);
-            const minutes = parseInt(match[2] || 0);
-            const seconds = parseInt(match[3] || 0);
-            let result = "";
-            if (hours > 0) {
-                result += `${hours}:`;
-                result += `${minutes.toString().padStart(2, '0')}:`;
+    const revealCards = (containerSelector) => {
+        document.querySelectorAll(`${containerSelector} .floating-card`).forEach((card, index) => {
+            card.classList.remove('card-reveal');
+            void card.offsetWidth; 
+            card.style.animationDelay = `${index * 100}ms`;
+            card.classList.add('card-reveal');
+        });
+    };
+
+    const openModal = (modalEl) => {
+        modalEl.classList.remove('hidden', 'hiding');
+    };
+    
+    const closeModal = (modalEl) => {
+        modalEl.classList.add('hiding');
+        modalEl.addEventListener('animationend', () => {
+            modalEl.classList.add('hidden');
+            modalEl.classList.remove('hiding');
+            if (modalEl.id === 'video-player-modal') {
+                youtubeIframe.src = "";
+                document.getElementById('video-title').textContent = "";
+            }
+            if (modalEl.id === 'session-form-modal') {
+                sessionForm.reset();
+                sessionToEdit = null;
+                delete sessionForm.dataset.editId;
+            }
+        }, { once: true });
+    };
+    
+    const playVideoInModal = (videoId, title) => {
+        const embedUrl = `https://www.youtube.com/embed/${videoId}?rel=0`;
+        youtubeIframe.src = embedUrl;
+        document.getElementById('video-title').textContent = title;
+        openModal(videoPlayerModal);
+    };
+
+const parseISODuration = (duration) => {
+    if (!duration) return "0:00";
+    
+    const match = duration.match(/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/);
+    if (!match) return "0:00";
+    
+    const hours = parseInt(match[1] || 0);
+    const minutes = parseInt(match[2] || 0);
+    const seconds = parseInt(match[3] || 0);
+    
+    let result = "";
+    if (hours > 0) {
+        result += `${hours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    } else {
+        result += `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+    return result;
+};
+
+    const renderSessions = () => {
+        sessionsContainer.innerHTML = '';
+        sessions.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+
+        sessions.forEach(session => {
+            const card = document.createElement('div');
+            card.className = 'session-card floating-card glass-effect';
+            card.setAttribute('data-id', session.id);
+            card.setAttribute('data-time', session.datetime);
+
+            const sessionDate = new Date(session.datetime);
+            const formattedDate = sessionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+            const formattedTime = sessionDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+
+            card.innerHTML = `
+                <div class="card-actions">
+                    <button class="card-action-btn edit-btn" title="Edit" data-action="edit-session">✏️</button>
+                    <button class="card-action-btn cancel-btn" title="Cancel" data-action="cancel-session">❌</button>
+                </div>
+                <p class="session-title">${session.type === 'Test' ? '📝 ' : '🎯 '} ${session.title}</p>
+                <p class="session-subject">Subject: ${session.subject}</p>
+                <p class="session-datetime">Scheduled: ${formattedDate} | ${formattedTime}</p>
+                <p class="session-duration">Duration: ${session.duration} minutes</p>
+                <button class="start-session-btn action-btn hidden" data-action="start-session">Start ${session.type}</button>
+            `;
+            sessionsContainer.appendChild(card);
+        });
+        revealCards('#sessions-container');
+        checkSessionStatus();
+    };
+
+    const renderTimetable = () => {
+        timetableBody.innerHTML = '';
+        examTimetableData.forEach(item => {
+            const row = document.createElement('tr');
+            const statusClass = item.status === 'Upcoming' ? 'style="color: var(--primary-color); font-weight: 600;"' : '';
+            row.innerHTML = `
+                <td>${item.title}</td>
+                <td>${item.subject}</td>
+                <td>${item.date}</td>
+                <td>${item.time}</td>
+                <td ${statusClass}>${item.status}</td>
+            `;
+            timetableBody.appendChild(row);
+        });
+    };
+
+    const renderResources = () => {
+        resourcesContainer.innerHTML = '';
+        resourcesData.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'resource-card floating-card glass-effect';
+            card.setAttribute('data-type', item.type);
+            
+            let icon = '📄';
+            if (item.type === 'video') icon = '📹';
+            if (item.type === 'photo') icon = '🖼️';
+
+            card.innerHTML = `
+                <span class="resource-icon">${icon}</span>
+                <p class="resource-title">${item.title}</p>
+                <p class="resource-subject">${item.subject}</p>
+            `;
+            resourcesContainer.appendChild(card);
+        });
+        revealCards('#resources-container');
+    };
+
+    const checkSessionStatus = () => {
+        const now = new Date();
+        document.querySelectorAll('.session-card').forEach(card => {
+            const sessionTime = new Date(card.getAttribute('data-time'));
+            const startBtn = card.querySelector('.start-session-btn');
+            
+            if (now >= sessionTime) {
+                card.classList.add('ready-to-start');
+                startBtn.classList.remove('hidden');
             } else {
-                result += `${minutes}:`;
-            }
-            result += seconds.toString().padStart(2, '0');
-            return result;
-        };
-
-        const renderSessions = () => {
-            sessionsContainer.innerHTML = '';
-            sessions.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
-
-            sessions.forEach(session => {
-                const card = document.createElement('div');
-                card.className = 'session-card floating-card glass-effect';
-                card.setAttribute('data-id', session.id);
-                card.setAttribute('data-time', session.datetime);
-
-                const sessionDate = new Date(session.datetime);
-                const formattedDate = sessionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                const formattedTime = sessionDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-
-                card.innerHTML = `
-                    <div class="card-actions">
-                        <button class="card-action-btn edit-btn" title="Edit">✏️</button>
-                        <button class="card-action-btn cancel-btn" title="Cancel" data-action="cancel-session">❌</button>
-                    </div>
-                    <p class="session-title">${session.type === 'Test' ? '📝 ' : '🎯 '} ${session.title}</p>
-                    <p class="session-subject">Subject: ${session.subject}</p>
-                    <p class="session-datetime">Scheduled: ${formattedDate} | ${formattedTime}</p>
-                    <p class="session-duration">Duration: ${session.duration} minutes</p>
-                    <button class="start-session-btn action-btn hidden" data-action="start-session">Start ${session.type}</button>
-                `;
-                sessionsContainer.appendChild(card);
-            });
-            revealCards('#sessions-container');
-            checkSessionStatus();
-        };
-
-        const renderTimetable = () => {
-            timetableBody.innerHTML = '';
-            examTimetableData.forEach(item => {
-                const row = document.createElement('tr');
-                const statusClass = item.status === 'Upcoming' ? 'style="color: var(--primary-color); font-weight: 600;"' : '';
-                row.innerHTML = `
-                    <td>${item.title}</td>
-                    <td>${item.subject}</td>
-                    <td>${item.date}</td>
-                    <td>${item.time}</td>
-                    <td ${statusClass}>${item.status}</td>
-                `;
-                timetableBody.appendChild(row);
-            });
-        };
-
-        const renderResources = () => {
-            resourcesContainer.innerHTML = '';
-            resourcesData.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'resource-card floating-card glass-effect';
-                card.setAttribute('data-type', item.type);
-                
-                let icon = '📄';
-                if (item.type === 'video') icon = '📹';
-                if (item.type === 'photo') icon = '🖼️';
-
-                card.innerHTML = `
-                    <span class="resource-icon">${icon}</span>
-                    <p class="resource-title">${item.title}</p>
-                    <p class="resource-subject">${item.subject}</p>
-                `;
-                resourcesContainer.appendChild(card);
-            });
-            revealCards('#resources-container');
-        };
-
-        const checkSessionStatus = () => {
-            const now = new Date();
-            document.querySelectorAll('.session-card').forEach(card => {
-                const sessionTime = new Date(card.getAttribute('data-time'));
-                const startBtn = card.querySelector('.start-session-btn');
-                
-                if (now >= sessionTime) {
-                    card.classList.add('ready-to-start');
-                    startBtn.classList.remove('hidden');
-                } else {
-                    card.classList.remove('ready-to-start');
-                    startBtn.classList.add('hidden');
-                }
-            });
-        };
-
-
-        // =================================================================
-        // CHATBOT & PDF INTEGRATION (1501 - 1650)
-        // =================================================================
-        
-        chatbotIcon.addEventListener("click", () => {
-            pdfContainer.classList.remove("visible"); // Close PDF
-            chatbotContainer.classList.add("visible");
-            chatbotIcon.classList.remove("visible");
-            pdfIcon.classList.add("visible");
-        });
-        
-        chatCloseBtn.addEventListener("click", () => {
-            chatbotContainer.classList.remove("visible");
-            if (liveSessionPage.classList.contains('open')) {
-                chatbotIcon.classList.add("visible");
-                pdfIcon.classList.add("visible");
+                card.classList.remove('ready-to-start');
+                startBtn.classList.add('hidden');
             }
         });
-        
-        // NEW: PDF Viewer Toggle
-        pdfIcon.addEventListener("click", () => {
-            chatbotContainer.classList.remove("visible"); // Close Chat
-            pdfContainer.classList.add("visible");
-            pdfIcon.classList.remove("visible");
+    };
+
+
+    // =================================================================
+    // CHATBOT & PDF INTEGRATION
+    // =================================================================
+    
+    chatbotIcon.addEventListener("click", () => {
+        pdfContainer.classList.remove("visible");
+        chatbotContainer.classList.add("visible");
+        chatbotIcon.classList.remove("visible");
+        pdfIcon.classList.add("visible");
+    });
+    
+    chatCloseBtn.addEventListener("click", () => {
+        chatbotContainer.classList.remove("visible");
+        if (liveSessionPage.classList.contains('open')) {
             chatbotIcon.classList.add("visible");
-        });
-
-        pdfCloseBtn.addEventListener("click", () => {
-            pdfContainer.classList.remove("visible");
-            if (liveSessionPage.classList.contains('open')) {
-                chatbotIcon.classList.add("visible");
-                pdfIcon.classList.add("visible");
-            }
-        });
-
-        sendBtn.addEventListener("click", sendChatMessage);
-        chatInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") sendChatMessage();
-        });
-
-        function sendChatMessage() {
-            const userMessage = chatInput.value.trim();
-            if (userMessage) {
-                appendChatMessage("user", userMessage);
-                chatInput.value = "";
-                getBotResponse(userMessage);
-            }
+            pdfIcon.classList.add("visible");
         }
+    });
+    
+    pdfIcon.addEventListener("click", () => {
+        chatbotContainer.classList.remove("visible");
+        pdfContainer.classList.add("visible");
+        pdfIcon.classList.remove("visible");
+        chatbotIcon.classList.add("visible");
+    });
 
-        function appendChatMessage(sender, message) {
-            const messageElement = document.createElement("div");
-            messageElement.classList.add("message", sender);
-            messageElement.textContent = message;
-            chatbotMessages.appendChild(messageElement);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    pdfCloseBtn.addEventListener("click", () => {
+        pdfContainer.classList.remove("visible");
+        if (liveSessionPage.classList.contains('open')) {
+            chatbotIcon.classList.add("visible");
+            pdfIcon.classList.add("visible");
         }
+    });
 
-        async function getBotResponse(userMessage) {
-             if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
-                 appendChatMessage("bot", "Error: Gemini API Key is missing. Please set your key in the script.");
-                 return;
-             }
+    sendBtn.addEventListener("click", sendChatMessage);
+    chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") sendChatMessage();
+    });
 
-             const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
-             sendBtn.disabled = true;
-             chatInput.disabled = true;
-
-             try {
-                const response = await fetch(API_URL, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userMessage }] }],
-                    }),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(data.error?.message || "Unknown API error");
-                }
-                if (!data.candidates || !data.candidates.length) {
-                    if (data.promptFeedback) {
-                        console.warn("Prompt blocked:", data.promptFeedback);
-                        throw new Error("Prompt was blocked. Please try a different question.");
-                    }
-                    throw new Error("No response from Gemini API");
-                }
-
-                const botMessage = data.candidates[0].content.parts[0].text;
-                appendChatMessage("bot", botMessage);
-             } catch (error) {
-                console.error("Error:", error);
-                appendChatMessage("bot", `Sorry, I'm having trouble responding: ${error.message}`);
-             } finally {
-                sendBtn.disabled = false;
-                chatInput.disabled = false;
-             }
-        }
-
-
-        // =================================================================
-        // LIVE SESSION CONTROL & YOUTUBE API HANDLING (1651 - 1850)
-        // =================================================================
-        
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
-            const secs = (seconds % 60).toString().padStart(2, '0');
-            return `${mins}:${secs}`;
-        }
-        
-        function updateSessionTimer() {
-            const elapsedSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
-            liveSessionTimer.textContent = formatTime(elapsedSeconds);
-        }
-
-        const renderVideoResults = (videoItems) => {
-            videosSection.innerHTML = '';
-            if (!videoItems || videoItems.length === 0) {
-                videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--subtext-dark);">No videos found for this search query.</h3>';
-                return;
-            }
-            videoItems.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'youvideo';
-                card.setAttribute('data-videoid', item.id);
-                card.setAttribute('data-title', item.snippet.title);
-                card.innerHTML = `
-                    <div class="thumbnail-container">
-                        <img src="${item.snippet.thumbnails.high.url}" alt="${item.snippet.title}" />
-                        <span class="video-duration">${parseISODuration(item.contentDetails.duration)}</span>
-                    </div>
-                    <h3>${item.snippet.title}</h3>
-                    <p>Channel: ${item.snippet.channelTitle}</p>
-                `;
-                card.addEventListener('click', () => playVideoInModal(item.id, item.snippet.title));
-                videosSection.appendChild(card);
-            });
-        }
-        
-        async function fetchVideoDetails(videoIds) {
-            if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY_HERE" || !YOUTUBE_API_KEY) {
-                videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--warning-color);">Error: YouTube API Key is not set. Video search is disabled.</h3>';
-                liveLoader.style.display = 'none';
-                return;
-            }
-            const url = `https://www.googleapis.com/youtube/v3/videos?key=${YOUTUBE_API_KEY}&part=snippet,contentDetails&id=${videoIds}`;
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                liveLoader.style.display = 'none';
-                if (data.error) throw new Error(data.error.message);
-                renderVideoResults(data.items);
-            } catch (err) {
-                 liveLoader.style.display = 'none';
-                 videosSection.innerHTML = `<h3 style="grid-column: 1 / -1; color: var(--secondary-color);">Failed to load video details: ${err.message}</h3>`;
-                 console.error("YouTube Video Details Fetch Error:", err);
-            }
-        }
-
-        async function performYouTubeSearch(query, pageToken = null) {
-            if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY_HERE" || !YOUTUBE_API_KEY) {
-                videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--warning-color);">Error: YouTube API Key is not set. Video search is disabled.</h3>';
-                liveLoader.style.display = 'none';
-                return;
-            }
-            
-            if (!query) return;
-            videosSection.innerHTML = '';
-            liveLoader.style.display = 'flex';
-            
-            let searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&videoDuration=medium&maxResults=12`;
-            if (pageToken) {
-                searchUrl += `&pageToken=${pageToken}`;
-            }
-
-            try {
-                const res = await fetch(searchUrl);
-                const data = await res.json();
-                
-                if (data.error) throw new Error(data.error.message);
-
-                currentNextPageToken = data.nextPageToken;
-                liveSearchBtn.disabled = !currentNextPageToken;
-
-                if (data.items && data.items.length > 0) {
-                    const videoIds = data.items.map(item => item.id.videoId).join(',');
-                    await fetchVideoDetails(videoIds);
-                } else {
-                    liveLoader.style.display = 'none';
-                    videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--subtext-dark);">No more videos found.</h3>';
-                }
-
-            } catch (err) {
-                liveLoader.style.display = 'none';
-                videosSection.innerHTML = `<h3 style="grid-column: 1 / -1; color: var(--secondary-color);">Failed to load videos: ${err.message}</h3>`;
-                console.error("YouTube Search Fetch Error:", err);
-            }
-        }
-        
-        const openLiveSession = (session) => {
-            currentSessionId = session.id;
-            
-            document.getElementById('live-session-title').textContent = session.title;
-            liveSessionPage.classList.remove('hidden', 'hiding');
-            void liveSessionPage.offsetWidth; 
-            liveSessionPage.classList.add('open');
-            mainContent.classList.add('hiding');
-            
-            sessionStartTime = Date.now();
-            updateSessionTimer();
-            sessionTimerInterval = setInterval(updateSessionTimer, 1000);
-            
-            const initialPrompt = `Summarize key concepts for: ${session.title} (${session.subject}) from ${DEFAULT_CURRICULUM} ${DEFAULT_GRADE} syllabus.`;
-            chatInput.value = initialPrompt;
-            chatInput.disabled = false;
-            chatbotMessages.innerHTML = ''; 
-            appendChatMessage("bot", "Welcome! The Edubot is active. Ask me anything or use the pre-filled prompt to start.");
-            
-            pdfIcon.classList.add('visible');
-            chatbotIcon.classList.add('visible'); 
-            chatbotContainer.classList.remove('visible');
-            pdfContainer.classList.remove('visible');
-            
-            liveSearchInput.value = `${session.title} ${session.subject} tutorial`;
-            liveSearchInput.disabled = true;
-            liveSearchBtn.textContent = "Refresh Videos";
-            liveSearchBtn.disabled = false;
-            performYouTubeSearch(liveSearchInput.value);
-            
-            liveSearchBtn.onclick = () => performYouTubeSearch(liveSearchInput.value, currentNextPageToken);
-        };
-        
-        const closeLiveSession = () => {
-            liveSessionPage.classList.remove('open');
-            liveSessionPage.classList.add('hiding');
-            mainContent.classList.remove('hiding');
-            
-            clearInterval(sessionTimerInterval);
-            sessionTimerInterval = null;
-            
-            pdfIcon.classList.remove('visible');
-            chatbotIcon.classList.remove('visible');
-            chatbotContainer.classList.remove('visible');
-            pdfContainer.classList.remove('visible');
-            chatInput.disabled = false;
+    function sendChatMessage() {
+        const userMessage = chatInput.value.trim();
+        if (userMessage) {
+            appendChatMessage("user", userMessage);
             chatInput.value = "";
+            getBotResponse(userMessage);
+        }
+    }
+
+    function appendChatMessage(sender, message) {
+        const messageElement = document.createElement("div");
+        messageElement.classList.add("message", sender);
+        messageElement.textContent = message;
+        chatbotMessages.appendChild(messageElement);
+        chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+    }
+
+    async function getBotResponse(userMessage) {
+         if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
+             appendChatMessage("bot", "Error: Gemini API Key is missing. Please set your key in the script.");
+             return;
+         }
+
+         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
+         sendBtn.disabled = true;
+         chatInput.disabled = true;
+
+         try {
+            const response = await fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: userMessage }] }],
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error?.message || "Unknown API error");
+            }
+            if (!data.candidates || !data.candidates.length) {
+                if (data.promptFeedback) {
+                    console.warn("Prompt blocked:", data.promptFeedback);
+                    throw new Error("Prompt was blocked. Please try a different question.");
+                }
+                throw new Error("No response from Gemini API");
+            }
+
+            const botMessage = data.candidates[0].content.parts[0].text;
+            appendChatMessage("bot", botMessage);
+         } catch (error) {
+            console.error("Error:", error);
+            appendChatMessage("bot", `Sorry, I'm having trouble responding: ${error.message}`);
+         } finally {
+            sendBtn.disabled = false;
+            chatInput.disabled = false;
+         }
+    }
+
+
+    // =================================================================
+    // LIVE SESSION CONTROL & YOUTUBE API HANDLING
+    // =================================================================
+function formatTime(seconds) {
+    const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+    const secs = (seconds % 60).toString().padStart(2, '0');
+    return `${mins}:${secs}`;
+}
+
+function updateSessionTimer() {
+    if (sessionPaused) return;
+    
+    sessionElapsedSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
+    const remainingSeconds = Math.max(0, sessionTotalDuration - sessionElapsedSeconds);
+    
+    liveSessionTimer.textContent = formatTime(remainingSeconds);
+    
+    // Auto-end session when time runs out
+    if (remainingSeconds <= 0) {
+        clearInterval(sessionTimerInterval);
+        showSessionCompletionDialog();
+    }
+}
+function showSessionCompletionDialog() {
+    const userChoice = confirm("Session time completed! Would you like to add more time?\n\nClick 'OK' to add more time\nClick 'Cancel' to end the session");
+    
+    if (userChoice) {
+        // Prompt user to enter additional minutes
+        const additionalMinutes = prompt("How many additional minutes would you like to add?", "15");
+        
+        if (additionalMinutes !== null && additionalMinutes.trim() !== "") {
+            const minutes = parseInt(additionalMinutes);
             
-            videosSection.innerHTML = '';
+            if (!isNaN(minutes) && minutes > 0) {
+                // Add the specified minutes
+                sessionTotalDuration += minutes * 60;
+                sessionStartTime = Date.now() - (sessionElapsedSeconds * 1000);
+                sessionTimerInterval = setInterval(updateSessionTimer, 1000);
+                updateSessionTimer();
+                
+                alert(`${minutes} minutes added to your session!`);
+            } else {
+                alert("Invalid input. Session will end.");
+                endSessionBtn.click();
+            }
+        } else {
+            // User cancelled the prompt
+            endSessionBtn.click();
+        }
+    } else {
+        // End the session
+        endSessionBtn.click();
+    }
+}
+    const renderVideoResults = (videoItems) => {
+        videosSection.innerHTML = '';
+        if (!videoItems || videoItems.length === 0) {
+            videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--subtext-dark);">No videos found for this search query.</h3>';
+            return;
+        }
+        videoItems.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'youvideo';
+            card.setAttribute('data-videoid', item.id);
+            card.setAttribute('data-title', item.snippet.title);
+            card.innerHTML = `
+                <div class="thumbnail-container">
+                    <img src="${item.snippet.thumbnails.high.url}" alt="${item.snippet.title}" />
+                    <span class="video-duration">${parseISODuration(item.contentDetails.duration)}</span>
+                </div>
+                <h3>${item.snippet.title}</h3>
+                <p>Channel: ${item.snippet.channelTitle}</p>
+            `;
+            card.addEventListener('click', () => playVideoInModal(item.id, item.snippet.title));
+            videosSection.appendChild(card);
+        });
+    }
+    
+async function fetchVideoDetails(videoIds) {
+    if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY_HERE" || !YOUTUBE_API_KEY) {
+        videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--warning-color);">Error: YouTube API Key is not set. Video search is disabled.</h3>';
+        liveLoader.style.display = 'none';
+        return;
+    }
+    const url = `https://www.googleapis.com/youtube/v3/videos?key=${YOUTUBE_API_KEY}&part=snippet,contentDetails&id=${videoIds}`;
+    try {
+        const res = await fetch(url);
+        const data = await res.json();
+        
+        if (data.error) throw new Error(data.error.message);
+        
+        liveLoader.style.display = 'none';
+        
+        // Log to check if we're getting duration data
+        console.log("Video details received:", data.items);
+        
+        renderVideoResults(data.items);
+    } catch (err) {
+         liveLoader.style.display = 'none';
+         videosSection.innerHTML = `<h3 style="grid-column: 1 / -1; color: var(--secondary-color);">Failed to load video details: ${err.message}</h3>`;
+         console.error("YouTube Video Details Fetch Error:", err);
+    }
+}
+
+    async function performYouTubeSearch(query, pageToken = null) {
+        if (YOUTUBE_API_KEY === "YOUR_YOUTUBE_API_KEY_HERE" || !YOUTUBE_API_KEY) {
+            videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--warning-color);">Error: YouTube API Key is not set. Video search is disabled.</h3>';
             liveLoader.style.display = 'none';
-            liveSearchBtn.onclick = null;
-            currentNextPageToken = null;
-            currentSessionId = null;
+            return;
+        }
+        
+        if (!query) return;
+        videosSection.innerHTML = '';
+        liveLoader.style.display = 'flex';
+        
+        let searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&videoDuration=medium&maxResults=12`;
+        if (pageToken) {
+            searchUrl += `&pageToken=${pageToken}`;
+        }
 
-            liveSessionPage.addEventListener('transitionend', () => {
-                liveSessionPage.classList.add('hidden');
-                liveSessionPage.classList.remove('hiding');
-            }, { once: true });
+        try {
+            const res = await fetch(searchUrl);
+            const data = await res.json();
+            
+            if (data.error) throw new Error(data.error.message);
+
+            currentNextPageToken = data.nextPageToken;
+            liveSearchBtn.disabled = !currentNextPageToken;
+
+            if (data.items && data.items.length > 0) {
+                const videoIds = data.items.map(item => item.id.videoId).join(',');
+                await fetchVideoDetails(videoIds);
+            } else {
+                liveLoader.style.display = 'none';
+                videosSection.innerHTML = '<h3 style="grid-column: 1 / -1; color: var(--subtext-dark);">No more videos found.</h3>';
+            }
+
+        } catch (err) {
+            liveLoader.style.display = 'none';
+            videosSection.innerHTML = `<h3 style="grid-column: 1 / -1; color: var(--secondary-color);">Failed to load videos: ${err.message}</h3>`;
+            console.error("YouTube Search Fetch Error:", err);
+        }
+    }
+const openLiveSession = async (session) => {
+    currentSessionId = session.id;
+    
+    document.getElementById('live-session-title').textContent = session.title;
+    liveSessionPage.classList.remove('hidden', 'hiding');
+    void liveSessionPage.offsetWidth; 
+    liveSessionPage.classList.add('open');
+    mainContent.classList.add('hiding');
+    
+    // Check if resuming a paused session
+    if (pausedSessionData && pausedSessionData.id === session.id) {
+        sessionPlan = pausedSessionData.sessionPlan;
+        currentPhaseIndex = pausedSessionData.currentPhaseIndex;
+        miniQuizScores = pausedSessionData.miniQuizScores;
+        readyForFinalQuiz = pausedSessionData.readyForFinalQuiz;
+        
+        sessionTotalDuration = pausedSessionData.totalDuration;
+        sessionElapsedSeconds = pausedSessionData.elapsedSeconds;
+        sessionPaused = false;
+        sessionStartTime = Date.now() - (sessionElapsedSeconds * 1000);
+        
+        chatbotMessages.innerHTML = pausedSessionData.chatHistory;
+        
+        pausedSessionData = null;
+        
+        // Resume current phase
+        executeCurrentPhase();
+    } else {
+        // Start new session - Generate AI learning plan
+        sessionTotalDuration = session.duration * 60;
+        sessionElapsedSeconds = 0;
+        sessionPaused = false;
+        sessionStartTime = Date.now();
+        
+        chatbotMessages.innerHTML = '';
+        appendChatMessage("bot", "🎓 Planning your learning session... Please wait.");
+        
+        // Generate session plan
+        await generateSessionPlan(session);
+    }
+    
+    pauseSessionBtn.textContent = "Pause Session";
+    updateSessionTimer();
+    sessionTimerInterval = setInterval(updateSessionTimer, 1000);
+    
+    chatInput.disabled = false;
+    
+    pdfIcon.classList.add('visible');
+    chatbotIcon.classList.add('visible'); 
+    chatbotContainer.classList.remove('visible');
+    pdfContainer.classList.remove('visible');
+};
+async function generateSessionPlan(session) {
+    if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
+        appendChatMessage("bot", "❌ Error: Gemini API Key is missing. Cannot plan session.");
+        return;
+    }
+
+    const planningPrompt = `You are an expert educational planner. Create a structured learning session for:
+Topic: "${session.title}"
+Subject: ${session.subject}
+Grade Level: ${DEFAULT_GRADE}
+Curriculum: ${DEFAULT_CURRICULUM}
+Duration: ${session.duration} minutes
+
+Create a learning path with the following structure:
+1. Break down the topic into 3-4 core concepts that build upon each other
+2. For each concept, students will:
+   - Watch YouTube videos (we'll search for these)
+   - Take a mini-quiz (5 questions) to test understanding
+3. After all concepts are mastered, there's a final comprehensive quiz (10 questions)
+
+Return your response as valid JSON with this structure:
+{
+  "phases": [
+    {
+      "conceptName": "Name of concept",
+      "learningObjectives": ["objective 1", "objective 2"],
+      "searchQuery": "YouTube search query for this concept",
+      "miniQuizTopic": "Specific topic for 5-question quiz",
+      "passingScore": 3
+    }
+  ],
+  "finalQuizTopic": "Comprehensive topic covering all concepts",
+  "estimatedMinutes": ${session.duration}
+}`;
+
+    try {
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: planningPrompt }] }],
+                generationConfig: {
+                    maxOutputTokens: 8192,
+                    temperature: 0.7,
+                    responseMimeType: 'application/json'
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error("Failed to generate session plan");
+        }
+
+        const data = await response.json();
+        const planText = data.candidates[0].content.parts[0].text;
+        sessionPlan = JSON.parse(planText);
+        
+        currentPhaseIndex = 0;
+        miniQuizScores = [];
+        readyForFinalQuiz = false;
+        
+        // Show plan to user
+        let planSummary = "📋 **Your Learning Plan:**\n\n";
+        sessionPlan.phases.forEach((phase, idx) => {
+            planSummary += `${idx + 1}. ${phase.conceptName}\n`;
+            phase.learningObjectives.forEach(obj => {
+                planSummary += `   • ${obj}\n`;
+            });
+        });
+        planSummary += `\n✅ Final Quiz: ${sessionPlan.finalQuizTopic}`;
+        
+        appendChatMessage("bot", planSummary);
+        appendChatMessage("bot", "🚀 Let's start with the first concept!");
+        
+        // Execute first phase
+        executeCurrentPhase();
+        
+    } catch (error) {
+        console.error("Session Planning Error:", error);
+        appendChatMessage("bot", "⚠️ Could not generate session plan. Showing general videos instead.");
+        
+        // Fallback to simple video search
+        liveSearchInput.value = `${session.title} ${session.subject} tutorial`;
+        liveSearchInput.disabled = true;
+        liveSearchBtn.textContent = "Refresh Videos";
+        liveSearchBtn.disabled = false;
+        performYouTubeSearch(liveSearchInput.value);
+        liveSearchBtn.onclick = () => performYouTubeSearch(liveSearchInput.value, currentNextPageToken);
+    }
+}
+function executeCurrentPhase() {
+    if (!sessionPlan || currentPhaseIndex >= sessionPlan.phases.length) {
+        // All phases complete - check if ready for final quiz
+        checkFinalQuizReadiness();
+        return;
+    }
+    
+    const phase = sessionPlan.phases[currentPhaseIndex];
+    
+    appendChatMessage("bot", `📚 **Concept ${currentPhaseIndex + 1}: ${phase.conceptName}**\n\n${phase.learningObjectives.join('\n')}\n\nWatch the videos below to learn this concept.`);
+    
+    // Search for videos for this phase
+    liveSearchInput.value = phase.searchQuery;
+    liveSearchInput.disabled = true;
+    liveSearchBtn.textContent = "Next Videos";
+    liveSearchBtn.disabled = false;
+    
+    performYouTubeSearch(phase.searchQuery);
+    
+    // Update search button to show quiz after videos watched
+    liveSearchBtn.onclick = () => {
+        if (currentNextPageToken) {
+            performYouTubeSearch(phase.searchQuery, currentNextPageToken);
+        }
+    };
+    
+    // Show "Take Mini-Quiz" button after some time (assume user watched videos)
+    setTimeout(() => {
+        showMiniQuizButton(phase);
+    }, 30000); // Show after 30 seconds (adjust as needed)
+}
+
+function showMiniQuizButton(phase) {
+    const quizBtn = document.createElement('button');
+    quizBtn.className = 'action-btn';
+    quizBtn.style.cssText = 'position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2500; animation: pulse-border 1.5s infinite;';
+    quizBtn.textContent = `📝 Take Mini-Quiz: ${phase.conceptName}`;
+    quizBtn.id = 'mini-quiz-trigger';
+    
+    quizBtn.onclick = () => {
+        startMiniQuiz(phase);
+        quizBtn.remove();
+    };
+    
+    document.body.appendChild(quizBtn);
+    
+    appendChatMessage("bot", `✅ Ready to test your understanding? Click the button below to take the mini-quiz!`);
+}
+async function startMiniQuiz(phase) {
+    appendChatMessage("bot", "⏳ Generating quiz questions...");
+    
+    const quizPrompt = `Generate 5 multiple-choice quiz questions about "${phase.miniQuizTopic}" for ${DEFAULT_GRADE} level.
+
+Format your response as valid JSON with this exact structure:
+{
+  "questions": [
+    {
+      "question": "Question text here?",
+      "options": {
+        "A": "First option",
+        "B": "Second option",
+        "C": "Third option",
+        "D": "Fourth option"
+      },
+      "correct": "A",
+      "explanation": "Explanation here"
+    }
+  ]
+}`;
+
+    try {
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: quizPrompt }] }],
+                generationConfig: {
+                    maxOutputTokens: 8192,
+                    temperature: 0.5,
+                    responseMimeType: 'application/json'
+                }
+            })
+        });
+
+        const data = await response.json();
+        const quizText = data.candidates[0].content.parts[0].text;
+        const quizData = JSON.parse(quizText);
+        
+        quizQuestions = quizData.questions;
+        quizSelectedAnswers = {};
+        currentQuizQuestion = 0;
+        showQuizResults = false;
+        
+        renderMiniQuiz(phase);
+        
+    } catch (error) {
+        console.error("Quiz Generation Error:", error);
+        appendChatMessage("bot", "❌ Error generating quiz. Moving to next concept...");
+        proceedToNextPhase(false);
+    }
+}
+
+function renderMiniQuiz(phase) {
+    // Hide videos section
+    videosSection.style.display = 'none';
+    liveSearchInput.parentElement.style.display = 'none';
+    
+    // Create quiz container
+    const quizContainer = document.createElement('div');
+    quizContainer.id = 'mini-quiz-container';
+    quizContainer.className = 'floating-card glass-effect';
+    quizContainer.style.cssText = 'padding: 2rem; margin: 2rem auto; max-width: 800px;';
+    
+    quizContainer.innerHTML = `
+        <h2 class="gradient-text" style="margin-bottom: 1.5rem;">Mini-Quiz: ${phase.conceptName}</h2>
+        <div class="question-nav" id="mini-quiz-nav"></div>
+        <div class="questions-wrapper" id="mini-quiz-wrapper"></div>
+        <div class="nav-buttons" style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button class="nav-btn" id="mini-prev-btn">← Previous</button>
+            <button class="nav-btn" id="mini-next-btn">Next →</button>
+            <button class="btn btn-primary" id="mini-submit-btn" style="display: none;">Submit Quiz</button>
+        </div>
+    `;
+    
+    document.querySelector('.live-session-content-area').appendChild(quizContainer);
+    
+    renderMiniQuizQuestions();
+    
+    document.getElementById('mini-prev-btn').onclick = () => {
+        if (currentQuizQuestion > 0) {
+            currentQuizQuestion--;
+            renderMiniQuizQuestions();
+        }
+    };
+    
+    document.getElementById('mini-next-btn').onclick = () => {
+        if (currentQuizQuestion < quizQuestions.length - 1) {
+            currentQuizQuestion++;
+            renderMiniQuizQuestions();
+        }
+    };
+    
+    document.getElementById('mini-submit-btn').onclick = () => submitMiniQuiz(phase);
+}
+
+function renderMiniQuizQuestions() {
+    const nav = document.getElementById('mini-quiz-nav');
+    const wrapper = document.getElementById('mini-quiz-wrapper');
+    
+    // Render navigation dots
+    nav.innerHTML = '';
+    quizQuestions.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        if (idx === currentQuizQuestion) dot.classList.add('active');
+        if (quizSelectedAnswers[idx]) dot.classList.add('answered');
+        dot.onclick = () => {
+            currentQuizQuestion = idx;
+            renderMiniQuizQuestions();
         };
+        nav.appendChild(dot);
+    });
+    
+    // Render current question
+    wrapper.innerHTML = '';
+    const q = quizQuestions[currentQuizQuestion];
+    
+    const card = document.createElement('div');
+    card.className = 'question-card active';
+    
+    let optionsHTML = '';
+    Object.entries(q.options).forEach(([letter, option]) => {
+        const isSelected = quizSelectedAnswers[currentQuizQuestion] === letter;
+        const btnClass = isSelected ? 'option-btn selected' : 'option-btn';
+        optionsHTML += `<button class="${btnClass}" onclick="selectMiniQuizAnswer(${currentQuizQuestion}, '${letter}')"><strong>${letter}.</strong> ${option}</button>`;
+    });
+    
+    card.innerHTML = `
+        <div class="question-title gradient-text">${currentQuizQuestion + 1}. ${q.question}</div>
+        ${optionsHTML}
+    `;
+    
+    wrapper.appendChild(card);
+    
+    // Update navigation buttons
+    document.getElementById('mini-prev-btn').disabled = currentQuizQuestion === 0;
+    document.getElementById('mini-next-btn').style.display = currentQuizQuestion === quizQuestions.length - 1 ? 'none' : 'block';
+    document.getElementById('mini-submit-btn').style.display = 
+        Object.keys(quizSelectedAnswers).length === quizQuestions.length && currentQuizQuestion === quizQuestions.length - 1 ? 'block' : 'none';
+}
 
+function selectMiniQuizAnswer(questionIndex, answer) {
+    quizSelectedAnswers[questionIndex] = answer;
+    renderMiniQuizQuestions();
+}
 
-        // =================================================================
-        // MASTER EVENT HANDLERS & INITIALIZATION (1851 - END)
-        // =================================================================
+function submitMiniQuiz(phase) {
+    let score = 0;
+    quizQuestions.forEach((q, idx) => {
+        if (quizSelectedAnswers[idx] === q.correct) score++;
+    });
+    
+    miniQuizScores.push(score);
+    
+    const passed = score >= phase.passingScore;
+    const percentage = (score / quizQuestions.length) * 100;
+    
+    const quizContainer = document.getElementById('mini-quiz-container');
+    quizContainer.innerHTML = `
+        <div class="results-container">
+            <div class="score-circle">
+                <div class="score-number">${score}/${quizQuestions.length}</div>
+                <div class="score-label">${percentage.toFixed(0)}%</div>
+            </div>
+            <div class="commentary gradient-text">${passed ? '✅ Well Done!' : '📚 Keep Learning!'}</div>
+            <div class="commentary-detail">${passed ? 'You\'ve mastered this concept!' : 'Review the material and try again.'}</div>
+            <div class="button-group">
+                ${!passed ? '<button class="btn btn-primary" onclick="retryMiniQuiz()">Retry Quiz</button>' : ''}
+                <button class="btn btn-primary" onclick="proceedToNextPhase(${passed})">Continue →</button>
+            </div>
+        </div>
+    `;
+    
+    appendChatMessage("bot", `📊 Quiz Result: ${score}/${quizQuestions.length} (${percentage.toFixed(0)}%)\n\n${passed ? '✅ Great job! Moving to next concept.' : '❌ Score below passing. Please review and retry.'}`);
+}
 
-        const openSessionForm = (type) => {
+function retryMiniQuiz() {
+    quizSelectedAnswers = {};
+    currentQuizQuestion = 0;
+    renderMiniQuizQuestions();
+}
+
+function proceedToNextPhase(passed) {
+    // Clean up quiz UI
+    const quizContainer = document.getElementById('mini-quiz-container');
+    if (quizContainer) quizContainer.remove();
+    
+    videosSection.style.display = 'flex';
+    liveSearchInput.parentElement.style.display = 'flex';
+    
+    if (passed) {
+        currentPhaseIndex++;
+        executeCurrentPhase();
+    } else {
+        appendChatMessage("bot", "📖 Let's review this concept again. Watch the videos carefully.");
+        executeCurrentPhase();
+    }
+}
+const closeLiveSession = () => {
+    liveSessionPage.classList.remove('open');
+    liveSessionPage.classList.add('hiding');
+    mainContent.classList.remove('hiding');
+    
+    clearInterval(sessionTimerInterval);
+    sessionTimerInterval = null;
+    sessionPaused = false;
+    sessionElapsedSeconds = 0;
+    sessionTotalDuration = 0;
+    
+    pdfIcon.classList.remove('visible');
+    chatbotIcon.classList.remove('visible');
+    chatbotContainer.classList.remove('visible');
+    pdfContainer.classList.remove('visible');
+    chatInput.disabled = false;
+    chatInput.value = "";
+    
+    videosSection.innerHTML = '';
+    liveLoader.style.display = 'none';
+    liveSearchBtn.onclick = null;
+    currentNextPageToken = null;
+    currentSessionId = null;
+
+    liveSessionPage.addEventListener('transitionend', () => {
+        liveSessionPage.classList.add('hidden');
+        liveSessionPage.classList.remove('hiding');
+    }, { once: true });
+};
+function checkFinalQuizReadiness() {
+    const allPassed = miniQuizScores.every((score, idx) => 
+        score >= sessionPlan.phases[idx].passingScore
+    );
+    
+    if (allPassed) {
+        appendChatMessage("bot", "🎉 Congratulations! You've completed all concepts. You're ready for the final comprehensive quiz!");
+        
+        const finalQuizBtn = document.createElement('button');
+        finalQuizBtn.className = 'action-btn';
+        finalQuizBtn.style.cssText = 'position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 2500; animation: pulse-border 1.5s infinite; font-size: 1.2em;';
+        finalQuizBtn.textContent = '🏆 Take Final Quiz (10 Questions)';
+        finalQuizBtn.id = 'final-quiz-trigger';
+        
+        finalQuizBtn.onclick = () => {
+            startFinalQuiz();
+            finalQuizBtn.remove();
+        };
+        
+        document.body.appendChild(finalQuizBtn);
+    } else {
+        appendChatMessage("bot", "⚠️ Some concepts need more practice. Let's review them.");
+        currentPhaseIndex = 0;
+        executeCurrentPhase();
+    }
+}
+
+async function startFinalQuiz() {
+    appendChatMessage("bot", "⏳ Generating your final comprehensive quiz...");
+    
+    const quizPrompt = `Generate 10 comprehensive multiple-choice quiz questions about "${sessionPlan.finalQuizTopic}" covering all these concepts:
+${sessionPlan.phases.map(p => `- ${p.conceptName}`).join('\n')}
+
+This is for ${DEFAULT_GRADE} level.
+
+Format your response as valid JSON with this exact structure:
+{
+  "questions": [
+    {
+      "question": "Question text here?",
+      "options": {
+        "A": "First option",
+        "B": "Second option",
+        "C": "Third option",
+        "D": "Fourth option"
+      },
+      "correct": "A",
+      "explanation": "Explanation here"
+    }
+  ]
+}`;
+
+    try {
+        const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GEMINI_API_KEY}`;
+        
+        const response = await fetch(API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                contents: [{ parts: [{ text: quizPrompt }] }],
+                generationConfig: {
+                    maxOutputTokens: 16384,
+                    temperature: 0.5,
+                    responseMimeType: 'application/json'
+                }
+            })
+        });
+
+        const data = await response.json();
+        const quizText = data.candidates[0].content.parts[0].text;
+        const quizData = JSON.parse(quizText);
+        
+        // Store final quiz data
+        quizQuestions = quizData.questions;
+        quizSelectedAnswers = {};
+        currentQuizQuestion = 0;
+        showQuizResults = false;
+        
+        renderFinalQuiz();
+        
+    } catch (error) {
+        console.error("Final Quiz Generation Error:", error);
+        appendChatMessage("bot", "❌ Error generating final quiz.");
+    }
+}
+
+function renderFinalQuiz() {
+    videosSection.style.display = 'none';
+    liveSearchInput.parentElement.style.display = 'none';
+    
+    const quizContainer = document.createElement('div');
+    quizContainer.id = 'final-quiz-container';
+    quizContainer.className = 'floating-card glass-effect';
+    quizContainer.style.cssText = 'padding: 2rem; margin: 2rem auto; max-width: 800px;';
+    
+    quizContainer.innerHTML = `
+        <h2 class="gradient-text" style="margin-bottom: 0.5rem;">🏆 Final Comprehensive Quiz</h2>
+        <p style="color: var(--subtext-dark); margin-bottom: 1.5rem;">This quiz covers everything you've learned today!</p>
+        <div class="question-nav" id="final-quiz-nav"></div>
+        <div class="questions-wrapper" id="final-quiz-wrapper"></div>
+        <div class="nav-buttons" style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <button class="nav-btn" id="final-prev-btn">← Previous</button>
+            <button class="nav-btn" id="final-next-btn">Next →</button>
+            <button class="btn btn-primary" id="final-submit-btn" style="display: none;">Submit Final Quiz</button>
+        </div>
+    `;
+    
+    document.querySelector('.live-session-content-area').appendChild(quizContainer);
+    
+    renderFinalQuizQuestions();
+    
+    document.getElementById('final-prev-btn').onclick = () => {
+        if (currentQuizQuestion > 0) {
+            currentQuizQuestion--;
+            renderFinalQuizQuestions();
+        }
+    };
+    
+    document.getElementById('final-next-btn').onclick = () => {
+        if (currentQuizQuestion < quizQuestions.length - 1) {
+            currentQuizQuestion++;
+            renderFinalQuizQuestions();
+        }
+    };
+    
+    document.getElementById('final-submit-btn').onclick = submitFinalQuiz;
+}
+
+function renderFinalQuizQuestions() {
+    const nav = document.getElementById('final-quiz-nav');
+    const wrapper = document.getElementById('final-quiz-wrapper');
+    
+    nav.innerHTML = '';
+    quizQuestions.forEach((_, idx) => {
+        const dot = document.createElement('div');
+        dot.className = 'nav-dot';
+        if (idx === currentQuizQuestion) dot.classList.add('active');
+        if (quizSelectedAnswers[idx]) dot.classList.add('answered');
+        dot.onclick = () => {
+            currentQuizQuestion = idx;
+            renderFinalQuizQuestions();
+        };
+        nav.appendChild(dot);
+    });
+    
+    wrapper.innerHTML = '';
+    const q = quizQuestions[currentQuizQuestion];
+    
+    const card = document.createElement('div');
+    card.className = 'question-card active';
+    
+    let optionsHTML = '';
+    Object.entries(q.options).forEach(([letter, option]) => {
+        const isSelected = quizSelectedAnswers[currentQuizQuestion] === letter;
+        const btnClass = isSelected ? 'option-btn selected' : 'option-btn';
+        optionsHTML += `<button class="${btnClass}" onclick="selectFinalQuizAnswer(${currentQuizQuestion}, '${letter}')"><strong>${letter}.</strong> ${option}</button>`;
+    });
+    
+    card.innerHTML = `
+        <div class="question-title gradient-text">${currentQuizQuestion + 1}. ${q.question}</div>
+        ${optionsHTML}
+    `;
+    
+    wrapper.appendChild(card);
+    
+    document.getElementById('final-prev-btn').disabled = currentQuizQuestion === 0;
+    document.getElementById('final-next-btn').style.display = currentQuizQuestion === quizQuestions.length - 1 ? 'none' : 'block';
+    document.getElementById('final-submit-btn').style.display = 
+        Object.keys(quizSelectedAnswers).length === quizQuestions.length && currentQuizQuestion === quizQuestions.length - 1 ? 'block' : 'none';
+}
+
+function selectFinalQuizAnswer(questionIndex, answer) {
+    quizSelectedAnswers[questionIndex] = answer;
+    renderFinalQuizQuestions();
+}
+
+function submitFinalQuiz() {
+    let score = 0;
+    quizQuestions.forEach((q, idx) => {
+        if (quizSelectedAnswers[idx] === q.correct) score++;
+    });
+    
+    const percentage = (score / quizQuestions.length) * 100;
+    
+    let commentary, detail;
+    if (percentage === 100) {
+        commentary = "🎉 Perfect Score! Incredible!";
+        detail = "You've mastered this topic completely!";
+    } else if (percentage >= 80) {
+        commentary = "🌟 Excellent Work!";
+        detail = "You have a strong understanding!";
+    } else if (percentage >= 60) {
+        commentary = "👍 Good Job!";
+        detail = "You're on the right track!";
+    } else {
+        commentary = "📚 Keep Learning!";
+        detail = "Review the material and try again!";
+    }
+    
+    const quizContainer = document.getElementById('final-quiz-container');
+    quizContainer.innerHTML = `
+        <div class="results-container">
+            <div class="score-circle">
+                <div class="score-number">${score}/${quizQuestions.length}</div>
+                <div class="score-label">${percentage.toFixed(0)}%</div>
+            </div>
+            <div class="commentary gradient-text">${commentary}</div>
+            <div class="commentary-detail">${detail}</div>
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="reviewFinalQuiz()">Review Answers</button>
+                <button class="btn btn-primary" onclick="completeSession()">Complete Session</button>
+            </div>
+        </div>
+    `;
+    
+    appendChatMessage("bot", `🎊 Final Quiz Complete!\n\nScore: ${score}/${quizQuestions.length} (${percentage.toFixed(0)}%)\n\n${commentary}`);
+}
+
+function reviewFinalQuiz() {
+    // Reuse the review logic from quiz.html
+    const quizContainer = document.getElementById('final-quiz-container');
+    
+    let correctCount = 0;
+    let reviewHTML = '<div class="review-container">';
+
+    quizQuestions.forEach((q, idx) => {
+        const userAnswer = quizSelectedAnswers[idx];
+        const isCorrect = userAnswer === q.correct;
+        const cardClass = isCorrect ? 'correct' : 'incorrect';
+        
+        if (isCorrect) correctCount++;
+
+        reviewHTML += `
+            <div class="review-card ${cardClass}">
+                <div class="review-question-header">
+                    <div class="review-status-badge ${cardClass}">
+                        ${isCorrect ? '✓' : '✕'}
+                    </div>
+                    <div class="review-question-text">
+                        ${idx + 1}. ${q.question}
+                    </div>
+                </div>
+                
+                <div class="review-options">
+        `;
+
+        Object.entries(q.options).forEach(([letter, option]) => {
+            const isUserSelected = userAnswer === letter;
+            const isCorrectAnswer = letter === q.correct;
+            
+            let optionClass = 'review-option';
+            let indicator = '';
+
+            if (isCorrectAnswer) {
+                optionClass += ' correct';
+                indicator = '✓ Correct Answer';
+            } else if (isUserSelected && !isCorrect) {
+                optionClass += ' incorrect';
+                indicator = '✕ Your Answer';
+            }
+
+            if (isUserSelected || isCorrectAnswer) {
+                reviewHTML += `
+                    <div class="${optionClass}">
+                        <span class="review-option-label">${letter}.</span>
+                        <span>${option}</span>
+                        <span class="option-indicator">${indicator}</span>
+                    </div>
+                `;
+            }
+        });
+
+        reviewHTML += `
+                </div>
+                <div class="review-explanation">
+                    <div class="explanation-title">📚 Explanation</div>
+                    <div class="explanation-text">${q.explanation}</div>
+                </div>
+            </div>
+        `;
+    });
+
+    reviewHTML += '</div>';
+    
+    quizContainer.innerHTML = `
+        <h2 class="gradient-text" style="text-align: center; margin-bottom: 2rem;">Review Your Final Quiz</h2>
+        ${reviewHTML}
+        <div class="button-group" style="margin-top: 2rem;">
+            <button class="btn btn-primary" onclick="completeSession()">Complete Session</button>
+        </div>
+    `;
+}
+
+function completeSession() {
+    alert("🎉 Session Complete! Great work today!");
+    endSessionBtn.click();
+}
+
+    // =================================================================
+    // MASTER EVENT HANDLERS & INITIALIZATION
+    // =================================================================
+
+    const openSessionForm = (type, sessionId = null) => {
+        if (sessionId) {
+            const session = sessions.find(s => s.id === sessionId);
+            if (!session) return;
+            
+            sessionFormTitle.textContent = `Edit ${session.type}`;
+            sessionForm.dataset.type = session.type;
+            sessionForm.dataset.editId = sessionId;
+            
+            document.getElementById('session-title').value = session.title;
+            document.getElementById('session-subject').value = session.subject;
+            
+            const sessionDate = new Date(session.datetime);
+            const localDate = new Date(sessionDate.getTime() - sessionDate.getTimezoneOffset() * 60000).toISOString().split('T')[0];
+            const localTime = sessionDate.toTimeString().split(' ')[0].substring(0, 5);
+            
+            document.getElementById('session-date').value = localDate;
+            document.getElementById('session-time').value = localTime;
+            document.getElementById('session-duration').value = session.duration.toString();
+        } else {
             sessionFormTitle.textContent = `Add New ${type}`;
             sessionForm.dataset.type = type;
-            openModal(sessionFormModal);
+            delete sessionForm.dataset.editId;
             
             const now = new Date();
             const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().split('T')[0];
             const localTime = now.toTimeString().split(' ')[0].substring(0, 5);
             document.getElementById('session-date').value = localDate;
             document.getElementById('session-time').value = localTime;
-        };
+        }
+        
+        openModal(sessionFormModal);
+    };
 
-        sessionForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(sessionForm);
+    sessionForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(sessionForm);
+        const editId = sessionForm.dataset.editId;
+        
+        if (editId) {
+            const sessionIndex = sessions.findIndex(s => s.id === parseInt(editId));
+            if (sessionIndex !== -1) {
+                sessions[sessionIndex] = {
+                    ...sessions[sessionIndex],
+                    title: formData.get('title'),
+                    subject: formData.get('subject'),
+                    duration: parseInt(formData.get('duration')),
+                    datetime: new Date(`${formData.get('date')}T${formData.get('time')}`).toISOString()
+                };
+            }
+        } else {
             const newSession = {
                 id: Date.now(),
                 title: formData.get('title'),
@@ -2223,179 +3253,301 @@ overflow: hidden; /* Only the designated section will scroll */
                 datetime: new Date(`${formData.get('date')}T${formData.get('time')}`).toISOString()
             };
             sessions.push(newSession);
+        }
+        
+        saveDataToLocalStorage();
+        renderSessions();
+        closeModal(sessionFormModal);
+    });
+
+pauseSessionBtn.addEventListener('click', () => {
+    sessionPaused = true;
+    clearInterval(sessionTimerInterval);
+    
+    const currentSession = sessions.find(s => s.id === currentSessionId);
+    pausedSessionData = {
+        id: currentSessionId,
+        session: currentSession,
+        elapsedSeconds: sessionElapsedSeconds,
+        totalDuration: sessionTotalDuration,
+        chatHistory: chatbotMessages.innerHTML,
+        // NEW: Save session plan state
+        sessionPlan: sessionPlan,
+        currentPhaseIndex: currentPhaseIndex,
+        miniQuizScores: miniQuizScores,
+        readyForFinalQuiz: readyForFinalQuiz
+    };
+    
+    const sessionCard = document.querySelector(`.session-card[data-id="${currentSessionId}"]`);
+    if (sessionCard) {
+        const startBtn = sessionCard.querySelector('.start-session-btn');
+        if (startBtn) {
+            startBtn.textContent = `Resume Session (${formatTime(sessionTotalDuration - sessionElapsedSeconds)} left)`;
+            startBtn.classList.remove('hidden');
+        }
+    }
+    
+    closeLiveSession();
+});
+
+    endSessionBtn.addEventListener('click', () => {
+        if (currentSessionId) {
+            sessions = sessions.filter(s => s.id !== currentSessionId);
             saveDataToLocalStorage();
             renderSessions();
-            closeModal(sessionFormModal);
-        });
+        }
+        closeLiveSession();
+    });
 
-        // Live Session: Pause
-        pauseSessionBtn.addEventListener('click', () => {
-            closeLiveSession();
-        });
+    liveTakeTestBtn.addEventListener('click', () => {
+        alert("The 'Take Test' module is not yet implemented.");
+    });
 
-        // Live Session: End
-        endSessionBtn.addEventListener('click', () => {
-            if (currentSessionId) {
-                // UPDATED: Remove immediately, then save and re-render
-                sessions = sessions.filter(s => s.id !== currentSessionId);
-                saveDataToLocalStorage();
-                renderSessions();
-            }
-            closeLiveSession();
-        });
+// Global Click Handler
+document.addEventListener('click', (e) => {
+    const target = e.target;
+    const action = target.closest('[data-action]')?.dataset.action;
 
-        liveTakeTestBtn.addEventListener('click', () => {
-            alert("The 'Take Test' module is not yet implemented.");
-        });
-
-        pdfIcon.addEventListener('click', () => {
-            chatbotContainer.classList.remove("visible");
-            chatbotIcon.classList.add("visible");
-            pdfContainer.classList.add("visible");
-            pdfIcon.classList.remove("visible");
-        });
-        
-        pdfCloseBtn.addEventListener('click', () => {
-            pdfContainer.classList.remove("visible");
-            pdfIcon.classList.add("visible");
-        });
-
-        // Global Click Handler
-        document.addEventListener('click', (e) => {
-            const target = e.target;
-            const action = target.closest('[data-action]')?.dataset.action;
-
-            // Modal Close
-            if (target.classList.contains('modal')) {
-                closeModal(target.closest('.modal'));
-            }
-            if (target.closest('.modal-close-btn')) {
-                const modalId = target.closest('.modal-close-btn').getAttribute('data-modal-id');
-                if (modalId) {
-                    // Special case for marks-modal
-                    if (modalId === 'marks-modal') {
-                        marksModal.classList.remove('visible');
-                    } else {
-                        closeModal(document.getElementById(modalId));
-                    }
-                }
-            }
-            
-            // Header Buttons
-            if (target.closest('#add-session-btn')) { 
-                openSessionForm('Session');
-            }
-            if (target.closest('#add-test-btn')) { 
-                openSessionForm('Test');
-            }
-            
-            // Expandable Marks
-            if (action === 'toggle-marks') {
-                const box = target.closest('.subject-score-box');
-                const subject = box.dataset.subject;
-                const marks = previousMarksData[subject] || [];
-                const marksContent = document.getElementById('marks-modal-content');
-                
-                document.getElementById('marks-modal-title').textContent = `${subject} - Test History`;
-                marksContent.innerHTML = '';
-                
-                if (marks.length > 0) {
-                    marks.forEach(mark => {
-                        marksContent.innerHTML += `
-                            <div class="mark-item">
-                                <span>${mark.name}</span>
-                                <span class="mark-score">${mark.score}</span>
-                            </div>
-                        `;
-                    });
-                } else {
-                    marksContent.innerHTML = `<p style="padding: 12px;">No test history found for ${subject}.</p>`;
-                }
-                
-                // Position and animate modal
-                const rect = box.getBoundingClientRect();
-                marksModal.style.top = `${rect.top + (rect.height / 2)}px`;
-                marksModal.style.left = `${rect.left + (rect.width / 2)}px`;
-                marksModal.style.transform = 'scale(0.8)';
-                marksModal.style.opacity = '0';
-                
-                // Use setTimeout to allow the browser to apply initial styles
-                setTimeout(() => {
-                    marksModal.classList.add('visible');
-                }, 10);
-            }
-
-// Session Card Actions
-            if (action === 'start-session' || action === 'cancel-session') {
-                const card = target.closest('.session-card');
-                const sessionId = parseInt(card.getAttribute('data-id'));
-                const session = sessions.find(s => s.id === sessionId);
-
-                if (action === 'start-session' && session) {
-                    // --- START MODIFICATION HERE ---
-                    if (session.type === 'Test') {
-                        // Redirect to quiz.html for Test sessions
-                        window.location.href = 'quiz.html';
-                    } else {
-                        // Open the live session for 'Session' type
-                        openLiveSession(session);
-                    }
-                    // --- END MODIFICATION HERE ---
-                }
-                
-                if (action === 'cancel-session' && session) {
-                    sessionToCancel = sessionId;
-                    document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
-                    openModal(confirmModal);
-                }
-            }
-            
-            // Confirmation Modal Buttons
-            if (target.closest('#confirm-btn-yes')) {
-                if (sessionToCancel) {
-                    // Remove immediately, save, and re-render
-                    sessions = sessions.filter(s => s.id !== sessionToCancel);
-                    saveDataToLocalStorage();
-                    renderSessions();
-                    sessionToCancel = null;
-                }
-                closeModal(confirmModal);
-            }
-            if (target.closest('#confirm-btn-no')) {
-                closeModal(confirmModal);
-                sessionToCancel = null;
-            }
-        });
-        
-        // Theme Toggle Logic
-        modeToggleCheckbox.addEventListener('change', () => {
-            body.classList.toggle('dark-mode');
-            body.classList.toggle('light-mode');
-            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
-        });
-        
-        // INITIALIZATION BLOCK
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('theme');
-            if (savedTheme === 'light') {
-                body.classList.remove('dark-mode');
-                body.classList.add('light-mode');
-                modeToggleCheckbox.checked = true;
+    // Modal Close
+    if (target.classList.contains('modal')) {
+        closeModal(target.closest('.modal'));
+    }
+    if (target.closest('.modal-close-btn')) {
+        const modalId = target.closest('.modal-close-btn').getAttribute('data-modal-id');
+        if (modalId) {
+            if (modalId === 'marks-modal') {
+                closeMarksModal();
             } else {
-                body.classList.add('dark-mode');
-                body.classList.remove('light-mode');
-                modeToggleCheckbox.checked = false;
+                closeModal(document.getElementById(modalId));
             }
+        }
+    }
+    
+    // Header Buttons
+    if (target.closest('#add-session-btn')) { 
+        openSessionForm('Session');
+    }
+    if (target.closest('#add-test-btn')) { 
+        openSessionForm('Test');
+    }
+    
+    // ✨ NEW: Enhanced Toggle Marks - Show popup with test history
+    if (action === 'toggle-marks') {
+        const box = target.closest('.subject-score-box');
+        const subject = box.dataset.subject;
+        const marks = previousMarksData[subject] || [];
+        const marksContent = document.getElementById('marks-modal-content');
+        const marksModal = document.getElementById('marks-modal');
+        const modalContent = marksModal.querySelector('.marks-modal-content');
+        
+        // Store the origin position (center of the clicked box)
+        const boxRect = box.getBoundingClientRect();
+        marksModalOrigin = {
+            x: boxRect.left + boxRect.width / 2,
+            y: boxRect.top + boxRect.height / 2
+        };
+        
+        document.getElementById('marks-modal-title').textContent = `${subject} - Test History`;
+        marksContent.innerHTML = '';
+        
+        if (marks.length > 0) {
+            marks.forEach(mark => {
+                marksContent.innerHTML += `
+                    <div class="mark-item">
+                        <span class="mark-name">${mark.name}</span>
+                        <span class="mark-score">${mark.score}</span>
+                    </div>
+                `;
+            });
+        } else {
+            marksContent.innerHTML = `<p style="padding: 12px; text-align: center; color: var(--subtext-dark);">No test history found for ${subject}.</p>`;
+        }
+        
+        // Calculate transform origin relative to modal content
+        marksModal.classList.remove('hidden');
+        
+        // Force a reflow to ensure the modal is rendered before calculating positions
+        void marksModal.offsetWidth;
+        
+        // Get modal position after it's rendered (but still invisible)
+        const modalRect = modalContent.getBoundingClientRect();
+        const deltaX = marksModalOrigin.x - (modalRect.left + modalRect.width / 2);
+        const deltaY = marksModalOrigin.y - (modalRect.top + modalRect.height / 2);
+        
+        // Set transform origin to the clicked box position
+        modalContent.style.transformOrigin = `calc(50% + ${deltaX}px) calc(50% + ${deltaY}px)`;
+        
+        // Show modal with animation
+        setTimeout(() => {
+            marksModal.classList.add('visible');
+        }, 10);
+    }
 
-            loadDataFromLocalStorage();
+    // Session Card Actions
+    if (action === 'start-session' || action === 'cancel-session' || action === 'edit-session') {
+        const card = target.closest('.session-card');
+        const sessionId = parseInt(card.getAttribute('data-id'));
+        const session = sessions.find(s => s.id === sessionId);
 
+if (action === 'start-session' && session) {
+    if (session.type === 'Test') {
+        window.location.href = 'quiz.html';
+    } else {
+        // Check if this is a paused session being resumed
+        if (pausedSessionData && pausedSessionData.id === sessionId) {
+            openLiveSession(session);
+        } else {
+            openLiveSession(session);
+        }
+    }
+}
+        
+        if (action === 'edit-session' && session) {
+            openSessionForm(session.type, sessionId);
+        }
+        if (action === 'cancel-session' && session) {
+            sessionToCancel = sessionId;
+            document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
+            openModal(confirmModal);
+        }
+    }
+    
+    // Confirmation Modal Buttons
+    if (target.closest('#confirm-btn-yes')) {
+        if (sessionToCancel) {
+            sessions = sessions.filter(s => s.id !== sessionToCancel);
+            saveDataToLocalStorage();
             renderSessions();
-            renderTimetable();
-            renderResources();
-            revealCards('.dashboard-grid');
-            
-            setInterval(checkSessionStatus, 10000); 
-        });
-    </script>
+            sessionToCancel = null;
+        }
+        closeModal(confirmModal);
+    }
+    if (target.closest('#confirm-btn-no')) {
+        closeModal(confirmModal);
+        sessionToCancel = null;
+    }
+    
+    // ✨ NEW: Close marks modal when clicking outside
+    if (target.id === 'marks-modal' && marksModal.classList.contains('visible')) {
+        const modalContent = marksModal.querySelector('.marks-modal-content');
+        if (!modalContent.contains(e.target)) {
+            closeMarksModal();
+        }
+    }
+});
+// Prevent clicks inside marks modal content from closing the modal
+document.querySelector('.marks-modal-content').addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+
+// Function to close marks modal with animation back to origin
+function closeMarksModal() {
+    const marksModal = document.getElementById('marks-modal');
+    const modalContent = marksModal.querySelector('.marks-modal-content');
+    
+    // Calculate the scale and position to animate back to origin
+    const modalRect = modalContent.getBoundingClientRect();
+    const deltaX = marksModalOrigin.x - (modalRect.left + modalRect.width / 2);
+    const deltaY = marksModalOrigin.y - (modalRect.top + modalRect.height / 2);
+    
+    // Set transform origin to the clicked box position
+    modalContent.style.transformOrigin = `calc(50% + ${deltaX}px) calc(50% + ${deltaY}px)`;
+    
+    // Add closing class for animation
+    marksModal.classList.add('closing');
+    
+    setTimeout(() => {
+        marksModal.classList.remove('visible', 'closing');
+        marksModal.classList.add('hidden');
+        modalContent.style.transformOrigin = 'center';
+    }, 400);
+}
+// Prevent clicks inside modal content from closing the modal
+document.querySelector('.marks-modal-content').addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+    // Theme Toggle Logic
+    modeToggleCheckbox.addEventListener('change', () => {
+        body.classList.toggle('dark-mode');
+        body.classList.toggle('light-mode');
+        localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+    });
+
+    // Circular Progress Update
+    function updateCircularProgress(percentage) {
+        const circle = document.getElementById('progress-circle');
+        const percentageText = document.getElementById('overall-percentage');
+        
+        if (!circle || !percentageText) return;
+        
+        const radius = 80;
+        const circumference = 2 * Math.PI * radius;
+        const offset = circumference - (percentage / 100) * circumference;
+        
+        circle.style.strokeDasharray = circumference;
+        circle.style.strokeDashoffset = offset;
+        
+        circle.classList.remove('excellent', 'good', 'average', 'poor');
+        if (percentage >= 85) {
+            circle.classList.add('excellent');
+        } else if (percentage >= 70) {
+            circle.classList.add('good');
+        } else if (percentage >= 50) {
+            circle.classList.add('average');
+        } else {
+            circle.classList.add('poor');
+        }
+        
+        percentageText.textContent = `${percentage}%`;
+    }
+
+    // INITIALIZATION BLOCK
+    document.addEventListener('DOMContentLoaded', () => {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'light') {
+            body.classList.remove('dark-mode');
+            body.classList.add('light-mode');
+            modeToggleCheckbox.checked = true;
+        } else {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            modeToggleCheckbox.checked = false;
+        }
+
+        loadDataFromLocalStorage();
+        renderSessions();
+        renderTimetable();
+        renderResources();
+        revealCards('.dashboard-grid');
+        
+        const overallPercentage = 88.5;
+        updateCircularProgress(overallPercentage);
+        
+        setInterval(checkSessionStatus, 10000); 
+    });
+    // Function to close marks modal
+// Function to close marks modal with animation back to origin
+function closeMarksModal() {
+    const marksModal = document.getElementById('marks-modal');
+    const modalContent = marksModal.querySelector('.marks-modal-content');
+    
+    // Calculate the scale and position to animate back to origin
+    const modalRect = modalContent.getBoundingClientRect();
+    const deltaX = marksModalOrigin.x - (modalRect.left + modalRect.width / 2);
+    const deltaY = marksModalOrigin.y - (modalRect.top + modalRect.height / 2);
+    
+    // Set transform origin to the clicked box position
+    modalContent.style.transformOrigin = `${deltaX}px ${deltaY}px`;
+    
+    // Add closing class for animation
+    marksModal.classList.add('closing');
+    
+    setTimeout(() => {
+        marksModal.classList.remove('visible', 'closing');
+        marksModal.classList.add('hidden');
+        modalContent.style.transformOrigin = 'center';
+    }, 400);
+}
+</script>
 </body>
 </html>
