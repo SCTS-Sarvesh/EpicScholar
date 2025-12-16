@@ -1313,7 +1313,8 @@
         .story-card.active {
             transform: translateZ(0) scale(1);
             opacity: 1;
-            z-index: 2;
+            z-index: 100;
+            /* Higher than arrows to allow input interaction */
         }
 
         .story-card.prev {
@@ -2281,43 +2282,46 @@
             color: var(--primary-color);
         }
 
-        /* Enhanced Add Story Modal with Spring Animation */
+        /* Improved Add Story Modal */
         .add-story-modal .story-modal-content {
-            transform: scale(0.7) translateY(100px);
+            transform: scale(0.9) translateY(20px);
             opacity: 0;
             transition: none;
-            /* Remove default transition */
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Header fixed, body scrolls */
+        }
+
+        .add-story-form {
+            overflow-y: auto;
+            max-height: calc(90vh - 80px);
+            /* Account for header */
+            padding-right: 5px;
         }
 
         .add-story-modal.active .story-modal-content {
-            animation: modalSpringIn 0.7s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+            animation: modalSpringIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
         .add-story-modal.closing .story-modal-content {
-            animation: modalSpringOut 0.4s cubic-bezier(0.5, -0.5, 0.7, 1) forwards;
+            animation: modalSpringOut 0.3s ease-in forwards;
         }
 
         @keyframes modalSpringIn {
-            0% {
-                opacity: 0;
-                transform: scale(0.7) translateY(100px);
-            }
-
-            100% {
+            to {
                 opacity: 1;
                 transform: scale(1) translateY(0);
             }
         }
 
         @keyframes modalSpringOut {
-            0% {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-
-            100% {
+            to {
                 opacity: 0;
-                transform: scale(0.8) translateY(50px);
+                transform: scale(0.9) translateY(20px);
             }
         }
 
@@ -2401,7 +2405,8 @@
             display: flex;
             justify-content: space-between;
             pointer-events: none;
-            z-index: 25;
+            z-index: 110;
+            /* Higher than card (100) to remain visible */
             padding: 0 -50px;
             /* Position outside the card */
         }
@@ -2959,6 +2964,375 @@
             object-fit: cover;
             border-radius: 0;
         }
+
+        .story-interactions {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 50;
+            align-items: center;
+        }
+
+        .story-like-btn {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            backdrop-filter: blur(5px);
+        }
+
+        .story-like-btn.liked {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #ff4b4b;
+            color: #ff4b4b;
+            transform: scale(1.1);
+        }
+
+        .story-like-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .story-reply-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 90px;
+            z-index: 50;
+        }
+
+        .story-reply-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .story-reply-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 12px 45px 12px 20px;
+            color: white;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .story-reply-input:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .story-reply-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .story-reply-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .story-reply-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .preview-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .btn-preview-audio {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-preview-audio:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-preview-audio.playing {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Story Interactions - Likes & Replies */
+        .story-interactions {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 50;
+            align-items: center;
+        }
+
+        .story-action-btn {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .story-action-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        .story-like-btn.liked {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: #ff4b4b;
+            color: #ff4b4b;
+        }
+
+        /* Comments Modal */
+        .comments-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 200;
+            display: none;
+            align-items: flex-end;
+            /* Slide up from bottom */
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .comments-modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .comments-sheet {
+            background: rgba(30, 30, 30, 0.95);
+            backdrop-filter: blur(20px);
+            width: 100%;
+            max-width: 420px;
+            height: 70%;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .comments-modal-overlay.active .comments-sheet {
+            transform: translateY(0);
+        }
+
+        .comments-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .comments-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-user {
+            font-weight: 600;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2px;
+        }
+
+        .comment-text {
+            color: white;
+            line-height: 1.4;
+        }
+
+        .comments-input-area {
+            padding: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            gap: 10px;
+        }
+
+        .comment-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 10px 15px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .comment-send-btn {
+            background: var(--primary-gradient);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-reply-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 90px;
+            z-index: 50;
+        }
+
+        .story-reply-input-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .story-reply-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 12px 45px 12px 20px;
+            color: white;
+            font-size: 14px;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+        }
+
+        .story-reply-input:focus {
+            outline: none;
+            background: rgba(0, 0, 0, 0.6);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .story-reply-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .story-reply-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: white;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .story-reply-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .preview-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 15px;
+            margin-bottom: 10px;
+        }
+
+        .btn-preview-audio {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-preview-audio:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-preview-audio.playing {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            animation: pulse 1.5s infinite;
+        }
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -3284,6 +3658,9 @@
                 subject: document.getElementById('storySubject').value,
                 timestamp: new Date(),
                 viewed: false,
+                likes: 0,
+                liked: false,
+                comments: [],
                 youtubeVideo: document.getElementById('selectedTrackData').value ? JSON.parse(document.getElementById('selectedTrackData').value) : null,
                 media: document.getElementById('uploadedMediaData').value ? JSON.parse(document.getElementById('uploadedMediaData').value) : null
             };
@@ -3411,6 +3788,9 @@
         `;
             }
 
+            const likeBtnClass = story.liked ? 'liked' : '';
+            const likeIcon = story.liked ? 'fas fa-heart' : 'far fa-heart';
+
             return `
         <div class="story-content-wrapper">
             <div class="story-header-info">
@@ -3421,11 +3801,34 @@
                 </div>
             </div>
             ${mediaHTML}
-            <div class="story-text-content">
-                <span class="story-subject-badge">${story.subject}</span>
-                <div class="story-text">${story.content}</div>
-            </div>
             ${audioHTML}
+
+            <div class="story-interactions">
+                <div class="story-action-btn story-like-btn ${likeBtnClass}" onclick="toggleLike(${story.id}); event.stopPropagation();">
+                    <i class="${likeIcon}"></i>
+                </div>
+                <div class="story-action-btn story-comment-btn" onclick="toggleComments(${story.id}); event.stopPropagation();">
+                    <i class="far fa-comment"></i>
+                </div>
+            </div>
+            
+            ${story.userId !== 'me' ? `
+            <div class="story-reply-container">
+                <div class="story-reply-input-wrapper">
+                    <input type="text" class="story-reply-input" placeholder="Send a message..." 
+                           onkeydown="if(event.key === 'Enter') { sendStoryReply(${story.id}, this.value); event.stopPropagation(); }"
+                           onclick="event.stopPropagation();">
+                    <button class="story-reply-btn" onclick="sendStoryReply(${story.id}, this.previousElementSibling.value); event.stopPropagation();">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+            ` : ''}
+
+            <div class="story-text-content" style="position: absolute; bottom: 85px; left: 20px; right: 80px; pointer-events: none;">
+                <span class="story-subject-badge">${story.subject}</span>
+                <div class="story-text" style="font-size: 16px;">${story.content}</div>
+            </div>
         </div>
     `;
         }
@@ -3622,6 +4025,9 @@
             carousel.addEventListener('mousemove', handleMouseMove);
             carousel.addEventListener('mouseup', handleMouseUp);
             carousel.addEventListener('mouseleave', handleMouseLeave);
+
+            // Trackpad Scroll Support
+            carousel.addEventListener('wheel', handleWheel, { passive: false });
         }
         function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
         function handleTouchMove(e) { touchEndX = e.changedTouches[0].screenX; }
@@ -3630,6 +4036,22 @@
         function handleMouseMove(e) { if (isDragging) touchEndX = e.screenX; }
         function handleMouseUp(e) { if (isDragging) { isDragging = false; e.currentTarget.style.cursor = 'grab'; handleSwipe(); } }
         function handleMouseLeave(e) { if (isDragging) { isDragging = false; e.currentTarget.style.cursor = 'grab'; } }
+
+        // Debounce map for wheel events
+        let scrollTimeout;
+        function handleWheel(e) {
+            e.preventDefault();
+            if (scrollTimeout) return;
+
+            const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+            if (Math.abs(delta) < 20) return; // Threshold
+
+            scrollTimeout = setTimeout(() => { scrollTimeout = null; }, 500); // Debounce 500ms
+
+            if (delta > 0) nextStory();
+            else prevStory();
+        }
+
         function handleSwipe() {
             const diff = touchStartX - touchEndX;
             if (Math.abs(diff) > 50) diff > 0 ? nextStory() : prevStory();
@@ -3757,6 +4179,13 @@
                 <span>${video.duration}</span>
             </div>
         </div>
+
+        <div class="preview-controls">
+            <button type="button" class="btn-preview-audio" id="previewBtn" onclick="togglePreview()">
+                <i class="fas fa-play"></i> Play Preview
+            </button>
+        </div>
+        <div id="preview-player-container" style="display:none;"></div>
         
         <button type="button" class="btn-confirm-time" onclick="confirmTimeRange()">
             <i class="fas fa-check"></i> Confirm Selection
@@ -4165,6 +4594,233 @@
             document.getElementById('recordingIndicator').classList.toggle('hidden', !isRecording);
             document.getElementById('micBtn').classList.toggle('hidden', isRecording);
             document.getElementById('stopBtn').classList.toggle('hidden', !isRecording);
+        }
+
+        // Story Interactions Helpers
+        function toggleLike(storyId) {
+            const story = stories.find(s => s.id === storyId);
+            if (story) {
+                story.liked = !story.liked;
+                story.likes = (story.likes || 0) + (story.liked ? 1 : -1);
+
+                // Update UI
+                const activeCard = document.querySelector(`.story-card.active`);
+                if (activeCard) {
+                    const likeBtn = activeCard.querySelector('.story-like-btn');
+                    if (likeBtn) {
+                        likeBtn.classList.toggle('liked', story.liked);
+                        likeBtn.querySelector('i').className = story.liked ? 'fas fa-heart' : 'far fa-heart';
+                    }
+                }
+            }
+        }
+
+        function sendStoryReply(storyId, text) {
+            if (!text.trim()) return;
+
+            const story = stories.find(s => s.id === storyId);
+            if (!story) return;
+
+            const userId = story.userId;
+
+            // Create new message
+            const msg = {
+                id: Date.now(),
+                senderId: 'me',
+                text: `Replied to story: ${text}`,
+                storyRef: storyId,
+                storyTitle: story.subject,
+                type: 'text',
+                timestamp: new Date()
+            };
+
+            if (!messages[userId]) messages[userId] = [];
+            messages[userId].push(msg);
+
+            // Update conversation list
+            let conv = conversations.find(c => c.userId == userId);
+            if (conv) {
+                conv.lastMessage = `Replied to story: ${text}`;
+                conv.timestamp = new Date();
+                conv.unread = 0;
+            } else {
+                conversations.unshift({
+                    id: userId,
+                    userId: userId,
+                    userName: story.userName,
+                    avatar: story.avatar,
+                    lastMessage: `Replied to story: ${text}`,
+                    timestamp: new Date(),
+                    unread: 0,
+                    online: true
+                });
+            }
+
+            closeStory();
+            selectChat(userId);
+        }
+
+        // Comments System
+        let activeStoryIdForComments = null;
+
+        function toggleComments(storyId) {
+            const overlay = document.getElementById('commentsOverlay');
+            if (!overlay) {
+                // Lazily create overlay
+                createCommentsOverlay();
+                setTimeout(() => toggleComments(storyId), 10);
+                return;
+            }
+
+            if (overlay.classList.contains('active') && activeStoryIdForComments === storyId) {
+                overlay.classList.remove('active');
+                setTimeout(() => overlay.style.display = 'none', 300);
+            } else {
+                activeStoryIdForComments = storyId;
+                renderComments(storyId);
+                overlay.style.display = 'flex';
+                // Small delay to allow display:flex to apply before transition
+                requestAnimationFrame(() => overlay.classList.add('active'));
+            }
+        }
+
+        function createCommentsOverlay() {
+            const overlay = document.createElement('div');
+            overlay.className = 'comments-modal-overlay';
+            overlay.id = 'commentsOverlay';
+            overlay.innerHTML = `
+                <div class="comments-sheet" onclick="event.stopPropagation()">
+                    <div class="comments-header">
+                        <span>Comments</span>
+                        <div style="cursor:pointer;" onclick="toggleComments(activeStoryIdForComments)">×</div>
+                    </div>
+                    <div class="comments-list" id="commentsList">
+                        <!-- Comments here -->
+                    </div>
+                    <div class="comments-input-area">
+                        <input type="text" class="comment-input" id="commentInput" placeholder="Add a comment..." onkeydown="if(event.key === 'Enter') addComment()">
+                        <button class="comment-send-btn" onclick="addComment()">
+                            <i class="fas fa-arrow-up" style="font-size:14px;"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            // Close on background click
+            overlay.onclick = () => toggleComments(activeStoryIdForComments);
+            document.body.appendChild(overlay);
+        }
+
+        function renderComments(storyId) {
+            const story = stories.find(s => s.id === storyId);
+            const list = document.getElementById('commentsList');
+            if (!story || !list) return;
+
+            const comments = story.comments || [];
+
+            if (comments.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:20px; color:rgba(255,255,255,0.5); font-size:14px;">No comments yet.<br>Be the first to say something!</div>';
+            } else {
+                list.innerHTML = comments.map(c => `
+                    <div class="comment-item">
+                        <img src="${c.avatar}" class="comment-avatar">
+                        <div class="comment-content">
+                            <div class="comment-user">${c.userName} <span style="opacity:0.5; font-weight:400; margin-left:5px;">${formatTime(c.timestamp)}</span></div>
+                            <div class="comment-text">${c.text}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            // Scroll to bottom
+            list.scrollTop = list.scrollHeight;
+        }
+
+        function addComment() {
+            const input = document.getElementById('commentInput');
+            const text = input.value.trim();
+            if (!text || !activeStoryIdForComments) return;
+
+            const story = stories.find(s => s.id === activeStoryIdForComments);
+            if (story) {
+                if (!story.comments) story.comments = [];
+                story.comments.push({
+                    id: Date.now(),
+                    userId: 'me',
+                    userName: 'You',
+                    avatar: 'https://i.pravatar.cc/150?img=11',
+                    text: text,
+                    timestamp: new Date()
+                });
+                renderComments(activeStoryIdForComments);
+                input.value = '';
+            }
+        }
+
+        function togglePreview() {
+            const btn = document.getElementById('previewBtn');
+            if (!btn) return;
+
+            if (isPreviewPlaying) {
+                stopPreview();
+            } else {
+                const start = parseInt(document.getElementById('startTimeInput').value) || 0;
+                const end = parseInt(document.getElementById('endTimeInput').value) || 30;
+
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                btn.classList.add('playing');
+
+                if (!previewPlayer) {
+                    previewPlayer = new YT.Player('preview-player-container', {
+                        height: '0',
+                        width: '0',
+                        videoId: selectedVideoForTimeRange.id,
+                        playerVars: {
+                            autoplay: 1,
+                            controls: 0,
+                            start: start,
+                            end: end
+                        },
+                        events: {
+                            onReady: (e) => {
+                                e.target.playVideo();
+                                btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
+                                isPreviewPlaying = true;
+                            },
+                            onStateChange: (e) => {
+                                if (e.data === YT.PlayerState.ENDED) {
+                                    stopPreview();
+                                }
+                            }
+                        }
+                    });
+                } else {
+                    previewPlayer.loadVideoById({
+                        videoId: selectedVideoForTimeRange.id,
+                        startSeconds: start,
+                        endSeconds: end
+                    });
+                    btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
+                    isPreviewPlaying = true;
+                }
+            }
+        }
+
+        function stopPreview() {
+            isPreviewPlaying = false;
+            const btn = document.getElementById('previewBtn');
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
+                btn.classList.remove('playing');
+            }
+
+            if (previewPlayer) {
+                previewPlayer.destroy();
+                previewPlayer = null;
+                const container = document.createElement('div');
+                container.id = 'preview-player-container';
+                container.style.display = 'none';
+                const modalContent = document.querySelector('.time-range-selector');
+                if (modalContent) modalContent.appendChild(container); // Re-append if context exists
+            }
         }
 
         // Event Listeners
