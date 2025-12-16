@@ -2665,362 +2665,364 @@
             margin-bottom: 15px;
             opacity: 0.3;
         }
+
         /* Time Range Selector */
-.time-range-selector {
-    background: rgba(20, 20, 20, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 25px;
-    margin-top: 15px;
-    animation: slideInUp 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
+        .time-range-selector {
+            background: rgba(20, 20, 20, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 25px;
+            margin-top: 15px;
+            animation: slideInUp 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
 
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
 
-.time-range-header {
-    text-align: center;
-    margin-bottom: 20px;
-}
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-.time-range-header h4 {
-    color: white;
-    font-size: 16px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
+        .time-range-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-.time-range-header p {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 13px;
-}
+        .time-range-header h4 {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
 
-.time-inputs {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    margin-bottom: 20px;
-}
+        .time-range-header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+        }
 
-.time-input-group {
-    background: rgba(255, 255, 255, 0.05);
-    padding: 15px;
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
+        .time-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-.time-input-group label {
-    display: block;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
+        .time-input-group {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-.time-input-group input {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 16px;
-    font-weight: 600;
-    text-align: center;
-}
+        .time-input-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-.time-input-group input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(0, 114, 255, 0.2);
-}
+        .time-input-group input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+        }
 
-.time-unit {
-    display: block;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 11px;
-    margin-top: 5px;
-}
+        .time-input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0, 114, 255, 0.2);
+        }
 
-.time-presets {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+        .time-unit {
+            display: block;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            margin-top: 5px;
+        }
 
-.preset-btn {
-    flex: 1;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 13px;
-    font-weight: 600;
-    transition: all 0.3s ease;
-}
+        .time-presets {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
 
-.preset-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: var(--primary-color);
-    transform: translateY(-2px);
-}
+        .preset-btn {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
 
-.time-range-preview {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 20px;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+        }
 
-.preview-bar {
-    position: relative;
-    height: 8px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 15px;
-}
+        .time-range-preview {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
 
-.preview-selection {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    background: var(--primary-gradient);
-    border-radius: 4px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 0 15px rgba(0, 114, 255, 0.6);
-}
+        .preview-bar {
+            position: relative;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 15px;
+        }
 
-.preview-labels {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 12px;
-    font-family: monospace;
-}
+        .preview-selection {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            background: var(--primary-gradient);
+            border-radius: 4px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 0 15px rgba(0, 114, 255, 0.6);
+        }
 
-#selectionLabel {
-    color: var(--primary-color);
-    font-weight: 700;
-    font-size: 13px;
-}
+        .preview-labels {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            font-family: monospace;
+        }
 
-.btn-confirm-time {
-    width: 100%;
-    background: var(--primary-gradient);
-    color: white;
-    border: none;
-    padding: 14px;
-    border-radius: 12px;
-    font-weight: 700;
-    font-size: 15px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
-}
+        #selectionLabel {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 13px;
+        }
 
-.btn-confirm-time:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
-}
+        .btn-confirm-time {
+            width: 100%;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+        }
 
-.btn-confirm-time:active {
-    transform: translateY(0);
-}
+        .btn-confirm-time:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+        }
 
-.youtube-audio-note {
-    margin-top: 10px;
-    padding: 10px;
-    background: rgba(0, 114, 255, 0.1);
-    border-left: 3px solid var(--primary-color);
-    border-radius: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+        .btn-confirm-time:active {
+            transform: translateY(0);
+        }
 
-.youtube-time-info {
-    margin-top: 12px;
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.8);
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
+        .youtube-audio-note {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 114, 255, 0.1);
+            border-left: 3px solid var(--primary-color);
+            border-radius: 6px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-.youtube-time-info i {
-    color: var(--primary-color);
-}
-/* Audio Player Styling */
-.story-audio-player {
-    width: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 12px;
-    padding: 15px;
-    margin-top: 20px;
-}
+        .youtube-time-info {
+            margin-top: 12px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
 
-.audio-track-info {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
+        .youtube-time-info i {
+            color: var(--primary-color);
+        }
 
-.audio-thumbnail {
-    width: 50px;
-    height: 50px;
-    border-radius: 8px;
-    object-fit: cover;
-    flex-shrink: 0;
-}
+        /* Audio Player Styling */
+        .story-audio-player {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+        }
 
-.audio-details {
-    flex: 1;
-    min-width: 0;
-}
+        .audio-track-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
 
-.audio-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: white;
-    margin-bottom: 4px;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
+        .audio-thumbnail {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
 
-.audio-channel {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.6);
-}
+        .audio-details {
+            flex: 1;
+            min-width: 0;
+        }
 
-.audio-progress-container {
-    background: rgba(255, 255, 255, 0.1);
-    height: 6px;
-    border-radius: 3px;
-    overflow: hidden;
-    margin-bottom: 8px;
-    position: relative;
-}
+        .audio-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
 
-.audio-progress-bar {
-    height: 100%;
-    background: var(--primary-gradient);
-    width: 0%;
-    transition: width 0.1s linear;
-    box-shadow: 0 0 10px rgba(0, 114, 255, 0.5);
-}
+        .audio-channel {
+            display: none;
+        }
 
-.audio-time-display {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 11px;
-    color: rgba(255, 255, 255, 0.7);
-    font-family: monospace;
-}
+        .audio-progress-container {
+            background: rgba(255, 255, 255, 0.1);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+            position: relative;
+        }
 
-.audio-controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 15px;
-    margin-top: 10px;
-}
+        .audio-progress-bar {
+            height: 100%;
+            background: var(--primary-gradient);
+            width: 0%;
+            transition: width 0.1s linear;
+            box-shadow: 0 0 10px rgba(0, 114, 255, 0.5);
+        }
 
-.audio-control-btn {
-    background: rgba(255, 255, 255, 0.1);
-    border: none;
-    color: white;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-size: 18px;
-}
+        .audio-time-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: monospace;
+        }
 
-.audio-control-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: scale(1.1);
-}
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
 
-.audio-control-btn.play-pause {
-    width: 50px;
-    height: 50px;
-    background: var(--primary-gradient);
-    font-size: 20px;
-}
+        .audio-control-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
 
-.audio-volume-control {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
+        .audio-control-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
 
-.audio-volume-slider {
-    width: 80px;
-    height: 4px;
-    border-radius: 2px;
-    background: rgba(255, 255, 255, 0.2);
-    outline: none;
-    -webkit-appearance: none;
-}
+        .audio-control-btn.play-pause {
+            width: 50px;
+            height: 50px;
+            background: var(--primary-gradient);
+            font-size: 20px;
+        }
 
-.audio-volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: white;
-    cursor: pointer;
-}
+        .audio-volume-control {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
 
-.audio-clip-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(0, 114, 255, 0.2);
-    border: 1px solid rgba(0, 114, 255, 0.4);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    color: var(--primary-color);
-    margin-top: 8px;
-}
+        .audio-volume-slider {
+            width: 80px;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.2);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .audio-volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: white;
+            cursor: pointer;
+        }
+
+        .audio-clip-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 114, 255, 0.2);
+            border: 1px solid rgba(0, 114, 255, 0.4);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            color: var(--primary-color);
+            margin-top: 8px;
+        }
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -3217,18 +3219,20 @@
                     </div>
                 </div>
 
-<div class="form-group">
-    <label>Add YouTube Audio Clip (Optional)</label>
-    <div style="display:flex; gap:10px;">
-        <input type="text" id="spotifySearchQuery" placeholder="Search for a song or video..." />
-        <button type="button" class="spotify-search-btn" onclick="setupLiveYouTubeSearch(); performLiveYouTubeSearch(document.getElementById('spotifySearchQuery').value)">
-            <i class="fab fa-youtube"></i> Search
-        </button>
-    </div>
-    <div class="youtube-audio-note">
-        <i class="fas fa-info-circle"></i> You'll be able to select a specific time range after choosing a video
-    </div>
-</div>
+                <div class="form-group">
+                    <label>Add YouTube Audio Clip (Optional)</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="spotifySearchQuery" placeholder="Search for a song or video..." />
+                        <button type="button" class="spotify-search-btn"
+                            onclick="setupLiveYouTubeSearch(); performLiveYouTubeSearch(document.getElementById('spotifySearchQuery').value)">
+                            <i class="fab fa-youtube"></i> Search
+                        </button>
+                    </div>
+                    <div class="youtube-audio-note">
+                        <i class="fas fa-info-circle"></i> You'll be able to select a specific time range after choosing
+                        a video
+                    </div>
+                </div>
 
                 <div id="spotifyResults" class="spotify-results hidden"></div>
                 <input type="hidden" id="selectedTrackData" />
@@ -3249,203 +3253,202 @@
     </div>
 
     <script>
-// YouTube API Configuration
-const YOUTUBE_API_KEY = 'AIzaSyBiVCOrKMTbh1gVEpevbbJ_5EDewv7q_dI';
+        // YouTube API Configuration
+        const YOUTUBE_API_KEY = 'AIzaSyBiVCOrKMTbh1gVEpevbbJ_5EDewv7q_dI';
 
-// Mock Data
-const mockUsers = [
-    { id: 1, name: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", online: true },
-    { id: 2, name: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", online: false },
-    { id: 3, name: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", online: true },
-    { id: 4, name: "David Lee", avatar: "https://i.pravatar.cc/150?img=4", online: false },
-    { id: 5, name: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", online: true },
-    { id: 'me', name: "You", avatar: "https://i.pravatar.cc/150?img=11", online: true }
-];
+        // Mock Data
+        const mockUsers = [
+            { id: 1, name: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", online: true },
+            { id: 2, name: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", online: false },
+            { id: 3, name: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", online: true },
+            { id: 4, name: "David Lee", avatar: "https://i.pravatar.cc/150?img=4", online: false },
+            { id: 5, name: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", online: true },
+            { id: 'me', name: "You", avatar: "https://i.pravatar.cc/150?img=11", online: true }
+        ];
 
-const mockConversations = [
-    { id: 1, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", lastMessage: "Hey! Did you finish the math assignment?", timestamp: new Date(Date.now() - 5 * 60000), unread: 2, online: true },
-    { id: 2, userId: 2, userName: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", lastMessage: "Thanks for the study notes!", timestamp: new Date(Date.now() - 30 * 60000), unread: 0, online: false },
-    { id: 3, userId: 3, userName: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", lastMessage: "Can you help me with physics?", timestamp: new Date(Date.now() - 2 * 60 * 60000), unread: 1, online: true },
-    { id: 4, userId: 4, userName: "David Lee", avatar: "https://i.pravatar.cc/150?img=4", lastMessage: "See you in class tomorrow!", timestamp: new Date(Date.now() - 24 * 60 * 60000), unread: 0, online: false },
-    { id: 5, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", lastMessage: "The biology project looks great!", timestamp: new Date(Date.now() - 48 * 60 * 60000), unread: 0, online: true }
-];
+        const mockConversations = [
+            { id: 1, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", lastMessage: "Hey! Did you finish the math assignment?", timestamp: new Date(Date.now() - 5 * 60000), unread: 2, online: true },
+            { id: 2, userId: 2, userName: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", lastMessage: "Thanks for the study notes!", timestamp: new Date(Date.now() - 30 * 60000), unread: 0, online: false },
+            { id: 3, userId: 3, userName: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", lastMessage: "Can you help me with physics?", timestamp: new Date(Date.now() - 2 * 60 * 60000), unread: 1, online: true },
+            { id: 4, userId: 4, userName: "David Lee", avatar: "https://i.pravatar.cc/150?img=4", lastMessage: "See you in class tomorrow!", timestamp: new Date(Date.now() - 24 * 60 * 60000), unread: 0, online: false },
+            { id: 5, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", lastMessage: "The biology project looks great!", timestamp: new Date(Date.now() - 48 * 60 * 60000), unread: 0, online: true }
+        ];
 
-const mockMessages = {
-    1: [{ id: 1, senderId: 1, text: "Hi! How are you doing?", timestamp: new Date(Date.now() - 60 * 60000), type: "text" }, { id: 2, senderId: "me", text: "I'm good! Working on the assignment.", timestamp: new Date(Date.now() - 55 * 60000), type: "text" }, { id: 3, senderId: 1, text: "Which one? The math homework?", timestamp: new Date(Date.now() - 50 * 60000), type: "text" }, { id: 4, senderId: "me", text: "Yes, the calculus problems.", timestamp: new Date(Date.now() - 45 * 60000), type: "text" }, { id: 5, senderId: 1, text: "Hey! Did you finish the math assignment?", timestamp: new Date(Date.now() - 5 * 60000), type: "text" }],
-    2: [{ id: 8, senderId: 2, text: "Hey, do you have the notes from yesterday?", timestamp: new Date(Date.now() - 120 * 60000), type: "text" }, { id: 9, senderId: "me", text: "Sure, let me share them with you.", timestamp: new Date(Date.now() - 110 * 60000), type: "text" }, { id: 10, senderId: "me", text: "Here are the notes 📚", timestamp: new Date(Date.now() - 100 * 60000), type: "text" }, { id: 11, senderId: 2, text: "Thanks for the study notes!", timestamp: new Date(Date.now() - 30 * 60000), type: "text" }],
-    3: [{ id: 12, senderId: 3, text: "I'm struggling with the physics chapter.", timestamp: new Date(Date.now() - 150 * 60000), type: "text" }, { id: 13, senderId: "me", text: "Which topic specifically?", timestamp: new Date(Date.now() - 140 * 60000), type: "text" }, { id: 14, senderId: 3, text: "Thermodynamics and heat transfer.", timestamp: new Date(Date.now() - 130 * 60000), type: "text" }, { id: 16, senderId: 3, text: "Can you help me with physics?", timestamp: new Date(Date.now() - 2 * 60 * 60000), type: "text" }],
-    4: [{ id: 17, senderId: 4, text: "Want to study together this weekend?", timestamp: new Date(Date.now() - 30 * 60 * 60000), type: "text" }, { id: 18, senderId: "me", text: "Sure! Saturday afternoon?", timestamp: new Date(Date.now() - 29 * 60 * 60000), type: "text" }, { id: 19, senderId: 4, text: "Perfect! Library at 2 PM?", timestamp: new Date(Date.now() - 28 * 60 * 60000), type: "text" }, { id: 20, senderId: "me", text: "Sounds good! See you there.", timestamp: new Date(Date.now() - 27 * 60 * 60000), type: "text" }, { id: 21, senderId: 4, text: "See you in class tomorrow!", timestamp: new Date(Date.now() - 24 * 60 * 60000), type: "text" }],
-    5: [{ id: 22, senderId: 5, text: "I finished my part of the project!", timestamp: new Date(Date.now() - 50 * 60 * 60000), type: "text" }, { id: 23, senderId: "me", text: "Awesome! Let me check it out.", timestamp: new Date(Date.now() - 49 * 60 * 60000), type: "text" }, { id: 24, senderId: "me", text: "The biology project looks great!", timestamp: new Date(Date.now() - 48 * 60 * 60000), type: "text" }, { id: 25, senderId: 5, text: "Thanks! 😊", timestamp: new Date(Date.now() - 48 * 60 * 60000), type: "text" }]
-};
+        const mockMessages = {
+            1: [{ id: 1, senderId: 1, text: "Hi! How are you doing?", timestamp: new Date(Date.now() - 60 * 60000), type: "text" }, { id: 2, senderId: "me", text: "I'm good! Working on the assignment.", timestamp: new Date(Date.now() - 55 * 60000), type: "text" }, { id: 3, senderId: 1, text: "Which one? The math homework?", timestamp: new Date(Date.now() - 50 * 60000), type: "text" }, { id: 4, senderId: "me", text: "Yes, the calculus problems.", timestamp: new Date(Date.now() - 45 * 60000), type: "text" }, { id: 5, senderId: 1, text: "Hey! Did you finish the math assignment?", timestamp: new Date(Date.now() - 5 * 60000), type: "text" }],
+            2: [{ id: 8, senderId: 2, text: "Hey, do you have the notes from yesterday?", timestamp: new Date(Date.now() - 120 * 60000), type: "text" }, { id: 9, senderId: "me", text: "Sure, let me share them with you.", timestamp: new Date(Date.now() - 110 * 60000), type: "text" }, { id: 10, senderId: "me", text: "Here are the notes 📚", timestamp: new Date(Date.now() - 100 * 60000), type: "text" }, { id: 11, senderId: 2, text: "Thanks for the study notes!", timestamp: new Date(Date.now() - 30 * 60000), type: "text" }],
+            3: [{ id: 12, senderId: 3, text: "I'm struggling with the physics chapter.", timestamp: new Date(Date.now() - 150 * 60000), type: "text" }, { id: 13, senderId: "me", text: "Which topic specifically?", timestamp: new Date(Date.now() - 140 * 60000), type: "text" }, { id: 14, senderId: 3, text: "Thermodynamics and heat transfer.", timestamp: new Date(Date.now() - 130 * 60000), type: "text" }, { id: 16, senderId: 3, text: "Can you help me with physics?", timestamp: new Date(Date.now() - 2 * 60 * 60000), type: "text" }],
+            4: [{ id: 17, senderId: 4, text: "Want to study together this weekend?", timestamp: new Date(Date.now() - 30 * 60 * 60000), type: "text" }, { id: 18, senderId: "me", text: "Sure! Saturday afternoon?", timestamp: new Date(Date.now() - 29 * 60 * 60000), type: "text" }, { id: 19, senderId: 4, text: "Perfect! Library at 2 PM?", timestamp: new Date(Date.now() - 28 * 60 * 60000), type: "text" }, { id: 20, senderId: "me", text: "Sounds good! See you there.", timestamp: new Date(Date.now() - 27 * 60 * 60000), type: "text" }, { id: 21, senderId: 4, text: "See you in class tomorrow!", timestamp: new Date(Date.now() - 24 * 60 * 60000), type: "text" }],
+            5: [{ id: 22, senderId: 5, text: "I finished my part of the project!", timestamp: new Date(Date.now() - 50 * 60 * 60000), type: "text" }, { id: 23, senderId: "me", text: "Awesome! Let me check it out.", timestamp: new Date(Date.now() - 49 * 60 * 60000), type: "text" }, { id: 24, senderId: "me", text: "The biology project looks great!", timestamp: new Date(Date.now() - 48 * 60 * 60000), type: "text" }, { id: 25, senderId: 5, text: "Thanks! 😊", timestamp: new Date(Date.now() - 48 * 60 * 60000), type: "text" }]
+        };
 
-const mockStories = [
-    { id: 1, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", content: "Quick tip: Use flashcards for memorizing formulas! 📝", subject: "Study Tips", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 2 * 60 * 60000), viewed: false, youtubeVideo: null },
-    { id: 101, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", content: "Also, drink plenty of water while studying! 💧", subject: "Health", image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 1 * 60 * 60000), viewed: false, youtubeVideo: null },
-    { id: 2, userId: 3, userName: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", content: "Just learned an amazing physics trick for solving kinematics problems!", subject: "Physics", image: "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 5 * 60 * 60000), viewed: false, youtubeVideo: null },
-    { id: 3, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", content: "Biology hack: Use mnemonics to remember the Krebs cycle steps.", subject: "Biology", image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 8 * 60 * 60000), viewed: true, youtubeVideo: null },
-    { id: 301, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", content: "Look at these cells under the microscope! 🔬", subject: "Lab", image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 7 * 60 * 60000), viewed: true, youtubeVideo: null },
-    { id: 4, userId: 2, userName: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", content: "Found a great online resource for calculus practice problems!", subject: "Math", image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 12 * 60 * 60000), viewed: false, youtubeVideo: null }
-];
+        const mockStories = [
+            { id: 1, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", content: "Quick tip: Use flashcards for memorizing formulas! 📝", subject: "Study Tips", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 2 * 60 * 60000), viewed: false, youtubeVideo: null },
+            { id: 101, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", content: "Also, drink plenty of water while studying! 💧", subject: "Health", image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 1 * 60 * 60000), viewed: false, youtubeVideo: null },
+            { id: 2, userId: 3, userName: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", content: "Just learned an amazing physics trick for solving kinematics problems!", subject: "Physics", image: "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 5 * 60 * 60000), viewed: false, youtubeVideo: null },
+            { id: 3, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", content: "Biology hack: Use mnemonics to remember the Krebs cycle steps.", subject: "Biology", image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 8 * 60 * 60000), viewed: true, youtubeVideo: null },
+            { id: 301, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", content: "Look at these cells under the microscope! 🔬", subject: "Lab", image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 7 * 60 * 60000), viewed: true, youtubeVideo: null },
+            { id: 4, userId: 2, userName: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", content: "Found a great online resource for calculus practice problems!", subject: "Math", image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 12 * 60 * 60000), viewed: false, youtubeVideo: null }
+        ];
 
-let conversations = [...mockConversations];
-let messages = JSON.parse(JSON.stringify(mockMessages));
-let stories = [...mockStories];
-let selectedChat = null;
-let disappearingMode = null;
-let isRecording = false;
-let mediaRecorder = null;
-let audioChunks = [];
-let storyQueue = [];
-let storyQueueIndex = 0;
-let storyTimer = null;
-let progressAnimationFrame = null;
-let searchTimeout;
-let currentSearchController = null;
-let touchStartX = 0;
-let touchEndX = 0;
-let isDragging = false;
-let selectedVideoForTimeRange = null;
-let currentYouTubePlayer = null;
-let audioProgressInterval = null;
-const STORY_DURATION = 30000; // Fixed 30 seconds for story display
+        let conversations = [...mockConversations];
+        let messages = JSON.parse(JSON.stringify(mockMessages));
+        let stories = [...mockStories];
+        let selectedChat = null;
+        let disappearingMode = null;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let storyQueue = [];
+        let storyQueueIndex = 0;
+        let storyTimer = null;
+        let progressAnimationFrame = null;
+        let searchTimeout;
+        let currentSearchController = null;
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isDragging = false;
+        let selectedVideoForTimeRange = null;
+        let currentYouTubePlayer = null;
+        let audioProgressInterval = null;
+        const STORY_DURATION = 30000; // Fixed 30 seconds for story display
 
-function openAddStoryModal() {
-    const modal = document.getElementById('addStoryModal');
-    modal.classList.remove('closing');
-    modal.style.display = 'flex';
-    setTimeout(() => modal.classList.add('active'), 10);
-}
+        function openAddStoryModal() {
+            const modal = document.getElementById('addStoryModal');
+            modal.classList.remove('closing');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
 
-function closeAddStoryModal() {
-    const modal = document.getElementById('addStoryModal');
-    modal.classList.remove('active');
-    modal.classList.add('closing');
-    setTimeout(() => {
-        modal.style.display = 'none';
-        modal.classList.remove('closing');
-        document.getElementById('storySubject').value = '';
-        document.getElementById('storyContent').value = '';
-        document.getElementById('spotifySearchQuery').value = '';
-        document.getElementById('selectedTrackData').value = '';
-        document.getElementById('spotifyResults').classList.add('hidden');
-        removeMedia();
-        removeTimeRangeSelector();
-    }, 450);
-}
+        function closeAddStoryModal() {
+            const modal = document.getElementById('addStoryModal');
+            modal.classList.remove('active');
+            modal.classList.add('closing');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.classList.remove('closing');
+                document.getElementById('storySubject').value = '';
+                document.getElementById('storyContent').value = '';
+                document.getElementById('spotifySearchQuery').value = '';
+                document.getElementById('selectedTrackData').value = '';
+                document.getElementById('spotifyResults').classList.add('hidden');
+                removeMedia();
+                removeTimeRangeSelector();
+            }, 450);
+        }
 
-function submitStory(e) {
-    e.preventDefault();
-    const newStory = {
-        id: Date.now(),
-        userId: 'me',
-        userName: 'You',
-        avatar: 'https://i.pravatar.cc/150?img=11',
-        content: document.getElementById('storyContent').value,
-        subject: document.getElementById('storySubject').value,
-        timestamp: new Date(),
-        viewed: false,
-        youtubeVideo: document.getElementById('selectedTrackData').value ? JSON.parse(document.getElementById('selectedTrackData').value) : null,
-        media: document.getElementById('uploadedMediaData').value ? JSON.parse(document.getElementById('uploadedMediaData').value) : null
-    };
-    stories.unshift(newStory);
-    renderStories();
-    closeAddStoryModal();
-    removeMedia();
-}
+        function submitStory(e) {
+            e.preventDefault();
+            const newStory = {
+                id: Date.now(),
+                userId: 'me',
+                userName: 'You',
+                avatar: 'https://i.pravatar.cc/150?img=11',
+                content: document.getElementById('storyContent').value,
+                subject: document.getElementById('storySubject').value,
+                timestamp: new Date(),
+                viewed: false,
+                youtubeVideo: document.getElementById('selectedTrackData').value ? JSON.parse(document.getElementById('selectedTrackData').value) : null,
+                media: document.getElementById('uploadedMediaData').value ? JSON.parse(document.getElementById('uploadedMediaData').value) : null
+            };
+            stories.unshift(newStory);
+            renderStories();
+            closeAddStoryModal();
+            removeMedia();
+        }
 
-function openStory(userId) {
-    storyQueue = stories;
-    const userStories = stories.filter(s => s.userId == userId);
-    if (!userStories.length) return;
-    let startStory = userStories.find(s => !s.viewed) || userStories[0];
-    storyQueueIndex = storyQueue.findIndex(s => s.id === startStory.id);
-    if (storyQueueIndex === -1) storyQueueIndex = 0;
-    const modal = document.getElementById('storyModal');
-    modal.classList.add('active');
-    modal.style.display = 'flex';
-    initCarousel();
-    updateCarousel();
-    startStoryTimer();
-    initStoryNavigation();
-    updateNavigationArrows();
-}
+        function openStory(userId) {
+            storyQueue = stories;
+            const userStories = stories.filter(s => s.userId == userId);
+            if (!userStories.length) return;
+            let startStory = userStories.find(s => !s.viewed) || userStories[0];
+            storyQueueIndex = storyQueue.findIndex(s => s.id === startStory.id);
+            if (storyQueueIndex === -1) storyQueueIndex = 0;
+            const modal = document.getElementById('storyModal');
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+            initCarousel();
+            updateCarousel();
+            startStoryTimer();
+            initStoryNavigation();
+            updateNavigationArrows();
+        }
 
-function closeStory() {
-    if (currentYouTubePlayer) {
-        currentYouTubePlayer.pauseVideo();
-        currentYouTubePlayer.destroy();
-        currentYouTubePlayer = null;
-    }
-    if (audioProgressInterval) {
-        clearInterval(audioProgressInterval);
-        audioProgressInterval = null;
-    }
-    document.getElementById('storyModal').classList.remove('active');
-    document.getElementById('storyModal').style.display = 'none';
-    clearTimeout(storyTimer);
-    if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
-    progressAnimationFrame = null;
-    renderStories();
-}
+        function closeStory() {
+            if (currentYouTubePlayer) {
+                currentYouTubePlayer.pauseVideo();
+                currentYouTubePlayer.destroy();
+                currentYouTubePlayer = null;
+            }
+            if (audioProgressInterval) {
+                clearInterval(audioProgressInterval);
+                audioProgressInterval = null;
+            }
+            document.getElementById('storyModal').classList.remove('active');
+            document.getElementById('storyModal').style.display = 'none';
+            clearTimeout(storyTimer);
+            if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
+            progressAnimationFrame = null;
+            renderStories();
+        }
 
-function nextStory() {
-    if (currentYouTubePlayer) {
-        currentYouTubePlayer.pauseVideo();
-        currentYouTubePlayer.destroy();
-        currentYouTubePlayer = null;
-    }
-    if (audioProgressInterval) {
-        clearInterval(audioProgressInterval);
-        audioProgressInterval = null;
-    }
-    if (storyQueueIndex < storyQueue.length - 1) {
-        storyQueueIndex++;
-        updateCarousel();
-        startStoryTimer();
-        updateNavigationArrows();
-    } else closeStory();
-}
+        function nextStory() {
+            if (currentYouTubePlayer) {
+                currentYouTubePlayer.pauseVideo();
+                currentYouTubePlayer.destroy();
+                currentYouTubePlayer = null;
+            }
+            if (audioProgressInterval) {
+                clearInterval(audioProgressInterval);
+                audioProgressInterval = null;
+            }
+            if (storyQueueIndex < storyQueue.length - 1) {
+                storyQueueIndex++;
+                updateCarousel();
+                startStoryTimer();
+                updateNavigationArrows();
+            } else closeStory();
+        }
 
-function prevStory() {
-    if (currentYouTubePlayer) {
-        currentYouTubePlayer.pauseVideo();
-        currentYouTubePlayer.destroy();
-        currentYouTubePlayer = null;
-    }
-    if (audioProgressInterval) {
-        clearInterval(audioProgressInterval);
-        audioProgressInterval = null;
-    }
-    if (storyQueueIndex > 0) {
-        storyQueueIndex--;
-        updateCarousel();
-        startStoryTimer();
-        updateNavigationArrows();
-    }
-}
+        function prevStory() {
+            if (currentYouTubePlayer) {
+                currentYouTubePlayer.pauseVideo();
+                currentYouTubePlayer.destroy();
+                currentYouTubePlayer = null;
+            }
+            if (audioProgressInterval) {
+                clearInterval(audioProgressInterval);
+                audioProgressInterval = null;
+            }
+            if (storyQueueIndex > 0) {
+                storyQueueIndex--;
+                updateCarousel();
+                startStoryTimer();
+                updateNavigationArrows();
+            }
+        }
 
-function renderStoryCard(story) {
-    let mediaHTML = '', audioHTML = '';
-    if (story.media) {
-        mediaHTML = story.media.type === 'image'
-            ? `<div class="story-media-container"><img src="${story.media.data}" alt="Story media" /></div>`
-            : `<div class="story-media-container"><video src="${story.media.data}" controls playsinline></video></div>`;
-    } else if (story.image) {
-        mediaHTML = `<div class="story-media-container"><img src="${story.image}" alt="Story content" /></div>`;
-    }
-    
-    if (story.youtubeVideo) {
-        const { id, title, channel, thumbnail, startTime = 0, endTime = 30 } = story.youtubeVideo;
-        const uniqueId = `youtube-player-${story.id}`;
-        const duration = endTime - startTime;
-        
-        audioHTML = `
+        function renderStoryCard(story) {
+            let mediaHTML = '', audioHTML = '';
+            if (story.media) {
+                mediaHTML = story.media.type === 'image'
+                    ? `<div class="story-media-container"><img src="${story.media.data}" alt="Story media" /></div>`
+                    : `<div class="story-media-container"><video src="${story.media.data}" controls playsinline></video></div>`;
+            } else if (story.image) {
+                mediaHTML = `<div class="story-media-container"><img src="${story.image}" alt="Story content" /></div>`;
+            }
+
+            if (story.youtubeVideo) {
+                const { id, title, channel, thumbnail, startTime = 0, endTime = 30 } = story.youtubeVideo;
+                const uniqueId = `youtube-player-${story.id}`;
+                const duration = endTime - startTime;
+
+                audioHTML = `
             <div class="story-audio-player">
                 <div class="audio-track-info">
                     <img src="${thumbnail}" alt="Thumbnail" class="audio-thumbnail" />
                     <div class="audio-details">
                         <div class="audio-title">${escapeHtml(title)}</div>
-                        <div class="audio-channel"><i class="fab fa-youtube"></i> ${escapeHtml(channel)}</div>
                     </div>
                 </div>
                 <div class="audio-progress-container">
@@ -3470,9 +3473,9 @@ function renderStoryCard(story) {
                 <div id="${uniqueId}" style="display:none;"></div>
             </div>
         `;
-    }
-    
-    return `
+            }
+
+            return `
         <div class="story-content-wrapper">
             <div class="story-header-info">
                 <img src="${story.avatar}" alt="${story.userName}">
@@ -3489,300 +3492,301 @@ function renderStoryCard(story) {
             ${audioHTML}
         </div>
     `;
-}
-
-function toggleAudioPlayback(storyId) {
-    if (!currentYouTubePlayer) return;
-    
-    const btn = document.getElementById(`playPauseBtn-${storyId}`);
-    const icon = btn.querySelector('i');
-    
-    const state = currentYouTubePlayer.getPlayerState();
-    
-    if (state === 1) { // Playing
-        currentYouTubePlayer.pauseVideo();
-        icon.className = 'fas fa-play';
-    } else { // Paused or not started
-        currentYouTubePlayer.playVideo();
-        icon.className = 'fas fa-pause';
-    }
-}
-
-function setVolume(storyId, volume) {
-    if (!currentYouTubePlayer) return;
-    currentYouTubePlayer.setVolume(volume);
-}
-
-function updateAudioProgress(storyId, currentTime, duration) {
-    const progressBar = document.getElementById(`audioProgress-${storyId}`);
-    const currentTimeDisplay = document.getElementById(`audioCurrentTime-${storyId}`);
-    
-    if (progressBar && currentTimeDisplay) {
-        const percentage = (currentTime / duration) * 100;
-        progressBar.style.width = `${percentage}%`;
-        currentTimeDisplay.textContent = formatSeconds(Math.floor(currentTime));
-    }
-}
-
-function initCarousel() {
-    const container = document.getElementById('storyCarousel');
-    if (!container) return;
-    container.innerHTML = '';
-    const progressContainer = document.createElement('div');
-    progressContainer.className = 'story-progress-container';
-    progressContainer.innerHTML = storyQueue.map((_, i) => `<div class="story-progress-bar"><div class="story-progress-fill" id="progress-${i}"></div></div>`).join('');
-    container.appendChild(progressContainer);
-    storyQueue.forEach((story, idx) => {
-        const el = document.createElement('div');
-        el.className = 'story-card hidden-right';
-        el.id = `story-card-${idx}`;
-        el.innerHTML = renderStoryCard(story);
-        container.appendChild(el);
-    });
-}
-
-function updateProgressBars() {
-    storyQueue.forEach((_, idx) => {
-        const fill = document.getElementById(`progress-${idx}`);
-        if (!fill) return;
-        fill.classList.remove('active', 'completed');
-        fill.style.width = '0%';
-        if (idx < storyQueueIndex) {
-            fill.classList.add('completed');
-            fill.style.width = '100%';
-        } else if (idx === storyQueueIndex) {
-            fill.classList.add('active');
-            animateProgress(fill, STORY_DURATION);
         }
-    });
-}
 
-function animateProgress(el, dur) {
-    let start = null;
-    const animate = (ts) => {
-        if (!start) start = ts;
-        const prog = (ts - start) / dur;
-        el.style.width = `${Math.min(prog * 100, 100)}%`;
-        if (prog < 1 && document.getElementById('storyModal').classList.contains('active')) {
-            progressAnimationFrame = requestAnimationFrame(animate);
+        function toggleAudioPlayback(storyId) {
+            if (!currentYouTubePlayer) return;
+
+            const btn = document.getElementById(`playPauseBtn-${storyId}`);
+            const icon = btn.querySelector('i');
+
+            const state = currentYouTubePlayer.getPlayerState();
+
+            if (state === 1) { // Playing
+                currentYouTubePlayer.pauseVideo();
+                icon.className = 'fas fa-play';
+            } else { // Paused or not started
+                currentYouTubePlayer.playVideo();
+                icon.className = 'fas fa-pause';
+            }
         }
-    };
-    progressAnimationFrame = requestAnimationFrame(animate);
-}
 
-function updateCarousel() {
-    const story = storyQueue[storyQueueIndex];
-    if (story) {
-        story.viewed = true;
-        stories = stories.map(s => s.id === story.id ? { ...s, viewed: true } : s);
-    }
-    
-    storyQueue.forEach((_, idx) => {
-        const el = document.getElementById(`story-card-${idx}`);
-        if (!el) return;
-        el.className = 'story-card';
-        if (idx === storyQueueIndex) el.classList.add('active');
-        else if (idx === storyQueueIndex - 1) el.classList.add('prev');
-        else if (idx === storyQueueIndex + 1) el.classList.add('next');
-        else if (idx < storyQueueIndex) el.classList.add('hidden-left');
-        else el.classList.add('hidden-right');
-    });
-    
-    updateProgressBars();
-    
-    // Initialize YouTube player if story has video
-    if (story && story.youtubeVideo) {
-        initYouTubePlayer(story);
-    }
-}
+        function setVolume(storyId, volume) {
+            if (!currentYouTubePlayer) return;
+            currentYouTubePlayer.setVolume(volume);
+        }
 
-function initYouTubePlayer(story) {
-    const { id, startTime = 0, endTime = 30 } = story.youtubeVideo;
-    const playerId = `youtube-player-${story.id}`;
-    const clipDuration = endTime - startTime;
-    
-    setTimeout(() => {
-        if (typeof YT !== 'undefined' && YT.Player) {
-            currentYouTubePlayer = new YT.Player(playerId, {
-                height: '0',
-                width: '0',
-                videoId: id,
-                playerVars: {
-                    autoplay: 0, // Don't autoplay
-                    controls: 0,
-                    start: startTime,
-                    end: endTime,
-                    modestbranding: 1,
-                    rel: 0
-                },
-                events: {
-                    onReady: (event) => {
-                        // Set volume
-                        event.target.setVolume(80);
-                        
-                        // Update play button icon
-                        const btn = document.getElementById(`playPauseBtn-${story.id}`);
-                        if (btn) {
-                            const icon = btn.querySelector('i');
-                            icon.className = 'fas fa-play';
-                        }
-                    },
-                    onStateChange: (event) => {
-                        const btn = document.getElementById(`playPauseBtn-${story.id}`);
-                        const icon = btn ? btn.querySelector('i') : null;
-                        
-                        if (event.data === YT.PlayerState.PLAYING) {
-                            if (icon) icon.className = 'fas fa-pause';
-                            
-                            // Start progress tracking
-                            if (audioProgressInterval) clearInterval(audioProgressInterval);
-                            audioProgressInterval = setInterval(() => {
-                                if (currentYouTubePlayer) {
-                                    const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
-                                    updateAudioProgress(story.id, currentTime, clipDuration);
-                                }
-                            }, 100);
-                        } else if (event.data === YT.PlayerState.PAUSED) {
-                            if (icon) icon.className = 'fas fa-play';
-                            if (audioProgressInterval) clearInterval(audioProgressInterval);
-                        } else if (event.data === YT.PlayerState.ENDED) {
-                            if (icon) icon.className = 'fas fa-play';
-                            if (audioProgressInterval) clearInterval(audioProgressInterval);
-                            // Reset to start
-                            event.target.seekTo(startTime);
-                            updateAudioProgress(story.id, 0, clipDuration);
-                        }
-                    }
+        function updateAudioProgress(storyId, currentTime, duration) {
+            const progressBar = document.getElementById(`audioProgress-${storyId}`);
+            const currentTimeDisplay = document.getElementById(`audioCurrentTime-${storyId}`);
+
+            if (progressBar && currentTimeDisplay) {
+                const percentage = (currentTime / duration) * 100;
+                progressBar.style.width = `${percentage}%`;
+                currentTimeDisplay.textContent = formatSeconds(Math.floor(currentTime));
+            }
+        }
+
+        function initCarousel() {
+            const container = document.getElementById('storyCarousel');
+            if (!container) return;
+            container.innerHTML = '';
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'story-progress-container';
+            progressContainer.innerHTML = storyQueue.map((_, i) => `<div class="story-progress-bar"><div class="story-progress-fill" id="progress-${i}"></div></div>`).join('');
+            container.appendChild(progressContainer);
+            storyQueue.forEach((story, idx) => {
+                const el = document.createElement('div');
+                el.className = 'story-card hidden-right';
+                el.id = `story-card-${idx}`;
+                el.innerHTML = renderStoryCard(story);
+                container.appendChild(el);
+            });
+        }
+
+        function updateProgressBars() {
+            storyQueue.forEach((_, idx) => {
+                const fill = document.getElementById(`progress-${idx}`);
+                if (!fill) return;
+                fill.classList.remove('active', 'completed');
+                fill.style.width = '0%';
+                if (idx < storyQueueIndex) {
+                    fill.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if (idx === storyQueueIndex) {
+                    fill.classList.add('active');
+                    animateProgress(fill, STORY_DURATION);
                 }
             });
         }
-    }, 100);
-}
 
-function startStoryTimer() {
-    clearTimeout(storyTimer);
-    if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
-    storyTimer = setTimeout(nextStory, STORY_DURATION);
-}
-
-function initStoryNavigation() {
-    const carousel = document.getElementById('storyCarousel');
-    if (!carousel) return;
-    carousel.removeEventListener('touchstart', handleTouchStart);
-    carousel.removeEventListener('touchmove', handleTouchMove);
-    carousel.removeEventListener('touchend', handleTouchEnd);
-    carousel.removeEventListener('mousedown', handleMouseDown);
-    carousel.removeEventListener('mousemove', handleMouseMove);
-    carousel.removeEventListener('mouseup', handleMouseUp);
-    carousel.removeEventListener('mouseleave', handleMouseLeave);
-    carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
-    carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
-    carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
-    carousel.addEventListener('mousedown', handleMouseDown);
-    carousel.addEventListener('mousemove', handleMouseMove);
-    carousel.addEventListener('mouseup', handleMouseUp);
-    carousel.addEventListener('mouseleave', handleMouseLeave);
-}
-function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
-function handleTouchMove(e) { touchEndX = e.changedTouches[0].screenX; }
-function handleTouchEnd() { handleSwipe(); }
-function handleMouseDown(e) { isDragging = true; touchStartX = e.screenX; e.currentTarget.style.cursor = 'grabbing'; }
-function handleMouseMove(e) { if (isDragging) touchEndX = e.screenX; }
-function handleMouseUp(e) { if (isDragging) { isDragging = false; e.currentTarget.style.cursor = 'grab'; handleSwipe(); } }
-function handleMouseLeave(e) { if (isDragging) { isDragging = false; e.currentTarget.style.cursor = 'grab'; } }
-function handleSwipe() {
-    const diff = touchStartX - touchEndX;
-    if (Math.abs(diff) > 50) diff > 0 ? nextStory() : prevStory();
-    touchStartX = 0; touchEndX = 0;
-}
-function handleKeyPress(e) {
-    if (document.getElementById('storyModal').style.display !== 'flex') return;
-    if (e.key === 'ArrowLeft') prevStory();
-    else if (e.key === 'ArrowRight') nextStory();
-    else if (e.key === 'Escape') closeStory();
-}
-
-function updateNavigationArrows() {
-    const left = document.querySelector('.arrow-left');
-    const right = document.querySelector('.arrow-right');
-    if (left && right) {
-        storyQueueIndex === 0 ? left.classList.add('disabled') : left.classList.remove('disabled');
-        storyQueueIndex === storyQueue.length - 1 ? right.classList.add('disabled') : right.classList.remove('disabled');
-    }
-}
-
-function setupLiveYouTubeSearch() {
-    document.getElementById('spotifySearchQuery').addEventListener('input', function (e) {
-        const query = e.target.value.trim();
-        clearTimeout(searchTimeout);
-        if (currentSearchController) currentSearchController.abort();
-        if (query.length < 2) {
-            document.getElementById('spotifyResults').classList.add('hidden');
-            return;
+        function animateProgress(el, dur) {
+            let start = null;
+            const animate = (ts) => {
+                if (!start) start = ts;
+                const prog = (ts - start) / dur;
+                el.style.width = `${Math.min(prog * 100, 100)}%`;
+                if (prog < 1 && document.getElementById('storyModal').classList.contains('active')) {
+                    progressAnimationFrame = requestAnimationFrame(animate);
+                }
+            };
+            progressAnimationFrame = requestAnimationFrame(animate);
         }
-        searchTimeout = setTimeout(() => performLiveYouTubeSearch(query), 500);
-    });
-}
 
-async function performLiveYouTubeSearch(query) {
-    const results = document.getElementById('spotifyResults');
-    results.classList.remove('hidden');
-    results.innerHTML = '<div style="padding:20px;text-align:center;"><div style="width:40px;height:40px;border:4px solid rgba(255,255,255,0.1);border-top-color:#FF0000;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div></div>';
-    currentSearchController = new AbortController();
-    
-    try {
-        const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoCategoryId=10&maxResults=8&key=${YOUTUBE_API_KEY}`, { signal: currentSearchController.signal });
-        if (!res.ok) throw new Error('API error');
-        const data = await res.json();
-        const ids = data.items.map(i => i.id.videoId).join(',');
-        const durRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${ids}&key=${YOUTUBE_API_KEY}`, { signal: currentSearchController.signal });
-        const durData = await durRes.json();
-        const durs = {};
-        durData.items.forEach(i => durs[i.id] = formatDuration(i.contentDetails.duration));
-        
-        results.innerHTML = '';
-        if (data.items?.length) {
-            data.items.forEach(v => {
-                const el = document.createElement('div');
-                el.className = 'spotify-track-item';
-                el.onclick = () => selectYouTubeVideoEnhanced(v, el, durs[v.id.videoId]);
-                const dur = durs[v.id.videoId] || '...';
-                el.innerHTML = `<div class="track-icon"><i class="fab fa-youtube"></i></div><div class="track-info"><div class="track-title">${escapeHtml(v.snippet.title)}</div><div class="track-artist"><i class="fas fa-user" style="font-size:10px;"></i> ${escapeHtml(v.snippet.channelTitle)}${dur !== '...' ? ` <span class="track-duration">• ${dur}</span>` : ''}</div></div><div class="track-check"><i class="fas fa-check"></i></div>`;
-                results.appendChild(el);
+        function updateCarousel() {
+            const story = storyQueue[storyQueueIndex];
+            if (story) {
+                story.viewed = true;
+                stories = stories.map(s => s.id === story.id ? { ...s, viewed: true } : s);
+            }
+
+            storyQueue.forEach((_, idx) => {
+                const el = document.getElementById(`story-card-${idx}`);
+                if (!el) return;
+                el.className = 'story-card';
+                if (idx === storyQueueIndex) el.classList.add('active');
+                else if (idx === storyQueueIndex - 1) el.classList.add('prev');
+                else if (idx === storyQueueIndex + 1) el.classList.add('next');
+                else if (idx < storyQueueIndex) el.classList.add('hidden-left');
+                else el.classList.add('hidden-right');
             });
-        } else {
-            results.innerHTML = '<div style="padding:40px 20px;text-align:center;color:rgba(255,255,255,0.5);"><i class="fas fa-search" style="font-size:48px;margin-bottom:15px;opacity:0.3;"></i><div>No videos found</div><div style="font-size:12px;margin-top:5px;">Try different keywords</div></div>';
+
+            updateProgressBars();
+
+            // Initialize YouTube player if story has video
+            if (story && story.youtubeVideo) {
+                initYouTubePlayer(story);
+            }
         }
-    } catch (err) {
-        if (err.name === 'AbortError') return;
-        results.innerHTML = '<div style="padding:40px 20px;text-align:center;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:#ff6b6b;margin-bottom:15px;"></i><div style="color:#ff6b6b;">Search failed</div></div>';
-    }
-}
 
-function selectYouTubeVideoEnhanced(video, el, duration) {
-    document.querySelectorAll('.spotify-track-item').forEach(i => i.classList.remove('selected'));
-    el.classList.add('selected');
-    
-    selectedVideoForTimeRange = {
-        id: video.id.videoId,
-        title: video.snippet.title,
-        channel: video.snippet.channelTitle,
-        thumbnail: video.snippet.thumbnails.medium.url,
-        duration: duration
-    };
-    
-    showTimeRangeSelector(selectedVideoForTimeRange);
-}
+        function initYouTubePlayer(story) {
+            const { id, startTime = 0, endTime = 30 } = story.youtubeVideo;
+            const playerId = `youtube-player-${story.id}`;
+            const clipDuration = endTime - startTime;
 
-function showTimeRangeSelector(video) {
-    removeTimeRangeSelector();
-    
-    const totalSeconds = parseDurationToSeconds(video.duration);
-    
-    const selector = document.createElement('div');
-    selector.className = 'time-range-selector';
-    selector.id = 'timeRangeSelector';
-    selector.innerHTML = `
+            setTimeout(() => {
+                if (typeof YT !== 'undefined' && YT.Player) {
+                    currentYouTubePlayer = new YT.Player(playerId, {
+                        height: '0',
+                        width: '0',
+                        videoId: id,
+                        playerVars: {
+                            autoplay: 1, // Auto-play enabled
+                            controls: 0,
+                            start: startTime,
+                            end: endTime,
+                            modestbranding: 1,
+                            rel: 0
+                        },
+                        events: {
+                            onReady: (event) => {
+                                // Set volume
+                                event.target.setVolume(80);
+                                event.target.playVideo(); // Force play
+
+                                // Update play button icon
+                                const btn = document.getElementById(`playPauseBtn-${story.id}`);
+                                if (btn) {
+                                    const icon = btn.querySelector('i');
+                                    icon.className = 'fas fa-play';
+                                }
+                            },
+                            onStateChange: (event) => {
+                                const btn = document.getElementById(`playPauseBtn-${story.id}`);
+                                const icon = btn ? btn.querySelector('i') : null;
+
+                                if (event.data === YT.PlayerState.PLAYING) {
+                                    if (icon) icon.className = 'fas fa-pause';
+
+                                    // Start progress tracking
+                                    if (audioProgressInterval) clearInterval(audioProgressInterval);
+                                    audioProgressInterval = setInterval(() => {
+                                        if (currentYouTubePlayer) {
+                                            const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
+                                            updateAudioProgress(story.id, currentTime, clipDuration);
+                                        }
+                                    }, 100);
+                                } else if (event.data === YT.PlayerState.PAUSED) {
+                                    if (icon) icon.className = 'fas fa-play';
+                                    if (audioProgressInterval) clearInterval(audioProgressInterval);
+                                } else if (event.data === YT.PlayerState.ENDED) {
+                                    if (icon) icon.className = 'fas fa-play';
+                                    if (audioProgressInterval) clearInterval(audioProgressInterval);
+                                    // Reset to start
+                                    event.target.seekTo(startTime);
+                                    updateAudioProgress(story.id, 0, clipDuration);
+                                }
+                            }
+                        }
+                    });
+                }
+            }, 100);
+        }
+
+        function startStoryTimer() {
+            clearTimeout(storyTimer);
+            if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
+            storyTimer = setTimeout(nextStory, STORY_DURATION);
+        }
+
+        function initStoryNavigation() {
+            const carousel = document.getElementById('storyCarousel');
+            if (!carousel) return;
+            carousel.removeEventListener('touchstart', handleTouchStart);
+            carousel.removeEventListener('touchmove', handleTouchMove);
+            carousel.removeEventListener('touchend', handleTouchEnd);
+            carousel.removeEventListener('mousedown', handleMouseDown);
+            carousel.removeEventListener('mousemove', handleMouseMove);
+            carousel.removeEventListener('mouseup', handleMouseUp);
+            carousel.removeEventListener('mouseleave', handleMouseLeave);
+            carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+            carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
+            carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
+            carousel.addEventListener('mousedown', handleMouseDown);
+            carousel.addEventListener('mousemove', handleMouseMove);
+            carousel.addEventListener('mouseup', handleMouseUp);
+            carousel.addEventListener('mouseleave', handleMouseLeave);
+        }
+        function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
+        function handleTouchMove(e) { touchEndX = e.changedTouches[0].screenX; }
+        function handleTouchEnd() { handleSwipe(); }
+        function handleMouseDown(e) { isDragging = true; touchStartX = e.screenX; e.currentTarget.style.cursor = 'grabbing'; }
+        function handleMouseMove(e) { if (isDragging) touchEndX = e.screenX; }
+        function handleMouseUp(e) { if (isDragging) { isDragging = false; e.currentTarget.style.cursor = 'grab'; handleSwipe(); } }
+        function handleMouseLeave(e) { if (isDragging) { isDragging = false; e.currentTarget.style.cursor = 'grab'; } }
+        function handleSwipe() {
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) diff > 0 ? nextStory() : prevStory();
+            touchStartX = 0; touchEndX = 0;
+        }
+        function handleKeyPress(e) {
+            if (document.getElementById('storyModal').style.display !== 'flex') return;
+            if (e.key === 'ArrowLeft') prevStory();
+            else if (e.key === 'ArrowRight') nextStory();
+            else if (e.key === 'Escape') closeStory();
+        }
+
+        function updateNavigationArrows() {
+            const left = document.querySelector('.arrow-left');
+            const right = document.querySelector('.arrow-right');
+            if (left && right) {
+                storyQueueIndex === 0 ? left.classList.add('disabled') : left.classList.remove('disabled');
+                storyQueueIndex === storyQueue.length - 1 ? right.classList.add('disabled') : right.classList.remove('disabled');
+            }
+        }
+
+        function setupLiveYouTubeSearch() {
+            document.getElementById('spotifySearchQuery').addEventListener('input', function (e) {
+                const query = e.target.value.trim();
+                clearTimeout(searchTimeout);
+                if (currentSearchController) currentSearchController.abort();
+                if (query.length < 2) {
+                    document.getElementById('spotifyResults').classList.add('hidden');
+                    return;
+                }
+                searchTimeout = setTimeout(() => performLiveYouTubeSearch(query), 500);
+            });
+        }
+
+        async function performLiveYouTubeSearch(query) {
+            const results = document.getElementById('spotifyResults');
+            results.classList.remove('hidden');
+            results.innerHTML = '<div style="padding:20px;text-align:center;"><div style="width:40px;height:40px;border:4px solid rgba(255,255,255,0.1);border-top-color:#FF0000;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div></div>';
+            currentSearchController = new AbortController();
+
+            try {
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoCategoryId=10&maxResults=8&key=${YOUTUBE_API_KEY}`, { signal: currentSearchController.signal });
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+                const ids = data.items.map(i => i.id.videoId).join(',');
+                const durRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${ids}&key=${YOUTUBE_API_KEY}`, { signal: currentSearchController.signal });
+                const durData = await durRes.json();
+                const durs = {};
+                durData.items.forEach(i => durs[i.id] = formatDuration(i.contentDetails.duration));
+
+                results.innerHTML = '';
+                if (data.items?.length) {
+                    data.items.forEach(v => {
+                        const el = document.createElement('div');
+                        el.className = 'spotify-track-item';
+                        el.onclick = () => selectYouTubeVideoEnhanced(v, el, durs[v.id.videoId]);
+                        const dur = durs[v.id.videoId] || '...';
+                        el.innerHTML = `<div class="track-icon"><i class="fab fa-youtube"></i></div><div class="track-info"><div class="track-title">${escapeHtml(v.snippet.title)}</div><div class="track-artist"><i class="fas fa-user" style="font-size:10px;"></i> ${escapeHtml(v.snippet.channelTitle)}${dur !== '...' ? ` <span class="track-duration">• ${dur}</span>` : ''}</div></div><div class="track-check"><i class="fas fa-check"></i></div>`;
+                        results.appendChild(el);
+                    });
+                } else {
+                    results.innerHTML = '<div style="padding:40px 20px;text-align:center;color:rgba(255,255,255,0.5);"><i class="fas fa-search" style="font-size:48px;margin-bottom:15px;opacity:0.3;"></i><div>No videos found</div><div style="font-size:12px;margin-top:5px;">Try different keywords</div></div>';
+                }
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                results.innerHTML = '<div style="padding:40px 20px;text-align:center;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:#ff6b6b;margin-bottom:15px;"></i><div style="color:#ff6b6b;">Search failed</div></div>';
+            }
+        }
+
+        function selectYouTubeVideoEnhanced(video, el, duration) {
+            document.querySelectorAll('.spotify-track-item').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+
+            selectedVideoForTimeRange = {
+                id: video.id.videoId,
+                title: video.snippet.title,
+                channel: video.snippet.channelTitle,
+                thumbnail: video.snippet.thumbnails.medium.url,
+                duration: duration
+            };
+
+            showTimeRangeSelector(selectedVideoForTimeRange);
+        }
+
+        function showTimeRangeSelector(video) {
+            removeTimeRangeSelector();
+
+            const totalSeconds = parseDurationToSeconds(video.duration);
+
+            const selector = document.createElement('div');
+            selector.className = 'time-range-selector';
+            selector.id = 'timeRangeSelector';
+            selector.innerHTML = `
         <div class="time-range-header">
             <h4><i class="fas fa-scissors"></i> Select Audio Clip</h4>
             <p>Choose up to 30 seconds from "${escapeHtml(video.title)}"</p>
@@ -3808,7 +3812,7 @@ function showTimeRangeSelector(video) {
         </div>
         
         <div class="time-range-preview">
-            <div class="preview-bar">
+            <div class="preview-bar" id="timelinePreviewBar">
                 <div class="preview-selection" id="previewSelection"></div>
             </div>
             <div class="preview-labels">
@@ -3822,179 +3826,245 @@ function showTimeRangeSelector(video) {
             <i class="fas fa-check"></i> Confirm Selection
         </button>
     `;
-    
-    const form = document.querySelector('.add-story-form');
-    const resultsDiv = document.getElementById('spotifyResults');
-    form.insertBefore(selector, resultsDiv);
-    
-    const startInput = document.getElementById('startTimeInput');
-    const endInput = document.getElementById('endTimeInput');
-    
-    startInput.addEventListener('input', updatePreview);
-    endInput.addEventListener('input', updatePreview);
-    
-    updatePreview();
-}
 
-function setPresetTime(start, end) {
-    document.getElementById('startTimeInput').value = start;
-    document.getElementById('endTimeInput').value = end;
-    updatePreview();
-}
+            const form = document.querySelector('.add-story-form');
+            const resultsDiv = document.getElementById('spotifyResults');
+            form.insertBefore(selector, resultsDiv);
 
-function updatePreview() {
-    const startInput = document.getElementById('startTimeInput');
-    const endInput = document.getElementById('endTimeInput');
-    const selection = document.getElementById('previewSelection');
-    const label = document.getElementById('selectionLabel');
-    
-    if (!startInput || !endInput || !selection || !label) return;
-    
-    let start = parseInt(startInput.value) || 0;
-    let end = parseInt(endInput.value) || 30;
-    
-    // Ensure end is after start
-    if (end <= start) {
-        end = start + 1;
-        endInput.value = end;
-    }
-    
-    // Ensure duration doesn't exceed 30 seconds
-    if (end - start > 30) {
-        end = start + 30;
-        endInput.value = end;
-    }
-    
-    const totalSeconds = parseDurationToSeconds(selectedVideoForTimeRange.duration);
-    const startPercent = (start / totalSeconds) * 100;
-    const endPercent = (end / totalSeconds) * 100;
-    
-    selection.style.left = `${startPercent}%`;
-    selection.style.width = `${endPercent - startPercent}%`;
-    
-    label.textContent = `${formatSeconds(start)} - ${formatSeconds(end)} (${end - start}s)`;
-}
+            const startInput = document.getElementById('startTimeInput');
+            const endInput = document.getElementById('endTimeInput');
 
-function confirmTimeRange() {
-    const start = parseInt(document.getElementById('startTimeInput').value) || 0;
-    const end = parseInt(document.getElementById('endTimeInput').value) || 30;
-    
-    if (end - start > 30) {
-        alert('Duration cannot exceed 30 seconds!');
-        return;
-    }
-    
-    if (end <= start) {
-        alert('End time must be after start time!');
-        return;
-    }
-    
-    const trackData = {
-        ...selectedVideoForTimeRange,
-        startTime: start,
-        endTime: end
-    };
-    
-    document.getElementById('selectedTrackData').value = JSON.stringify(trackData);
-    document.getElementById('spotifySearchQuery').value = selectedVideoForTimeRange.title;
-    document.getElementById('spotifyResults').classList.add('hidden');
-    removeTimeRangeSelector();
-}
+            startInput.addEventListener('input', updatePreview);
+            endInput.addEventListener('input', updatePreview);
 
-function removeTimeRangeSelector() {
-    const selector = document.getElementById('timeRangeSelector');
-    if (selector) selector.remove();
-}
+            updatePreview();
 
-function parseDurationToSeconds(duration) {
-    if (!duration) return 0;
-    const match = duration.match(/(\d+):(\d+)/);
-    if (!match) return 0;
-    const minutes = parseInt(match[1]);
-    const seconds = parseInt(match[2]);
-    return minutes * 60 + seconds;
-}
+            // Add interactive timeline listeners
+            const previewBar = document.getElementById('timelinePreviewBar');
+            if (previewBar) {
+                previewBar.addEventListener('mousedown', handleTimelineInteractionStart);
+                document.addEventListener('mousemove', handleTimelineInteractionMove);
+                document.addEventListener('mouseup', handleTimelineInteractionEnd);
 
-function formatSeconds(seconds) {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
-}
+                // Touch support
+                previewBar.addEventListener('touchstart', handleTimelineInteractionStart, { passive: false });
+                document.addEventListener('touchmove', handleTimelineInteractionMove, { passive: false });
+                document.addEventListener('touchend', handleTimelineInteractionEnd);
+            }
+        }
 
-function formatDuration(iso) {
-    const m = iso.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-    const h = (m[1] || '').replace('H', ''), min = (m[2] || '').replace('M', ''), s = (m[3] || '').replace('S', '');
-    return h ? `${h}:${min.padStart(2, '0')}:${s.padStart(2, '0')}` : `${min || '0'}:${s.padStart(2, '0')}`;
-}
+        let isDraggingTimeline = false;
+        let timelineDragMode = 'move'; // 'move' or 'resize' - simplified to just move/set for now
 
-function escapeHtml(t) {
-    const d = document.createElement('div');
-    d.textContent = t;
-    return d.innerHTML;
-}
+        function handleTimelineInteractionStart(e) {
+            e.preventDefault(); // Prevent text selection
+            isDraggingTimeline = true;
+            handleTimelineInteractionMove(e);
+        }
 
-let uploadedMediaFile = null, uploadedMediaType = null;
+        function handleTimelineInteractionMove(e) {
+            if (!isDraggingTimeline) return;
 
-function handleMediaUpload(e) {
-    const file = e.target.files[0];
-    if (!file || file.size > 50 * 1024 * 1024) {
-        if (file) alert('File too large!');
-        return;
-    }
-    uploadedMediaFile = file;
-    uploadedMediaType = file.type.startsWith('image/') ? 'image' : 'video';
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-        const preview = document.getElementById('mediaPreview');
-        preview.classList.remove('hidden');
-        preview.innerHTML = uploadedMediaType === 'image'
-            ? `<img src="${ev.target.result}" /><button type="button" class="media-remove-btn" onclick="removeMedia()">×</button><div class="media-info"><i class="fas fa-image"></i> Image</div>`
-            : `<video src="${ev.target.result}" controls></video><button type="button" class="media-remove-btn" onclick="removeMedia()">×</button><div class="media-info"><i class="fas fa-video"></i> Video</div>`;
-        document.getElementById('uploadedMediaData').value = JSON.stringify({
-            type: uploadedMediaType,
-            data: ev.target.result,
-            name: file.name,
-            size: file.size
-        });
-    };
-    reader.readAsDataURL(file);
-}
+            // Handle both mouse and touch events
+            const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
 
-function removeMedia() {
-    uploadedMediaFile = null;
-    uploadedMediaType = null;
-    document.getElementById('mediaPreview').classList.add('hidden');
-    document.getElementById('mediaPreview').innerHTML = '';
-    document.getElementById('uploadedMediaData').value = '';
-    document.getElementById('mediaUpload').value = '';
-}
+            const previewBar = document.getElementById('timelinePreviewBar');
+            if (!previewBar) return;
 
-function formatTime(ts) {
-    const diff = Date.now() - new Date(ts), m = Math.floor(diff / 60000), h = Math.floor(diff / 3600000), d = Math.floor(diff / 86400000);
-    if (m < 1) return 'Just now';
-    if (m < 60) return `${m}m ago`;
-    if (h < 24) return `${h}h ago`;
-    if (d === 1) return 'Yesterday';
-    if (d < 7) return `${d}d ago`;
-    return new Date(ts).toLocaleDateString();
-}
+            const rect = previewBar.getBoundingClientRect();
+            const totalSeconds = parseDurationToSeconds(selectedVideoForTimeRange.duration);
 
-function formatMessageTime(ts) {
-    return new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-}
+            // Calculate seconds based on position
+            let clickPosition = (clientX - rect.left) / rect.width;
+            clickPosition = Math.max(0, Math.min(1, clickPosition));
 
-function renderStories() {
-    const storiesByUser = {};
-    stories.forEach(s => {
-        if (!storiesByUser[s.userId]) storiesByUser[s.userId] = {
-            user: { id: s.userId, name: s.userName, avatar: s.avatar },
-            stories: [],
-            allViewed: true
-        };
-        storiesByUser[s.userId].stories.push(s);
-        if (!s.viewed) storiesByUser[s.userId].allViewed = false;
-    });
-    document.getElementById('storiesList').innerHTML = Object.values(storiesByUser).map(g => `
+            let clickedSeconds = Math.round(clickPosition * totalSeconds);
+
+            // Logic: Center the 30s selection around the clicked point, or move start to clicked point
+            // For simplicity: Set start time to clicked point, ensuring we don't go out of bounds
+
+            let start = clickedSeconds;
+            let end = start + 30;
+
+            // If end exceeds total, shift back
+            if (end > totalSeconds) {
+                end = totalSeconds;
+                start = Math.max(0, end - 30);
+            }
+
+            document.getElementById('startTimeInput').value = start;
+            document.getElementById('endTimeInput').value = end;
+            updatePreview();
+        }
+
+        function handleTimelineInteractionEnd(e) {
+            isDraggingTimeline = false;
+        }
+
+        function setPresetTime(start, end) {
+            document.getElementById('startTimeInput').value = start;
+            document.getElementById('endTimeInput').value = end;
+            updatePreview();
+        }
+
+        function updatePreview() {
+            const startInput = document.getElementById('startTimeInput');
+            const endInput = document.getElementById('endTimeInput');
+            const selection = document.getElementById('previewSelection');
+            const label = document.getElementById('selectionLabel');
+
+            if (!startInput || !endInput || !selection || !label) return;
+
+            let start = parseInt(startInput.value) || 0;
+            let end = parseInt(endInput.value) || 30;
+
+            // Ensure end is after start
+            if (end <= start) {
+                end = start + 1;
+                endInput.value = end;
+            }
+
+            // Ensure duration doesn't exceed 30 seconds
+            if (end - start > 30) {
+                end = start + 30;
+                endInput.value = end;
+            }
+
+            const totalSeconds = parseDurationToSeconds(selectedVideoForTimeRange.duration);
+            const startPercent = (start / totalSeconds) * 100;
+            const endPercent = (end / totalSeconds) * 100;
+
+            selection.style.left = `${startPercent}%`;
+            selection.style.width = `${endPercent - startPercent}%`;
+
+            label.textContent = `${formatSeconds(start)} - ${formatSeconds(end)} (${end - start}s)`;
+        }
+
+        function confirmTimeRange() {
+            const start = parseInt(document.getElementById('startTimeInput').value) || 0;
+            const end = parseInt(document.getElementById('endTimeInput').value) || 30;
+
+            if (end - start > 30) {
+                alert('Duration cannot exceed 30 seconds!');
+                return;
+            }
+
+            if (end <= start) {
+                alert('End time must be after start time!');
+                return;
+            }
+
+            const trackData = {
+                ...selectedVideoForTimeRange,
+                startTime: start,
+                endTime: end
+            };
+
+            document.getElementById('selectedTrackData').value = JSON.stringify(trackData);
+            document.getElementById('spotifySearchQuery').value = selectedVideoForTimeRange.title;
+            document.getElementById('spotifyResults').classList.add('hidden');
+            removeTimeRangeSelector();
+        }
+
+        function removeTimeRangeSelector() {
+            const selector = document.getElementById('timeRangeSelector');
+            if (selector) selector.remove();
+
+            document.removeEventListener('mousemove', handleTimelineInteractionMove);
+            document.removeEventListener('mouseup', handleTimelineInteractionEnd);
+            document.removeEventListener('touchmove', handleTimelineInteractionMove);
+            document.removeEventListener('touchend', handleTimelineInteractionEnd);
+        }
+
+        function parseDurationToSeconds(duration) {
+            if (!duration) return 0;
+            const match = duration.match(/(\d+):(\d+)/);
+            if (!match) return 0;
+            const minutes = parseInt(match[1]);
+            const seconds = parseInt(match[2]);
+            return minutes * 60 + seconds;
+        }
+
+        function formatSeconds(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function formatDuration(iso) {
+            const m = iso.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+            const h = (m[1] || '').replace('H', ''), min = (m[2] || '').replace('M', ''), s = (m[3] || '').replace('S', '');
+            return h ? `${h}:${min.padStart(2, '0')}:${s.padStart(2, '0')}` : `${min || '0'}:${s.padStart(2, '0')}`;
+        }
+
+        function escapeHtml(t) {
+            const d = document.createElement('div');
+            d.textContent = t;
+            return d.innerHTML;
+        }
+
+        let uploadedMediaFile = null, uploadedMediaType = null;
+
+        function handleMediaUpload(e) {
+            const file = e.target.files[0];
+            if (!file || file.size > 50 * 1024 * 1024) {
+                if (file) alert('File too large!');
+                return;
+            }
+            uploadedMediaFile = file;
+            uploadedMediaType = file.type.startsWith('image/') ? 'image' : 'video';
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const preview = document.getElementById('mediaPreview');
+                preview.classList.remove('hidden');
+                preview.innerHTML = uploadedMediaType === 'image'
+                    ? `<img src="${ev.target.result}" /><button type="button" class="media-remove-btn" onclick="removeMedia()">×</button><div class="media-info"><i class="fas fa-image"></i> Image</div>`
+                    : `<video src="${ev.target.result}" controls></video><button type="button" class="media-remove-btn" onclick="removeMedia()">×</button><div class="media-info"><i class="fas fa-video"></i> Video</div>`;
+                document.getElementById('uploadedMediaData').value = JSON.stringify({
+                    type: uploadedMediaType,
+                    data: ev.target.result,
+                    name: file.name,
+                    size: file.size
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeMedia() {
+            uploadedMediaFile = null;
+            uploadedMediaType = null;
+            document.getElementById('mediaPreview').classList.add('hidden');
+            document.getElementById('mediaPreview').innerHTML = '';
+            document.getElementById('uploadedMediaData').value = '';
+            document.getElementById('mediaUpload').value = '';
+        }
+
+        function formatTime(ts) {
+            const diff = Date.now() - new Date(ts), m = Math.floor(diff / 60000), h = Math.floor(diff / 3600000), d = Math.floor(diff / 86400000);
+            if (m < 1) return 'Just now';
+            if (m < 60) return `${m}m ago`;
+            if (h < 24) return `${h}h ago`;
+            if (d === 1) return 'Yesterday';
+            if (d < 7) return `${d}d ago`;
+            return new Date(ts).toLocaleDateString();
+        }
+
+        function formatMessageTime(ts) {
+            return new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+        }
+
+        function renderStories() {
+            const storiesByUser = {};
+            stories.forEach(s => {
+                if (!storiesByUser[s.userId]) storiesByUser[s.userId] = {
+                    user: { id: s.userId, name: s.userName, avatar: s.avatar },
+                    stories: [],
+                    allViewed: true
+                };
+                storiesByUser[s.userId].stories.push(s);
+                if (!s.viewed) storiesByUser[s.userId].allViewed = false;
+            });
+            document.getElementById('storiesList').innerHTML = Object.values(storiesByUser).map(g => `
         <div class="story-item ${g.allViewed ? 'viewed' : ''}" onclick="openStory(${g.user.id})">
             <div class="story-ring">
                 <img src="${g.user.avatar}" />
@@ -4003,10 +4073,10 @@ function renderStories() {
             <span class="story-username">${g.user.name.split(' ')[0]}</span>
         </div>
     `).join('');
-}
+        }
 
-function renderConversations() {
-    document.getElementById('conversationsList').innerHTML = conversations.map(c => `
+        function renderConversations() {
+            document.getElementById('conversationsList').innerHTML = conversations.map(c => `
         <div class="conversation-item ${selectedChat === c.id ? 'active' : ''}" onclick="selectChat(${c.id})">
             <div class="conversation-avatar">
                 <img src="${c.avatar}" />
@@ -4024,12 +4094,12 @@ function renderConversations() {
             </div>
         </div>
     `).join('');
-}
+        }
 
-function renderChatHeader() {
-    const c = conversations.find(x => x.id === selectedChat);
-    if (!c) return;
-    document.getElementById('chatHeader').innerHTML = `
+        function renderChatHeader() {
+            const c = conversations.find(x => x.id === selectedChat);
+            if (!c) return;
+            document.getElementById('chatHeader').innerHTML = `
         <div class="chat-header-user">
             <img src="${c.avatar}" />
             <div class="chat-header-info">
@@ -4038,13 +4108,13 @@ function renderChatHeader() {
             </div>
         </div>
     `;
-}
+        }
 
-function renderMessages() {
-    const c = conversations.find(x => x.id === selectedChat);
-    if (!c) return;
-    const msgs = messages[selectedChat] || [];
-    document.getElementById('chatMessages').innerHTML = msgs.map(m => `
+        function renderMessages() {
+            const c = conversations.find(x => x.id === selectedChat);
+            if (!c) return;
+            const msgs = messages[selectedChat] || [];
+            document.getElementById('chatMessages').innerHTML = msgs.map(m => `
         <div class="message ${m.senderId === 'me' ? 'sent' : 'received'}">
             ${m.senderId !== 'me' ? `<img src="${c.avatar}" class="message-avatar" />` : ''}
             <div class="message-content">
@@ -4058,143 +4128,143 @@ function renderMessages() {
             </div>
         </div>
     `).join('');
-    document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
-}
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
 
-function selectChat(id) {
-    selectedChat = id;
-    conversations = conversations.map(c => c.id === id ? { ...c, unread: 0 } : c);
-    document.getElementById('noChatSelected').classList.add('hidden');
-    document.getElementById('chatWindow').classList.remove('hidden');
-    renderConversations();
-    renderChatHeader();
-    renderMessages();
-}
+        function selectChat(id) {
+            selectedChat = id;
+            conversations = conversations.map(c => c.id === id ? { ...c, unread: 0 } : c);
+            document.getElementById('noChatSelected').classList.add('hidden');
+            document.getElementById('chatWindow').classList.remove('hidden');
+            renderConversations();
+            renderChatHeader();
+            renderMessages();
+        }
 
-function sendMessage() {
-    const input = document.getElementById('messageInput');
-    const text = input.value.trim();
-    if (!text || !selectedChat) return;
-    const msg = {
-        id: Date.now(),
-        senderId: 'me',
-        text: text,
-        type: 'text',
-        timestamp: new Date()
-    };
-    if (!messages[selectedChat]) messages[selectedChat] = [];
-    messages[selectedChat].push(msg);
-    conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: text, timestamp: new Date() } : c);
-    input.value = '';
-    disappearingMode = null;
-    updateDisappearingButtons();
-    renderConversations();
-    renderMessages();
-}
-
-function deleteMessage(id) {
-    if (!selectedChat) return;
-    messages[selectedChat] = messages[selectedChat].filter(m => m.id !== id);
-    renderMessages();
-}
-
-function toggleDisappearingOptions() {
-    document.getElementById('disappearingOptions').classList.toggle('hidden');
-}
-
-function setDisappearingMode(mode) {
-    disappearingMode = disappearingMode === mode ? null : mode;
-    updateDisappearingButtons();
-}
-
-function updateDisappearingButtons() {
-    document.getElementById('readOnceBtn').classList.toggle('active', disappearingMode === 'read-once');
-    document.getElementById('timedBtn').classList.toggle('active', disappearingMode === 'timed');
-}
-
-async function startRecording() {
-    try {
-        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        mediaRecorder = new MediaRecorder(stream);
-        audioChunks = [];
-        mediaRecorder.ondataavailable = (e) => {
-            if (e.data.size > 0) audioChunks.push(e.data);
-        };
-        mediaRecorder.onstop = () => {
-            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-            const url = URL.createObjectURL(blob);
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || !selectedChat) return;
             const msg = {
                 id: Date.now(),
                 senderId: 'me',
-                text: 'Voice message',
-                type: 'voice',
-                audioUrl: url,
+                text: text,
+                type: 'text',
                 timestamp: new Date()
             };
             if (!messages[selectedChat]) messages[selectedChat] = [];
             messages[selectedChat].push(msg);
-            conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: 'Voice message', timestamp: new Date() } : c);
-            stream.getTracks().forEach(t => t.stop());
+            conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: text, timestamp: new Date() } : c);
+            input.value = '';
+            disappearingMode = null;
+            updateDisappearingButtons();
             renderConversations();
             renderMessages();
-        };
-        mediaRecorder.start();
-        isRecording = true;
-        updateRecordingUI();
-    } catch (err) {
-        alert('Please allow microphone access.');
-    }
-}
+        }
 
-function stopRecording() {
-    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-        mediaRecorder.stop();
-        isRecording = false;
-        updateRecordingUI();
-    }
-}
+        function deleteMessage(id) {
+            if (!selectedChat) return;
+            messages[selectedChat] = messages[selectedChat].filter(m => m.id !== id);
+            renderMessages();
+        }
 
-function updateRecordingUI() {
-    document.getElementById('normalInput').classList.toggle('hidden', isRecording);
-    document.getElementById('recordingIndicator').classList.toggle('hidden', !isRecording);
-    document.getElementById('micBtn').classList.toggle('hidden', isRecording);
-    document.getElementById('stopBtn').classList.toggle('hidden', !isRecording);
-}
+        function toggleDisappearingOptions() {
+            document.getElementById('disappearingOptions').classList.toggle('hidden');
+        }
 
-// Event Listeners
-document.getElementById('messageInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
+        function setDisappearingMode(mode) {
+            disappearingMode = disappearingMode === mode ? null : mode;
+            updateDisappearingButtons();
+        }
 
-document.getElementById('messageInput').addEventListener('input', (e) => {
-    document.getElementById('sendBtn').classList.toggle('hidden', !e.target.value.trim());
-});
+        function updateDisappearingButtons() {
+            document.getElementById('readOnceBtn').classList.toggle('active', disappearingMode === 'read-once');
+            document.getElementById('timedBtn').classList.toggle('active', disappearingMode === 'timed');
+        }
 
-document.getElementById('sendBtn').addEventListener('click', sendMessage);
-document.getElementById('disappearingBtn').addEventListener('click', toggleDisappearingOptions);
-document.getElementById('readOnceBtn').addEventListener('click', () => setDisappearingMode('read-once'));
-document.getElementById('timedBtn').addEventListener('click', () => setDisappearingMode('timed'));
-document.getElementById('micBtn').addEventListener('click', startRecording);
-document.getElementById('stopBtn').addEventListener('click', stopRecording);
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = (e) => {
+                    if (e.data.size > 0) audioChunks.push(e.data);
+                };
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const msg = {
+                        id: Date.now(),
+                        senderId: 'me',
+                        text: 'Voice message',
+                        type: 'voice',
+                        audioUrl: url,
+                        timestamp: new Date()
+                    };
+                    if (!messages[selectedChat]) messages[selectedChat] = [];
+                    messages[selectedChat].push(msg);
+                    conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: 'Voice message', timestamp: new Date() } : c);
+                    stream.getTracks().forEach(t => t.stop());
+                    renderConversations();
+                    renderMessages();
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                updateRecordingUI();
+            } catch (err) {
+                alert('Please allow microphone access.');
+            }
+        }
 
-document.getElementById('addStoryModal').addEventListener('click', (e) => {
-    if (e.target.id === 'addStoryModal') closeAddStoryModal();
-});
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                isRecording = false;
+                updateRecordingUI();
+            }
+        }
 
-document.getElementById('storyModal').addEventListener('click', (e) => {
-    if (e.target.id === 'storyModal') closeStory();
-});
+        function updateRecordingUI() {
+            document.getElementById('normalInput').classList.toggle('hidden', isRecording);
+            document.getElementById('recordingIndicator').classList.toggle('hidden', !isRecording);
+            document.getElementById('micBtn').classList.toggle('hidden', isRecording);
+            document.getElementById('stopBtn').classList.toggle('hidden', !isRecording);
+        }
 
-document.addEventListener('keydown', handleKeyPress);
+        // Event Listeners
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
 
-document.addEventListener('DOMContentLoaded', () => {
-    setupLiveYouTubeSearch();
-    renderStories();
-    renderConversations();
-});
+        document.getElementById('messageInput').addEventListener('input', (e) => {
+            document.getElementById('sendBtn').classList.toggle('hidden', !e.target.value.trim());
+        });
+
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('disappearingBtn').addEventListener('click', toggleDisappearingOptions);
+        document.getElementById('readOnceBtn').addEventListener('click', () => setDisappearingMode('read-once'));
+        document.getElementById('timedBtn').addEventListener('click', () => setDisappearingMode('timed'));
+        document.getElementById('micBtn').addEventListener('click', startRecording);
+        document.getElementById('stopBtn').addEventListener('click', stopRecording);
+
+        document.getElementById('addStoryModal').addEventListener('click', (e) => {
+            if (e.target.id === 'addStoryModal') closeAddStoryModal();
+        });
+
+        document.getElementById('storyModal').addEventListener('click', (e) => {
+            if (e.target.id === 'storyModal') closeStory();
+        });
+
+        document.addEventListener('keydown', handleKeyPress);
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupLiveYouTubeSearch();
+            renderStories();
+            renderConversations();
+        });
     </script>
 </body>
 
