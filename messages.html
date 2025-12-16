@@ -2879,6 +2879,148 @@
 .youtube-time-info i {
     color: var(--primary-color);
 }
+/* Audio Player Styling */
+.story-audio-player {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    padding: 15px;
+    margin-top: 20px;
+}
+
+.audio-track-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.audio-thumbnail {
+    width: 50px;
+    height: 50px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.audio-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.audio-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.audio-channel {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.audio-progress-container {
+    background: rgba(255, 255, 255, 0.1);
+    height: 6px;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+    position: relative;
+}
+
+.audio-progress-bar {
+    height: 100%;
+    background: var(--primary-gradient);
+    width: 0%;
+    transition: width 0.1s linear;
+    box-shadow: 0 0 10px rgba(0, 114, 255, 0.5);
+}
+
+.audio-time-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    font-family: monospace;
+}
+
+.audio-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.audio-control-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+.audio-control-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.1);
+}
+
+.audio-control-btn.play-pause {
+    width: 50px;
+    height: 50px;
+    background: var(--primary-gradient);
+    font-size: 20px;
+}
+
+.audio-volume-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.audio-volume-slider {
+    width: 80px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    outline: none;
+    -webkit-appearance: none;
+}
+
+.audio-volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+}
+
+.audio-clip-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0, 114, 255, 0.2);
+    border: 1px solid rgba(0, 114, 255, 0.4);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    color: var(--primary-color);
+    margin-top: 8px;
+}
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -3164,7 +3306,8 @@ let touchEndX = 0;
 let isDragging = false;
 let selectedVideoForTimeRange = null;
 let currentYouTubePlayer = null;
-const STORY_DURATION = 30000;
+let audioProgressInterval = null;
+const STORY_DURATION = 30000; // Fixed 30 seconds for story display
 
 function openAddStoryModal() {
     const modal = document.getElementById('addStoryModal');
@@ -3229,8 +3372,13 @@ function openStory(userId) {
 
 function closeStory() {
     if (currentYouTubePlayer) {
+        currentYouTubePlayer.pauseVideo();
         currentYouTubePlayer.destroy();
         currentYouTubePlayer = null;
+    }
+    if (audioProgressInterval) {
+        clearInterval(audioProgressInterval);
+        audioProgressInterval = null;
     }
     document.getElementById('storyModal').classList.remove('active');
     document.getElementById('storyModal').style.display = 'none';
@@ -3242,8 +3390,13 @@ function closeStory() {
 
 function nextStory() {
     if (currentYouTubePlayer) {
+        currentYouTubePlayer.pauseVideo();
         currentYouTubePlayer.destroy();
         currentYouTubePlayer = null;
+    }
+    if (audioProgressInterval) {
+        clearInterval(audioProgressInterval);
+        audioProgressInterval = null;
     }
     if (storyQueueIndex < storyQueue.length - 1) {
         storyQueueIndex++;
@@ -3255,8 +3408,13 @@ function nextStory() {
 
 function prevStory() {
     if (currentYouTubePlayer) {
+        currentYouTubePlayer.pauseVideo();
         currentYouTubePlayer.destroy();
         currentYouTubePlayer = null;
+    }
+    if (audioProgressInterval) {
+        clearInterval(audioProgressInterval);
+        audioProgressInterval = null;
     }
     if (storyQueueIndex > 0) {
         storyQueueIndex--;
@@ -3267,7 +3425,7 @@ function prevStory() {
 }
 
 function renderStoryCard(story) {
-    let mediaHTML = '', youtubeHTML = '';
+    let mediaHTML = '', audioHTML = '';
     if (story.media) {
         mediaHTML = story.media.type === 'image'
             ? `<div class="story-media-container"><img src="${story.media.data}" alt="Story media" /></div>`
@@ -3277,21 +3435,39 @@ function renderStoryCard(story) {
     }
     
     if (story.youtubeVideo) {
-        const { id, title, startTime = 0, endTime = 30 } = story.youtubeVideo;
+        const { id, title, channel, thumbnail, startTime = 0, endTime = 30 } = story.youtubeVideo;
         const uniqueId = `youtube-player-${story.id}`;
         const duration = endTime - startTime;
         
-        youtubeHTML = `
-            <div class="story-youtube-embed">
-                <div class="youtube-audio-info">
-                    <i class="fab fa-youtube"></i>
-                    <span class="audio-title">${escapeHtml(title)}</span>
+        audioHTML = `
+            <div class="story-audio-player">
+                <div class="audio-track-info">
+                    <img src="${thumbnail}" alt="Thumbnail" class="audio-thumbnail" />
+                    <div class="audio-details">
+                        <div class="audio-title">${escapeHtml(title)}</div>
+                        <div class="audio-channel"><i class="fab fa-youtube"></i> ${escapeHtml(channel)}</div>
+                    </div>
                 </div>
-                <div id="${uniqueId}" class="youtube-audio-player"></div>
-                <div class="youtube-time-info">
-                    <i class="fas fa-clock"></i>
-                    Playing ${formatSeconds(startTime)} - ${formatSeconds(endTime)} (${duration}s)
+                <div class="audio-progress-container">
+                    <div class="audio-progress-bar" id="audioProgress-${story.id}"></div>
                 </div>
+                <div class="audio-time-display">
+                    <span id="audioCurrentTime-${story.id}">0:00</span>
+                    <span class="audio-clip-badge">
+                        <i class="fas fa-scissors"></i> ${formatSeconds(startTime)} - ${formatSeconds(endTime)}
+                    </span>
+                    <span>${formatSeconds(duration)}</span>
+                </div>
+                <div class="audio-controls">
+                    <button class="audio-control-btn play-pause" id="playPauseBtn-${story.id}" onclick="toggleAudioPlayback(${story.id})">
+                        <i class="fas fa-play"></i>
+                    </button>
+                    <div class="audio-volume-control">
+                        <i class="fas fa-volume-up"></i>
+                        <input type="range" class="audio-volume-slider" id="volumeSlider-${story.id}" min="0" max="100" value="80" oninput="setVolume(${story.id}, this.value)" />
+                    </div>
+                </div>
+                <div id="${uniqueId}" style="display:none;"></div>
             </div>
         `;
     }
@@ -3310,9 +3486,42 @@ function renderStoryCard(story) {
                 <span class="story-subject-badge">${story.subject}</span>
                 <div class="story-text">${story.content}</div>
             </div>
-            ${youtubeHTML}
+            ${audioHTML}
         </div>
     `;
+}
+
+function toggleAudioPlayback(storyId) {
+    if (!currentYouTubePlayer) return;
+    
+    const btn = document.getElementById(`playPauseBtn-${storyId}`);
+    const icon = btn.querySelector('i');
+    
+    const state = currentYouTubePlayer.getPlayerState();
+    
+    if (state === 1) { // Playing
+        currentYouTubePlayer.pauseVideo();
+        icon.className = 'fas fa-play';
+    } else { // Paused or not started
+        currentYouTubePlayer.playVideo();
+        icon.className = 'fas fa-pause';
+    }
+}
+
+function setVolume(storyId, volume) {
+    if (!currentYouTubePlayer) return;
+    currentYouTubePlayer.setVolume(volume);
+}
+
+function updateAudioProgress(storyId, currentTime, duration) {
+    const progressBar = document.getElementById(`audioProgress-${storyId}`);
+    const currentTimeDisplay = document.getElementById(`audioCurrentTime-${storyId}`);
+    
+    if (progressBar && currentTimeDisplay) {
+        const percentage = (currentTime / duration) * 100;
+        progressBar.style.width = `${percentage}%`;
+        currentTimeDisplay.textContent = formatSeconds(Math.floor(currentTime));
+    }
 }
 
 function initCarousel() {
@@ -3390,6 +3599,7 @@ function updateCarousel() {
 function initYouTubePlayer(story) {
     const { id, startTime = 0, endTime = 30 } = story.youtubeVideo;
     const playerId = `youtube-player-${story.id}`;
+    const clipDuration = endTime - startTime;
     
     setTimeout(() => {
         if (typeof YT !== 'undefined' && YT.Player) {
@@ -3398,7 +3608,7 @@ function initYouTubePlayer(story) {
                 width: '0',
                 videoId: id,
                 playerVars: {
-                    autoplay: 1,
+                    autoplay: 0, // Don't autoplay
                     controls: 0,
                     start: startTime,
                     end: endTime,
@@ -3407,13 +3617,40 @@ function initYouTubePlayer(story) {
                 },
                 events: {
                     onReady: (event) => {
-                        event.target.playVideo();
+                        // Set volume
+                        event.target.setVolume(80);
+                        
+                        // Update play button icon
+                        const btn = document.getElementById(`playPauseBtn-${story.id}`);
+                        if (btn) {
+                            const icon = btn.querySelector('i');
+                            icon.className = 'fas fa-play';
+                        }
                     },
                     onStateChange: (event) => {
-                        if (event.data === YT.PlayerState.ENDED) {
-                            // Video clip ended, replay or do nothing
+                        const btn = document.getElementById(`playPauseBtn-${story.id}`);
+                        const icon = btn ? btn.querySelector('i') : null;
+                        
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            if (icon) icon.className = 'fas fa-pause';
+                            
+                            // Start progress tracking
+                            if (audioProgressInterval) clearInterval(audioProgressInterval);
+                            audioProgressInterval = setInterval(() => {
+                                if (currentYouTubePlayer) {
+                                    const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
+                                    updateAudioProgress(story.id, currentTime, clipDuration);
+                                }
+                            }, 100);
+                        } else if (event.data === YT.PlayerState.PAUSED) {
+                            if (icon) icon.className = 'fas fa-play';
+                            if (audioProgressInterval) clearInterval(audioProgressInterval);
+                        } else if (event.data === YT.PlayerState.ENDED) {
+                            if (icon) icon.className = 'fas fa-play';
+                            if (audioProgressInterval) clearInterval(audioProgressInterval);
+                            // Reset to start
                             event.target.seekTo(startTime);
-                            event.target.playVideo();
+                            updateAudioProgress(story.id, 0, clipDuration);
                         }
                     }
                 }
@@ -3446,7 +3683,6 @@ function initStoryNavigation() {
     carousel.addEventListener('mouseup', handleMouseUp);
     carousel.addEventListener('mouseleave', handleMouseLeave);
 }
-
 function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
 function handleTouchMove(e) { touchEndX = e.changedTouches[0].screenX; }
 function handleTouchEnd() { handleSwipe(); }
@@ -3459,7 +3695,6 @@ function handleSwipe() {
     if (Math.abs(diff) > 50) diff > 0 ? nextStory() : prevStory();
     touchStartX = 0; touchEndX = 0;
 }
-
 function handleKeyPress(e) {
     if (document.getElementById('storyModal').style.display !== 'flex') return;
     if (e.key === 'ArrowLeft') prevStory();
