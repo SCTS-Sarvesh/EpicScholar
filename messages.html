@@ -1,0 +1,3384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <title>Educational Messages</title>
+    <style>
+        :root {
+            /* Dark Theme Colors - Enhanced from Mini-Games */
+            --bg-color: #0d0d0d;
+            --text-color: #e9eef8;
+            --primary-color: #0072ff;
+            --secondary-color: #ff416c;
+            --primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+
+            /* Glass Effects - More pronounced */
+            --card-glass-bg: rgba(28, 28, 28, 0.4);
+            --card-glass-border: rgba(255, 255, 255, 0.15);
+            --secondary-glass: rgba(51, 51, 51, 0.6);
+
+            /* Shadows and Depth - Deeper */
+            --shadow-light: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.05);
+            --shadow-deep: 0 15px 50px 0 rgba(0, 0, 0, 0.6);
+
+            /* Modal and Animation Timing - Spring Physics */
+            --modal-timing: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+            --exit-timing: cubic-bezier(0.5, -0.5, 0.7, 1);
+
+            /* Scrollbar & Misc */
+            --modal-bg: rgba(0, 0, 0, 0.85);
+            --toast-bg: rgba(255, 255, 255, 0.15);
+            --scroll-color: rgba(255, 255, 255, 0.2);
+            --blur: 25px;
+
+            /* Sidebar Variables */
+            --nav-min-width: 70px;
+            --nav-max-width: 260px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            display: flex;
+            /* Changed to flex for sidebar layout */
+            height: 100vh;
+        }
+
+        @keyframes moveBlob {
+            0% {
+                transform: translate(0, 0) scale(1.0);
+                filter: hue-rotate(0deg) blur(150px);
+            }
+
+            50% {
+                transform: translate(150px, -100px) scale(1.1);
+                filter: hue-rotate(10deg) blur(180px);
+            }
+
+            100% {
+                transform: translate(-80px, 80px) scale(0.9);
+                filter: hue-rotate(0deg) blur(150px);
+            }
+        }
+
+        /* New Blob Animations for variety */
+        .blob-1 {
+            animation: moveBlob1 20s infinite alternate ease-in-out;
+        }
+
+        @keyframes moveBlob1 {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.18;
+            }
+
+            50% {
+                transform: translate(150px, -50px) scale(1.1);
+                opacity: 0.25;
+            }
+
+            100% {
+                transform: translate(-50px, 100px) scale(0.9);
+                opacity: 0.15;
+            }
+        }
+
+        .blob-2 {
+            animation: moveBlob2 18s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes moveBlob2 {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+                opacity: 0.12;
+            }
+
+            40% {
+                transform: translate(-100px, 150px) rotate(45deg);
+                opacity: 0.2;
+            }
+
+            100% {
+                transform: translate(50px, -100px) rotate(-20deg);
+                opacity: 0.15;
+            }
+        }
+
+        .blob-3 {
+            animation: moveBlob3 25s infinite linear;
+        }
+
+        @keyframes moveBlob3 {
+            0% {
+                transform: translate(-50%, -50%) rotate(0deg) scale(1);
+            }
+
+            25% {
+                transform: translate(-60%, -40%) rotate(90deg) scale(1.05);
+            }
+
+            50% {
+                transform: translate(-50%, -50%) rotate(180deg) scale(0.95);
+            }
+
+            75% {
+                transform: translate(-40%, -60%) rotate(270deg) scale(1.1);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) rotate(360deg) scale(1);
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--scroll-color);
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-color);
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* Liquid Glass Background */
+        #liquid-glass-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            overflow: hidden;
+
+        }
+
+        .glass-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            opacity: 0.18;
+            filter: blur(150px);
+            animation: moveBlob 30s infinite alternate;
+        }
+
+        .blob-1 {
+            top: -20%;
+            left: -20%;
+            animation-duration: 34s;
+        }
+
+        .blob-2 {
+            bottom: -25%;
+            right: -25%;
+            background: var(--secondary-color);
+            opacity: 0.12;
+            filter: blur(120px);
+            animation-duration: 28s;
+        }
+
+        .blob-3 {
+            top: 60%;
+            left: 40%;
+            width: 400px;
+            height: 400px;
+            opacity: 0.25;
+            animation-duration: 32s;
+        }
+
+        @keyframes moveBlob {
+            0% {
+                transform: translate(0, 0) scale(1.0);
+                filter: hue-rotate(0deg) blur(150px);
+            }
+
+            50% {
+                transform: translate(150px, -100px) scale(1.1);
+                filter: hue-rotate(10deg) blur(180px);
+            }
+
+            100% {
+                transform: translate(-80px, 80px) scale(0.9);
+                filter: hue-rotate(0deg) blur(150px);
+            }
+        }
+
+        /* Glass Element */
+        .glass-element {
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: var(--shadow-deep);
+            border-radius: 18px;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Sidebar - Edubot Style */
+        .nav-sidebar {
+            width: var(--nav-min-width);
+            min-width: var(--nav-min-width);
+            max-width: var(--nav-min-width);
+            padding: 20px 0;
+
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s ease;
+
+            border-right: none;
+
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(var(--blur));
+            box-shadow: var(--shadow-deep);
+            z-index: 500;
+        }
+
+        .nav-sidebar:hover {
+            width: var(--nav-max-width);
+            min-width: var(--nav-max-width);
+            max-width: var(--nav-max-width);
+        }
+
+        /* Hide text when collapsed */
+        .nav-sidebar .nav-text {
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.1s;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            position: relative;
+            left: 10px;
+        }
+
+        /* Show text when expanded */
+        .nav-sidebar:hover .nav-text {
+            opacity: 1;
+            pointer-events: auto;
+            transition-delay: 0.2s;
+        }
+
+        .nav-wrap {
+            flex: 1;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Extended Story Styles */
+        .add-story-btn {
+            background: var(--secondary-glass);
+            color: var(--text-color);
+            border: 1px solid var(--card-glass-border);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .add-story-btn:hover {
+            background: var(--primary-gradient);
+            border-color: transparent;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* 3D Carousel Layout */
+        .story-modal-content {
+            background: transparent;
+            /* Make transparent for carousel effect */
+            border: none;
+            box-shadow: none;
+            overflow: visible;
+            /* Allow 3D overflow */
+            perspective: 1200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-carousel-container {
+            width: 400px;
+            height: 80vh;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .story-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background: #000;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            overflow: hidden;
+
+            /* Enhanced 3D states */
+            opacity: 0;
+            transform: translateZ(-200px);
+            pointer-events: none;
+        }
+
+        .story-card.active {
+            opacity: 1;
+            transform: translateX(0) scale(1) translateZ(0);
+            z-index: 10;
+            pointer-events: auto;
+            filter: brightness(100%);
+        }
+
+        /* Previous Story (Left Side) */
+        .story-card.prev {
+            opacity: 0.5;
+            transform: translateX(-120%) scale(0.85) translateZ(-50px) rotateY(15deg);
+            z-index: 5;
+            display: flex;
+            /* Show it */
+            pointer-events: none;
+            /* No interaction */
+            filter: brightness(60%) blur(1px);
+        }
+
+        /* Next Story (Right Side) */
+        .story-card.next {
+            opacity: 0.5;
+            transform: translateX(120%) scale(0.85) translateZ(-50px) rotateY(-15deg);
+            z-index: 5;
+            display: flex;
+            /* Show it */
+            pointer-events: none;
+            filter: brightness(60%) blur(1px);
+        }
+
+        /* Hidden states for smooth recycling */
+        .story-card.hidden-left {
+            opacity: 0;
+            transform: translateX(-250%) scale(0.5) translateZ(-100px);
+            z-index: 0;
+            display: flex;
+            pointer-events: none;
+        }
+
+        .story-card.hidden-right {
+            opacity: 0;
+            transform: translateX(250%) scale(0.5) translateZ(-100px);
+            z-index: 0;
+            display: flex;
+            pointer-events: none;
+        }
+
+        /* Hidden states for recycling */
+        .story-card.hidden {
+            display: none;
+        }
+
+        .story-spotify-embed {
+            margin-top: 20px;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Add Story Modal Specifics */
+        .modal-classic {
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px);
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: var(--shadow-deep);
+            background-color: rgba(20, 20, 20, 0.95);
+            /* Simpler bg for form */
+        }
+
+        .add-story-form {
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .spotify-search-btn {
+            background: #1DB954;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            margin-left: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .spotify-results {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+        }
+
+        .spotify-track-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .spotify-track-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .spotify-track-item img {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+        }
+
+        .form-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-cancel {
+            padding: 10px 20px;
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            padding: 10px 20px;
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            padding: 15px 15px;
+            margin: 8px 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            position: relative;
+        }
+
+        .nav-sidebar:hover .nav-item {
+            padding: 15px 20px 15px 30px;
+        }
+
+        .nav-item .nav-icon-generic {
+            font-size: 20px;
+            margin-right: 0;
+            width: 30px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+        }
+
+        .nav-sidebar:hover .nav-icon-generic {
+            margin-right: 12px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            background-color: var(--secondary-glass);
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-item.active {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        /* Messages Container */
+        .messages-container {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            /* padding-left removed, flex layout handles it */
+            flex: 1;
+            height: 100vh;
+            min-width: 0;
+            /* Important for flex child truncation */
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive Sidebar */
+        @media (max-width: 968px) {
+            .nav-sidebar {
+                position: absolute;
+                height: 100%;
+                z-index: 1000;
+                transform: translateX(-100%);
+                /* Initial hidden state on mobile if we want a toggle */
+                /* For now, let's keep it simple: collapsed on mobile or overlay? */
+                /* Edubot uses a toggle button for history, but nav might be always visible or toggleable. */
+                /* Let's stick to a simple collapsed view or just keep it as is if 70px is fine. */
+                /* Actually 70px is fine for mobile usually. */
+                transform: none;
+                width: 70px;
+            }
+
+            .nav-sidebar:hover {
+                width: 260px;
+                /* Expand on hover even on mobile? Or tap. */
+            }
+
+            .messages-container {
+                /* If sidebar is absolute, we might need padding-left or just let it overlay */
+                /* But we kept it flex in body, so it currently pushes content. */
+                /* If screen is small, maybe we want it fixed/overlay. */
+            }
+        }
+
+        /* Better Mobile: Hide texts, small icons */
+        @media (max-width: 768px) {
+            .nav-sidebar {
+                display: none;
+                /* Or bottom bar? */
+                /* Let's keep it simple and match desktop behavior but cleaner */
+            }
+
+            .messages-container {
+                padding: 10px;
+            }
+        }
+
+
+        .chat-list-section {
+            width: 380px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-window-section {
+            flex: 1;
+            display: flex;
+        }
+
+        /* Stories */
+        .stories-container {
+            padding: 15px;
+            border-bottom: 1px solid var(--card-glass-border);
+        }
+
+        .stories-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            opacity: 0.8;
+        }
+
+        .stories-list {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+
+        .story-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
+        .story-item:hover {
+            transform: scale(1.05);
+        }
+
+        .story-ring {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            padding: 3px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .story-item.viewed .story-ring {
+            background: var(--secondary-glass);
+            opacity: 0.6;
+        }
+
+        .story-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--bg-color);
+        }
+
+        .story-username {
+            font-size: 11px;
+            max-width: 70px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        /* Chat List */
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .chat-list-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--card-glass-border);
+        }
+
+        .chat-list-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .conversations {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+        }
+
+        .conversation-item {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 5px;
+        }
+
+        .conversation-item:hover {
+            background: var(--secondary-glass);
+            transform: translateX(5px);
+        }
+
+        .conversation-item.active {
+            background: var(--secondary-glass);
+            border-left: 3px solid var(--secondary-color);
+        }
+
+        .conversation-avatar {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .conversation-avatar img {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--card-glass-border);
+        }
+
+        .online-indicator {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            width: 14px;
+            height: 14px;
+            background: #22c55e;
+            border-radius: 50%;
+            border: 2px solid var(--bg-color);
+        }
+
+        .conversation-content {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .conversation-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .conversation-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .conversation-time {
+            font-size: 12px;
+            color: rgba(233, 238, 248, 0.5);
+        }
+
+        .conversation-preview {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .last-message {
+            font-size: 14px;
+            color: rgba(233, 238, 248, 0.6);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .unread-badge {
+            background: var(--secondary-color);
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 12px;
+            min-width: 20px;
+            text-align: center;
+        }
+
+        /* Chat Window */
+        .chat-window {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--card-glass-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-header-user img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--card-glass-border);
+        }
+
+        .chat-header-info h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .status {
+            font-size: 13px;
+            color: rgba(233, 238, 248, 0.6);
+        }
+
+        .status.online {
+            color: #22c55e;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 10px;
+            animation: messageSlideIn 0.3s ease;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.sent {
+            flex-direction: row-reverse;
+            justify-content: flex-start;
+        }
+
+        .message-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 70%;
+        }
+
+        .message.sent .message-content {
+            align-items: flex-end;
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            word-wrap: break-word;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .message.received .message-bubble {
+            background: var(--secondary-glass);
+            border-bottom-left-radius: 4px;
+        }
+
+        .message.sent .message-bubble {
+            background: var(--primary-gradient);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message-bubble:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .message-bubble p {
+            margin: 0;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .voice-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 250px;
+        }
+
+        .voice-message audio {
+            width: 200px;
+            height: 30px;
+        }
+
+        .message-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            color: rgba(233, 238, 248, 0.5);
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--secondary-color);
+            cursor: pointer;
+            padding: 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+            opacity: 0;
+            font-size: 12px;
+        }
+
+        .message-content:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 65, 108, 0.1);
+        }
+
+        /* Chat Input */
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid var(--card-glass-border);
+        }
+
+        .disappearing-options {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .option-btn {
+            padding: 8px 16px;
+            background: var(--secondary-glass);
+            border: 1px solid var(--card-glass-border);
+            border-radius: 20px;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.3s;
+        }
+
+        .option-btn:hover {
+            background: rgba(51, 51, 51, 0.8);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .option-btn.active {
+            background: var(--primary-gradient);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--secondary-glass);
+            border-radius: 25px;
+            padding: 8px 12px;
+            border: 1px solid var(--card-glass-border);
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: none;
+            border: none;
+            outline: none;
+            color: var(--text-color);
+            font-size: 14px;
+            padding: 8px;
+        }
+
+        .chat-input input::placeholder {
+            color: rgba(233, 238, 248, 0.4);
+        }
+
+        .input-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .input-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
+
+        .send-btn {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(0, 114, 255, 0.4);
+        }
+
+        .recording-indicator {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            color: var(--secondary-color);
+            font-size: 14px;
+        }
+
+        .recording-dot {
+            width: 10px;
+            height: 10px;
+            background: var(--secondary-color);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        /* Story Modal */
+        .story-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--modal-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .story-modal.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .story-modal-content {
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px);
+            border-radius: 18px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow: hidden;
+            position: relative;
+            animation: slideUp 0.4s ease;
+            box-shadow: var(--shadow-deep);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .story-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+        }
+
+        .story-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1);
+        }
+
+        .story-header-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 20px;
+            border-bottom: 1px solid var(--card-glass-border);
+        }
+
+        .story-header-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .story-header-info h4 {
+            margin: 0 0 4px 0;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .story-subject {
+            font-size: 12px;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        /* Story Viewer Enhanced */
+        .story-modal-content {
+            background: #000;
+            /* Black background for stories like Instagram */
+            border: none;
+            width: 100%;
+            height: 100%;
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 0;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        @media (min-width: 500px) {
+            .story-modal-content {
+                width: 400px;
+                height: 80vh;
+                max-width: 400px;
+                border-radius: 20px;
+                margin: auto;
+                box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        .story-progress-container {
+            position: absolute;
+            top: 20px;
+            left: 10px;
+            right: 10px;
+            display: flex;
+            gap: 5px;
+            z-index: 20;
+        }
+
+        .story-progress-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .story-progress-fill {
+            height: 100%;
+            background: white;
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        .story-progress-fill.completed {
+            width: 100%;
+        }
+
+        /* 3D Content Area */
+        .story-content-area {
+            flex: 1;
+            position: relative;
+            perspective: 1000px;
+            overflow: hidden;
+            padding: 0;
+            /* Reset padding */
+        }
+
+        .story-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            backface-visibility: hidden;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.6s ease;
+            transform-style: preserve-3d;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%);
+        }
+
+        /* Depth Effects */
+        .story-card.active {
+            transform: translateZ(0) scale(1);
+            opacity: 1;
+            z-index: 2;
+        }
+
+        .story-card.prev {
+            transform: translateZ(-100px) translateX(-50%) rotateY(10deg);
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .story-card.next {
+            transform: translateZ(-100px) translateX(50%) rotateY(-10deg);
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* Content Styling */
+        .story-card img {
+            max-width: 100%;
+            max-height: 70%;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .story-text {
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            line-height: 1.5;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .story-subject-badge {
+            background: var(--primary-gradient);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0, 114, 255, 0.3);
+        }
+
+        /* Navigation Taps */
+        .story-nav-area {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 30%;
+            z-index: 15;
+            /* Above content, below header/close */
+        }
+
+        .story-nav-left {
+            left: 0;
+        }
+
+        .story-nav-right {
+            right: 0;
+        }
+
+        /* Refined Header */
+        .story-header-info {
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            z-index: 20;
+            border-bottom: none;
+            padding: 0;
+            pointer-events: none;
+            /* Let clicks pass through except elements */
+        }
+
+        .story-header-info * {
+            pointer-events: auto;
+        }
+
+        .story-close {
+            top: 40px;
+            right: 20px;
+            z-index: 30;
+        }
+
+        .no-chat-selected {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .no-chat-content {
+            text-align: center;
+        }
+
+        .no-chat-content h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .no-chat-content p {
+            color: rgba(233, 238, 248, 0.6);
+            font-size: 14px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .nav-item-active {
+            background-color: var(--secondary-glass);
+            color: var(--secondary-color);
+            font-weight: 700;
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Enhanced Story Circles - Instagram/iOS Style */
+        .stories-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .stories-list {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 5px 0;
+            scroll-behavior: smooth;
+        }
+
+        .stories-list::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .story-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .story-item:hover {
+            transform: scale(1.1) translateY(-3px);
+        }
+
+        .story-item:active {
+            transform: scale(0.95);
+        }
+
+        .story-ring {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            padding: 3px;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .story-item.viewed .story-ring {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0.1) 100%);
+            opacity: 0.5;
+            box-shadow: none;
+        }
+
+        .story-ring::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50%;
+            padding: 2px;
+            background: var(--primary-gradient);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .story-item:hover .story-ring::after {
+            opacity: 1;
+            animation: ringPulse 1.5s infinite;
+        }
+
+        @keyframes ringPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+        }
+
+        .story-ring img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--bg-color);
+        }
+
+        .story-username {
+            font-size: 12px;
+            max-width: 75px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+            font-weight: 500;
+            opacity: 0.9;
+        }
+
+        /* Story Count Badge */
+        .story-count-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--secondary-color);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid var(--bg-color);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 3D Story Carousel - Enhanced */
+        .story-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .story-modal.active {
+            display: flex;
+        }
+
+        .story-modal-content {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            overflow: visible;
+            perspective: 2000px;
+            perspective-origin: 50% 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .story-carousel-container {
+            width: 420px;
+            height: 85vh;
+            max-height: 750px;
+            position: relative;
+            transform-style: preserve-3d;
+        }
+
+        .story-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            border-radius: 24px;
+            box-shadow:
+                0 30px 90px rgba(0, 0, 0, 0.8),
+                0 0 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.7s cubic-bezier(0.19, 1, 0.22, 1);
+            overflow: hidden;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+
+        /* Active Card - Center */
+        .story-card.active {
+            opacity: 1;
+            transform: translateX(0) translateZ(0) scale(1) rotateY(0deg);
+            z-index: 10;
+            pointer-events: auto;
+            filter: brightness(100%) blur(0px);
+        }
+
+        /* Previous Card - Left Side with 3D Rotation */
+        .story-card.prev {
+            opacity: 0.6;
+            transform: translateX(-140%) translateZ(-200px) scale(0.8) rotateY(25deg);
+            z-index: 5;
+            pointer-events: none;
+            filter: brightness(50%) blur(2px);
+        }
+
+        /* Next Card - Right Side with 3D Rotation */
+        .story-card.next {
+            opacity: 0.6;
+            transform: translateX(140%) translateZ(-200px) scale(0.8) rotateY(-25deg);
+            z-index: 5;
+            pointer-events: none;
+            filter: brightness(50%) blur(2px);
+        }
+
+        /* Hidden States for Smooth Recycling */
+        .story-card.hidden-left {
+            opacity: 0;
+            transform: translateX(-300%) translateZ(-400px) scale(0.5) rotateY(45deg);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .story-card.hidden-right {
+            opacity: 0;
+            transform: translateX(300%) translateZ(-400px) scale(0.5) rotateY(-45deg);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Story Progress Bars - iOS Style */
+        .story-progress-container {
+            position: absolute;
+            top: 20px;
+            left: 15px;
+            right: 15px;
+            display: flex;
+            gap: 4px;
+            z-index: 20;
+        }
+
+        .story-progress-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.25);
+            border-radius: 2px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .story-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
+            width: 0%;
+            transition: width 0.1s linear;
+            border-radius: 2px;
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+        }
+
+        .story-progress-fill.completed {
+            width: 100%;
+        }
+
+        .story-progress-fill.active {
+            animation: progressGlow 0.1s linear infinite;
+        }
+
+        @keyframes progressGlow {
+
+            0%,
+            100% {
+                box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+            }
+
+            50% {
+                box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        /* Story Content Area */
+        .story-content-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 70px 25px 25px;
+            color: white;
+        }
+
+        .story-media-container {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        .story-media-container img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+            animation: storyImageZoom 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes storyImageZoom {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .story-text-content {
+            text-align: center;
+            animation: storyTextSlideUp 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes storyTextSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .story-subject-badge {
+            display: inline-block;
+            background: var(--primary-gradient);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+            animation: badgePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes badgePulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .story-text {
+            font-size: 18px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            margin-bottom: 20px;
+        }
+
+        /* YouTube Embed Styling */
+        .story-youtube-embed {
+            width: 100%;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            margin-top: 15px;
+            animation: embedSlideIn 0.6s cubic-bezier(0.19, 1, 0.22, 1) 0.2s both;
+        }
+
+        @keyframes embedSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .story-youtube-embed iframe {
+            width: 100%;
+            height: 200px;
+            border: none;
+            border-radius: 16px;
+        }
+
+        /* Story Header - iOS Style */
+        .story-header-info {
+            position: absolute;
+            top: 45px;
+            left: 20px;
+            right: 60px;
+            z-index: 20;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            pointer-events: none;
+            animation: headerSlideDown 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes headerSlideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .story-header-info * {
+            pointer-events: auto;
+        }
+
+        .story-header-info img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-color);
+            box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+        }
+
+        .story-header-info .user-info {
+            flex: 1;
+        }
+
+        .story-header-info h4 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .story-timestamp {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Close Button - iOS Style */
+        .story-close {
+            position: absolute;
+            top: 45px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 30;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            animation: closeButtonFade 0.4s cubic-bezier(0.19, 1, 0.22, 1);
+        }
+
+        @keyframes closeButtonFade {
+            from {
+                opacity: 0;
+                transform: scale(0.8) rotate(-90deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0deg);
+            }
+        }
+
+        .story-close:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.1) rotate(90deg);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .story-close:active {
+            transform: scale(0.95);
+        }
+
+        /* Navigation Areas - Tap Zones */
+        .story-nav-area {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 35%;
+            z-index: 15;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .story-nav-area:active {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .story-nav-left {
+            left: 0;
+        }
+
+        .story-nav-right {
+            right: 0;
+        }
+
+        /* Chat Messages - iOS Bubbles */
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            position: relative;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-width: 100%;
+        }
+
+        .message.received .message-bubble {
+            background: rgba(60, 60, 67, 0.6);
+            backdrop-filter: blur(20px);
+            border-bottom-left-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .message.sent .message-bubble {
+            background: var(--primary-gradient);
+            color: white;
+            border-bottom-right-radius: 6px;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+        }
+
+        .message-bubble:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .message-bubble:active {
+            transform: scale(0.98);
+        }
+
+        /* Chat Input - iOS Style */
+        .chat-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(60, 60, 67, 0.5);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 8px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus-within {
+            background: rgba(60, 60, 67, 0.7);
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 114, 255, 0.1);
+        }
+
+        .input-btn {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .input-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.15);
+        }
+
+        .input-btn:active {
+            transform: scale(0.9);
+        }
+
+        .send-btn {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 114, 255, 0.4);
+        }
+
+        .send-btn:hover {
+            transform: scale(1.15);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+        }
+
+        /* Media Upload Styling */
+        .media-upload-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .media-upload-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .media-upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .media-upload-btn:active {
+            transform: translateY(0);
+        }
+
+        .media-preview {
+            position: relative;
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .media-preview.hidden {
+            display: none;
+        }
+
+        .media-preview img,
+        .media-preview video {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .media-preview video {
+            width: 100%;
+        }
+
+        .media-remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 65, 108, 0.9);
+            backdrop-filter: blur(10px);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .media-remove-btn:hover {
+            background: rgba(255, 65, 108, 1);
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .media-info {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* YouTube Results Enhanced */
+        .spotify-results {
+            max-height: 250px;
+            overflow-y: auto;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .spotify-track-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .spotify-track-item:last-child {
+            border-bottom: none;
+        }
+
+        .spotify-track-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+        }
+
+        .spotify-track-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .spotify-track-item .track-info {
+            flex: 1;
+        }
+
+        .spotify-track-item .track-title {
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .spotify-track-item .track-artist {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .spotify-search-btn {
+            background: #FF0000;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+            white-space: nowrap;
+        }
+
+        .spotify-search-btn:hover {
+            background: #cc0000;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 0, 0, 0.5);
+        }
+
+        .spotify-search-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Story Content Enhanced for Video */
+        .story-media-container video {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 16px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .story-media-video-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .video-control-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .video-control-btn:hover {
+            transform: scale(1.2);
+            color: var(--primary-color);
+        }
+
+        /* Enhanced Add Story Modal with Spring Animation */
+        .add-story-modal .story-modal-content {
+            transform: scale(0.7) translateY(100px);
+            opacity: 0;
+            transition: none;
+            /* Remove default transition */
+        }
+
+        .add-story-modal.active .story-modal-content {
+            animation: modalSpringIn 0.7s cubic-bezier(0.68, -0.6, 0.32, 1.6) forwards;
+        }
+
+        .add-story-modal.closing .story-modal-content {
+            animation: modalSpringOut 0.4s cubic-bezier(0.5, -0.5, 0.7, 1) forwards;
+        }
+
+        @keyframes modalSpringIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.7) translateY(100px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes modalSpringOut {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(50px);
+            }
+        }
+
+        /* Form elements slide in animation */
+        .add-story-form .form-group {
+            opacity: 0;
+            transform: translateX(-30px);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .add-story-modal.active .add-story-form .form-group:nth-child(1) {
+            animation: slideInLeft 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0.2s forwards;
+        }
+
+        .add-story-modal.active .add-story-form .form-group:nth-child(2) {
+            animation: slideInLeft 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0.3s forwards;
+        }
+
+        .add-story-modal.active .add-story-form .form-group:nth-child(3) {
+            animation: slideInLeft 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0.4s forwards;
+        }
+
+        .add-story-modal.active .add-story-form .form-group:nth-child(4) {
+            animation: slideInLeft 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0.5s forwards;
+        }
+
+        .add-story-modal.active .form-actions {
+            animation: slideInLeft 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) 0.6s forwards;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Overlay fade animation */
+        .add-story-modal {
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .add-story-modal.active {
+            opacity: 1;
+        }
+
+        .add-story-modal.closing {
+            opacity: 0;
+            transition: opacity 0.4s ease-in;
+        }
+
+        .story-modal-content {
+            position: relative;
+            touch-action: pan-x;
+            /* Enable horizontal swiping on touch devices */
+        }
+
+        .story-carousel-container {
+            width: 420px;
+            height: 85vh;
+            max-height: 750px;
+            position: relative;
+            transform-style: preserve-3d;
+            user-select: none;
+            /* Prevent text selection during swipe */
+        }
+
+        /* Navigation arrows for side scrolling */
+        .story-nav-arrows {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 25;
+            padding: 0 -50px;
+            /* Position outside the card */
+        }
+
+        .story-arrow {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            animation: fadeIn 0.5s ease 0.5s forwards;
+        }
+
+        .story-arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+            transform: scale(1.15);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .story-arrow:active {
+            transform: scale(0.95);
+        }
+
+        .story-arrow.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .arrow-left {
+            transform: translateX(-70px);
+        }
+
+        .arrow-right {
+            transform: translateX(70px);
+        }
+
+        /* Swipe indicator (optional visual feedback) */
+        .swipe-hint {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 12px;
+            z-index: 20;
+            animation: pulseSwipe 2s infinite;
+        }
+
+        @keyframes pulseSwipe {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Keyboard navigation hint */
+        .keyboard-hint {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 11px;
+            z-index: 20;
+            display: flex;
+            gap: 10px;
+        }
+
+        .keyboard-hint span {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 3px 8px;
+            border-radius: 5px;
+        }
+
+        /* Enhanced search results styling */
+        .youtube-search-wrapper {
+            position: relative;
+        }
+
+        .youtube-live-indicator {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: none;
+        }
+
+        .youtube-live-indicator.active {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #FF0000;
+            font-size: 11px;
+        }
+
+        .youtube-live-dot {
+            width: 8px;
+            height: 8px;
+            background: #FF0000;
+            border-radius: 50%;
+            animation: pulseLive 1.5s infinite;
+        }
+
+        @keyframes pulseLive {
+
+            0%,
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        .spotify-results {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .spotify-results.searching {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100px;
+        }
+
+        .search-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #FF0000;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Text-only track display */
+        .spotify-track-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .spotify-track-item:last-child {
+            border-bottom: none;
+        }
+
+        .spotify-track-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(8px);
+        }
+
+        .spotify-track-item.selected {
+            background: rgba(0, 114, 255, 0.2);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        .track-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.3);
+        }
+
+        .track-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .track-title {
+            font-weight: 600;
+            font-size: 15px;
+            color: white;
+            margin-bottom: 5px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.4;
+        }
+
+        .track-artist {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .track-duration {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            font-family: monospace;
+        }
+
+        .track-check {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.68, -0.6, 0.32, 1.6);
+        }
+
+        .spotify-track-item.selected .track-check {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .no-results {
+            padding: 40px 20px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .no-results i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+    </style>
+    <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+
+<body>
+    <div id="liquid-glass-container">
+        <div class="glass-blob blob-1"></div>
+        <div class="glass-blob blob-2"></div>
+        <div class="glass-blob blob-3"></div>
+    </div>
+
+    <!-- Sidebar -->
+    <!-- Sidebar -->
+    <div class="nav-sidebar glass-element" id="navSidebar">
+        <div class="nav-wrap" id="navWrap">
+            <a class="nav-item" href="home.html" data-icon="🏠">
+                <span class="nav-icon-generic">🏠 </span>
+                <span class="nav-text"> Home</span>
+            </a>
+            <a class="nav-item nav-item-active" href="messages.html" data-icon="✉️">
+                <span class="nav-icon-generic">✉️ </span>
+                <span class="nav-text"> Messages</span>
+            </a>
+            <a class="nav-item" href="self-study.html" data-icon="📖">
+                <span class="nav-icon-generic">📖 </span>
+                <span class="nav-text"> Self-Study</span>
+            </a>
+            <a class="nav-item" href="edubot.html" data-icon="🤖">
+                <span class="nav-icon-generic">🤖 </span>
+                <span class="nav-text"> EduBot</span>
+            </a>
+            <a class="nav-item" href="mini-games.html" data-icon="🎮">
+                <span class="nav-icon-generic">🎮 </span>
+                <span class="nav-text"> Mini-Games</span>
+            </a>
+        </div>
+
+        <div class="settings-wrap">
+            <a class="nav-item" href="profile.html" data-icon="👤">
+                <span class="nav-icon-generic">👤</span>
+                <span class="nav-text">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="messages-container">
+        <!-- Chat List Section -->
+        <div class="chat-list-section glass-element">
+            <div class="stories-container">
+                <div class="stories-header">
+                    <h3>Educational Stories</h3>
+                    <button class="add-story-btn" onclick="openAddStoryModal()">
+                        <i class="fas fa-plus"></i> Add
+                    </button>
+                </div>
+                <div class="stories-list" id="storiesList"></div>
+            </div>
+
+            <div class="chat-list">
+                <div class="chat-list-header">
+                    <h2>Messages</h2>
+                </div>
+                <div class="conversations" id="conversationsList"></div>
+            </div>
+        </div>
+
+        <!-- Chat Window Section -->
+        <div class="chat-window-section">
+            <div class="no-chat-selected glass-element" id="noChatSelected">
+                <div class="no-chat-content">
+                    <h2>Select a conversation</h2>
+                    <p>Choose a chat to start messaging</p>
+                </div>
+            </div>
+
+            <div class="chat-window glass-element hidden" id="chatWindow">
+                <div class="chat-header" id="chatHeader"></div>
+                <div class="chat-messages" id="chatMessages"></div>
+                <div class="chat-input-container">
+                    <div class="disappearing-options hidden" id="disappearingOptions">
+                        <button class="option-btn" id="readOnceBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                            Read Once
+                        </button>
+                        <button class="option-btn" id="timedBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                            24 Hours
+                        </button>
+                    </div>
+
+                    <div class="chat-input">
+                        <button class="input-btn" id="disappearingBtn" title="Disappearing messages">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <polyline points="12 6 12 12 16 14"></polyline>
+                            </svg>
+                        </button>
+
+                        <div id="normalInput">
+                            <input type="text" id="messageInput" placeholder="Type a message..." />
+                        </div>
+
+                        <div class="recording-indicator hidden" id="recordingIndicator">
+                            <span class="recording-dot"></span>
+                            <span>Recording...</span>
+                        </div>
+
+                        <button class="input-btn" id="micBtn" title="Record voice message">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="23"></line>
+                                <line x1="8" y1="23" x2="16" y2="23"></line>
+                            </svg>
+                        </button>
+
+                        <button class="input-btn hidden" id="stopBtn" title="Stop recording">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            </svg>
+                        </button>
+
+                        <button class="input-btn send-btn hidden" id="sendBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Story Modal -->
+    <!-- Story View Modal -->
+    <div class="story-modal" id="storyModal">
+        <button class="story-close" onclick="closeStory()">×</button>
+        <div class="story-modal-content">
+            <!-- Carousel Container -->
+            <div class="story-carousel-container" id="storyCarousel">
+                <!-- Dynamic Content -->
+            </div>
+
+            <!-- Navigation Areas -->
+            <div class="story-nav-area story-nav-left" onclick="prevStory()"></div>
+            <div class="story-nav-area story-nav-right" onclick="nextStory()"></div>
+        </div>
+    </div>
+
+    <!-- Add Story Modal -->
+    <div class="story-modal add-story-modal" id="addStoryModal">
+        <div class="story-modal-content modal-classic">
+            <div class="story-header-info" style="border:none; padding:20px; padding-bottom:0;">
+                <h4 style="color:white;">Create New Story</h4>
+                <button class="story-close" onclick="closeAddStoryModal()"
+                    style="position:absolute; right:20px; top:20px;">×</button>
+            </div>
+            <form class="add-story-form" onsubmit="submitStory(event)">
+                <div class="form-group">
+                    <label>Story Subject</label>
+                    <input type="text" id="storySubject" placeholder="e.g., Math Tips" required />
+                </div>
+
+                <div class="form-group">
+                    <label>Content</label>
+                    <textarea id="storyContent" placeholder="Share your knowledge..." rows="4" required></textarea>
+                </div>
+
+                <!-- Media Upload Section -->
+                <div class="form-group">
+                    <label>Add Media (Optional)</label>
+                    <div class="media-upload-container">
+                        <input type="file" id="mediaUpload" accept="image/*,video/*" style="display:none;"
+                            onchange="handleMediaUpload(event)" />
+                        <button type="button" class="media-upload-btn"
+                            onclick="document.getElementById('mediaUpload').click()">
+                            <i class="fas fa-camera"></i> Upload Photo/Video
+                        </button>
+                        <div id="mediaPreview" class="media-preview hidden"></div>
+                    </div>
+                </div>
+
+                <!-- YouTube Search Section -->
+                <div class="form-group">
+                    <label>Add YouTube Music (Optional)</label>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="spotifySearchQuery" placeholder="Search for a song or video..." />
+                        <button type="button" class="spotify-search-btn" onclick="searchYouTube()">
+                            <i class="fab fa-youtube"></i> Search
+                        </button>
+                    </div>
+                </div>
+
+                <div id="spotifyResults" class="spotify-results hidden"></div>
+                <input type="hidden" id="selectedTrackData" />
+                <input type="hidden" id="uploadedMediaData" />
+
+                <div class="form-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddStoryModal()">Cancel</button>
+                    <button type="submit" class="btn-submit">Post Story</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Hidden Spotify Config for Demo -->
+    <div style="display:none;">
+        <input type="hidden" id="spotifyClientId" value="your_client_id_here" />
+        <input type="hidden" id="spotifyClientSecret" value="your_client_secret_here" />
+    </div>
+
+    <script>
+        // YouTube API Configuration
+        const YOUTUBE_API_KEY = 'AIzaSyBiVCOrKMTbh1gVEpevbbJ_5EDewv7q_dI';
+
+        // Mock Data
+        const mockUsers = [
+            { id: 1, name: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", online: true },
+            { id: 2, name: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", online: false },
+            { id: 3, name: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", online: true },
+            { id: 4, name: "David Lee", avatar: "https://i.pravatar.cc/150?img=4", online: false },
+            { id: 5, name: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", online: true },
+            { id: 'me', name: "You", avatar: "https://i.pravatar.cc/150?img=11", online: true }
+        ];
+
+        const mockConversations = [
+            { id: 1, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", lastMessage: "Hey! Did you finish the math assignment?", timestamp: new Date(Date.now() - 5 * 60000), unread: 2, online: true },
+            { id: 2, userId: 2, userName: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", lastMessage: "Thanks for the study notes!", timestamp: new Date(Date.now() - 30 * 60000), unread: 0, online: false },
+            { id: 3, userId: 3, userName: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", lastMessage: "Can you help me with physics?", timestamp: new Date(Date.now() - 2 * 60 * 60000), unread: 1, online: true },
+            { id: 4, userId: 4, userName: "David Lee", avatar: "https://i.pravatar.cc/150?img=4", lastMessage: "See you in class tomorrow!", timestamp: new Date(Date.now() - 24 * 60 * 60000), unread: 0, online: false },
+            { id: 5, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", lastMessage: "The biology project looks great!", timestamp: new Date(Date.now() - 48 * 60 * 60000), unread: 0, online: true }
+        ];
+
+        const mockMessages = {
+            1: [{ id: 1, senderId: 1, text: "Hi! How are you doing?", timestamp: new Date(Date.now() - 60 * 60000), type: "text" }, { id: 2, senderId: "me", text: "I'm good! Working on the assignment.", timestamp: new Date(Date.now() - 55 * 60000), type: "text" }, { id: 3, senderId: 1, text: "Which one? The math homework?", timestamp: new Date(Date.now() - 50 * 60000), type: "text" }, { id: 4, senderId: "me", text: "Yes, the calculus problems.", timestamp: new Date(Date.now() - 45 * 60000), type: "text" }, { id: 5, senderId: 1, text: "Hey! Did you finish the math assignment?", timestamp: new Date(Date.now() - 5 * 60000), type: "text" }],
+            2: [{ id: 8, senderId: 2, text: "Hey, do you have the notes from yesterday?", timestamp: new Date(Date.now() - 120 * 60000), type: "text" }, { id: 9, senderId: "me", text: "Sure, let me share them with you.", timestamp: new Date(Date.now() - 110 * 60000), type: "text" }, { id: 10, senderId: "me", text: "Here are the notes 📚", timestamp: new Date(Date.now() - 100 * 60000), type: "text" }, { id: 11, senderId: 2, text: "Thanks for the study notes!", timestamp: new Date(Date.now() - 30 * 60000), type: "text" }],
+            3: [{ id: 12, senderId: 3, text: "I'm struggling with the physics chapter.", timestamp: new Date(Date.now() - 150 * 60000), type: "text" }, { id: 13, senderId: "me", text: "Which topic specifically?", timestamp: new Date(Date.now() - 140 * 60000), type: "text" }, { id: 14, senderId: 3, text: "Thermodynamics and heat transfer.", timestamp: new Date(Date.now() - 130 * 60000), type: "text" }, { id: 16, senderId: 3, text: "Can you help me with physics?", timestamp: new Date(Date.now() - 2 * 60 * 60000), type: "text" }],
+            4: [{ id: 17, senderId: 4, text: "Want to study together this weekend?", timestamp: new Date(Date.now() - 30 * 60 * 60000), type: "text" }, { id: 18, senderId: "me", text: "Sure! Saturday afternoon?", timestamp: new Date(Date.now() - 29 * 60 * 60000), type: "text" }, { id: 19, senderId: 4, text: "Perfect! Library at 2 PM?", timestamp: new Date(Date.now() - 28 * 60 * 60000), type: "text" }, { id: 20, senderId: "me", text: "Sounds good! See you there.", timestamp: new Date(Date.now() - 27 * 60 * 60000), type: "text" }, { id: 21, senderId: 4, text: "See you in class tomorrow!", timestamp: new Date(Date.now() - 24 * 60 * 60000), type: "text" }],
+            5: [{ id: 22, senderId: 5, text: "I finished my part of the project!", timestamp: new Date(Date.now() - 50 * 60 * 60000), type: "text" }, { id: 23, senderId: "me", text: "Awesome! Let me check it out.", timestamp: new Date(Date.now() - 49 * 60 * 60000), type: "text" }, { id: 24, senderId: "me", text: "The biology project looks great!", timestamp: new Date(Date.now() - 48 * 60 * 60000), type: "text" }, { id: 25, senderId: 5, text: "Thanks! 😊", timestamp: new Date(Date.now() - 48 * 60 * 60000), type: "text" }]
+        };
+
+        const mockStories = [
+            { id: 1, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", content: "Quick tip: Use flashcards for memorizing formulas! 📝", subject: "Study Tips", image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 2 * 60 * 60000), viewed: false, youtubeVideo: null },
+            { id: 101, userId: 1, userName: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", content: "Also, drink plenty of water while studying! 💧", subject: "Health", image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 1 * 60 * 60000), viewed: false, youtubeVideo: null },
+            { id: 2, userId: 3, userName: "Emily Davis", avatar: "https://i.pravatar.cc/150?img=3", content: "Just learned an amazing physics trick for solving kinematics problems!", subject: "Physics", image: "https://images.unsplash.com/photo-1636466497217-26a8cbeaf0aa?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 5 * 60 * 60000), viewed: false, youtubeVideo: null },
+            { id: 3, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", content: "Biology hack: Use mnemonics to remember the Krebs cycle steps.", subject: "Biology", image: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 8 * 60 * 60000), viewed: true, youtubeVideo: null },
+            { id: 301, userId: 5, userName: "Anna Martinez", avatar: "https://i.pravatar.cc/150?img=5", content: "Look at these cells under the microscope! 🔬", subject: "Lab", image: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 7 * 60 * 60000), viewed: true, youtubeVideo: null },
+            { id: 4, userId: 2, userName: "Mike Johnson", avatar: "https://i.pravatar.cc/150?img=2", content: "Found a great online resource for calculus practice problems!", subject: "Math", image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=400&q=80", timestamp: new Date(Date.now() - 12 * 60 * 60000), viewed: false, youtubeVideo: null }
+        ];
+
+        let conversations = [...mockConversations];
+        let messages = JSON.parse(JSON.stringify(mockMessages));
+        let stories = [...mockStories];
+        let selectedChat = null;
+        let disappearingMode = null;
+        let isRecording = false;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let storyQueue = [];
+        let storyQueueIndex = 0;
+        let storyTimer = null;
+        let progressAnimationFrame = null;
+        let searchTimeout;
+        let currentSearchController = null;
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let isDragging = false;
+        const STORY_DURATION = 30000; // Fixed 30 seconds for story playback
+
+        function openAddStoryModal() {
+            const modal = document.getElementById('addStoryModal');
+            modal.classList.remove('closing');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closeAddStoryModal() {
+            const modal = document.getElementById('addStoryModal');
+            modal.classList.remove('active');
+            modal.classList.add('closing');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modal.classList.remove('closing');
+                document.getElementById('storySubject').value = '';
+                document.getElementById('storyContent').value = '';
+                document.getElementById('spotifySearchQuery').value = '';
+                document.getElementById('selectedTrackData').value = '';
+                document.getElementById('spotifyResults').classList.add('hidden');
+                removeMedia();
+            }, 450);
+        }
+
+        function submitStory(e) {
+            e.preventDefault();
+            const newStory = {
+                id: Date.now(), userId: 'me', userName: 'You', avatar: 'https://i.pravatar.cc/150?img=11',
+                content: document.getElementById('storyContent').value, subject: document.getElementById('storySubject').value,
+                timestamp: new Date(), viewed: false,
+                youtubeVideo: document.getElementById('selectedTrackData').value ? JSON.parse(document.getElementById('selectedTrackData').value) : null,
+                media: document.getElementById('uploadedMediaData').value ? JSON.parse(document.getElementById('uploadedMediaData').value) : null
+            };
+            stories.unshift(newStory);
+            renderStories();
+            closeAddStoryModal();
+            removeMedia();
+        }
+
+        function openStory(userId) {
+            storyQueue = stories;
+            const userStories = stories.filter(s => s.userId == userId);
+            if (!userStories.length) return;
+            let startStory = userStories.find(s => !s.viewed) || userStories[0];
+            storyQueueIndex = storyQueue.findIndex(s => s.id === startStory.id);
+            if (storyQueueIndex === -1) storyQueueIndex = 0;
+            const modal = document.getElementById('storyModal');
+            modal.classList.add('active');
+            modal.style.display = 'flex';
+            initCarousel();
+            updateCarousel();
+            startStoryTimer();
+            initStoryNavigation();
+            updateNavigationArrows();
+        }
+
+        function closeStory() {
+            document.getElementById('storyModal').classList.remove('active');
+            document.getElementById('storyModal').style.display = 'none';
+            clearTimeout(storyTimer);
+            if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
+            progressAnimationFrame = null;
+            renderStories();
+        }
+
+        function nextStory() {
+            if (storyQueueIndex < storyQueue.length - 1) {
+                storyQueueIndex++;
+                updateCarousel();
+                startStoryTimer();
+                updateNavigationArrows();
+            } else closeStory();
+        }
+
+        function prevStory() {
+            if (storyQueueIndex > 0) {
+                storyQueueIndex--;
+                updateCarousel();
+                startStoryTimer();
+                updateNavigationArrows();
+            }
+        }
+
+        function renderStoryCard(story) {
+            let mediaHTML = '', youtubeHTML = '';
+            if (story.media) {
+                mediaHTML = story.media.type === 'image'
+                    ? `<div class="story-media-container"><img src="${story.media.data}" alt="Story media" /></div>`
+                    : `<div class="story-media-container"><video src="${story.media.data}" controls playsinline></video></div>`;
+            } else if (story.image) {
+                mediaHTML = `<div class="story-media-container"><img src="${story.image}" alt="Story content" /></div>`;
+            }
+            if (story.youtubeVideo) {
+                // Embed YouTube iframe with autoplay (muted to comply with browser policies) for the story duration
+                youtubeHTML = `<div class="story-youtube-embed"><iframe width="100%" height="200" src="https://www.youtube.com/embed/${story.youtubeVideo.id}?autoplay=1&mute=1&modestbranding=1&rel=0&start=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>`;
+            }
+            return `<div class="story-content-wrapper"><div class="story-header-info"><img src="${story.avatar}" alt="${story.userName}"><div class="user-info"><h4>${story.userName}</h4><div class="story-timestamp">${formatTime(story.timestamp)}</div></div></div>${mediaHTML}<div class="story-text-content"><span class="story-subject-badge">${story.subject}</span><div class="story-text">${story.content}</div></div>${youtubeHTML}</div>`;
+        }
+
+        function initCarousel() {
+            const container = document.getElementById('storyCarousel');
+            if (!container) return;
+            container.innerHTML = '';
+            const progressContainer = document.createElement('div');
+            progressContainer.className = 'story-progress-container';
+            progressContainer.innerHTML = storyQueue.map((_, i) => `<div class="story-progress-bar"><div class="story-progress-fill" id="progress-${i}"></div></div>`).join('');
+            container.appendChild(progressContainer);
+            storyQueue.forEach((story, idx) => {
+                const el = document.createElement('div');
+                el.className = 'story-card hidden-right';
+                el.id = `story-card-${idx}`;
+                el.innerHTML = renderStoryCard(story);
+                container.appendChild(el);
+            });
+        }
+
+        function updateProgressBars() {
+            storyQueue.forEach((_, idx) => {
+                const fill = document.getElementById(`progress-${idx}`);
+                if (!fill) return;
+                fill.classList.remove('active', 'completed');
+                fill.style.width = '0%';
+                if (idx < storyQueueIndex) {
+                    fill.classList.add('completed');
+                    fill.style.width = '100%';
+                } else if (idx === storyQueueIndex) {
+                    fill.classList.add('active');
+                    animateProgress(fill, 6000);
+                }
+            });
+        }
+
+        function animateProgress(el, dur) {
+            let start = null;
+            const animate = (ts) => {
+                if (!start) start = ts;
+                const prog = (ts - start) / dur;
+                el.style.width = `${Math.min(prog * 100, 100)}%`;
+                if (prog < 1 && document.getElementById('storyModal').classList.contains('active')) progressAnimationFrame = requestAnimationFrame(animate);
+            };
+            progressAnimationFrame = requestAnimationFrame(animate);
+        }
+
+        function updateCarousel() {
+            const story = storyQueue[storyQueueIndex];
+            if (story) {
+                story.viewed = true;
+                stories = stories.map(s => s.id === story.id ? { ...s, viewed: true } : s);
+            }
+            storyQueue.forEach((_, idx) => {
+                const el = document.getElementById(`story-card-${idx}`);
+                if (!el) return;
+                el.className = 'story-card';
+                if (idx === storyQueueIndex) el.classList.add('active');
+                else if (idx === storyQueueIndex - 1) el.classList.add('prev');
+                else if (idx === storyQueueIndex + 1) el.classList.add('next');
+                else if (idx < storyQueueIndex) el.classList.add('hidden-left');
+                else el.classList.add('hidden-right');
+            });
+            updateProgressBars();
+        }
+
+        function startStoryTimer() {
+            clearTimeout(storyTimer);
+            if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
+            storyTimer = setTimeout(nextStory, STORY_DURATION);
+        }
+
+        function initStoryNavigation() {
+            const carousel = document.getElementById('storyCarousel');
+            if (!carousel) return;
+            carousel.removeEventListener('touchstart', handleTouchStart);
+            carousel.removeEventListener('touchmove', handleTouchMove);
+            carousel.removeEventListener('touchend', handleTouchEnd);
+            carousel.removeEventListener('mousedown', handleMouseDown);
+            carousel.removeEventListener('mousemove', handleMouseMove);
+            carousel.removeEventListener('mouseup', handleMouseUp);
+            carousel.removeEventListener('mouseleave', handleMouseLeave);
+            carousel.addEventListener('touchstart', handleTouchStart, { passive: true });
+            carousel.addEventListener('touchmove', handleTouchMove, { passive: true });
+            carousel.addEventListener('touchend', handleTouchEnd, { passive: true });
+            carousel.addEventListener('mousedown', handleMouseDown);
+            carousel.addEventListener('mousemove', handleMouseMove);
+            carousel.addEventListener('mouseup', handleMouseUp);
+            carousel.addEventListener('mouseleave', handleMouseLeave);
+        }
+
+        function handleTouchStart(e) { touchStartX = e.changedTouches[0].screenX; }
+        function handleTouchMove(e) { touchEndX = e.changedTouches[0].screenX; }
+        function handleTouchEnd() { handleSwipe(); }
+        function handleMouseDown(e) { isDragging = true; touchStartX = e.screenX; e.currentTarget.style.cursor = 'grabbing'; }
+        function handleMouseMove(e) { if (isDragging) touchEndX = e.screenX; }
+        function handleMouseUp(e) { if (isDragging) { isDragging = false; e.currentTarget.style.cursor = 'grab'; handleSwipe(); } }
+        function handleMouseLeave(e) { if (isDragging) { isDragging = false; e.currentTarget.style.cursor = 'grab'; } }
+        function handleSwipe() {
+            const diff = touchStartX - touchEndX;
+            if (Math.abs(diff) > 50) diff > 0 ? nextStory() : prevStory();
+            touchStartX = 0; touchEndX = 0;
+        }
+        function handleKeyPress(e) {
+            if (document.getElementById('storyModal').style.display !== 'flex') return;
+            if (e.key === 'ArrowLeft') prevStory();
+            else if (e.key === 'ArrowRight') nextStory();
+            else if (e.key === 'Escape') closeStory();
+        }
+        function updateNavigationArrows() {
+            const left = document.querySelector('.arrow-left');
+            const right = document.querySelector('.arrow-right');
+            if (left && right) {
+                storyQueueIndex === 0 ? left.classList.add('disabled') : left.classList.remove('disabled');
+                storyQueueIndex === storyQueue.length - 1 ? right.classList.add('disabled') : right.classList.remove('disabled');
+            }
+        }
+
+        function setupLiveYouTubeSearch() {
+            document.getElementById('spotifySearchQuery').addEventListener('input', function (e) {
+                const query = e.target.value.trim();
+                clearTimeout(searchTimeout);
+                if (currentSearchController) currentSearchController.abort();
+                if (query.length < 2) { document.getElementById('spotifyResults').classList.add('hidden'); return; }
+                searchTimeout = setTimeout(() => performLiveYouTubeSearch(query), 500);
+            });
+        }
+
+        async function performLiveYouTubeSearch(query) {
+            const results = document.getElementById('spotifyResults');
+            results.classList.remove('hidden');
+            results.innerHTML = '<div style="padding:20px;text-align:center;"><div style="width:40px;height:40px;border:4px solid rgba(255,255,255,0.1);border-top-color:#FF0000;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto;"></div></div>';
+            currentSearchController = new AbortController();
+            try {
+                const res = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoCategoryId=10&maxResults=8&key=${YOUTUBE_API_KEY}`, { signal: currentSearchController.signal });
+                if (!res.ok) throw new Error('API error');
+                const data = await res.json();
+                const ids = data.items.map(i => i.id.videoId).join(',');
+                const durRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${ids}&key=${YOUTUBE_API_KEY}`, { signal: currentSearchController.signal });
+                const durData = await durRes.json();
+                const durs = {};
+                durData.items.forEach(i => durs[i.id] = formatDuration(i.contentDetails.duration));
+                results.innerHTML = '';
+                if (data.items?.length) {
+                    data.items.forEach(v => {
+                        const el = document.createElement('div');
+                        el.className = 'spotify-track-item';
+                        el.onclick = () => selectYouTubeVideoEnhanced(v, el);
+                        const dur = durs[v.id.videoId] || '...';
+                        el.innerHTML = `<div class="track-icon"><i class="fab fa-youtube"></i></div><div class="track-info"><div class="track-title">${escapeHtml(v.snippet.title)}</div><div class="track-artist"><i class="fas fa-user" style="font-size:10px;"></i> ${escapeHtml(v.snippet.channelTitle)}${dur !== '...' ? ` <span class="track-duration">• ${dur}</span>` : ''}</div></div><div class="track-check"><i class="fas fa-check"></i></div>`;
+                        results.appendChild(el);
+                    });
+                } else results.innerHTML = '<div style="padding:40px 20px;text-align:center;color:rgba(255,255,255,0.5);"><i class="fas fa-search" style="font-size:48px;margin-bottom:15px;opacity:0.3;"></i><div>No videos found</div><div style="font-size:12px;margin-top:5px;">Try different keywords</div></div>';
+            } catch (err) {
+                if (err.name === 'AbortError') return;
+                results.innerHTML = '<div style="padding:40px 20px;text-align:center;"><i class="fas fa-exclamation-triangle" style="font-size:48px;color:#ff6b6b;margin-bottom:15px;"></i><div style="color:#ff6b6b;">Search failed</div></div>';
+            }
+        }
+
+        function selectYouTubeVideoEnhanced(video, el) {
+            document.querySelectorAll('.spotify-track-item').forEach(i => i.classList.remove('selected'));
+            el.classList.add('selected');
+            document.getElementById('selectedTrackData').value = JSON.stringify({ id: video.id.videoId, title: video.snippet.title, channel: video.snippet.channelTitle, thumbnail: video.snippet.thumbnails.medium.url });
+            document.getElementById('spotifySearchQuery').value = video.snippet.title;
+            setTimeout(() => document.getElementById('spotifyResults').classList.add('hidden'), 1000);
+        }
+
+        function formatDuration(iso) {
+            const m = iso.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+            const h = (m[1] || '').replace('H', ''), min = (m[2] || '').replace('M', ''), s = (m[3] || '').replace('S', '');
+            return h ? `${h}:${min.padStart(2, '0')}:${s.padStart(2, '0')}` : `${min || '0'}:${s.padStart(2, '0')}`;
+        }
+        function escapeHtml(t) { const d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+
+        let uploadedMediaFile = null, uploadedMediaType = null;
+        function handleMediaUpload(e) {
+            const file = e.target.files[0];
+            if (!file || file.size > 50 * 1024 * 1024) { if (file) alert('File too large!'); return; }
+            uploadedMediaFile = file;
+            uploadedMediaType = file.type.startsWith('image/') ? 'image' : 'video';
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const preview = document.getElementById('mediaPreview');
+                preview.classList.remove('hidden');
+                preview.innerHTML = uploadedMediaType === 'image'
+                    ? `<img src="${ev.target.result}" /><button type="button" class="media-remove-btn" onclick="removeMedia()">×</button><div class="media-info"><i class="fas fa-image"></i> Image</div>`
+                    : `<video src="${ev.target.result}" controls></video><button type="button" class="media-remove-btn" onclick="removeMedia()">×</button><div class="media-info"><i class="fas fa-video"></i> Video</div>`;
+                document.getElementById('uploadedMediaData').value = JSON.stringify({ type: uploadedMediaType, data: ev.target.result, name: file.name, size: file.size });
+            };
+            reader.readAsDataURL(file);
+        }
+        function removeMedia() {
+            uploadedMediaFile = null; uploadedMediaType = null;
+            document.getElementById('mediaPreview').classList.add('hidden');
+            document.getElementById('mediaPreview').innerHTML = '';
+            document.getElementById('uploadedMediaData').value = '';
+            document.getElementById('mediaUpload').value = '';
+        }
+
+        function formatTime(ts) {
+            const diff = Date.now() - new Date(ts), m = Math.floor(diff / 60000), h = Math.floor(diff / 3600000), d = Math.floor(diff / 86400000);
+            if (m < 1) return 'Just now';
+            if (m < 60) return `${m}m ago`;
+            if (h < 24) return `${h}h ago`;
+            if (d === 1) return 'Yesterday';
+            if (d < 7) return `${d}d ago`;
+            return new Date(ts).toLocaleDateString();
+        }
+        function formatMessageTime(ts) { return new Date(ts).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }); }
+
+        function renderStories() {
+            const storiesByUser = {};
+            stories.forEach(s => {
+                if (!storiesByUser[s.userId]) storiesByUser[s.userId] = { user: { id: s.userId, name: s.userName, avatar: s.avatar }, stories: [], allViewed: true };
+                storiesByUser[s.userId].stories.push(s);
+                if (!s.viewed) storiesByUser[s.userId].allViewed = false;
+            });
+            document.getElementById('storiesList').innerHTML = Object.values(storiesByUser).map(g => `<div class="story-item ${g.allViewed ? 'viewed' : ''}" onclick="openStory(${g.user.id})"><div class="story-ring"><img src="${g.user.avatar}" />${g.stories.length > 1 ? `<div class="story-count-badge">${g.stories.length}</div>` : ''}</div><span class="story-username">${g.user.name.split(' ')[0]}</span></div>`).join('');
+        }
+
+        function renderConversations() {
+            document.getElementById('conversationsList').innerHTML = conversations.map(c => `<div class="conversation-item ${selectedChat === c.id ? 'active' : ''}" onclick="selectChat(${c.id})"><div class="conversation-avatar"><img src="${c.avatar}" />${c.online ? '<div class="online-indicator"></div>' : ''}</div><div class="conversation-content"><div class="conversation-header"><span class="conversation-name">${c.userName}</span><span class="conversation-time">${formatTime(c.timestamp)}</span></div><div class="conversation-preview"><span class="last-message">${c.lastMessage}</span>${c.unread > 0 ? `<span class="unread-badge">${c.unread}</span>` : ''}</div></div></div>`).join('');
+        }
+
+        function renderChatHeader() {
+            const c = conversations.find(x => x.id === selectedChat);
+            if (!c) return;
+            document.getElementById('chatHeader').innerHTML = `<div class="chat-header-user"><img src="${c.avatar}" /><div class="chat-header-info"><h3>${c.userName}</h3><span class="status ${c.online ? 'online' : 'offline'}">${c.online ? 'Online' : 'Offline'}</span></div></div>`;
+        }
+
+        function renderMessages() {
+            const c = conversations.find(x => x.id === selectedChat);
+            if (!c) return;
+            const msgs = messages[selectedChat] || [];
+            document.getElementById('chatMessages').innerHTML = msgs.map(m => `<div class="message ${m.senderId === 'me' ? 'sent' : 'received'}">${m.senderId !== 'me' ? `<img src="${c.avatar}" class="message-avatar" />` : ''}<div class="message-content"><div class="message-bubble"><p>${m.text}</p></div><div class="message-meta"><span class="message-time">${formatMessageTime(m.timestamp)}</span>${m.senderId === 'me' ? `<button class="delete-btn" onclick="deleteMessage(${m.id})">🗑️</button>` : ''}</div></div></div>`).join('');
+            document.getElementById('chatMessages').scrollTop = document.getElementById('chatMessages').scrollHeight;
+        }
+
+        function selectChat(id) {
+            selectedChat = id;
+            conversations = conversations.map(c => c.id === id ? { ...c, unread: 0 } : c);
+            document.getElementById('noChatSelected').classList.add('hidden');
+            document.getElementById('chatWindow').classList.remove('hidden');
+            renderConversations();
+            renderChatHeader();
+            renderMessages();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+            if (!text || !selectedChat) return;
+            const msg = { id: Date.now(), senderId: 'me', text: text, type: 'text', timestamp: new Date() };
+            if (!messages[selectedChat]) messages[selectedChat] = [];
+            messages[selectedChat].push(msg);
+            conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: text, timestamp: new Date() } : c);
+            input.value = '';
+            disappearingMode = null;
+            updateDisappearingButtons();
+            renderConversations();
+            renderMessages();
+        }
+
+        function deleteMessage(id) {
+            if (!selectedChat) return;
+            messages[selectedChat] = messages[selectedChat].filter(m => m.id !== id);
+            renderMessages();
+        }
+
+        function toggleDisappearingOptions() {
+            document.getElementById('disappearingOptions').classList.toggle('hidden');
+        }
+
+        function setDisappearingMode(mode) {
+            disappearingMode = disappearingMode === mode ? null : mode;
+            updateDisappearingButtons();
+        }
+
+        function updateDisappearingButtons() {
+            document.getElementById('readOnceBtn').classList.toggle('active', disappearingMode === 'read-once');
+            document.getElementById('timedBtn').classList.toggle('active', disappearingMode === 'timed');
+        }
+
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) audioChunks.push(e.data); };
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const msg = { id: Date.now(), senderId: 'me', text: 'Voice message', type: 'voice', audioUrl: url, timestamp: new Date() };
+                    if (!messages[selectedChat]) messages[selectedChat] = [];
+                    messages[selectedChat].push(msg);
+                    conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: 'Voice message', timestamp: new Date() } : c);
+                    stream.getTracks().forEach(t => t.stop());
+                    renderConversations();
+                    renderMessages();
+                };
+                mediaRecorder.start();
+                isRecording = true;
+                updateRecordingUI();
+            } catch (err) {
+                alert('Please allow microphone access.');
+            }
+        }
+
+        function stopRecording() {
+            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+                mediaRecorder.stop();
+                isRecording = false;
+                updateRecordingUI();
+            }
+        }
+
+        function updateRecordingUI() {
+            document.getElementById('normalInput').classList.toggle('hidden', isRecording);
+            document.getElementById('recordingIndicator').classList.toggle('hidden', !isRecording);
+            document.getElementById('micBtn').classList.toggle('hidden', isRecording);
+            document.getElementById('stopBtn').classList.toggle('hidden', !isRecording);
+        }
+
+        document.getElementById('messageInput').addEventListener('keypress', (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+        document.getElementById('messageInput').addEventListener('input', (e) => { document.getElementById('sendBtn').classList.toggle('hidden', !e.target.value.trim()); });
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+        document.getElementById('disappearingBtn').addEventListener('click', toggleDisappearingOptions);
+        document.getElementById('readOnceBtn').addEventListener('click', () => setDisappearingMode('read-once'));
+        document.getElementById('timedBtn').addEventListener('click', () => setDisappearingMode('timed'));
+        document.getElementById('micBtn').addEventListener('click', startRecording);
+        document.getElementById('stopBtn').addEventListener('click', stopRecording);
+        document.getElementById('addStoryModal').addEventListener('click', (e) => { if (e.target.id === 'addStoryModal') closeAddStoryModal(); });
+        document.getElementById('storyModal').addEventListener('click', (e) => { if (e.target.id === 'storyModal') closeStory(); });
+        document.addEventListener('keydown', handleKeyPress);
+        document.addEventListener('DOMContentLoaded', () => { setupLiveYouTubeSearch(); renderStories(); renderConversations(); });
+    </script>
+</body>
+
+</html>
