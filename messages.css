@@ -3205,3 +3205,864 @@
             border-color: transparent;
             animation: pulse 1.5s infinite;
         }
+
+        /* ============================================
+   ENHANCED CHAT INPUT LAYOUT
+   ============================================ */
+
+        .chat-input-container {
+            padding: 20px;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-input {
+            display: flex;
+            align-items: flex-end;
+            gap: 12px;
+            background: rgba(30, 30, 30, 0.8);
+            border-radius: 28px;
+            padding: 8px 12px;
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .chat-input:focus-within {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 4px rgba(0, 114, 255, 0.1);
+        }
+
+        /* Left side buttons group */
+        .input-actions-left {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Right side buttons group */
+        .input-actions-right {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        /* Input wrapper */
+        #normalInput {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-height: 40px;
+        }
+
+        #messageInput {
+            width: 100%;
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 15px;
+            padding: 10px 12px;
+            resize: none;
+            max-height: 120px;
+            overflow-y: auto;
+            line-height: 1.5;
+        }
+
+        #messageInput:focus {
+            outline: none;
+        }
+
+        #messageInput::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Redesigned input buttons */
+        .input-btn {
+            background: rgba(255, 255, 255, 0.05);
+            border: none;
+            color: rgba(255, 255, 255, 0.7);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            flex-shrink: 0;
+        }
+
+        .input-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .input-btn:active {
+            transform: scale(0.95);
+        }
+
+        .input-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        /* Send button special styling */
+        .send-btn {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+        }
+
+        .send-btn:hover {
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+            transform: scale(1.1);
+        }
+
+        /* Plus button for attachments */
+        .attach-btn {
+            position: relative;
+        }
+
+        /* Attachment menu */
+        .attachment-menu {
+            position: absolute;
+            bottom: 60px;
+            left: 0;
+            background: rgba(20, 20, 20, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 180px;
+            opacity: 0;
+            transform: translateY(10px) scale(0.95);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 1000;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .attachment-menu.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+
+        .attachment-option {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 12px;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            text-align: left;
+        }
+
+        .attachment-option:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+        .attachment-option i {
+            width: 24px;
+            font-size: 18px;
+            color: var(--primary-color);
+        }
+
+        .attachment-option span {
+            flex: 1;
+        }
+
+        /* File input hidden */
+        .file-input-hidden {
+            display: none;
+        }
+
+        /* ============================================
+   ANIMATED VOICE RECORDING VISUALIZER
+   ============================================ */
+
+        .recording-indicator {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 0 16px;
+            flex: 1;
+        }
+
+        .voice-visualizer {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 40px;
+            flex: 1;
+        }
+
+        .voice-bar {
+            width: 4px;
+            background: var(--primary-gradient);
+            border-radius: 4px;
+            min-height: 8px;
+            height: 8px;
+            transition: height 0.1s ease;
+            animation: pulse 0.8s ease-in-out infinite;
+            box-shadow: 0 0 10px rgba(0, 114, 255, 0.5);
+        }
+
+        /* Stagger animation delays for bars */
+        .voice-bar:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .voice-bar:nth-child(2) {
+            animation-delay: 0.1s;
+        }
+
+        .voice-bar:nth-child(3) {
+            animation-delay: 0.2s;
+        }
+
+        .voice-bar:nth-child(4) {
+            animation-delay: 0.3s;
+        }
+
+        .voice-bar:nth-child(5) {
+            animation-delay: 0.4s;
+        }
+
+        .voice-bar:nth-child(6) {
+            animation-delay: 0.5s;
+        }
+
+        .voice-bar:nth-child(7) {
+            animation-delay: 0.4s;
+        }
+
+        .voice-bar:nth-child(8) {
+            animation-delay: 0.3s;
+        }
+
+        .voice-bar:nth-child(9) {
+            animation-delay: 0.2s;
+        }
+
+        .voice-bar:nth-child(10) {
+            animation-delay: 0.1s;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                height: 8px;
+                opacity: 0.6;
+            }
+
+            50% {
+                height: 32px;
+                opacity: 1;
+            }
+        }
+
+        .recording-time {
+            color: #ff4444;
+            font-weight: 600;
+            font-size: 14px;
+            min-width: 50px;
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .recording-dot {
+            width: 10px;
+            height: 10px;
+            background: #ff4444;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+            flex-shrink: 0;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* Recording state styling */
+        .chat-input.recording {
+            border-color: #ff4444;
+            box-shadow: 0 0 0 4px rgba(255, 68, 68, 0.2);
+            background: rgba(40, 20, 20, 0.8);
+        }
+
+        /* Cancel recording button */
+        .cancel-recording-btn {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+            border: 1px solid rgba(255, 68, 68, 0.3);
+        }
+
+        .cancel-recording-btn:hover {
+            background: rgba(255, 68, 68, 0.3);
+            transform: scale(1.1);
+        }
+
+        /* ============================================
+   FILE PREVIEW IN MESSAGES
+   ============================================ */
+
+        .message-attachment {
+            margin-top: 8px;
+            border-radius: 12px;
+            overflow: hidden;
+            max-width: 300px;
+        }
+
+        .message-attachment img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .message-attachment video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .message-file {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .file-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--primary-gradient);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-size {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .file-download {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-download:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Voice message in chat */
+        .voice-message-player {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            min-width: 200px;
+        }
+
+        .voice-play-btn {
+            background: var(--primary-gradient);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .voice-play-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .voice-waveform {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 30px;
+        }
+
+        .waveform-bar {
+            width: 3px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+            transition: background 0.3s ease;
+        }
+
+        .waveform-bar.active {
+            background: var(--primary-color);
+        }
+
+        .voice-duration {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .chat-input {
+                padding: 6px 10px;
+            }
+
+            .input-btn {
+                width: 36px;
+                height: 36px;
+            }
+
+            #messageInput {
+                font-size: 14px;
+            }
+        }
+
+        /* =========================================
+   1. IMPROVED SUBTITLE BOX
+   ========================================= */
+        .story-text-content {
+            /* Make text readable on any background */
+            background: rgba(0, 0, 0, 0.65);
+            /* Dark semi-transparent box */
+            backdrop-filter: blur(8px);
+            /* Blur effect behind text */
+            padding: 15px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+
+            /* Positioning */
+            position: absolute;
+            bottom: 90px;
+            /* Above the progress bar/footer */
+            left: 15px;
+            right: 15px;
+            z-index: 20;
+
+            /* Animation */
+            transition: opacity 0.3s ease;
+        }
+
+        .story-subject-badge {
+            background: var(--primary-color);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 10px rgba(0, 114, 255, 0.4);
+        }
+
+        /* =========================================
+   2. WHATSAPP-STYLE INTERACTIONS
+   ========================================= */
+
+        /* Double Tap Heart Animation */
+        .double-tap-heart-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            color: #ff416c;
+            /* Pink/Red heart */
+            font-size: 80px;
+            pointer-events: none;
+            z-index: 1000;
+            filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
+        }
+
+        @keyframes heartPop {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+
+            80% {
+                transform: translate(-50%, -50%) scale(0.9);
+                opacity: 1;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Long Press Context Menu (Container) */
+        .message-context-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+        }
+
+        .message-context-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Reaction Bar (👍 ❤️ 😂 😮 😢 🙏) */
+        .reaction-bar {
+            background: #1e1e1e;
+            border-radius: 50px;
+            padding: 10px 20px;
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .message-context-overlay.active .reaction-bar {
+            transform: translateY(0);
+        }
+
+        .reaction-emoji {
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .reaction-emoji:hover {
+            transform: scale(1.5);
+        }
+
+        /* Options Menu (Delete, etc.) */
+        .options-list {
+            background: #1e1e1e;
+            width: 250px;
+            border-radius: 12px;
+            overflow: hidden;
+            transform: scale(0.9);
+            transition: transform 0.2s;
+        }
+
+        .message-context-overlay.active .options-list {
+            transform: scale(1);
+        }
+
+        .option-item {
+            padding: 15px;
+            color: white;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .option-item:last-child {
+            border-bottom: none;
+        }
+
+        .option-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .option-item.delete {
+            color: #ff4444;
+        }
+
+        /* Small Reaction Badge on Message */
+        .msg-reaction-badge {
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            background: #2c2c2c;
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 2px 6px;
+            font-size: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* =========================================
+   1. Whatsapp Style Media Grid (Collage)
+   ========================================= */
+        .media-grid {
+            display: grid;
+            gap: 2px;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 320px;
+            /* Default is single column */
+            grid-template-columns: 1fr;
+        }
+
+        /* Dynamic Grid Layouts based on item count */
+        .media-grid[data-count="2"] {
+            grid-template-columns: 1fr 1fr;
+            height: 160px;
+        }
+
+        .media-grid[data-count="3"] {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 320px;
+        }
+
+        .media-grid[data-count="3"] .media-item:first-child {
+            grid-row: span 2;
+            /* First item takes full height on left */
+            height: 100%;
+        }
+
+        .media-grid[data-count="4"] {
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            height: 320px;
+        }
+
+        .media-item {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 150px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .media-item img,
+        .media-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.2s;
+        }
+
+        .media-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Overlay for "+3 more" etc */
+        .media-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            backdrop-filter: blur(2px);
+            pointer-events: none;
+        }
+
+        /* =========================================
+   2. Enhanced Lightbox Viewer (WhatsApp Style)
+   ========================================= */
+        .lightbox-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .lightbox-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Top Bar (Close/Title) */
+        .lightbox-header {
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8), transparent);
+            z-index: 10;
+        }
+
+        .lightbox-user-info {
+            color: white;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .lightbox-close {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* Main Viewing Area */
+        .lightbox-main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 80vh;
+            border-radius: 4px;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* Navigation Arrows */
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border: none;
+            padding: 20px 15px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background 0.3s;
+            border-radius: 8px;
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .lightbox-prev {
+            left: 20px;
+        }
+
+        .lightbox-next {
+            right: 20px;
+        }
+
+        /* Bottom Thumbnail Strip */
+        .lightbox-footer {
+            height: 100px;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .lightbox-thumbnails {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding: 0 20px;
+            max-width: 100%;
+            scroll-behavior: smooth;
+        }
+
+        .lightbox-thumb {
+            width: 50px;
+            height: 50px;
+            border-radius: 6px;
+            opacity: 0.5;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+            flex-shrink: 0;
+            object-fit: cover;
+        }
+
+        .lightbox-thumb.active {
+            opacity: 1;
+            border-color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        .lightbox-thumb:hover {
+            opacity: 0.8;
+        }
