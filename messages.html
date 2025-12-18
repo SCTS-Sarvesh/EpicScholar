@@ -2161,6 +2161,87 @@
 .story-audio-player {
     display: none !important;
 }
+/* =========================================
+   UNIFIED MESSAGE ACTIONS (Emoji + Settings)
+   ========================================= */
+
+.message-actions-container {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 6px; /* Space between buttons */
+    opacity: 0;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    z-index: 100;
+    pointer-events: none; /* Ignore clicks until visible */
+}
+
+/* Hover Effect: Show buttons */
+.message:hover .message-actions-container {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Positioning for SENT messages (Buttons on LEFT) */
+.message.sent .message-actions-container {
+    left: -75px; /* Adjust based on button width */
+    flex-direction: row;
+}
+
+/* Positioning for RECEIVED messages (Buttons on RIGHT) */
+.message.received .message-actions-container {
+    right: -75px; /* Adjust based on button width */
+    flex-direction: row-reverse; /* Flip order so emoji is closest to bubble */
+}
+
+/* Common Button Styles */
+.action-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+    font-size: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(40, 40, 40, 0.6);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Emoji Button Specifics */
+.action-btn.reaction-btn:hover {
+    background: var(--primary-gradient);
+    color: white;
+    transform: scale(1.15);
+    border-color: transparent;
+    box-shadow: 0 4px 12px rgba(0, 114, 255, 0.4);
+}
+
+/* Options Button Specifics */
+.action-btn.options-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    transform: scale(1.15) rotate(90deg); /* Nice rotation effect */
+    border-color: white;
+}
+
+/* Animation on hover */
+.message:hover .action-btn {
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.message:hover .action-btn:nth-child(2) {
+    animation-delay: 0.05s; /* Stagger effect */
+}
+
+@keyframes popIn {
+    from { transform: scale(0); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -2753,9 +2834,9 @@ if (story.youtubeVideo) {
                         mediaHTML = `<div class="story-media-container"><img src="${story.image}" alt="Story content" /></div>`;
                     }
 
-                    if (story.youtubeVideo) {
+                    if (story.media || story.image) { if (story.youtubeVideo) {
                         const { id, title } = story.youtubeVideo;
-                        const uniqueId = `Youtubeer-${story.id}`;
+                        const uniqueId = `Youtubeer-${story.id}`; // <--- This is the error
                         audioHTML = `
             <div class="story-audio-player">
                 <div class="audio-track-info">
@@ -2765,6 +2846,7 @@ if (story.youtubeVideo) {
                 </div>
                 <div id="${uniqueId}" style="display:none;"></div>
             </div>`;
+                    }
                     }
                     // ... (End existing media logic) ...
 
@@ -4917,31 +4999,23 @@ function renderMessages() {
             reactionsHtml += '</div>';
         }
 
-        // Reaction trigger button (LEFT for sent, RIGHT for received)
-        const reactionTriggerHtml = `
-            <div class="reaction-trigger-wrapper">
-                <div class="reaction-trigger-btn" onclick="showReactionMenu(${m.id}, event)">
+// Unified Actions Container (Holds both Emoji and Settings buttons)
+        const actionsHtml = `
+            <div class="message-actions-container">
+                <div class="action-btn reaction-btn" onclick="showReactionMenu(${m.id}, event)" title="Add Reaction">
                     <i class="far fa-smile"></i>
                 </div>
-            </div>
-        `;
-
-        // Options button (RIGHT for sent, LEFT for received)
-        const optionsTriggerHtml = `
-            <div class="message-options-trigger">
-                <div class="message-options-btn" onclick="showMessageOptions(${m.id}, event)">
+                <div class="action-btn options-btn" onclick="showMessageOptions(${m.id}, event)" title="Message Options">
                     <i class="fas fa-ellipsis-vertical"></i>
                 </div>
             </div>
         `;
 
-        return `
+return `
             <div class="message ${m.senderId === 'me' ? 'sent' : 'received'}" data-message-id="${m.id}">
                 ${m.senderId !== 'me' ? `<img src="${chat.avatar}" class="message-avatar" />` : ''}
                 <div class="message-content">
-                    ${reactionTriggerHtml}
-                    ${optionsTriggerHtml}
-                    <div class="message-bubble">
+                    ${actionsHtml}  <div class="message-bubble">
                         ${contentHtml}
                     </div>
                     ${reactionsHtml}
