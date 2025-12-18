@@ -2358,6 +2358,16 @@
                 <div class="reaction-emoji" onclick="addReaction('🙏')">🙏</div>
             </div>
             <script>
+                // Ensure YouTube API is loaded before any initialization
+var YT;
+var onYouTubeIframeAPIReady;
+
+(function() {
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+})();
                 // YouTube API Configuration
                 const YOUTUBE_API_KEY = 'AIzaSyBiVCOrKMTbh1gVEpevbbJ_5EDewv7q_dI';
                 // Voice visualizer configuration
@@ -2590,7 +2600,20 @@
                 function renderStoryCard(story) {
                     let mediaHTML = '', audioHTML = '';
 
-                    // ... (Keep your existing media/audio logic here) ...
+// Inside renderStoryCard() function, replace the audioHTML section:
+if (story.youtubeVideo) {
+    const { id, title } = story.youtubeVideo;
+    const uniqueId = `youtube-player-${story.id}`;
+    audioHTML = `
+        <div class="story-audio-player">
+            <div class="audio-track-info">
+                <div class="audio-details">
+                    <div class="audio-title">${escapeHtml(title)}</div>
+                </div>
+            </div>
+            <div id="${uniqueId}"></div>
+        </div>`;
+}
                     if (story.media) {
                         mediaHTML = story.media.type === 'image'
                             ? `<div class="story-media-container"><img src="${story.media.data}" alt="Story media" /></div>`
@@ -3064,78 +3087,105 @@
                     }
                 }
 
-                function initYouTubePlayer(story) {
-                    const { id, startTime = 0, endTime = 30 } = story.youtubeVideo;
-                    const playerId = `youtube-player-${story.id}`;
-                    const clipDuration = endTime - startTime;
+function initYouTubePlayer(story) {
+    if (!story.youtubeVideo) return;
 
-                    setTimeout(() => {
-                        if (typeof YT !== 'undefined' && YT.Player) {
-                            try {
-                                currentYouTubePlayer = new YT.Player(playerId, {
-                                    height: '0',
-                                    width: '0',
-                                    videoId: id,
-                                    playerVars: {
-                                        autoplay: 1,
-                                        controls: 0,
-                                        start: startTime,
-                                        end: endTime,
-                                        modestbranding: 1,
-                                        rel: 0
-                                    },
-                                    events: {
-                                        onReady: (event) => {
-                                            try {
-                                                event.target.setVolume(80);
-                                                event.target.playVideo();
+    const { id, startTime = 0, endTime = 30 } = story.youtubeVideo;
+    const playerId = `youtube-player-${story.id}`;
+    const clipDuration = endTime - startTime;
 
-                                                const btn = document.getElementById(`playPauseBtn-${story.id}`);
-                                                if (btn) {
-                                                    const icon = btn.querySelector('i');
-                                                    if (icon) icon.className = 'fas fa-play';
-                                                }
-                                            } catch (e) {
-                                                console.log('Error in onReady:', e);
-                                            }
-                                        },
-                                        onStateChange: (event) => {
-                                            try {
-                                                const btn = document.getElementById(`playPauseBtn-${story.id}`);
-                                                const icon = btn ? btn.querySelector('i') : null;
+    // Wait for YouTube API
+    if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
+        console.error('YouTube API not ready');
+        return;
+    }
 
-                                                if (event.data === YT.PlayerState.PLAYING) {
-                                                    if (icon) icon.className = 'fas fa-pause';
+    // Clean up existing player
+    if (currentYouTubePlayer) {
+        try {
+            currentYouTubePlayer.destroy();
+        } catch (e) {
+            console.log('Error destroying player:', e);
+        }
+        currentYouTubePlayer = null;
+    }
 
-                                                    if (audioProgressInterval) clearInterval(audioProgressInterval);
-                                                    audioProgressInterval = setInterval(() => {
-                                                        if (currentYouTubePlayer && typeof currentYouTubePlayer.getCurrentTime === 'function') {
-                                                            const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
-                                                            updateAudioProgress(story.id, currentTime, clipDuration);
-                                                        }
-                                                    }, 100);
-                                                } else if (event.data === YT.PlayerState.PAUSED) {
-                                                    if (icon) icon.className = 'fas fa-play';
-                                                    if (audioProgressInterval) clearInterval(audioProgressInterval);
-                                                } else if (event.data === YT.PlayerState.ENDED) {
-                                                    if (icon) icon.className = 'fas fa-play';
-                                                    if (audioProgressInterval) clearInterval(audioProgressInterval);
-                                                    event.target.seekTo(startTime);
-                                                    updateAudioProgress(story.id, 0, clipDuration);
-                                                }
-                                            } catch (e) {
-                                                console.log('Error in onStateChange:', e);
-                                            }
-                                        }
-                                    }
-                                });
-                            } catch (e) {
-                                console.log('Error creating YouTube player:', e);
-                                currentYouTubePlayer = null;
-                            }
+    // Small delay to ensure DOM is ready
+    setTimeout(() => {
+        try {
+            currentYouTubePlayer = new YT.Player(playerId, {
+                height: '0',
+                width: '0',
+                videoId: id,
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    start: startTime,
+                    end: endTime,
+                    modestbranding: 1,
+                    rel: 0,
+                    enablejsapi: 1
+                },
+                events: {
+                    onReady: (event) => {
+                        console.log('Story player ready');
+                        event.target.setVolume(80);
+                        event.target.playVideo();
+
+                        const btn = document.getElementById(`playPauseBtn-${story.id}`);
+                        if (btn) {
+                            const icon = btn.querySelector('i');
+                            if (icon) icon.className = 'fas fa-pause';
                         }
-                    }, 100);
+                    },
+                    onStateChange: (event) => {
+                        const btn = document.getElementById(`playPauseBtn-${story.id}`);
+                        const icon = btn ? btn.querySelector('i') : null;
+
+                        if (event.data === YT.PlayerState.PLAYING) {
+                            if (icon) icon.className = 'fas fa-pause';
+
+                            if (audioProgressInterval) clearInterval(audioProgressInterval);
+                            audioProgressInterval = setInterval(() => {
+                                try {
+                                    if (currentYouTubePlayer && typeof currentYouTubePlayer.getCurrentTime === 'function') {
+                                        const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
+                                        updateAudioProgress(story.id, currentTime, clipDuration);
+                                    }
+                                } catch (e) {
+                                    console.log('Progress update error:', e);
+                                }
+                            }, 100);
+                        } else if (event.data === YT.PlayerState.PAUSED) {
+                            if (icon) icon.className = 'fas fa-play';
+                            if (audioProgressInterval) clearInterval(audioProgressInterval);
+                        } else if (event.data === YT.PlayerState.ENDED) {
+                            if (icon) icon.className = 'fas fa-play';
+                            if (audioProgressInterval) clearInterval(audioProgressInterval);
+                            event.target.seekTo(startTime);
+                            updateAudioProgress(story.id, 0, clipDuration);
+                        }
+                    },
+                    onError: (event) => {
+                        console.error('YouTube player error:', event.data);
+                        // Error codes: 2=invalid ID, 5=HTML5 error, 100=not found, 101/150=embed disabled
+                        const errorMessages = {
+                            2: 'Invalid video ID',
+                            5: 'Playback error',
+                            100: 'Video not found',
+                            101: 'Video owner disabled embedding',
+                            150: 'Video owner disabled embedding'
+                        };
+                        console.error('Error message:', errorMessages[event.data] || 'Unknown error');
+                    }
                 }
+            });
+        } catch (e) {
+            console.error('Error creating YouTube player:', e);
+            currentYouTubePlayer = null;
+        }
+    }, 200);
+}
 
                 function startStoryTimer() {
                     clearTimeout(storyTimer);
@@ -3917,54 +3967,114 @@
                     selectChat(userId);
                 }
 
-                function togglePreview() {
-                    const btn = document.getElementById('previewBtn');
-                    if (!btn) return;
+let previewPlayer = null;
+let isPreviewPlaying = false;
 
-                    if (isPreviewPlaying) {
+function togglePreview() {
+    const btn = document.getElementById('previewBtn');
+    if (!btn) return;
+
+    if (isPreviewPlaying) {
+        stopPreview();
+        return;
+    }
+
+    const start = parseInt(document.getElementById('startTimeInput').value) || 0;
+    const end = parseInt(document.getElementById('endTimeInput').value) || 30;
+
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+    btn.classList.add('playing');
+
+    // Wait for YouTube API to be ready
+    if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
+        console.error('YouTube API not loaded yet');
+        setTimeout(() => {
+            btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
+            btn.classList.remove('playing');
+            alert('YouTube player is still loading. Please try again in a moment.');
+        }, 500);
+        return;
+    }
+
+    // Destroy existing player
+    if (previewPlayer) {
+        try {
+            previewPlayer.destroy();
+        } catch (e) {
+            console.log('Error destroying preview player:', e);
+        }
+        previewPlayer = null;
+    }
+
+    // Create container if it doesn't exist
+    let container = document.getElementById('preview-player-container');
+    if (!container) {
+        container = document.createElement('div');
+        container.id = 'preview-player-container';
+        container.style.display = 'none';
+        document.querySelector('.time-range-selector').appendChild(container);
+    }
+
+    try {
+        previewPlayer = new YT.Player('preview-player-container', {
+            height: '0',
+            width: '0',
+            videoId: selectedVideoForTimeRange.id,
+            playerVars: {
+                autoplay: 1,
+                controls: 0,
+                start: start,
+                end: end,
+                modestbranding: 1,
+                rel: 0
+            },
+            events: {
+                onReady: (event) => {
+                    console.log('Preview player ready');
+                    event.target.playVideo();
+                    btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
+                    isPreviewPlaying = true;
+                },
+                onStateChange: (event) => {
+                    if (event.data === YT.PlayerState.ENDED) {
                         stopPreview();
-                    } else {
-                        const start = parseInt(document.getElementById('startTimeInput').value) || 0;
-                        const end = parseInt(document.getElementById('endTimeInput').value) || 30;
-
-                        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-                        btn.classList.add('playing');
-
-                        if (!previewPlayer) {
-                            previewPlayer = new YT.Player('preview-player-container', {
-                                height: '0',
-                                width: '0',
-                                videoId: selectedVideoForTimeRange.id,
-                                playerVars: {
-                                    autoplay: 1,
-                                    controls: 0,
-                                    start: start,
-                                    end: end
-                                },
-                                events: {
-                                    onReady: (e) => {
-                                        e.target.playVideo();
-                                        btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
-                                        isPreviewPlaying = true;
-                                    },
-                                    onStateChange: (e) => {
-                                        if (e.data === YT.PlayerState.ENDED) {
-                                            stopPreview();
-                                        }
-                                    }
-                                }
-                            });
-                        } else {
-                            previewPlayer.loadVideoById({
-                                videoId: selectedVideoForTimeRange.id,
-                                startSeconds: start,
-                                endSeconds: end
-                            });
-                            btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
-                            isPreviewPlaying = true;
-                        }
+                    } else if (event.data === YT.PlayerState.PLAYING) {
+                        btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
+                        isPreviewPlaying = true;
                     }
+                },
+                onError: (event) => {
+                    console.error('Preview player error:', event.data);
+                    stopPreview();
+                    alert('Error playing preview. Please try another video.');
                 }
+            }
+        });
+    } catch (error) {
+        console.error('Error creating preview player:', error);
+        btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
+        btn.classList.remove('playing');
+    }
+}
+
+function stopPreview() {
+    isPreviewPlaying = false;
+    const btn = document.getElementById('previewBtn');
+    if (btn) {
+        btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
+        btn.classList.remove('playing');
+    }
+
+    if (previewPlayer) {
+        try {
+            previewPlayer.stopVideo();
+            previewPlayer.destroy();
+        } catch (e) {
+            console.log('Error stopping preview:', e);
+        }
+        previewPlayer = null;
+    }
+}
 
                 function stopPreview() {
                     isPreviewPlaying = false;
