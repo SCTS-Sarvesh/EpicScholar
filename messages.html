@@ -2050,6 +2050,117 @@
     color: #22c55e;
     font-size: 18px;
 }
+/* YouTube Song Title Display */
+.story-youtube-title {
+    position: relative;
+    top: 80px; /* Below the header */
+    left: 20px;
+    right: 20px;
+    z-index: 25;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(15px);
+    padding: 12px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    animation: slideDownFade 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.youtube-icon-badge {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #FF0000, #CC0000);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+}
+
+.youtube-title-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.youtube-title-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.youtube-title-main {
+    font-size: 14px;
+    font-weight: 700;
+    color: white;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.3;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.youtube-playing-indicator {
+    display: flex;
+    gap: 3px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.playing-bar {
+    width: 3px;
+    background: #FF0000;
+    border-radius: 2px;
+    animation: playingAnimation 0.8s ease-in-out infinite;
+}
+
+.playing-bar:nth-child(1) {
+    height: 12px;
+    animation-delay: 0s;
+}
+
+.playing-bar:nth-child(2) {
+    height: 16px;
+    animation-delay: 0.2s;
+}
+
+.playing-bar:nth-child(3) {
+    height: 10px;
+    animation-delay: 0.4s;
+}
+
+@keyframes playingAnimation {
+    0%, 100% {
+        transform: scaleY(1);
+    }
+    50% {
+        transform: scaleY(0.5);
+    }
+}
+
+/* Hide the old bottom audio player */
+.story-audio-player {
+    display: none !important;
+}
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -2368,6 +2479,26 @@ var onYouTubeIframeAPIReady;
     var firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 })();
+// Add this near the top of your script section, after variable declarations
+window.onYouTubeIframeAPIReady = function() {
+    console.log('YouTube API is ready');
+    window.YTReady = true;
+};
+
+// Helper to check if API is ready
+function waitForYouTubeAPI(callback, maxAttempts = 50) {
+    let attempts = 0;
+    const checkAPI = setInterval(() => {
+        attempts++;
+        if (typeof YT !== 'undefined' && typeof YT.Player !== 'undefined') {
+            clearInterval(checkAPI);
+            callback();
+        } else if (attempts >= maxAttempts) {
+            clearInterval(checkAPI);
+            console.error('YouTube API failed to load');
+        }
+    }, 100);
+}
                 // YouTube API Configuration
                 const YOUTUBE_API_KEY = 'AIzaSyBiVCOrKMTbh1gVEpevbbJ_5EDewv7q_dI';
                 // Voice visualizer configuration
@@ -3081,10 +3212,12 @@ if (story.youtubeVideo) {
 
                     updateProgressBars();
 
-                    // Initialize YouTube player if story has video
-                    if (story && story.youtubeVideo) {
-                        initYouTubePlayer(story);
-                    }
+// Inside updateCarousel() function, replace the YouTube section:
+if (story && story.youtubeVideo) {
+    waitForYouTubeAPI(() => {
+        initYouTubePlayer(story);
+    });
+}
                 }
 
 function initYouTubePlayer(story) {
