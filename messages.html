@@ -48,10 +48,11 @@
         .story-comment-box {
             position: fixed;
             bottom: -100%;
-            left: 0;
+            left: 35.5%;
             right: 0;
             height: 60vh;
             max-height: 500px;
+            max-width: 450px;
             background: linear-gradient(to top, rgba(10, 10, 10, 0.98), rgba(20, 20, 20, 0.95));
             backdrop-filter: blur(20px);
             border-top-left-radius: 30px;
@@ -1297,7 +1298,7 @@
 
         /* The "Active" state colored by the progress */
         .waveform-bar.active-bar {
-            background: var(--primary-color);
+            background: white;
             /* Matches your blue theme */
             box-shadow: 0 0 5px var(--primary-color);
         }
@@ -1310,6 +1311,745 @@
             padding: 8px 12px;
             border-radius: 20px;
         }
+
+        /* ============================================
+   FIXED COMMENT BOX STYLING
+   ============================================ */
+
+        .comment-box-content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            /* Prevent horizontal scroll */
+            padding: 20px 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            word-wrap: break-word;
+            /* Force word wrapping */
+        }
+
+        .comment-item {
+            display: flex;
+            gap: 12px;
+            animation: slideInComment 0.3s ease;
+            width: 100%;
+            /* Ensure full width usage */
+            max-width: 100%;
+            /* Prevent overflow */
+        }
+
+        .comment-content {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 12px 15px;
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            min-width: 0;
+            /* Critical for text wrapping in flex */
+            overflow-wrap: break-word;
+            /* Break long words */
+            word-break: break-word;
+            /* Backup for word breaking */
+        }
+
+        .comment-text {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            /* Wrap long text */
+            word-break: break-word;
+            /* Break long words if needed */
+            overflow-wrap: break-word;
+            /* Modern browsers */
+            white-space: pre-wrap;
+            /* Preserve line breaks but wrap */
+            max-width: 100%;
+            /* Prevent overflow */
+            hyphens: auto;
+            /* Optional: add hyphens for very long words */
+        }
+
+        .comment-username {
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+            word-break: break-word;
+            /* Break long usernames if needed */
+        }
+
+        /* Ensure comment box itself doesn't scroll horizontally */
+        .story-comment-box {
+            position: fixed;
+            bottom: -100%;
+            left: 35.5%;
+            right: 0;
+            height: 60vh;
+            max-height: 500px;
+            max-width: 450px;
+            background: linear-gradient(to top, rgba(10, 10, 10, 0.98), rgba(20, 20, 20, 0.95));
+            backdrop-filter: blur(20px);
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.8);
+            z-index: 200;
+            transition: bottom 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Prevent any overflow from parent */
+        }
+
+        /* Input area - ensure it doesn't overflow */
+        .comment-box-input {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            padding: 12px 20px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            word-wrap: break-word;
+            /* Wrap input text */
+            overflow-wrap: break-word;
+            white-space: pre-wrap;
+            /* Allow multiline input wrapping */
+            max-width: 100%;
+        }
+
+        /* ============================================
+   ENHANCED VOICE RECORDING VISUALIZER (CSS)
+   ============================================ */
+
+        .voice-visualizer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            /* Space between bars */
+            height: 40px;
+            flex: 1;
+            margin: 0 10px;
+        }
+
+        .voice-bar {
+            width: 4px;
+            background: var(--primary-gradient);
+            border-radius: 4px;
+            min-height: 4px;
+            height: 4px;
+            /* Default resting height */
+            transition: height 0.05s ease;
+            /* Fast transition for snappy response */
+            opacity: 0.5;
+
+        }
+
+        /* State when actively recording */
+        .voice-bar.active-recording {
+            opacity: 1;
+            box-shadow: 0 0 8px rgba(0, 114, 255, 0.4);
+            animation: none !important;
+            /* Override any existing pulse animations */
+        }
+        /* =========================================
+   WHATSAPP-STYLE REACTION SYSTEM
+   ========================================= */
+
+/* Reaction Menu (Emoji Picker) */
+.reaction-menu {
+    position: fixed;
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(40px) saturate(210%);
+    -webkit-backdrop-filter: blur(40px) saturate(210%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50px;
+    padding: 8px 16px;
+    display: none;
+    gap: 12px;
+    z-index: 99999;
+    opacity: 0;
+    transform: scale(0.9) translateY(15px);
+    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
+                0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.reaction-menu.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    display: flex;
+}
+
+.reaction-emoji {
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    user-select: none;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.reaction-emoji:hover {
+    transform: scale(1.5) translateY(-10px) rotate(5deg);
+    background: rgba(255, 255, 255, 0.12);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+}
+
+.reaction-menu.active .reaction-emoji {
+    animation: reactionSpringPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+@keyframes reactionSpringPop {
+    0% {
+        opacity: 0;
+        transform: scale(0.4) translateY(20px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Reaction Trigger Button */
+.reaction-trigger-wrapper {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: all 0.25s ease;
+    z-index: 100;
+}
+
+.message.sent .reaction-trigger-wrapper {
+    left: -40px;
+}
+
+.message.received .reaction-trigger-wrapper {
+    right: -40px;
+}
+
+.message:hover .reaction-trigger-wrapper {
+    opacity: 0.8;
+    transform: translateY(-50%) scale(1.1);
+}
+
+.reaction-trigger-btn {
+    width: 30px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s;
+}
+
+.reaction-trigger-btn:hover {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 0 15px rgba(0, 114, 255, 0.4);
+}
+
+/* Reaction Badge (Pills under message) */
+.message-reaction-badge {
+    position: absolute;
+    bottom: -12px;
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 30px;
+    padding: 3px 10px;
+    display: flex;
+    gap: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    z-index: 150;
+    cursor: pointer;
+    transition: transform 0.3s, background 0.3s;
+}
+
+.message.sent .message-reaction-badge {
+    right: 65px;
+}
+
+.message.received .message-reaction-badge {
+    left: 52px;
+}
+
+.message-reaction-badge:hover {
+    transform: translateY(-4px) scale(1.06);
+    background: rgba(40, 40, 40, 1);
+    border-color: var(--primary-color);
+}
+
+.reaction-pill-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 14px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    transition: all 0.2s;
+}
+
+.reaction-pill-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(1.1);
+}
+
+.reaction-pill-item .count {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--primary-color);
+    min-width: 16px;
+    text-align: center;
+}
+
+/* Add spacing for reaction badges */
+.message {
+    margin-bottom: 28px;
+    position: relative;
+}
+
+/* Smooth animations for adding/removing reactions */
+@keyframes reactionPop {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.reaction-pill-item {
+    animation: reactionPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+/* =========================================
+   FIXED REACTION TRIGGER POSITIONING
+   ========================================= */
+
+.reaction-trigger-wrapper {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: all 0.25s ease;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* Sent messages - button on LEFT side of bubble */
+.message.sent .reaction-trigger-wrapper {
+    left: -45px;
+}
+
+/* Received messages - button on RIGHT side of bubble */
+.message.received .reaction-trigger-wrapper {
+    right: -45px;
+}
+
+.message:hover .reaction-trigger-wrapper {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.reaction-trigger-btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.reaction-trigger-btn:hover {
+    background: var(--primary-gradient);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 0 15px rgba(0, 114, 255, 0.4);
+    transform: scale(1.15);
+}
+
+/* =========================================
+   MESSAGE OPTIONS MENU (DELETE/CANCEL)
+   ========================================= */
+
+.message-options-trigger {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: all 0.25s ease;
+    z-index: 100;
+    pointer-events: none;
+}
+
+/* Sent messages - options button on RIGHT side */
+.message.sent .message-options-trigger {
+    right: -45px;
+}
+
+/* Received messages - options button on LEFT side */
+.message.received .message-options-trigger {
+    left: -45px;
+}
+
+.message:hover .message-options-trigger {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.message-options-btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(5px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.message-options-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.15);
+}
+
+/* Options Dropdown Menu */
+.message-options-menu {
+    position: fixed;
+    background: rgba(20, 20, 20, 0.98);
+    backdrop-filter: blur(40px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    min-width: 220px;
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 99999;
+    opacity: 0;
+    transform: scale(0.9) translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
+                0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.message-options-menu.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    display: flex;
+}
+
+.message-option-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    background: transparent;
+    border: none;
+    text-align: left;
+    width: 100%;
+}
+
+.message-option-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(4px);
+}
+
+.message-option-item i {
+    width: 20px;
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Delete Options - Different Colors */
+.message-option-item.delete-for-me {
+    color: #fbbf24;
+}
+
+.message-option-item.delete-for-me:hover {
+    background: rgba(251, 191, 36, 0.1);
+}
+
+.message-option-item.delete-for-me i {
+    color: #fbbf24;
+}
+
+.message-option-item.delete-for-everyone {
+    color: #ef4444;
+}
+
+.message-option-item.delete-for-everyone:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.message-option-item.delete-for-everyone i {
+    color: #ef4444;
+}
+
+.message-option-item.cancel {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.message-option-item.cancel:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Divider between options */
+.message-options-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.1);
+    margin: 4px 0;
+}
+
+/* Animation for menu items */
+.message-options-menu.active .message-option-item {
+    animation: slideInOption 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+}
+
+.message-options-menu.active .message-option-item:nth-child(1) {
+    animation-delay: 0.05s;
+}
+
+.message-options-menu.active .message-option-item:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.message-options-menu.active .message-option-item:nth-child(3) {
+    animation-delay: 0.15s;
+}
+
+.message-options-menu.active .message-option-item:nth-child(4) {
+    animation-delay: 0.2s;
+}
+
+@keyframes slideInOption {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* =========================================
+   CONFIRMATION MODAL
+   ========================================= */
+
+.delete-confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(10px);
+    z-index: 100000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.delete-confirmation-modal.active {
+    display: flex;
+    opacity: 1;
+}
+
+.delete-confirmation-content {
+    background: rgba(20, 20, 20, 0.98);
+    backdrop-filter: blur(40px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.delete-confirmation-modal.active .delete-confirmation-content {
+    transform: scale(1);
+}
+
+.delete-confirmation-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.delete-confirmation-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+}
+
+.delete-confirmation-icon.warning {
+    background: rgba(251, 191, 36, 0.2);
+    color: #fbbf24;
+}
+
+.delete-confirmation-icon.danger {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.delete-confirmation-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+}
+
+.delete-confirmation-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.delete-confirmation-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.delete-confirmation-btn {
+    flex: 1;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.delete-confirmation-btn.cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.delete-confirmation-btn.cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+}
+
+.delete-confirmation-btn.confirm {
+    background: var(--primary-gradient);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+}
+
+.delete-confirmation-btn.confirm.danger {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+}
+
+.delete-confirmation-btn.confirm:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+}
+
+.delete-confirmation-btn.confirm.danger:hover {
+    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+}
+
+/* Adjust message spacing for buttons */
+.message-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 70%;
+}
+
+/* Ensure buttons don't interfere with message flow */
+.message {
+    margin-bottom: 28px;
+    position: relative;
+    padding: 0 50px; /* Space for buttons on both sides */
+}
+/* =========================================
+   DELETE NOTIFICATION
+   ========================================= */
+
+.delete-notification {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 12px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 100001;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+    opacity: 0;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.delete-notification.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.delete-notification i {
+    color: #22c55e;
+    font-size: 18px;
+}
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -1607,10 +2347,28 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Reaction Menu -->
+            <div id="reactionMenu" class="reaction-menu">
+                <div class="reaction-emoji" onclick="addReaction('👍')">👍</div>
+                <div class="reaction-emoji" onclick="addReaction('❤️')">❤️</div>
+                <div class="reaction-emoji" onclick="addReaction('😂')">😂</div>
+                <div class="reaction-emoji" onclick="addReaction('😮')">😮</div>
+                <div class="reaction-emoji" onclick="addReaction('😢')">😢</div>
+                <div class="reaction-emoji" onclick="addReaction('🙏')">🙏</div>
+            </div>
             <script>
                 // YouTube API Configuration
                 const YOUTUBE_API_KEY = 'AIzaSyBiVCOrKMTbh1gVEpevbbJ_5EDewv7q_dI';
-
+                // Voice visualizer configuration
+                const VOICE_VIZ_CONFIG = {
+                    minHeight: 8,        // Minimum bar height in pixels
+                    maxHeight: 40,       // Maximum bar height in pixels
+                    smoothing: 0.3,      // 0 = no smoothing, 1 = maximum smoothing
+                    sensitivity: 1.2,    // Multiplier for amplification (1 = normal, >1 = more sensitive)
+                    barCount: 12,        // Number of bars
+                    fftSize: 256         // FFT size (128, 256, 512, 1024, 2048)
+                };
                 // Mock Data
                 const mockUsers = [
                     { id: 1, name: "Sarah Chen", avatar: "https://i.pravatar.cc/150?img=1", online: true },
@@ -3062,44 +3820,28 @@
                     document.getElementById('timedBtn').classList.toggle('active', disappearingMode === 'timed');
                 }
 
-                async function startRecording() {
-                    try {
-                        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                        mediaRecorder = new MediaRecorder(stream);
-                        audioChunks = [];
-                        mediaRecorder.ondataavailable = (e) => {
-                            if (e.data.size > 0) audioChunks.push(e.data);
-                        };
-                        mediaRecorder.onstop = () => {
-                            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                            const url = URL.createObjectURL(blob);
-                            const msg = {
-                                id: Date.now(),
-                                senderId: 'me',
-                                text: 'Voice message',
-                                type: 'voice',
-                                audioUrl: url,
-                                timestamp: new Date()
-                            };
-                            if (!messages[selectedChat]) messages[selectedChat] = [];
-                            messages[selectedChat].push(msg);
-                            conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: 'Voice message', timestamp: new Date() } : c);
-                            stream.getTracks().forEach(t => t.stop());
-                            renderConversations();
-                            renderMessages();
-                        };
-                        mediaRecorder.start();
-                        isRecording = true;
-                        updateRecordingUI();
-                    } catch (err) {
-                        alert('Please allow microphone access.');
-                    }
-                }
-
                 function stopRecording() {
                     if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                         mediaRecorder.stop();
                         isRecording = false;
+
+                        if (recordingTimerInterval) {
+                            clearInterval(recordingTimerInterval);
+                            recordingTimerInterval = null;
+                        }
+
+                        if (animationId) {
+                            cancelAnimationFrame(animationId);
+                            animationId = null;
+                        }
+
+                        // Reset bars to default state
+                        const bars = document.querySelectorAll('.voice-bar');
+                        bars.forEach(bar => {
+                            bar.style.height = '8px';
+                            bar.classList.remove('active-recording', 'high-intensity');
+                        });
+
                         updateRecordingUI();
                     }
                 }
@@ -3368,29 +4110,34 @@
                     if (story.comments.length === 0) {
                         content.innerHTML = '<div class="no-comments"><i class="fas fa-comment-slash"></i><p>No comments yet. Be the first!</p></div>';
                     } else {
-                        content.innerHTML = story.comments.map(comment => `
+                        content.innerHTML = story.comments.map(comment => {
+                            // Sanitize and ensure text wraps properly
+                            const sanitizedText = escapeHtml(comment.text);
+
+                            return `
             <div class="comment-item">
-                <img src="${comment.avatar}" class="comment-avatar" alt="${comment.userName}">
+                <img src="${comment.avatar}" class="comment-avatar" alt="${escapeHtml(comment.userName)}">
                 <div class="comment-content">
                     <div class="comment-header">
-                        <span class="comment-username">${comment.userName}</span>
+                        <span class="comment-username">${escapeHtml(comment.userName)}</span>
                         <span class="comment-time">${formatTime(comment.timestamp)}</span>
                     </div>
-                    <div class="comment-text">${escapeHtml(comment.text)}</div>
+                    <div class="comment-text">${sanitizedText}</div>
                 </div>
             </div>
-        `).join('');
+        `;
+                        }).join('');
                     }
 
-                    // Scroll to bottom
-                    content.scrollTop = content.scrollHeight;
+                    // Scroll to bottom smoothly
+                    setTimeout(() => {
+                        content.scrollTop = content.scrollHeight;
+                    }, 100);
                 }
 
                 // ============================================
                 // 6. UPDATE submitComment FUNCTION
                 // ============================================
-                // Replace submitComment to prevent propagation:
-
                 function submitComment(event) {
                     // Prevent event propagation
                     if (event) {
@@ -3414,15 +4161,15 @@
                         userId: 'me',
                         userName: 'You',
                         avatar: 'https://i.pravatar.cc/150?img=11',
-                        text: text,
+                        text: text, // Keep original text with line breaks
                         timestamp: new Date()
                     };
 
                     story.comments.push(comment);
                     stories = stories.map(s => s.id === currentCommentStoryId ? story : s);
 
-                    input.value = '';
-                    loadComments(currentCommentStoryId);
+                    input.value = ''; // Clear input
+                    loadComments(currentCommentStoryId); // Reload comments
                 }
                 // ============================================
                 // ATTACHMENT MENU FUNCTIONALITY
@@ -3536,11 +4283,9 @@
                 // ============================================
                 // ENHANCED VOICE RECORDING WITH VISUALIZATION
                 // ============================================
-
-                let recordingStartTime = 0;
-                let recordingTimerInterval = null;
                 let audioContext = null;
                 let analyser = null;
+                let microphone = null;
                 let dataArray = null;
                 let animationId = null;
 
@@ -3557,47 +4302,16 @@
                         };
 
                         mediaRecorder.onstop = () => {
-                            const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                            const url = URL.createObjectURL(blob);
-                            const duration = Math.floor((Date.now() - recordingStartTime) / 1000);
-
-                            const msg = {
-                                id: Date.now(),
-                                senderId: 'me',
-                                text: 'Voice message',
-                                type: 'voice',
-                                audioUrl: url,
-                                duration: duration,
-                                timestamp: new Date()
-                            };
-
-                            if (!messages[selectedChat]) messages[selectedChat] = [];
-                            messages[selectedChat].push(msg);
-
-                            conversations = conversations.map(c =>
-                                c.id === selectedChat
-                                    ? { ...c, lastMessage: 'Voice message', timestamp: new Date() }
-                                    : c
-                            );
-
-                            stream.getTracks().forEach(t => t.stop());
-
-                            // Cleanup audio context
-                            if (audioContext) {
-                                audioContext.close();
-                                audioContext = null;
-                            }
-
-                            renderConversations();
-                            renderMessages();
+                            handleRecordingStop(stream);
                         };
-
-                        // Setup audio visualization
-                        setupAudioVisualization(stream);
 
                         mediaRecorder.start();
                         isRecording = true;
                         recordingStartTime = Date.now();
+
+                        // --- START VISUALIZATION ---
+                        // We pass the stream directly. 
+                        setupRealtimeAudioVisualization(stream);
 
                         // Start timer
                         updateRecordingTimer();
@@ -3610,7 +4324,34 @@
                         alert('Please allow microphone access to record voice messages.');
                     }
                 }
+                function setupRealtimeAudioVisualization(stream) {
+                    if (!audioContext) {
+                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    }
+                    if (audioContext.state === 'suspended') audioContext.resume();
 
+                    analyser = audioContext.createAnalyser();
+                    analyser.fftSize = 256;
+                    // Smoothing 0.8 makes transitions look like a fluid wave rather than jittery lines
+                    analyser.smoothingTimeConstant = 0.8;
+
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+
+                    dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                    const visualizer = document.getElementById('voiceVisualizer');
+                    if (!visualizer) return;
+
+                    visualizer.innerHTML = '';
+                    for (let i = 0; i < 20; i++) { // Using 20 bars for better resolution
+                        const bar = document.createElement('div');
+                        bar.className = 'voice-bar active-recording';
+                        visualizer.appendChild(bar);
+                    }
+
+                    animateRealtimeVoiceVisualizer();
+                }
                 function setupAudioVisualization(stream) {
                     // Create audio context and analyser
                     audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -3637,23 +4378,52 @@
                     animateVoiceVisualizer();
                 }
 
-                function animateVoiceVisualizer() {
+                function animateRealtimeVoiceVisualizer() {
                     if (!isRecording || !analyser) return;
 
-                    animationId = requestAnimationFrame(animateVoiceVisualizer);
-
+                    animationId = requestAnimationFrame(animateRealtimeVoiceVisualizer);
                     analyser.getByteFrequencyData(dataArray);
 
-                    const bars = document.querySelectorAll('.voice-bar');
-                    const step = Math.floor(dataArray.length / bars.length);
+                    const bars = document.querySelectorAll('#voiceVisualizer .voice-bar');
+                    if (!bars.length) return;
+
+                    // Use only the first 50% of the data (vocal range)
+                    const step = Math.floor((dataArray.length * 0.5) / bars.length);
 
                     bars.forEach((bar, i) => {
-                        const value = dataArray[i * step];
-                        const height = Math.max(8, (value / 255) * 40);
-                        bar.style.height = `${height}px`;
+                        let sum = 0;
+                        for (let j = 0; j < step; j++) {
+                            sum += dataArray[(i * step) + j];
+                        }
+                        let average = sum / step;
+
+                        // --- THE FIX: NOISE GATE ---
+                        // If volume is below 15 (background hum), force it to 0
+                        if (average < 15) {
+                            average = 0;
+                        }
+
+                        // --- THE FIX: LOGARITHMIC SCALING ---
+                        // We use Math.pow to make it harder to hit the 'max' height.
+                        // This ensures the full waveform is only used for genuinely loud noises.
+                        let normalized = average / 255;
+                        let scaledHeight = Math.pow(normalized, 1.2) * 50; // 50 is the multiplier for max height
+
+                        // Clamp values
+                        const minHeight = 4;
+                        const maxHeight = 38;
+                        const finalHeight = Math.max(minHeight, Math.min(maxHeight, scaledHeight + minHeight));
+
+                        bar.style.height = `${finalHeight}px`;
+
+                        // Intensity styling: only trigger for top 10% of volume
+                        if (finalHeight > 34) {
+                            bar.classList.add('high-intensity');
+                        } else {
+                            bar.classList.remove('high-intensity');
+                        }
                     });
                 }
-
                 function updateRecordingTimer() {
                     const elapsed = Math.floor((Date.now() - recordingStartTime) / 1000);
                     const minutes = Math.floor(elapsed / 60);
@@ -3711,6 +4481,13 @@
                             audioContext = null;
                         }
 
+                        // Reset bars to default state
+                        const bars = document.querySelectorAll('.voice-bar');
+                        bars.forEach(bar => {
+                            bar.style.height = '8px';
+                            bar.classList.remove('active-recording', 'high-intensity');
+                        });
+
                         updateRecordingUI();
                     }
                 }
@@ -3746,44 +4523,112 @@
                     }
                 }
 
-                function renderMessages() {
-                    const chat = conversations.find(c => c.id == selectedChat);
-                    if (!chat) return;
+                // ============================================
+                // REACTION FEATURE LOGIC
+                // ============================================
+                let currentExpandingMessageId = null;
 
-                    const msgs = messages[selectedChat] || [];
-                    const chatBox = document.getElementById('chatMessages');
+                function showReactionMenu(messageId, event) {
+                    event.stopPropagation();
 
-                    chatBox.innerHTML = msgs.map(m => {
-                        let contentHtml = '';
+                    currentExpandingMessageId = messageId;
+                    const menu = document.getElementById('reactionMenu');
+                    const triggerBtn = event.currentTarget;
+                    const bubble = triggerBtn.closest('.message').querySelector('.message-bubble');
+                    const rect = bubble.getBoundingClientRect();
 
-                        // 1. Check for Attachments (Images/Videos/Docs)
-                        if (m.attachments && m.attachments.length > 0) {
-                            // Separate media from documents
-                            const mediaOnly = m.attachments.filter(a => a.type === 'image' || a.type === 'video');
-                            const docsOnly = m.attachments.filter(a => a.type === 'document');
+                    // Reset any previous styles
+                    menu.style.display = 'flex';
+                    menu.classList.add('active');
 
-                            // --- MEDIA GRID (Images & Videos) ---
-                            if (mediaOnly.length > 0) {
-                                contentHtml += `<div class="media-grid" data-count="${Math.min(mediaOnly.length, 4)}">`;
-                                mediaOnly.slice(0, 4).forEach((att, idx) => {
-                                    const isLast = idx === 3 && mediaOnly.length > 4;
-                                    const mediaTag = att.type === 'video'
-                                        ? `<video src="${att.url}" muted></video>`
-                                        : `<img src="${att.url}" alt="media" />`;
+                    // Calculate center position relative to the bubble
+                    const menuWidth = 320; // Approx width of menu
+                    const left = rect.left + (rect.width / 2) - (menuWidth / 2);
+                    const top = rect.top - 70; // Position above bubble
 
-                                    contentHtml += `
+                    menu.style.left = `${Math.max(10, Math.min(window.innerWidth - menuWidth - 10, left))}px`;
+                    menu.style.top = `${top}px`;
+
+                    // Close menu on next click elsewhere
+                    setTimeout(() => {
+                        document.addEventListener('click', closeReactionMenu, { once: true });
+                    }, 10);
+                }
+
+                function closeReactionMenu() {
+                    const menu = document.getElementById('reactionMenu');
+                    menu.classList.remove('active');
+                }
+
+                function addReaction(emoji) {
+                    if (!selectedChat || !currentExpandingMessageId) return;
+
+                    const msgIndex = messages[selectedChat].findIndex(m => m.id === currentExpandingMessageId);
+                    if (msgIndex === -1) return;
+
+                    const msg = messages[selectedChat][msgIndex];
+                    if (!msg.reactions) msg.reactions = {};
+
+                    // If already has this reaction from 'me', remove it. Otherwise add it.
+                    if (msg.reactions[emoji] && msg.reactions[emoji].includes('me')) {
+                        msg.reactions[emoji] = msg.reactions[emoji].filter(u => u !== 'me');
+                        if (msg.reactions[emoji].length === 0) delete msg.reactions[emoji];
+                    } else {
+                        if (!msg.reactions[emoji]) msg.reactions[emoji] = [];
+                        msg.reactions[emoji].push('me');
+                    }
+
+                    renderMessages();
+                    closeReactionMenu();
+                }
+
+                function removeReaction(messageId, emoji) {
+                    const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
+                    if (msgIndex === -1) return;
+
+                    const msg = messages[selectedChat][msgIndex];
+                    if (msg.reactions && msg.reactions[emoji]) {
+                        msg.reactions[emoji] = msg.reactions[emoji].filter(u => u !== 'me');
+                        if (msg.reactions[emoji].length === 0) delete msg.reactions[emoji];
+                        renderMessages();
+                    }
+                }
+
+function renderMessages() {
+    const chat = conversations.find(c => c.id == selectedChat);
+    if (!chat) return;
+
+    const msgs = messages[selectedChat] || [];
+    const chatBox = document.getElementById('chatMessages');
+
+    chatBox.innerHTML = msgs.map(m => {
+        let contentHtml = '';
+
+        // Handle different message types (keep your existing content logic)
+        if (m.attachments && m.attachments.length > 0) {
+            const mediaOnly = m.attachments.filter(a => a.type === 'image' || a.type === 'video');
+            const docsOnly = m.attachments.filter(a => a.type === 'document');
+
+            if (mediaOnly.length > 0) {
+                contentHtml += `<div class="media-grid" data-count="${Math.min(mediaOnly.length, 4)}">`;
+                mediaOnly.slice(0, 4).forEach((att, idx) => {
+                    const isLast = idx === 3 && mediaOnly.length > 4;
+                    const mediaTag = att.type === 'video'
+                        ? `<video src="${att.url}" muted></video>`
+                        : `<img src="${att.url}" alt="media" />`;
+
+                    contentHtml += `
                         <div class="media-item" onclick="openLightbox(${m.id}, ${idx})">
                             ${mediaTag}
                             ${isLast ? `<div class="media-overlay">+${mediaOnly.length - 4}</div>` : ''}
                         </div>`;
-                                });
-                                contentHtml += `</div>`;
-                            }
+                });
+                contentHtml += `</div>`;
+            }
 
-                            // --- DOCUMENT CARDS (No Lightbox) ---
-                            if (docsOnly.length > 0) {
-                                docsOnly.forEach(doc => {
-                                    contentHtml += `
+            if (docsOnly.length > 0) {
+                docsOnly.forEach(doc => {
+                    contentHtml += `
                         <div class="document-card" onclick="downloadFile('${doc.url}', '${doc.name}')">
                             <div class="doc-icon"><i class="fas fa-file-lines"></i></div>
                             <div class="doc-info">
@@ -3792,18 +4637,14 @@
                             </div>
                             <div class="doc-download-btn"><i class="fas fa-download"></i></div>
                         </div>`;
-                                });
-                            }
+                });
+            }
 
-                            // Only show text if it's NOT the auto-generated "X items sent"
-                            if (m.text && !m.text.includes('sent') && !m.text.includes('files')) {
-                                contentHtml += `<p class="message-text-adj">${m.text}</p>`;
-                            }
-                        }
-
-                        // 2. Voice Message with Dynamic Animated Waveform
-                        else if (m.type === 'voice') {
-                            contentHtml = `
+            if (m.text && !m.text.includes('sent') && !m.text.includes('files')) {
+                contentHtml += `<p class="message-text-adj">${m.text}</p>`;
+            }
+        } else if (m.type === 'voice') {
+            contentHtml = `
                 <div class="voice-message-player">
                     <button class="voice-play-btn" onclick="playVoiceWithWaveform('${m.audioUrl}', this)">
                         <i class="fas fa-play"></i>
@@ -3813,21 +4654,54 @@
                     </div>
                     <span class="voice-duration">${m.duration || '0:00'}</span>
                 </div>`;
-                        }
+        } else {
+            contentHtml = `<p>${m.text}</p>`;
+        }
 
-                        // 3. Regular Text Message
-                        else {
-                            contentHtml = `<p>${m.text}</p>`;
-                        }
+        // Build reactions HTML
+        let reactionsHtml = '';
+        if (m.reactions && Object.keys(m.reactions).length > 0) {
+            reactionsHtml = '<div class="message-reaction-badge" onclick="event.stopPropagation(); showReactionDetails(' + m.id + ')">';
+            Object.entries(m.reactions).forEach(([emoji, users]) => {
+                const isMyReaction = users.includes('me');
+                reactionsHtml += `
+                    <div class="reaction-pill-item ${isMyReaction ? 'my-reaction' : ''}" 
+                         onclick="event.stopPropagation(); toggleReaction(${m.id}, '${emoji}')">
+                        <span>${emoji}</span>
+                        <span class="count">${users.length}</span>
+                    </div>`;
+            });
+            reactionsHtml += '</div>';
+        }
 
-                        // Final Message Wrapper
-                        return `
-            <div class="message ${m.senderId === 'me' ? 'sent' : 'received'}">
+        // Reaction trigger button (LEFT for sent, RIGHT for received)
+        const reactionTriggerHtml = `
+            <div class="reaction-trigger-wrapper">
+                <div class="reaction-trigger-btn" onclick="showReactionMenu(${m.id}, event)">
+                    <i class="far fa-smile"></i>
+                </div>
+            </div>
+        `;
+
+        // Options button (RIGHT for sent, LEFT for received)
+        const optionsTriggerHtml = `
+            <div class="message-options-trigger">
+                <div class="message-options-btn" onclick="showMessageOptions(${m.id}, event)">
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+        `;
+
+        return `
+            <div class="message ${m.senderId === 'me' ? 'sent' : 'received'}" data-message-id="${m.id}">
                 ${m.senderId !== 'me' ? `<img src="${chat.avatar}" class="message-avatar" />` : ''}
                 <div class="message-content">
+                    ${reactionTriggerHtml}
+                    ${optionsTriggerHtml}
                     <div class="message-bubble">
                         ${contentHtml}
                     </div>
+                    ${reactionsHtml}
                     <div class="message-meta">
                         <span class="message-time">${formatMessageTime(m.timestamp)}</span>
                         ${m.senderId === 'me' ? '<i class="fas fa-check-double status-icon"></i>' : ''}
@@ -3835,11 +4709,14 @@
                 </div>
             </div>
         `;
-                    }).join('');
+    }).join('');
 
-                    // Auto-scroll to bottom
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }
+    chatBox.scrollTop = chatBox.scrollHeight;
+    chatBox.onscroll = () => {
+        closeReactionMenu();
+        closeMessageOptions();
+    };
+}
                 function getFileIcon(fileName) {
                     const ext = fileName.split('.').pop().toLowerCase();
                     const icons = {
@@ -4137,6 +5014,412 @@
                     }
                     return html;
                 }
+                function handleRecordingStop(stream) {
+                    // 1. Process the Audio Data
+                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const url = URL.createObjectURL(blob);
+                    const duration = Math.floor((Date.now() - recordingStartTime) / 1000);
+
+                    // Only send if valid duration
+                    if (duration > 0) {
+                        const msg = {
+                            id: Date.now(),
+                            senderId: 'me',
+                            text: 'Voice message',
+                            type: 'voice',
+                            audioUrl: url,
+                            duration: duration,
+                            timestamp: new Date()
+                        };
+
+                        if (!messages[selectedChat]) messages[selectedChat] = [];
+                        messages[selectedChat].push(msg);
+
+                        // Update conversation preview
+                        conversations = conversations.map(c =>
+                            c.id === selectedChat
+                                ? { ...c, lastMessage: '🎤 Voice message', timestamp: new Date() }
+                                : c
+                        );
+
+                        renderConversations();
+                        renderMessages();
+                    }
+
+                    // 2. Stop Microphone Tracks
+                    if (stream) {
+                        stream.getTracks().forEach(t => t.stop());
+                    }
+
+                    // 3. Cleanup Visualization Context
+                    if (animationId) cancelAnimationFrame(animationId);
+                    if (microphone) microphone.disconnect();
+                    if (analyser) analyser.disconnect();
+
+                    // Suspend context instead of closing to avoid errors on subsequent recordings
+                    if (audioContext && audioContext.state !== 'closed') {
+                        audioContext.suspend();
+                    }
+
+                    // 4. Reset UI Bars to flat state
+                    const bars = document.querySelectorAll('.voice-visualizer .voice-bar');
+                    bars.forEach(bar => {
+                        bar.style.height = '4px';
+                        bar.classList.remove('active-recording', 'high-intensity');
+                    });
+                }
+                // ============================================
+// WHATSAPP-STYLE REACTION SYSTEM
+// ============================================
+
+let currentReactionMessageId = null;
+
+// Show reaction menu
+function showReactionMenu(messageId, event) {
+    event.stopPropagation();
+    
+    currentReactionMessageId = messageId;
+    const menu = document.getElementById('reactionMenu');
+    const triggerBtn = event.currentTarget;
+    const bubble = triggerBtn.closest('.message').querySelector('.message-bubble');
+    const rect = bubble.getBoundingClientRect();
+
+    // Reset menu
+    menu.classList.remove('active');
+    menu.style.display = 'flex';
+
+    // Calculate position
+    const menuWidth = 320;
+    const left = rect.left + (rect.width / 2) - (menuWidth / 2);
+    const top = rect.top - 70;
+
+    menu.style.left = `${Math.max(10, Math.min(window.innerWidth - menuWidth - 10, left))}px`;
+    menu.style.top = `${top}px`;
+
+    // Show menu with animation
+    setTimeout(() => menu.classList.add('active'), 10);
+
+    // Close on outside click
+    setTimeout(() => {
+        document.addEventListener('click', closeReactionMenu, { once: true });
+    }, 10);
+}
+
+// Close reaction menu
+function closeReactionMenu() {
+    const menu = document.getElementById('reactionMenu');
+    menu.classList.remove('active');
+    setTimeout(() => {
+        menu.style.display = 'none';
+    }, 350);
+}
+
+// Add or remove reaction
+function addReaction(emoji) {
+    if (!selectedChat || !currentReactionMessageId) return;
+
+    toggleReaction(currentReactionMessageId, emoji);
+    closeReactionMenu();
+}
+
+// Toggle reaction (add/remove)
+function toggleReaction(messageId, emoji) {
+    const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
+    if (msgIndex === -1) return;
+
+    const msg = messages[selectedChat][msgIndex];
+    if (!msg.reactions) msg.reactions = {};
+
+    // Check if user already reacted with this emoji
+    if (msg.reactions[emoji] && msg.reactions[emoji].includes('me')) {
+        // Remove reaction
+        msg.reactions[emoji] = msg.reactions[emoji].filter(u => u !== 'me');
+        if (msg.reactions[emoji].length === 0) {
+            delete msg.reactions[emoji];
+        }
+    } else {
+        // Add reaction
+        if (!msg.reactions[emoji]) {
+            msg.reactions[emoji] = [];
+        }
+        msg.reactions[emoji].push('me');
+    }
+
+    renderMessages();
+}
+
+// Show reaction details (who reacted)
+function showReactionDetails(messageId) {
+    const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
+    if (msgIndex === -1) return;
+
+    const msg = messages[selectedChat][msgIndex];
+    if (!msg.reactions || Object.keys(msg.reactions).length === 0) return;
+
+    // Build details string
+    let details = 'Reactions:\n\n';
+    Object.entries(msg.reactions).forEach(([emoji, users]) => {
+        const userNames = users.map(u => u === 'me' ? 'You' : getUserName(u)).join(', ');
+        details += `${emoji} ${userNames}\n`;
+    });
+
+    // Show in a simple alert (you can replace with a custom modal)
+    alert(details);
+}
+
+// Helper function to get user name
+function getUserName(userId) {
+    if (userId === 'me') return 'You';
+    const user = mockUsers.find(u => u.id === userId);
+    return user ? user.name : 'Unknown';
+}
+
+// Initialize reaction menu on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Create reaction menu if it doesn't exist
+    if (!document.getElementById('reactionMenu')) {
+        const reactionMenu = document.createElement('div');
+        reactionMenu.id = 'reactionMenu';
+        reactionMenu.className = 'reaction-menu';
+        reactionMenu.innerHTML = `
+            <div class="reaction-emoji" onclick="addReaction('👍')">👍</div>
+            <div class="reaction-emoji" onclick="addReaction('❤️')">❤️</div>
+            <div class="reaction-emoji" onclick="addReaction('😂')">😂</div>
+            <div class="reaction-emoji" onclick="addReaction('😮')">😮</div>
+            <div class="reaction-emoji" onclick="addReaction('😢')">😢</div>
+            <div class="reaction-emoji" onclick="addReaction('🙏')">🙏</div>
+        `;
+        document.body.appendChild(reactionMenu);
+    }
+});
+// ============================================
+// MESSAGE OPTIONS MENU (DELETE/CANCEL)
+// ============================================
+
+let currentOptionsMessageId = null;
+let currentDeleteAction = null;
+let currentDeleteMessageId = null;
+
+// Show message options menu
+function showMessageOptions(messageId, event) {
+    event.stopPropagation();
+    
+    currentOptionsMessageId = messageId;
+    const menu = document.getElementById('messageOptionsMenu');
+    const triggerBtn = event.currentTarget;
+    const message = triggerBtn.closest('.message');
+    const bubble = message.querySelector('.message-bubble');
+    const rect = bubble.getBoundingClientRect();
+
+    // Get message to check if it's sent by user
+    const msg = messages[selectedChat].find(m => m.id === messageId);
+    const isSentByMe = msg && msg.senderId === 'me';
+
+    // Reset menu
+    menu.classList.remove('active');
+    menu.style.display = 'flex';
+
+    // Update menu content based on message sender
+    if (isSentByMe) {
+        // User's own message - show both delete options
+        menu.innerHTML = `
+            <button class="message-option-item delete-for-me" onclick="confirmDelete(${messageId}, 'me')">
+                <i class="fas fa-trash"></i>
+                <span>Delete for me</span>
+            </button>
+            <button class="message-option-item delete-for-everyone" onclick="confirmDelete(${messageId}, 'everyone')">
+                <i class="fas fa-trash-can"></i>
+                <span>Delete for everyone</span>
+            </button>
+            <div class="message-options-divider"></div>
+            <button class="message-option-item cancel" onclick="closeMessageOptions()">
+                <i class="fas fa-xmark"></i>
+                <span>Cancel</span>
+            </button>
+        `;
+    } else {
+        // Other person's message - only delete for me
+        menu.innerHTML = `
+            <button class="message-option-item delete-for-me" onclick="confirmDelete(${messageId}, 'me')">
+                <i class="fas fa-trash"></i>
+                <span>Delete for me</span>
+            </button>
+            <div class="message-options-divider"></div>
+            <button class="message-option-item cancel" onclick="closeMessageOptions()">
+                <i class="fas fa-xmark"></i>
+                <span>Cancel</span>
+            </button>
+        `;
+    }
+
+    // Calculate position
+    const menuHeight = isSentByMe ? 180 : 130;
+    const left = message.classList.contains('sent') 
+        ? rect.right - 220 
+        : rect.left;
+    const top = rect.top - menuHeight - 10;
+
+    menu.style.left = `${Math.max(10, Math.min(window.innerWidth - 230, left))}px`;
+    menu.style.top = `${Math.max(10, top)}px`;
+
+    // Show menu with animation
+    setTimeout(() => menu.classList.add('active'), 10);
+
+    // Close on outside click
+    setTimeout(() => {
+        document.addEventListener('click', closeMessageOptions, { once: true });
+    }, 10);
+}
+
+// Close message options menu
+function closeMessageOptions() {
+    const menu = document.getElementById('messageOptionsMenu');
+    menu.classList.remove('active');
+    setTimeout(() => {
+        menu.style.display = 'none';
+    }, 300);
+}
+
+// Show delete confirmation modal
+function confirmDelete(messageId, action) {
+    closeMessageOptions();
+    
+    currentDeleteMessageId = messageId;
+    currentDeleteAction = action;
+    
+    const modal = document.getElementById('deleteConfirmationModal');
+    const title = modal.querySelector('.delete-confirmation-title');
+    const text = modal.querySelector('.delete-confirmation-text');
+    const icon = modal.querySelector('.delete-confirmation-icon');
+    const confirmBtn = modal.querySelector('.delete-confirmation-btn.confirm');
+    
+    if (action === 'everyone') {
+        title.textContent = 'Delete for everyone?';
+        text.textContent = 'This message will be deleted for everyone in the chat. This action cannot be undone.';
+        icon.classList.remove('warning');
+        icon.classList.add('danger');
+        icon.innerHTML = '<i class="fas fa-trash-can"></i>';
+        confirmBtn.classList.add('danger');
+        confirmBtn.textContent = 'Delete for Everyone';
+    } else {
+        title.textContent = 'Delete for me?';
+        text.textContent = 'This message will be deleted for you. Other chat members will still be able to see it.';
+        icon.classList.remove('danger');
+        icon.classList.add('warning');
+        icon.innerHTML = '<i class="fas fa-trash"></i>';
+        confirmBtn.classList.remove('danger');
+        confirmBtn.textContent = 'Delete for Me';
+    }
+    
+    modal.classList.add('active');
+}
+
+// Close delete confirmation modal
+function closeDeleteConfirmation() {
+    const modal = document.getElementById('deleteConfirmationModal');
+    modal.classList.remove('active');
+    currentDeleteMessageId = null;
+    currentDeleteAction = null;
+}
+
+// Execute delete action
+function executeDelete() {
+    if (!currentDeleteMessageId || !currentDeleteAction) return;
+    
+    const msgIndex = messages[selectedChat].findIndex(m => m.id === currentDeleteMessageId);
+    if (msgIndex === -1) return;
+    
+    if (currentDeleteAction === 'everyone') {
+        // Delete for everyone - remove from messages completely
+        messages[selectedChat].splice(msgIndex, 1);
+        
+        // Show notification
+        showDeleteNotification('Message deleted for everyone');
+    } else {
+        // Delete for me - mark as deleted but keep in array
+        messages[selectedChat][msgIndex].deletedForMe = true;
+        
+        // Actually remove it from display
+        messages[selectedChat].splice(msgIndex, 1);
+        
+        // Show notification
+        showDeleteNotification('Message deleted');
+    }
+    
+    // Update UI
+    renderMessages();
+    closeDeleteConfirmation();
+}
+
+// Show delete notification
+function showDeleteNotification(text) {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = 'delete-notification';
+    notification.innerHTML = `
+        <i class="fas fa-check-circle"></i>
+        <span>${text}</span>
+    `;
+    
+    // Add to body
+    document.body.appendChild(notification);
+    
+    // Trigger animation
+    setTimeout(() => notification.classList.add('show'), 10);
+    
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.remove('show');
+        setTimeout(() => notification.remove(), 300);
+    }, 3000);
+}
+
+// Initialize menus on page load
+document.addEventListener('DOMContentLoaded', () => {
+    // Create message options menu if it doesn't exist
+    if (!document.getElementById('messageOptionsMenu')) {
+        const optionsMenu = document.createElement('div');
+        optionsMenu.id = 'messageOptionsMenu';
+        optionsMenu.className = 'message-options-menu';
+        document.body.appendChild(optionsMenu);
+    }
+    
+    // Create delete confirmation modal if it doesn't exist
+    if (!document.getElementById('deleteConfirmationModal')) {
+        const modal = document.createElement('div');
+        modal.id = 'deleteConfirmationModal';
+        modal.className = 'delete-confirmation-modal';
+        modal.innerHTML = `
+            <div class="delete-confirmation-content">
+                <div class="delete-confirmation-header">
+                    <div class="delete-confirmation-icon warning">
+                        <i class="fas fa-trash"></i>
+                    </div>
+                    <h3 class="delete-confirmation-title">Delete message?</h3>
+                </div>
+                <p class="delete-confirmation-text">
+                    This message will be deleted. This action cannot be undone.
+                </p>
+                <div class="delete-confirmation-actions">
+                    <button class="delete-confirmation-btn cancel" onclick="closeDeleteConfirmation()">
+                        Cancel
+                    </button>
+                    <button class="delete-confirmation-btn confirm" onclick="executeDelete()">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        
+        // Close on background click
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeDeleteConfirmation();
+            }
+        });
+    }
+});
             </script>
 </body>
 
