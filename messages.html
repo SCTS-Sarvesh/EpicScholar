@@ -2242,6 +2242,122 @@
     from { transform: scale(0); opacity: 0; }
     to { transform: scale(1); opacity: 1; }
 }
+/* =========================================
+   DISAPPEARING MESSAGES STYLES
+   ========================================= */
+
+/* Tiny icon inside the bubble (Clock or "1") */
+.disappearing-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.7);
+    vertical-align: middle;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+}
+
+/* Read Once Placeholder (The pill you click) */
+.read-once-placeholder {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+    transition: background 0.2s;
+    user-select: none;
+    min-width: 140px;
+}
+
+.read-once-placeholder.clickable:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.read-once-placeholder.viewed {
+    cursor: default;
+    opacity: 0.6;
+    background: rgba(0, 0, 0, 0.2);
+    border-color: transparent;
+}
+
+.read-once-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 1px solid var(--primary-color);
+    color: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Read Once View Modal (For Text) */
+.text-view-modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.92);
+    backdrop-filter: blur(10px);
+    z-index: 10000;
+    display: none; /* Flex when active */
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.text-view-modal.active {
+    opacity: 1;
+}
+
+.text-view-content {
+    background: #1e1e1e;
+    padding: 60px 40px;
+    border-radius: 20px;
+    max-width: 85%;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    text-align: center;
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    line-height: 1.6;
+    position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.text-view-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.2s;
+}
+
+.text-view-close:hover {
+    background: rgba(255,255,255,0.2);
+    transform: rotate(90deg);
+}
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -2812,10 +2928,11 @@ function waitForYouTubeAPI(callback, maxAttempts = 50) {
                 function renderStoryCard(story) {
                     let mediaHTML = '', audioHTML = '';
 
-// Inside renderStoryCard() function, replace the audioHTML section:
+// Locate this section in renderStoryCard(story)
 if (story.youtubeVideo) {
     const { id, title } = story.youtubeVideo;
-    const uniqueId = `youtube-player-${story.id}`;
+    // CHANGE THIS: Ensure prefix is 'youtube-player-' to match init function
+    const uniqueId = `Youtubeer-${story.id}`; 
     audioHTML = `
         <div class="story-audio-player">
             <div class="audio-track-info">
@@ -2823,7 +2940,7 @@ if (story.youtubeVideo) {
                     <div class="audio-title">${escapeHtml(title)}</div>
                 </div>
             </div>
-            <div id="${uniqueId}"></div>
+            <div id="${uniqueId}" style="display:none;"></div>
         </div>`;
 }
                     if (story.media) {
@@ -2835,17 +2952,6 @@ if (story.youtubeVideo) {
                     }
 
                     if (story.media || story.image) { if (story.youtubeVideo) {
-                        const { id, title } = story.youtubeVideo;
-                        const uniqueId = `Youtubeer-${story.id}`; // <--- This is the error
-                        audioHTML = `
-            <div class="story-audio-player">
-                <div class="audio-track-info">
-                    <div class="audio-details">
-                        <div class="audio-title">${escapeHtml(title)}</div>
-                    </div>
-                </div>
-                <div id="${uniqueId}" style="display:none;"></div>
-            </div>`;
                     }
                     }
                     // ... (End existing media logic) ...
@@ -3302,20 +3408,25 @@ if (story && story.youtubeVideo) {
 }
                 }
 
+// 1. Helper to ensure API is ready before calling init
+function waitForYouTubeAPI(callback) {
+    if (typeof YT !== 'undefined' && YT.Player) {
+        callback();
+    } else {
+        console.log('Waiting for YouTube API...');
+        setTimeout(() => waitForYouTubeAPI(callback), 100);
+    }
+}
+
+// 2. Updated Init Function with Origin Fix
 function initYouTubePlayer(story) {
     if (!story.youtubeVideo) return;
-
+    
     const { id, startTime = 0, endTime = 30 } = story.youtubeVideo;
-    const playerId = `youtube-player-${story.id}`;
+    const playerId = `Youtubeer-${story.id}`;
     const clipDuration = endTime - startTime;
 
-    // Wait for YouTube API
-    if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
-        console.error('YouTube API not ready');
-        return;
-    }
-
-    // Clean up existing player
+    // Clean up existing player to prevent memory leaks and "ghost" audio
     if (currentYouTubePlayer) {
         try {
             currentYouTubePlayer.destroy();
@@ -3325,83 +3436,77 @@ function initYouTubePlayer(story) {
         currentYouTubePlayer = null;
     }
 
-    // Small delay to ensure DOM is ready
+    // Delay slightly to ensure the DOM element rendered by renderStoryCard is available
     setTimeout(() => {
         try {
+            const playerContainer = document.getElementById(playerId);
+            if (!playerContainer) {
+                console.error(`Target container ${playerId} not found in DOM`);
+                return;
+            }
+
             currentYouTubePlayer = new YT.Player(playerId, {
                 height: '0',
                 width: '0',
                 videoId: id,
                 playerVars: {
-                    autoplay: 1,
-                    controls: 0,
-                    start: startTime,
-                    end: endTime,
-                    modestbranding: 1,
-                    rel: 0,
-                    enablejsapi: 1
+                    'autoplay': 1,
+                    'controls': 0,
+                    'start': startTime,
+                    'end': endTime,
+                    'modestbranding': 1,
+                    'rel': 0,
+                    'enablejsapi': 1,
+                    // FIX: Explicitly set origin to your GitHub Pages domain
+                    'origin': window.location.origin 
                 },
                 events: {
-                    onReady: (event) => {
-                        console.log('Story player ready');
+                    'onReady': (event) => {
+                        console.log('YouTube Story Player Ready');
+                        event.target.unMute();
                         event.target.setVolume(80);
                         event.target.playVideo();
-
-                        const btn = document.getElementById(`playPauseBtn-${story.id}`);
-                        if (btn) {
-                            const icon = btn.querySelector('i');
-                            if (icon) icon.className = 'fas fa-pause';
-                        }
                     },
-                    onStateChange: (event) => {
-                        const btn = document.getElementById(`playPauseBtn-${story.id}`);
-                        const icon = btn ? btn.querySelector('i') : null;
-
-                        if (event.data === YT.PlayerState.PLAYING) {
-                            if (icon) icon.className = 'fas fa-pause';
-
-                            if (audioProgressInterval) clearInterval(audioProgressInterval);
-                            audioProgressInterval = setInterval(() => {
-                                try {
-                                    if (currentYouTubePlayer && typeof currentYouTubePlayer.getCurrentTime === 'function') {
-                                        const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
-                                        updateAudioProgress(story.id, currentTime, clipDuration);
-                                    }
-                                } catch (e) {
-                                    console.log('Progress update error:', e);
-                                }
-                            }, 100);
-                        } else if (event.data === YT.PlayerState.PAUSED) {
-                            if (icon) icon.className = 'fas fa-play';
-                            if (audioProgressInterval) clearInterval(audioProgressInterval);
-                        } else if (event.data === YT.PlayerState.ENDED) {
-                            if (icon) icon.className = 'fas fa-play';
-                            if (audioProgressInterval) clearInterval(audioProgressInterval);
-                            event.target.seekTo(startTime);
-                            updateAudioProgress(story.id, 0, clipDuration);
-                        }
+                    'onStateChange': (event) => {
+                        handlePlayerStateChange(event, story, startTime, clipDuration);
                     },
-                    onError: (event) => {
-                        console.error('YouTube player error:', event.data);
-                        // Error codes: 2=invalid ID, 5=HTML5 error, 100=not found, 101/150=embed disabled
-                        const errorMessages = {
-                            2: 'Invalid video ID',
-                            5: 'Playback error',
-                            100: 'Video not found',
-                            101: 'Video owner disabled embedding',
-                            150: 'Video owner disabled embedding'
-                        };
-                        console.error('Error message:', errorMessages[event.data] || 'Unknown error');
+                    'onError': (event) => {
+                        console.error('YouTube API Error:', event.data);
                     }
                 }
             });
         } catch (e) {
-            console.error('Error creating YouTube player:', e);
-            currentYouTubePlayer = null;
+            console.error('Failed to create YouTube player:', e);
         }
-    }, 200);
+    }, 300);
 }
 
+// 3. Helper for State Changes (keeps the main function clean)
+function handlePlayerStateChange(event, story, startTime, clipDuration) {
+    const btn = document.getElementById(`playPauseBtn-${story.id}`);
+    const icon = btn ? btn.querySelector('i') : null;
+
+    if (event.data === YT.PlayerState.PLAYING) {
+        if (icon) icon.className = 'fas fa-pause';
+        
+        if (audioProgressInterval) clearInterval(audioProgressInterval);
+        audioProgressInterval = setInterval(() => {
+            try {
+                if (currentYouTubePlayer && typeof currentYouTubePlayer.getCurrentTime === 'function') {
+                    const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
+                    updateAudioProgress(story.id, currentTime, clipDuration);
+                }
+            } catch (e) {
+                clearInterval(audioProgressInterval);
+            }
+        }, 100);
+    } else if (event.data === YT.PlayerState.PAUSED) {
+        if (icon) icon.className = 'fas fa-play';
+        if (audioProgressInterval) clearInterval(audioProgressInterval);
+    } else if (event.data === YT.PlayerState.ENDED) {
+        event.target.seekTo(startTime); // Loop back if the story hasn't auto-advanced
+    }
+}
                 function startStoryTimer() {
                     clearTimeout(storyTimer);
                     if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
@@ -4044,26 +4149,50 @@ function initYouTubePlayer(story) {
                     renderMessages();
                 }
 
-                function sendMessage() {
-                    const input = document.getElementById('messageInput');
-                    const text = input.value.trim();
-                    if (!text || !selectedChat) return;
-                    const msg = {
-                        id: Date.now(),
-                        senderId: 'me',
-                        text: text,
-                        type: 'text',
-                        timestamp: new Date()
-                    };
-                    if (!messages[selectedChat]) messages[selectedChat] = [];
-                    messages[selectedChat].push(msg);
-                    conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: text, timestamp: new Date() } : c);
-                    input.value = '';
-                    disappearingMode = null;
-                    updateDisappearingButtons();
-                    renderConversations();
-                    renderMessages();
-                }
+function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const text = input.value.trim();
+    if (!text || !selectedChat) return;
+
+    // --- LOGIC FOR TIMED MESSAGES ---
+    let expiresAt = null;
+    if (disappearingMode === 'timed') {
+        // Set expiry to 24 hours from now
+        expiresAt = Date.now() + (24 * 60 * 60 * 1000); 
+    }
+
+    const msg = {
+        id: Date.now(),
+        senderId: 'me',
+        text: text,
+        type: 'text',
+        timestamp: new Date(),
+        // Add Disappearing properties
+        disappearingMode: disappearingMode, // 'read-once', 'timed', or null
+        expiresAt: expiresAt,
+        viewed: false // For read-once logic
+    };
+
+    if (!messages[selectedChat]) messages[selectedChat] = [];
+    messages[selectedChat].push(msg);
+
+    // Update conversation preview with icons
+    let previewText = text;
+    if (disappearingMode === 'read-once') previewText = '⏱️ Read once message';
+    else if (disappearingMode === 'timed') previewText = '⏳ ' + text;
+
+    conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: previewText, timestamp: new Date() } : c);
+    
+    input.value = '';
+    
+    // Reset disappearing mode after sending
+    disappearingMode = null;
+    updateDisappearingButtons();
+    document.getElementById('disappearingOptions').classList.add('hidden');
+
+    renderConversations();
+    renderMessages();
+}
 
                 function deleteMessage(id) {
                     if (!selectedChat) return;
@@ -4923,64 +5052,132 @@ function renderMessages() {
     const chat = conversations.find(c => c.id == selectedChat);
     if (!chat) return;
 
+    // 1. Filter out expired "24 Hours" messages
+    const now = Date.now();
+    if (messages[selectedChat]) {
+        messages[selectedChat] = messages[selectedChat].filter(m => {
+            if (m.disappearingMode === 'timed' && m.expiresAt && now > m.expiresAt) {
+                return false; // Remove expired message
+            }
+            return true;
+        });
+    }
+
     const msgs = messages[selectedChat] || [];
     const chatBox = document.getElementById('chatMessages');
 
     chatBox.innerHTML = msgs.map(m => {
+        // Unified Actions Container (Emoji + Settings)
+        const actionsHtml = `
+            <div class="message-actions-container">
+                <div class="action-btn reaction-btn" onclick="showReactionMenu(${m.id}, event)" title="Add Reaction">
+                    <i class="far fa-smile"></i>
+                </div>
+                <div class="action-btn options-btn" onclick="showMessageOptions(${m.id}, event)" title="Message Options">
+                    <i class="fas fa-ellipsis-vertical"></i>
+                </div>
+            </div>
+        `;
+
+        // --- DISAPPEARING LOGIC SETUP ---
         let contentHtml = '';
+        const isReadOnce = m.disappearingMode === 'read-once';
+        const isTimed = m.disappearingMode === 'timed';
+        const isMe = m.senderId === 'me';
+        
+        // Determine if we show content or a placeholder
+        let showContent = true;
+        let placeholderType = null; // 'clickable' or 'opened'
 
-        // Handle different message types (keep your existing content logic)
-        if (m.attachments && m.attachments.length > 0) {
-            const mediaOnly = m.attachments.filter(a => a.type === 'image' || a.type === 'video');
-            const docsOnly = m.attachments.filter(a => a.type === 'document');
-
-            if (mediaOnly.length > 0) {
-                contentHtml += `<div class="media-grid" data-count="${Math.min(mediaOnly.length, 4)}">`;
-                mediaOnly.slice(0, 4).forEach((att, idx) => {
-                    const isLast = idx === 3 && mediaOnly.length > 4;
-                    const mediaTag = att.type === 'video'
-                        ? `<video src="${att.url}" muted></video>`
-                        : `<img src="${att.url}" alt="media" />`;
-
-                    contentHtml += `
-                        <div class="media-item" onclick="openLightbox(${m.id}, ${idx})">
-                            ${mediaTag}
-                            ${isLast ? `<div class="media-overlay">+${mediaOnly.length - 4}</div>` : ''}
-                        </div>`;
-                });
-                contentHtml += `</div>`;
+        if (isReadOnce && !isMe) {
+            // Received Read-Once messages are hidden by default
+            showContent = false; 
+            if (m.viewed) {
+                placeholderType = 'opened';
+            } else {
+                placeholderType = 'clickable';
             }
+        }
 
-            if (docsOnly.length > 0) {
-                docsOnly.forEach(doc => {
-                    contentHtml += `
-                        <div class="document-card" onclick="downloadFile('${doc.url}', '${doc.name}')">
-                            <div class="doc-icon"><i class="fas fa-file-lines"></i></div>
-                            <div class="doc-info">
-                                <div class="doc-name">${doc.name}</div>
-                                <div class="doc-size">Download Document</div>
-                            </div>
-                            <div class="doc-download-btn"><i class="fas fa-download"></i></div>
-                        </div>`;
-                });
+        // --- GENERATE CONTENT OR PLACEHOLDER ---
+        if (!showContent) {
+            // Render Placeholder
+            if (placeholderType === 'clickable') {
+                const label = (m.attachments && m.attachments.length > 0) ? 'Photo' : 'Text Message';
+                contentHtml = `
+                    <div class="read-once-placeholder clickable" onclick="viewReadOnceMessage(${m.id})">
+                        <div class="read-once-icon"><i class="fas fa-1"></i></div>
+                        <span>${label}</span>
+                    </div>`;
+            } else {
+                contentHtml = `
+                    <div class="read-once-placeholder viewed">
+                        <div class="read-once-icon" style="border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.3);"><i class="fas fa-1"></i></div>
+                        <span>Opened</span>
+                    </div>`;
             }
-
-            if (m.text && !m.text.includes('sent') && !m.text.includes('files')) {
-                contentHtml += `<p class="message-text-adj">${m.text}</p>`;
-            }
-        } else if (m.type === 'voice') {
-            contentHtml = `
-                <div class="voice-message-player">
-                    <button class="voice-play-btn" onclick="playVoiceWithWaveform('${m.audioUrl}', this)">
-                        <i class="fas fa-play"></i>
-                    </button>
-                    <div class="waveform-container">
-                        ${generateWaveform()} 
-                    </div>
-                    <span class="voice-duration">${m.duration || '0:00'}</span>
-                </div>`;
         } else {
-            contentHtml = `<p>${m.text}</p>`;
+            // Render Real Content (Standard logic)
+            if (m.attachments && m.attachments.length > 0) {
+                const mediaOnly = m.attachments.filter(a => a.type === 'image' || a.type === 'video');
+                const docsOnly = m.attachments.filter(a => a.type === 'document');
+
+                if (mediaOnly.length > 0) {
+                    contentHtml += `<div class="media-grid" data-count="${Math.min(mediaOnly.length, 4)}">`;
+                    mediaOnly.slice(0, 4).forEach((att, idx) => {
+                        const isLast = idx === 3 && mediaOnly.length > 4;
+                        const mediaTag = att.type === 'video'
+                            ? `<video src="${att.url}" muted></video>`
+                            : `<img src="${att.url}" alt="media" />`;
+
+                        contentHtml += `
+                            <div class="media-item" onclick="openLightbox(${m.id}, ${idx})">
+                                ${mediaTag}
+                                ${isLast ? `<div class="media-overlay">+${mediaOnly.length - 4}</div>` : ''}
+                            </div>`;
+                    });
+                    contentHtml += `</div>`;
+                }
+
+                if (docsOnly.length > 0) {
+                    docsOnly.forEach(doc => {
+                        contentHtml += `
+                            <div class="document-card" onclick="downloadFile('${doc.url}', '${doc.name}')">
+                                <div class="doc-icon"><i class="fas fa-file-lines"></i></div>
+                                <div class="doc-info">
+                                    <div class="doc-name">${doc.name}</div>
+                                    <div class="doc-size">Download Document</div>
+                                </div>
+                                <div class="doc-download-btn"><i class="fas fa-download"></i></div>
+                            </div>`;
+                    });
+                }
+
+                if (m.text && !m.text.includes('sent') && !m.text.includes('files')) {
+                    contentHtml += `<p class="message-text-adj">${m.text}</p>`;
+                }
+            } else if (m.type === 'voice') {
+                contentHtml = `
+                    <div class="voice-message-player">
+                        <button class="voice-play-btn" onclick="playVoiceWithWaveform('${m.audioUrl}', this)">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="waveform-container">
+                            ${generateWaveform()} 
+                        </div>
+                        <span class="voice-duration">${m.duration || '0:00'}</span>
+                    </div>`;
+            } else {
+                contentHtml = `<p>${m.text}</p>`;
+            }
+            
+            // Append Icons to the Content Bubble
+            if (isReadOnce) {
+                contentHtml += `<span class="disappearing-icon" title="Read Once"><i class="fas fa-1"></i></span>`;
+            }
+            if (isTimed) {
+                contentHtml += `<span class="disappearing-icon" title="Expires in 24h"><i class="fas fa-hourglass-half"></i></span>`;
+            }
         }
 
         // Build reactions HTML
@@ -4999,23 +5196,12 @@ function renderMessages() {
             reactionsHtml += '</div>';
         }
 
-// Unified Actions Container (Holds both Emoji and Settings buttons)
-        const actionsHtml = `
-            <div class="message-actions-container">
-                <div class="action-btn reaction-btn" onclick="showReactionMenu(${m.id}, event)" title="Add Reaction">
-                    <i class="far fa-smile"></i>
-                </div>
-                <div class="action-btn options-btn" onclick="showMessageOptions(${m.id}, event)" title="Message Options">
-                    <i class="fas fa-ellipsis-vertical"></i>
-                </div>
-            </div>
-        `;
-
-return `
+        return `
             <div class="message ${m.senderId === 'me' ? 'sent' : 'received'}" data-message-id="${m.id}">
                 ${m.senderId !== 'me' ? `<img src="${chat.avatar}" class="message-avatar" />` : ''}
                 <div class="message-content">
-                    ${actionsHtml}  <div class="message-bubble">
+                    ${actionsHtml}
+                    <div class="message-bubble">
                         ${contentHtml}
                     </div>
                     ${reactionsHtml}
@@ -5737,6 +5923,57 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+// --- HELPER: Initialize Text Reader Modal ---
+document.addEventListener('DOMContentLoaded', () => {
+    if (!document.getElementById('textViewModal')) {
+        const modal = document.createElement('div');
+        modal.id = 'textViewModal';
+        modal.className = 'text-view-modal';
+        modal.innerHTML = `
+            <div class="text-view-content">
+                <div class="text-view-close" onclick="closeTextModal()">&times;</div>
+                <div id="textViewText"></div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+    }
+});
+
+function closeTextModal() {
+    const modal = document.getElementById('textViewModal');
+    modal.classList.remove('active');
+    setTimeout(() => modal.style.display = 'none', 300);
+}
+
+// --- HELPER: Handle Clicking a Read-Once Message ---
+function viewReadOnceMessage(id) {
+    if (!selectedChat || !messages[selectedChat]) return;
+    
+    const msg = messages[selectedChat].find(m => m.id === id);
+    if (!msg) return;
+
+    // 1. Mark as viewed
+    msg.viewed = true;
+    
+    // 2. Open Content
+    if (msg.attachments && msg.attachments.length > 0) {
+        // If it's media, open the Lightbox (image 0)
+        openLightbox(id, 0); 
+    } else {
+        // If it's text, open the Text Modal
+        const modal = document.getElementById('textViewModal');
+        const textContainer = document.getElementById('textViewText');
+        textContainer.textContent = msg.text || "Media Content";
+        
+        modal.style.display = 'flex';
+        // Force reflow for animation
+        void modal.offsetWidth;
+        modal.classList.add('active');
+    }
+
+    // 3. Update UI (Changes bubble to "Opened")
+    renderMessages();
+}
             </script>
 </body>
 
