@@ -2490,6 +2490,7 @@
     display: flex;
     flex-direction: column;
 }
+
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
 </head>
@@ -2630,7 +2631,32 @@
                                 </div>
                             </div>
                         </div>
-
+<div id="removeReactionModal">
+    <div class="reaction-modal-content">
+        <button class="reaction-modal-close" onclick="closeRemoveReactionModal()">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="reaction-modal-icon">
+            <i class="fas fa-trash-alt"></i>
+        </div>
+        
+        <h3 class="reaction-modal-title">Remove Reaction?</h3>
+        
+        <p class="reaction-modal-text">
+            Are you sure you want to remove your <span id="reactionEmojiDisplay"></span> reaction?
+        </p>
+        
+        <div class="reaction-modal-actions">
+            <button class="reaction-btn-base reaction-btn-cancel" onclick="closeRemoveReactionModal()">
+                Keep it
+            </button>
+            <button class="reaction-btn-base reaction-btn-confirm" onclick="confirmRemoveReaction()">
+                Remove
+            </button>
+        </div>
+    </div>
+</div>
                         <!-- Message input area -->
                         <div id="normalInput">
                             <input type="text" id="messageInput" placeholder="Type a message..." />
@@ -4589,7 +4615,8 @@
                         sendMessage();
                     }
                 });
-
+                // Add this with your other event listeners
+                document.getElementById('cancelBtn').addEventListener('click', cancelRecording);
                 document.getElementById('messageInput').addEventListener('input', (e) => {
                     document.getElementById('sendBtn').classList.toggle('hidden', !e.target.value.trim());
                 });
@@ -5048,46 +5075,56 @@
                     }
                 }
 
-                function cancelRecording() {
-                    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                        // Stop without saving
-                        const stream = mediaRecorder.stream;
-                        mediaRecorder.stop();
+function cancelRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        // CRITICAL: Remove the onstop handler so it doesn't trigger handleRecordingStop (which saves the file)
+        mediaRecorder.onstop = null;
+        
+        // Stop the recorder
+        mediaRecorder.stop();
 
-                        // Clear chunks so nothing is saved
-                        audioChunks = [];
+        // Stop all audio tracks to release the microphone
+        if (mediaRecorder.stream) {
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        }
 
-                        if (stream) {
-                            stream.getTracks().forEach(t => t.stop());
-                        }
+        // Clear data
+        audioChunks = [];
+        isRecording = false;
 
-                        isRecording = false;
+        // Clear timers
+        if (recordingTimerInterval) {
+            clearInterval(recordingTimerInterval);
+            recordingTimerInterval = null;
+        }
 
-                        if (recordingTimerInterval) {
-                            clearInterval(recordingTimerInterval);
-                            recordingTimerInterval = null;
-                        }
+        // Stop visualization animation
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+            animationId = null;
+        }
 
-                        if (animationId) {
-                            cancelAnimationFrame(animationId);
-                            animationId = null;
-                        }
+        // Clean up audio context
+        if (audioContext && audioContext.state !== 'closed') {
+            try {
+                audioContext.close();
+            } catch (e) {
+                console.log("AudioContext already closed");
+            }
+            audioContext = null;
+        }
 
-                        if (audioContext) {
-                            audioContext.close();
-                            audioContext = null;
-                        }
+        // Reset visualizer UI
+        const bars = document.querySelectorAll('.voice-bar');
+        bars.forEach(bar => {
+            bar.style.height = '4px'; // Reset to default min-height
+            bar.classList.remove('active-recording', 'high-intensity');
+        });
 
-                        // Reset bars to default state
-                        const bars = document.querySelectorAll('.voice-bar');
-                        bars.forEach(bar => {
-                            bar.style.height = '8px';
-                            bar.classList.remove('active-recording', 'high-intensity');
-                        });
-
-                        updateRecordingUI();
-                    }
-                }
+        // Reset UI buttons
+        updateRecordingUI();
+    }
+}
 
                 function updateRecordingUI() {
                     const chatInput = document.getElementById('chatInputBox');
@@ -5767,7 +5804,8 @@ const actionsHtml = `
                     closeReactionMenu();
                 }
 
-                // Toggle reaction (add/remove)
+                let reactionToRemove = null; // Store data for the modal
+
                 function toggleReaction(messageId, emoji) {
                     const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
                     if (msgIndex === -1) return;
@@ -5777,22 +5815,81 @@ const actionsHtml = `
 
                     // Check if user already reacted with this emoji
                     if (msg.reactions[emoji] && msg.reactions[emoji].includes('me')) {
-                        // Remove reaction
-                        msg.reactions[emoji] = msg.reactions[emoji].filter(u => u !== 'me');
-                        if (msg.reactions[emoji].length === 0) {
-                            delete msg.reactions[emoji];
-                        }
+                        // IF ALREADY REACTED -> OPEN MODAL
+                        openRemoveReactionModal(messageId, emoji);
                     } else {
-                        // Add reaction
+                        // IF NOT REACTED -> ADD REACTION IMMEDIATELY
                         if (!msg.reactions[emoji]) {
                             msg.reactions[emoji] = [];
                         }
                         msg.reactions[emoji].push('me');
+                        renderMessages();
+                    }
+                }
+function openRemoveReactionModal(messageId, emoji) {
+    reactionToRemove = { messageId, emoji };
+    document.getElementById('reactionEmojiDisplay').textContent = emoji;
+    
+    // PRODUCTION FIX: Hide any visible message action menus/tooltips immediately
+    const actions = document.querySelectorAll('.message-actions');
+    actions.forEach(el => el.style.opacity = '0');
+
+    const modal = document.getElementById('removeReactionModal');
+    modal.style.display = 'flex';
+    setTimeout(() => {
+        modal.classList.add('active');
+    }, 10);
+}
+
+function closeRemoveReactionModal() {
+    const modal = document.getElementById('removeReactionModal');
+    modal.classList.remove('active');
+    
+    // Reset the opacity of message actions so they work again after closing
+    const actions = document.querySelectorAll('.message-actions');
+    actions.forEach(el => el.style.opacity = '');
+
+    setTimeout(() => {
+        modal.style.display = 'none';
+        reactionToRemove = null;
+    }, 300);
+}
+                function confirmRemoveReaction() {
+                    if (!reactionToRemove || !selectedChat) return;
+
+                    const { messageId, emoji } = reactionToRemove;
+                    const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
+
+                    if (msgIndex !== -1) {
+                        const msg = messages[selectedChat][msgIndex];
+                        
+                        if (msg.reactions && msg.reactions[emoji]) {
+                            // Remove 'me' from the array
+                            msg.reactions[emoji] = msg.reactions[emoji].filter(u => u !== 'me');
+                            
+                            // If array is empty, delete the key entirely
+                            if (msg.reactions[emoji].length === 0) {
+                                delete msg.reactions[emoji];
+                            }
+                            
+                            renderMessages();
+                        }
                     }
 
-                    renderMessages();
+                    closeRemoveReactionModal();
                 }
 
+                // Close modal when clicking outside (background)
+                document.addEventListener('DOMContentLoaded', () => {
+                    const removeModal = document.getElementById('removeReactionModal');
+                    if (removeModal) {
+                        removeModal.addEventListener('click', (e) => {
+                            if (e.target === removeModal) {
+                                closeRemoveReactionModal();
+                            }
+                        });
+                    }
+                });
                 // Show reaction details (who reacted)
                 function showReactionDetails(messageId) {
                     const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
