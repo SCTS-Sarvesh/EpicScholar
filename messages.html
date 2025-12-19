@@ -1454,909 +1454,1041 @@
             animation: none !important;
             /* Override any existing pulse animations */
         }
+
         /* =========================================
    WHATSAPP-STYLE REACTION SYSTEM
    ========================================= */
 
-/* Reaction Menu (Emoji Picker) */
-.reaction-menu {
-    position: fixed;
-    background: rgba(10, 10, 10, 0.95);
-    backdrop-filter: blur(40px) saturate(210%);
-    -webkit-backdrop-filter: blur(40px) saturate(210%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50px;
-    padding: 8px 16px;
-    display: none;
-    gap: 12px;
-    z-index: 99999;
-    opacity: 0;
-    transform: scale(0.9) translateY(15px);
-    transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
+        /* Reaction Menu (Emoji Picker) */
+        .reaction-menu {
+            position: fixed;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(40px) saturate(210%);
+            -webkit-backdrop-filter: blur(40px) saturate(210%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50px;
+            padding: 8px 16px;
+            display: none;
+            gap: 12px;
+            z-index: 99999;
+            opacity: 0;
+            transform: scale(0.9) translateY(15px);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
                 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
+        }
 
-.reaction-menu.active {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    display: flex;
-}
+        .reaction-menu.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            display: flex;
+        }
 
-.reaction-emoji {
-    font-size: 28px;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    user-select: none;
-    width: 44px;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.03);
-}
+        .reaction-emoji {
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            user-select: none;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.03);
+        }
 
-.reaction-emoji:hover {
-    transform: scale(1.5) translateY(-10px) rotate(5deg);
-    background: rgba(255, 255, 255, 0.12);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
-}
+        .reaction-emoji:hover {
+            transform: scale(1.5) translateY(-10px) rotate(5deg);
+            background: rgba(255, 255, 255, 0.12);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5);
+        }
 
-.reaction-menu.active .reaction-emoji {
-    animation: reactionSpringPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
+        .reaction-menu.active .reaction-emoji {
+            animation: reactionSpringPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
 
-@keyframes reactionSpringPop {
-    0% {
-        opacity: 0;
-        transform: scale(0.4) translateY(20px);
-    }
-    100% {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-    }
-}
+        @keyframes reactionSpringPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.4) translateY(20px);
+            }
 
-/* Reaction Trigger Button */
-.reaction-trigger-wrapper {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0;
-    transition: all 0.25s ease;
-    z-index: 100;
-}
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
 
-.message.sent .reaction-trigger-wrapper {
-    left: -40px;
-}
+        /* Reaction Trigger Button */
+        .reaction-trigger-wrapper {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: all 0.25s ease;
+            z-index: 100;
+        }
 
-.message.received .reaction-trigger-wrapper {
-    right: -40px;
-}
+        .message.sent .reaction-trigger-wrapper {
+            left: -40px;
+        }
 
-.message:hover .reaction-trigger-wrapper {
-    opacity: 0.8;
-    transform: translateY(-50%) scale(1.1);
-}
+        .message.received .reaction-trigger-wrapper {
+            right: -40px;
+        }
 
-.reaction-trigger-btn {
-    width: 30px;
-    height: 30px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
-    transition: all 0.3s;
-}
+        .message:hover .reaction-trigger-wrapper {
+            opacity: 0.8;
+            transform: translateY(-50%) scale(1.1);
+        }
 
-.reaction-trigger-btn:hover {
-    background: var(--primary-gradient);
-    color: white;
-    border-color: transparent;
-    box-shadow: 0 0 15px rgba(0, 114, 255, 0.4);
-}
+        .reaction-trigger-btn {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s;
+        }
 
-/* Reaction Badge (Pills under message) */
-.message-reaction-badge {
-    position: absolute;
-    bottom: -12px;
-    background: rgba(20, 20, 20, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 30px;
-    padding: 3px 10px;
-    display: flex;
-    gap: 8px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-    z-index: 150;
-    cursor: pointer;
-    transition: transform 0.3s, background 0.3s;
-}
+        .reaction-trigger-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 15px rgba(0, 114, 255, 0.4);
+        }
 
-.message.sent .message-reaction-badge {
-    right: 65px;
-}
+        /* Reaction Badge (Pills under message) */
+        .message-reaction-badge {
+            position: absolute;
+            bottom: -12px;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 30px;
+            padding: 3px 10px;
+            display: flex;
+            gap: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+            z-index: 150;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
 
-.message.received .message-reaction-badge {
-    left: 52px;
-}
+        .message.sent .message-reaction-badge {
+            right: 65px;
+        }
 
-.message-reaction-badge:hover {
-    transform: translateY(-4px) scale(1.06);
-    background: rgba(40, 40, 40, 1);
-    border-color: var(--primary-color);
-}
+        .message.received .message-reaction-badge {
+            left: 52px;
+        }
 
-.reaction-pill-item {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: 14px;
-    padding: 2px 6px;
-    border-radius: 12px;
-    transition: all 0.2s;
-}
+        .message-reaction-badge:hover {
+            transform: translateY(-4px) scale(1.06);
+            background: rgba(40, 40, 40, 1);
+            border-color: var(--primary-color);
+        }
 
-.reaction-pill-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: scale(1.1);
-}
+        .reaction-pill-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 12px;
+            transition: all 0.2s;
+        }
 
-.reaction-pill-item .count {
-    font-size: 11px;
-    font-weight: 800;
-    color: var(--primary-color);
-    min-width: 16px;
-    text-align: center;
-}
+        .reaction-pill-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+        }
 
-/* Add spacing for reaction badges */
-.message {
-    margin-bottom: 28px;
-    position: relative;
-}
+        .reaction-pill-item .count {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary-color);
+            min-width: 16px;
+            text-align: center;
+        }
 
-/* Smooth animations for adding/removing reactions */
-@keyframes reactionPop {
-    0% {
-        transform: scale(0);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.2);
-    }
-    100% {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
+        /* Add spacing for reaction badges */
+        .message {
+            margin-bottom: 28px;
+            position: relative;
+        }
 
-.reaction-pill-item {
-    animation: reactionPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-/* =========================================
+        /* Smooth animations for adding/removing reactions */
+        @keyframes reactionPop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .reaction-pill-item {
+            animation: reactionPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* =========================================
    FIXED REACTION TRIGGER POSITIONING
    ========================================= */
 
-.reaction-trigger-wrapper {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0;
-    transition: all 0.25s ease;
-    z-index: 100;
-    pointer-events: none;
-}
+        .reaction-trigger-wrapper {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: all 0.25s ease;
+            z-index: 100;
+            pointer-events: none;
+        }
 
-/* Sent messages - button on LEFT side of bubble */
-.message.sent .reaction-trigger-wrapper {
-    left: -45px;
-}
+        /* Sent messages - button on LEFT side of bubble */
+        .message.sent .reaction-trigger-wrapper {
+            left: -45px;
+        }
 
-/* Received messages - button on RIGHT side of bubble */
-.message.received .reaction-trigger-wrapper {
-    right: -45px;
-}
+        /* Received messages - button on RIGHT side of bubble */
+        .message.received .reaction-trigger-wrapper {
+            right: -45px;
+        }
 
-.message:hover .reaction-trigger-wrapper {
-    opacity: 1;
-    pointer-events: auto;
-}
+        .message:hover .reaction-trigger-wrapper {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-.reaction-trigger-btn {
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+        .reaction-trigger-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-.reaction-trigger-btn:hover {
-    background: var(--primary-gradient);
-    color: white;
-    border-color: transparent;
-    box-shadow: 0 0 15px rgba(0, 114, 255, 0.4);
-    transform: scale(1.15);
-}
+        .reaction-trigger-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 0 15px rgba(0, 114, 255, 0.4);
+            transform: scale(1.15);
+        }
 
-/* =========================================
+        /* =========================================
    MESSAGE OPTIONS MENU (DELETE/CANCEL)
    ========================================= */
 
-.message-options-trigger {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0;
-    transition: all 0.25s ease;
-    z-index: 100;
-    pointer-events: none;
-}
+        .message-options-trigger {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            opacity: 0;
+            transition: all 0.25s ease;
+            z-index: 100;
+            pointer-events: none;
+        }
 
-/* Sent messages - options button on RIGHT side */
-.message.sent .message-options-trigger {
-    right: -45px;
-}
+        /* Sent messages - options button on RIGHT side */
+        .message.sent .message-options-trigger {
+            right: -45px;
+        }
 
-/* Received messages - options button on LEFT side */
-.message.received .message-options-trigger {
-    left: -45px;
-}
+        /* Received messages - options button on LEFT side */
+        .message.received .message-options-trigger {
+            left: -45px;
+        }
 
-.message:hover .message-options-trigger {
-    opacity: 1;
-    pointer-events: auto;
-}
+        .message:hover .message-options-trigger {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-.message-options-btn {
-    width: 32px;
-    height: 32px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    color: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(5px);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+        .message-options-btn {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(5px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-.message-options-btn:hover {
-    background: rgba(255, 255, 255, 0.15);
-    color: white;
-    border-color: rgba(255, 255, 255, 0.3);
-    transform: scale(1.15);
-}
+        .message-options-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: scale(1.15);
+        }
 
-/* Options Dropdown Menu */
-.message-options-menu {
-    position: fixed;
-    background: rgba(20, 20, 20, 0.98);
-    backdrop-filter: blur(40px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 16px;
-    min-width: 220px;
-    padding: 8px;
-    display: none;
-    flex-direction: column;
-    gap: 4px;
-    z-index: 99999;
-    opacity: 0;
-    transform: scale(0.9) translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
+        /* Options Dropdown Menu */
+        .message-options-menu {
+            position: fixed;
+            background: rgba(20, 20, 20, 0.98);
+            backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 16px;
+            min-width: 220px;
+            padding: 8px;
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            z-index: 99999;
+            opacity: 0;
+            transform: scale(0.9) translateY(-10px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9),
                 0 0 0 1px rgba(255, 255, 255, 0.08);
-}
+        }
 
-.message-options-menu.active {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-    display: flex;
-}
+        .message-options-menu.active {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+            display: flex;
+        }
 
-.message-option-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: white;
-    font-size: 14px;
-    font-weight: 500;
-    background: transparent;
-    border: none;
-    text-align: left;
-    width: 100%;
-}
+        .message-option-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            background: transparent;
+            border: none;
+            text-align: left;
+            width: 100%;
+        }
 
-.message-option-item:hover {
-    background: rgba(255, 255, 255, 0.1);
-    transform: translateX(4px);
-}
+        .message-option-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(4px);
+        }
 
-.message-option-item i {
-    width: 20px;
-    font-size: 16px;
-    color: rgba(255, 255, 255, 0.7);
-}
+        .message-option-item i {
+            width: 20px;
+            font-size: 16px;
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-/* Delete Options - Different Colors */
-.message-option-item.delete-for-me {
-    color: #fbbf24;
-}
+        /* Delete Options - Different Colors */
+        .message-option-item.delete-for-me {
+            color: #fbbf24;
+        }
 
-.message-option-item.delete-for-me:hover {
-    background: rgba(251, 191, 36, 0.1);
-}
+        .message-option-item.delete-for-me:hover {
+            background: rgba(251, 191, 36, 0.1);
+        }
 
-.message-option-item.delete-for-me i {
-    color: #fbbf24;
-}
+        .message-option-item.delete-for-me i {
+            color: #fbbf24;
+        }
 
-.message-option-item.delete-for-everyone {
-    color: #ef4444;
-}
+        .message-option-item.delete-for-everyone {
+            color: #ef4444;
+        }
 
-.message-option-item.delete-for-everyone:hover {
-    background: rgba(239, 68, 68, 0.1);
-}
+        .message-option-item.delete-for-everyone:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
 
-.message-option-item.delete-for-everyone i {
-    color: #ef4444;
-}
+        .message-option-item.delete-for-everyone i {
+            color: #ef4444;
+        }
 
-.message-option-item.cancel {
-    color: rgba(255, 255, 255, 0.6);
-}
+        .message-option-item.cancel {
+            color: rgba(255, 255, 255, 0.6);
+        }
 
-.message-option-item.cancel:hover {
-    background: rgba(255, 255, 255, 0.05);
-}
+        .message-option-item.cancel:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
 
-/* Divider between options */
-.message-options-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.1);
-    margin: 4px 0;
-}
+        /* Divider between options */
+        .message-options-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 4px 0;
+        }
 
-/* Animation for menu items */
-.message-options-menu.active .message-option-item {
-    animation: slideInOption 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    opacity: 0;
-}
+        /* Animation for menu items */
+        .message-options-menu.active .message-option-item {
+            animation: slideInOption 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0;
+        }
 
-.message-options-menu.active .message-option-item:nth-child(1) {
-    animation-delay: 0.05s;
-}
+        .message-options-menu.active .message-option-item:nth-child(1) {
+            animation-delay: 0.05s;
+        }
 
-.message-options-menu.active .message-option-item:nth-child(2) {
-    animation-delay: 0.1s;
-}
+        .message-options-menu.active .message-option-item:nth-child(2) {
+            animation-delay: 0.1s;
+        }
 
-.message-options-menu.active .message-option-item:nth-child(3) {
-    animation-delay: 0.15s;
-}
+        .message-options-menu.active .message-option-item:nth-child(3) {
+            animation-delay: 0.15s;
+        }
 
-.message-options-menu.active .message-option-item:nth-child(4) {
-    animation-delay: 0.2s;
-}
+        .message-options-menu.active .message-option-item:nth-child(4) {
+            animation-delay: 0.2s;
+        }
 
-@keyframes slideInOption {
-    from {
-        opacity: 0;
-        transform: translateX(-10px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
+        @keyframes slideInOption {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
 
-/* =========================================
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* =========================================
    CONFIRMATION MODAL
    ========================================= */
 
-.delete-confirmation-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.85);
-    backdrop-filter: blur(10px);
-    z-index: 100000;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
+        .delete-confirmation-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            z-index: 100000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
 
-.delete-confirmation-modal.active {
-    display: flex;
-    opacity: 1;
-}
+        .delete-confirmation-modal.active {
+            display: flex;
+            opacity: 1;
+        }
 
-.delete-confirmation-content {
-    background: rgba(20, 20, 20, 0.98);
-    backdrop-filter: blur(40px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
-    padding: 30px;
-    max-width: 400px;
-    width: 90%;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
-    transform: scale(0.9);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+        .delete-confirmation-content {
+            background: rgba(20, 20, 20, 0.98);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-.delete-confirmation-modal.active .delete-confirmation-content {
-    transform: scale(1);
-}
+        .delete-confirmation-modal.active .delete-confirmation-content {
+            transform: scale(1);
+        }
 
-.delete-confirmation-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    margin-bottom: 20px;
-}
+        .delete-confirmation-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
 
-.delete-confirmation-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-}
+        .delete-confirmation-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
 
-.delete-confirmation-icon.warning {
-    background: rgba(251, 191, 36, 0.2);
-    color: #fbbf24;
-}
+        .delete-confirmation-icon.warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+        }
 
-.delete-confirmation-icon.danger {
-    background: rgba(239, 68, 68, 0.2);
-    color: #ef4444;
-}
+        .delete-confirmation-icon.danger {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
 
-.delete-confirmation-title {
-    font-size: 20px;
-    font-weight: 700;
-    color: white;
-    margin: 0;
-}
+        .delete-confirmation-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+        }
 
-.delete-confirmation-text {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-    line-height: 1.6;
-    margin-bottom: 25px;
-}
+        .delete-confirmation-text {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
 
-.delete-confirmation-actions {
-    display: flex;
-    gap: 12px;
-}
+        .delete-confirmation-actions {
+            display: flex;
+            gap: 12px;
+        }
 
-.delete-confirmation-btn {
-    flex: 1;
-    padding: 12px 24px;
-    border-radius: 12px;
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+        .delete-confirmation-btn {
+            flex: 1;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-.delete-confirmation-btn.cancel {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-}
+        .delete-confirmation-btn.cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
 
-.delete-confirmation-btn.cancel:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateY(-2px);
-}
+        .delete-confirmation-btn.cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
 
-.delete-confirmation-btn.confirm {
-    background: var(--primary-gradient);
-    color: white;
-    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
-}
+        .delete-confirmation-btn.confirm {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.4);
+        }
 
-.delete-confirmation-btn.confirm.danger {
-    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
-}
+        .delete-confirmation-btn.confirm.danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
 
-.delete-confirmation-btn.confirm:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
-}
+        .delete-confirmation-btn.confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.6);
+        }
 
-.delete-confirmation-btn.confirm.danger:hover {
-    box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
-}
+        .delete-confirmation-btn.confirm.danger:hover {
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+        }
 
-/* Adjust message spacing for buttons */
-.message-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    max-width: 70%;
-}
+        /* Adjust message spacing for buttons */
+        .message-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 70%;
+        }
 
-/* Ensure buttons don't interfere with message flow */
-.message {
-    margin-bottom: 28px;
-    position: relative;
-    padding: 0 50px; /* Space for buttons on both sides */
-}
-/* =========================================
+        /* Ensure buttons don't interfere with message flow */
+        .message {
+            margin-bottom: 28px;
+            position: relative;
+            padding: 0 50px;
+            /* Space for buttons on both sides */
+        }
+
+        /* =========================================
    DELETE NOTIFICATION
    ========================================= */
 
-.delete-notification {
-    position: fixed;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%) translateY(100px);
-    background: rgba(20, 20, 20, 0.95);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    border-radius: 12px;
-    padding: 12px 24px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: white;
-    font-size: 14px;
-    font-weight: 500;
-    z-index: 100001;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-    opacity: 0;
-    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+        .delete-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            z-index: 100001;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
 
-.delete-notification.show {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-}
+        .delete-notification.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
 
-.delete-notification i {
-    color: #22c55e;
-    font-size: 18px;
-}
-/* YouTube Song Title Display */
-.story-youtube-title {
-    position: relative;
-    top: 80px; /* Below the header */
-    left: 20px;
-    right: 20px;
-    z-index: 25;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(15px);
-    padding: 12px 16px;
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    animation: slideDownFade 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-}
+        .delete-notification i {
+            color: #22c55e;
+            font-size: 18px;
+        }
 
-@keyframes slideDownFade {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+        /* YouTube Song Title Display */
+        .story-youtube-title {
+            position: relative;
+            top: 80px;
+            /* Below the header */
+            left: 20px;
+            right: 20px;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            animation: slideDownFade 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
 
-.youtube-icon-badge {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, #FF0000, #CC0000);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    flex-shrink: 0;
-    box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
-}
+        @keyframes slideDownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
 
-.youtube-title-text {
-    flex: 1;
-    min-width: 0;
-}
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-.youtube-title-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: rgba(255, 255, 255, 0.6);
-    font-weight: 600;
-    margin-bottom: 4px;
-}
+        .youtube-icon-badge {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FF0000, #CC0000);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+        }
 
-.youtube-title-main {
-    font-size: 14px;
-    font-weight: 700;
-    color: white;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-height: 1.3;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-}
+        .youtube-title-text {
+            flex: 1;
+            min-width: 0;
+        }
 
-.youtube-playing-indicator {
-    display: flex;
-    gap: 3px;
-    align-items: center;
-    flex-shrink: 0;
-}
+        .youtube-title-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
 
-.playing-bar {
-    width: 3px;
-    background: #FF0000;
-    border-radius: 2px;
-    animation: playingAnimation 0.8s ease-in-out infinite;
-}
+        .youtube-title-main {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            line-height: 1.3;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
 
-.playing-bar:nth-child(1) {
-    height: 12px;
-    animation-delay: 0s;
-}
+        .youtube-playing-indicator {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            flex-shrink: 0;
+        }
 
-.playing-bar:nth-child(2) {
-    height: 16px;
-    animation-delay: 0.2s;
-}
+        .playing-bar {
+            width: 3px;
+            background: #FF0000;
+            border-radius: 2px;
+            animation: playingAnimation 0.8s ease-in-out infinite;
+        }
 
-.playing-bar:nth-child(3) {
-    height: 10px;
-    animation-delay: 0.4s;
-}
+        .playing-bar:nth-child(1) {
+            height: 12px;
+            animation-delay: 0s;
+        }
 
-@keyframes playingAnimation {
-    0%, 100% {
-        transform: scaleY(1);
-    }
-    50% {
-        transform: scaleY(0.5);
-    }
-}
+        .playing-bar:nth-child(2) {
+            height: 16px;
+            animation-delay: 0.2s;
+        }
 
-/* Hide the old bottom audio player */
-.story-audio-player {
-    display: none !important;
-}
-/* =========================================
+        .playing-bar:nth-child(3) {
+            height: 10px;
+            animation-delay: 0.4s;
+        }
+
+        @keyframes playingAnimation {
+
+            0%,
+            100% {
+                transform: scaleY(1);
+            }
+
+            50% {
+                transform: scaleY(0.5);
+            }
+        }
+
+        /* Hide the old bottom audio player */
+        .story-audio-player {
+            display: none !important;
+        }
+
+        /* =========================================
    UNIFIED MESSAGE ACTIONS (Emoji + Settings)
    ========================================= */
 
-.message-actions-container {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    gap: 6px; /* Space between buttons */
-    opacity: 0;
-    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
-    z-index: 100;
-    pointer-events: none; /* Ignore clicks until visible */
-}
+        .message-actions-container {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 6px;
+            /* Space between buttons */
+            opacity: 0;
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: 100;
+            pointer-events: none;
+            /* Ignore clicks until visible */
+        }
 
-/* Hover Effect: Show buttons */
-.message:hover .message-actions-container {
-    opacity: 1;
-    pointer-events: auto;
-}
+        /* Hover Effect: Show buttons */
+        .message:hover .message-actions-container {
+            opacity: 1;
+            pointer-events: auto;
+        }
 
-/* Positioning for SENT messages (Buttons on LEFT) */
-.message.sent .message-actions-container {
-    left: -75px; /* Adjust based on button width */
-    flex-direction: row;
-}
+        /* Positioning for SENT messages (Buttons on LEFT) */
+        .message.sent .message-actions-container {
+            left: -120px;
+            /* Adjust based on button width */
+            flex-direction: row;
+        }
 
-/* Positioning for RECEIVED messages (Buttons on RIGHT) */
-.message.received .message-actions-container {
-    right: -75px; /* Adjust based on button width */
-    flex-direction: row-reverse; /* Flip order so emoji is closest to bubble */
-}
+        /* Positioning for RECEIVED messages (Buttons on RIGHT) */
+        .message.received .message-actions-container {
+            right: -120px;
+            /* Adjust based on button width */
+            flex-direction: row-reverse;
+            /* Flip order so emoji is closest to bubble */
+        }
 
-/* Common Button Styles */
-.action-btn {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    transition: all 0.2s ease;
-    font-size: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(40, 40, 40, 0.6);
-    color: rgba(255, 255, 255, 0.7);
-}
+        /* Common Button Styles */
+        .action-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: all 0.2s ease;
+            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(40, 40, 40, 0.6);
+            color: rgba(255, 255, 255, 0.7);
+        }
 
-/* Emoji Button Specifics */
-.action-btn.reaction-btn:hover {
-    background: var(--primary-gradient);
-    color: white;
-    transform: scale(1.15);
-    border-color: transparent;
-    box-shadow: 0 4px 12px rgba(0, 114, 255, 0.4);
-}
+        /* Emoji Button Specifics */
+        .action-btn.reaction-btn:hover {
+            background: var(--primary-gradient);
+            color: white;
+            transform: scale(1.15);
+            border-color: transparent;
+            box-shadow: 0 4px 12px rgba(0, 114, 255, 0.4);
+        }
 
-/* Options Button Specifics */
-.action-btn.options-btn:hover {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    transform: scale(1.15) rotate(90deg); /* Nice rotation effect */
-    border-color: white;
-}
+        /* Options Button Specifics */
+        .action-btn.options-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            transform: scale(1.15) rotate(90deg);
+            /* Nice rotation effect */
+            border-color: white;
+        }
 
-/* Animation on hover */
-.message:hover .action-btn {
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
+        /* Animation on hover */
+        .message:hover .action-btn {
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
 
-.message:hover .action-btn:nth-child(2) {
-    animation-delay: 0.05s; /* Stagger effect */
-}
+        .message:hover .action-btn:nth-child(2) {
+            animation-delay: 0.05s;
+            /* Stagger effect */
+        }
 
-@keyframes popIn {
-    from { transform: scale(0); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
-}
-/* =========================================
+        @keyframes popIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* =========================================
    DISAPPEARING MESSAGES STYLES
    ========================================= */
 
-/* Tiny icon inside the bubble (Clock or "1") */
-.disappearing-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-left: 6px;
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.7);
-    vertical-align: middle;
-    background: rgba(0,0,0,0.2);
-    border-radius: 50%;
-    width: 16px;
-    height: 16px;
+        /* Tiny icon inside the bubble (Clock or "1") */
+        .disappearing-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 6px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, 0.7);
+            vertical-align: middle;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Read Once Placeholder (The pill you click) */
+        .read-once-placeholder {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 14px;
+            color: white;
+            transition: background 0.2s;
+            user-select: none;
+            min-width: 140px;
+        }
+
+        .read-once-placeholder.clickable:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .read-once-placeholder.viewed {
+            cursor: default;
+            opacity: 0.6;
+            background: rgba(0, 0, 0, 0.2);
+            border-color: transparent;
+        }
+
+        .read-once-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Read Once View Modal (For Text) */
+        .text-view-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(10px);
+            z-index: 10000;
+            display: none;
+            /* Flex when active */
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .text-view-modal.active {
+            opacity: 1;
+        }
+
+        .text-view-content {
+            background: #1e1e1e;
+            padding: 60px 40px;
+            border-radius: 20px;
+            max-width: 85%;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            text-align: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: white;
+            line-height: 1.6;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .text-view-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s;
+        }
+
+        .text-view-close:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+        /* Styling for the new Bin/Delete icon */
+.options-btn.delete-action i {
+    transition: color 0.3s ease;
 }
 
-/* Read Once Placeholder (The pill you click) */
-.read-once-placeholder {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 18px;
-    cursor: pointer;
-    font-size: 14px;
-    color: white;
-    transition: background 0.2s;
-    user-select: none;
-    min-width: 140px;
+.options-btn.delete-action:hover i {
+    color: #ff416c; /* Using your --secondary-color for a red delete effect */
+    transform: scale(1.1);
 }
 
-.read-once-placeholder.clickable:hover {
-    background: rgba(255, 255, 255, 0.15);
+.options-btn.delete-action:hover {
+    background: rgba(255, 65, 108, 0.1); /* Light red glow background */
+    border-color: rgba(255, 65, 108, 0.3);
+}
+/* =========================================
+   FIX: ADD STORY FORM LAYOUT STABILITY
+   ========================================= */
+
+/* 1. Enforce layout structure on the form groups */
+.add-story-form {
+    align-items: flex-start; /* Prevents vertical stretching shifts */
 }
 
-.read-once-placeholder.viewed {
-    cursor: default;
-    opacity: 0.6;
-    background: rgba(0, 0, 0, 0.2);
-    border-color: transparent;
+/* 2. Constrain the Text Area */
+#storyContent {
+    resize: none; /* Prevent manual resizing from breaking layout */
+    height: 100px; /* Fixed neat height */
 }
 
-.read-once-icon {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 1px solid var(--primary-color);
-    color: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-/* Read Once View Modal (For Text) */
-.text-view-modal {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.92);
-    backdrop-filter: blur(10px);
-    z-index: 10000;
-    display: none; /* Flex when active */
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.text-view-modal.active {
-    opacity: 1;
-}
-
-.text-view-content {
-    background: #1e1e1e;
-    padding: 60px 40px;
-    border-radius: 20px;
-    max-width: 85%;
+/* 3. Stabilize the Media Preview Container */
+/* This ensures the box takes up space proportionally and doesn't jump */
+.media-preview {
     width: 100%;
-    max-height: 80vh;
-    overflow-y: auto;
-    text-align: center;
-    font-size: 24px;
-    font-weight: 600;
-    color: white;
-    line-height: 1.6;
-    position: relative;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.text-view-close {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: rgba(255,255,255,0.1);
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
+    height: 220px !important; /* Fixed height to stop layout shifting */
+    min-height: 220px !important;
+    max-height: 220px !important;
+    background: rgba(0, 0, 0, 0.4);
+    border: 2px dashed rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
-    font-size: 20px;
-    transition: all 0.2s;
+    margin-top: 15px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
 }
 
-.text-view-close:hover {
-    background: rgba(255,255,255,0.2);
-    transform: rotate(90deg);
+/* Keep it hidden when no file is selected */
+.media-preview.hidden {
+    display: none !important;
+}
+
+/* 4. Perfect Image/Video Fitting */
+/* Images will scale to fit inside the box without changing the box's size */
+.media-preview img,
+.media-preview video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* Shows full image without cropping or stretching */
+    object-position: center;
+    border-radius: 8px;
+    max-height: none !important; /* Reset any conflicting max-heights */
+    max-width: none !important;
+}
+
+/* 5. Neat Upload Button */
+.media-upload-btn {
+    width: 100%;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.media-upload-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+/* 6. Fix for Remove Button positioning */
+.media-remove-btn {
+    top: 10px;
+    right: 10px;
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+/* 7. Ensure the modal scrolls if content is too tall (mobile/small screens) */
+.add-story-modal .story-modal-content {
+    overflow-y: auto; /* Enable scrolling within the modal */
+    display: flex;
+    flex-direction: column;
 }
     </style>
     <script src="https://www.youtube.com/iframe_api"></script>
@@ -2439,6 +2571,16 @@
                 <div class="chat-messages" id="chatMessages"></div>
                 <!-- Replace the existing chat-input-container div with this -->
                 <div class="chat-input-container">
+                        <div class="reply-preview hidden" id="replyPreview">
+        <div class="reply-preview-bar"></div>
+        <div class="reply-preview-content">
+            <div class="reply-preview-author" id="replyPreviewAuthor">User Name</div>
+            <div class="reply-preview-text" id="replyPreviewText">Message text...</div>
+        </div>
+        <button class="reply-cancel-btn" onclick="cancelReply()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
                     <div class="disappearing-options hidden" id="disappearingOptions">
                         <button class="option-btn" id="readOnceBtn">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -2667,35 +2809,35 @@
             </div>
             <script>
                 // Ensure YouTube API is loaded before any initialization
-var YT;
-var onYouTubeIframeAPIReady;
+                var YT;
+                var onYouTubeIframeAPIReady;
 
-(function() {
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-})();
-// Add this near the top of your script section, after variable declarations
-window.onYouTubeIframeAPIReady = function() {
-    console.log('YouTube API is ready');
-    window.YTReady = true;
-};
+                (function () {
+                    var tag = document.createElement('script');
+                    tag.src = "https://www.youtube.com/iframe_api";
+                    var firstScriptTag = document.getElementsByTagName('script')[0];
+                    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+                })();
+                // Add this near the top of your script section, after variable declarations
+                window.onYouTubeIframeAPIReady = function () {
+                    console.log('YouTube API is ready');
+                    window.YTReady = true;
+                };
 
-// Helper to check if API is ready
-function waitForYouTubeAPI(callback, maxAttempts = 50) {
-    let attempts = 0;
-    const checkAPI = setInterval(() => {
-        attempts++;
-        if (typeof YT !== 'undefined' && typeof YT.Player !== 'undefined') {
-            clearInterval(checkAPI);
-            callback();
-        } else if (attempts >= maxAttempts) {
-            clearInterval(checkAPI);
-            console.error('YouTube API failed to load');
-        }
-    }, 100);
-}
+                // Helper to check if API is ready
+                function waitForYouTubeAPI(callback, maxAttempts = 50) {
+                    let attempts = 0;
+                    const checkAPI = setInterval(() => {
+                        attempts++;
+                        if (typeof YT !== 'undefined' && typeof YT.Player !== 'undefined') {
+                            clearInterval(checkAPI);
+                            callback();
+                        } else if (attempts >= maxAttempts) {
+                            clearInterval(checkAPI);
+                            console.error('YouTube API failed to load');
+                        }
+                    }, 100);
+                }
                 // YouTube API Configuration
                 const YOUTUBE_API_KEY = 'AIzaSyBiVCOrKMTbh1gVEpevbbJ_5EDewv7q_dI';
                 // Voice visualizer configuration
@@ -2928,12 +3070,12 @@ function waitForYouTubeAPI(callback, maxAttempts = 50) {
                 function renderStoryCard(story) {
                     let mediaHTML = '', audioHTML = '';
 
-// Locate this section in renderStoryCard(story)
-if (story.youtubeVideo) {
-    const { id, title } = story.youtubeVideo;
-    // CHANGE THIS: Ensure prefix is 'youtube-player-' to match init function
-    const uniqueId = `Youtubeer-${story.id}`; 
-    audioHTML = `
+                    // Locate this section in renderStoryCard(story)
+                    if (story.youtubeVideo) {
+                        const { id, title } = story.youtubeVideo;
+                        // CHANGE THIS: Ensure prefix is 'youtube-player-' to match init function
+                        const uniqueId = `Youtubeer-${story.id}`;
+                        audioHTML = `
         <div class="story-audio-player">
             <div class="audio-track-info">
                 <div class="audio-details">
@@ -2942,7 +3084,7 @@ if (story.youtubeVideo) {
             </div>
             <div id="${uniqueId}" style="display:none;"></div>
         </div>`;
-}
+                    }
                     if (story.media) {
                         mediaHTML = story.media.type === 'image'
                             ? `<div class="story-media-container"><img src="${story.media.data}" alt="Story media" /></div>`
@@ -2951,8 +3093,9 @@ if (story.youtubeVideo) {
                         mediaHTML = `<div class="story-media-container"><img src="${story.image}" alt="Story content" /></div>`;
                     }
 
-                    if (story.media || story.image) { if (story.youtubeVideo) {
-                    }
+                    if (story.media || story.image) {
+                        if (story.youtubeVideo) {
+                        }
                     }
                     // ... (End existing media logic) ...
 
@@ -3400,113 +3543,113 @@ if (story.youtubeVideo) {
 
                     updateProgressBars();
 
-// Inside updateCarousel() function, replace the YouTube section:
-if (story && story.youtubeVideo) {
-    waitForYouTubeAPI(() => {
-        initYouTubePlayer(story);
-    });
-}
-                }
-
-// 1. Helper to ensure API is ready before calling init
-function waitForYouTubeAPI(callback) {
-    if (typeof YT !== 'undefined' && YT.Player) {
-        callback();
-    } else {
-        console.log('Waiting for YouTube API...');
-        setTimeout(() => waitForYouTubeAPI(callback), 100);
-    }
-}
-
-// 2. Updated Init Function with Origin Fix
-function initYouTubePlayer(story) {
-    if (!story.youtubeVideo) return;
-    
-    const { id, startTime = 0, endTime = 30 } = story.youtubeVideo;
-    const playerId = `Youtubeer-${story.id}`;
-    const clipDuration = endTime - startTime;
-
-    // Clean up existing player to prevent memory leaks and "ghost" audio
-    if (currentYouTubePlayer) {
-        try {
-            currentYouTubePlayer.destroy();
-        } catch (e) {
-            console.log('Error destroying player:', e);
-        }
-        currentYouTubePlayer = null;
-    }
-
-    // Delay slightly to ensure the DOM element rendered by renderStoryCard is available
-    setTimeout(() => {
-        try {
-            const playerContainer = document.getElementById(playerId);
-            if (!playerContainer) {
-                console.error(`Target container ${playerId} not found in DOM`);
-                return;
-            }
-
-            currentYouTubePlayer = new YT.Player(playerId, {
-                height: '0',
-                width: '0',
-                videoId: id,
-                playerVars: {
-                    'autoplay': 1,
-                    'controls': 0,
-                    'start': startTime,
-                    'end': endTime,
-                    'modestbranding': 1,
-                    'rel': 0,
-                    'enablejsapi': 1,
-                    // FIX: Explicitly set origin to your GitHub Pages domain
-                    'origin': window.location.origin 
-                },
-                events: {
-                    'onReady': (event) => {
-                        console.log('YouTube Story Player Ready');
-                        event.target.unMute();
-                        event.target.setVolume(80);
-                        event.target.playVideo();
-                    },
-                    'onStateChange': (event) => {
-                        handlePlayerStateChange(event, story, startTime, clipDuration);
-                    },
-                    'onError': (event) => {
-                        console.error('YouTube API Error:', event.data);
+                    // Inside updateCarousel() function, replace the YouTube section:
+                    if (story && story.youtubeVideo) {
+                        waitForYouTubeAPI(() => {
+                            initYouTubePlayer(story);
+                        });
                     }
                 }
-            });
-        } catch (e) {
-            console.error('Failed to create YouTube player:', e);
-        }
-    }, 300);
-}
 
-// 3. Helper for State Changes (keeps the main function clean)
-function handlePlayerStateChange(event, story, startTime, clipDuration) {
-    const btn = document.getElementById(`playPauseBtn-${story.id}`);
-    const icon = btn ? btn.querySelector('i') : null;
-
-    if (event.data === YT.PlayerState.PLAYING) {
-        if (icon) icon.className = 'fas fa-pause';
-        
-        if (audioProgressInterval) clearInterval(audioProgressInterval);
-        audioProgressInterval = setInterval(() => {
-            try {
-                if (currentYouTubePlayer && typeof currentYouTubePlayer.getCurrentTime === 'function') {
-                    const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
-                    updateAudioProgress(story.id, currentTime, clipDuration);
+                // 1. Helper to ensure API is ready before calling init
+                function waitForYouTubeAPI(callback) {
+                    if (typeof YT !== 'undefined' && YT.Player) {
+                        callback();
+                    } else {
+                        console.log('Waiting for YouTube API...');
+                        setTimeout(() => waitForYouTubeAPI(callback), 100);
+                    }
                 }
-            } catch (e) {
-                clearInterval(audioProgressInterval);
-            }
-        }, 100);
-    } else if (event.data === YT.PlayerState.PAUSED) {
-        if (icon) icon.className = 'fas fa-play';
-        if (audioProgressInterval) clearInterval(audioProgressInterval);
-    } else if (event.data === YT.PlayerState.ENDED) {
-        event.target.seekTo(startTime); // Loop back if the story hasn't auto-advanced
-    }
-}
+
+                // 2. Updated Init Function with Origin Fix
+                function initYouTubePlayer(story) {
+                    if (!story.youtubeVideo) return;
+
+                    const { id, startTime = 0, endTime = 30 } = story.youtubeVideo;
+                    const playerId = `Youtubeer-${story.id}`;
+                    const clipDuration = endTime - startTime;
+
+                    // Clean up existing player to prevent memory leaks and "ghost" audio
+                    if (currentYouTubePlayer) {
+                        try {
+                            currentYouTubePlayer.destroy();
+                        } catch (e) {
+                            console.log('Error destroying player:', e);
+                        }
+                        currentYouTubePlayer = null;
+                    }
+
+                    // Delay slightly to ensure the DOM element rendered by renderStoryCard is available
+                    setTimeout(() => {
+                        try {
+                            const playerContainer = document.getElementById(playerId);
+                            if (!playerContainer) {
+                                console.error(`Target container ${playerId} not found in DOM`);
+                                return;
+                            }
+
+                            currentYouTubePlayer = new YT.Player(playerId, {
+                                height: '0',
+                                width: '0',
+                                videoId: id,
+                                playerVars: {
+                                    'autoplay': 1,
+                                    'controls': 0,
+                                    'start': startTime,
+                                    'end': endTime,
+                                    'modestbranding': 1,
+                                    'rel': 0,
+                                    'enablejsapi': 1,
+                                    // FIX: Explicitly set origin to your GitHub Pages domain
+                                    'origin': window.location.origin
+                                },
+                                events: {
+                                    'onReady': (event) => {
+                                        console.log('YouTube Story Player Ready');
+                                        event.target.unMute();
+                                        event.target.setVolume(80);
+                                        event.target.playVideo();
+                                    },
+                                    'onStateChange': (event) => {
+                                        handlePlayerStateChange(event, story, startTime, clipDuration);
+                                    },
+                                    'onError': (event) => {
+                                        console.error('YouTube API Error:', event.data);
+                                    }
+                                }
+                            });
+                        } catch (e) {
+                            console.error('Failed to create YouTube player:', e);
+                        }
+                    }, 300);
+                }
+
+                // 3. Helper for State Changes (keeps the main function clean)
+                function handlePlayerStateChange(event, story, startTime, clipDuration) {
+                    const btn = document.getElementById(`playPauseBtn-${story.id}`);
+                    const icon = btn ? btn.querySelector('i') : null;
+
+                    if (event.data === YT.PlayerState.PLAYING) {
+                        if (icon) icon.className = 'fas fa-pause';
+
+                        if (audioProgressInterval) clearInterval(audioProgressInterval);
+                        audioProgressInterval = setInterval(() => {
+                            try {
+                                if (currentYouTubePlayer && typeof currentYouTubePlayer.getCurrentTime === 'function') {
+                                    const currentTime = currentYouTubePlayer.getCurrentTime() - startTime;
+                                    updateAudioProgress(story.id, currentTime, clipDuration);
+                                }
+                            } catch (e) {
+                                clearInterval(audioProgressInterval);
+                            }
+                        }, 100);
+                    } else if (event.data === YT.PlayerState.PAUSED) {
+                        if (icon) icon.className = 'fas fa-play';
+                        if (audioProgressInterval) clearInterval(audioProgressInterval);
+                    } else if (event.data === YT.PlayerState.ENDED) {
+                        event.target.seekTo(startTime); // Loop back if the story hasn't auto-advanced
+                    }
+                }
                 function startStoryTimer() {
                     clearTimeout(storyTimer);
                     if (progressAnimationFrame) cancelAnimationFrame(progressAnimationFrame);
@@ -4149,50 +4292,50 @@ function handlePlayerStateChange(event, story, startTime, clipDuration) {
                     renderMessages();
                 }
 
-function sendMessage() {
-    const input = document.getElementById('messageInput');
-    const text = input.value.trim();
-    if (!text || !selectedChat) return;
+                function sendMessage() {
+                    const input = document.getElementById('messageInput');
+                    const text = input.value.trim();
+                    if (!text || !selectedChat) return;
 
-    // --- LOGIC FOR TIMED MESSAGES ---
-    let expiresAt = null;
-    if (disappearingMode === 'timed') {
-        // Set expiry to 24 hours from now
-        expiresAt = Date.now() + (24 * 60 * 60 * 1000); 
-    }
+                    // --- LOGIC FOR TIMED MESSAGES ---
+                    let expiresAt = null;
+                    if (disappearingMode === 'timed') {
+                        // Set expiry to 24 hours from now
+                        expiresAt = Date.now() + (24 * 60 * 60 * 1000);
+                    }
 
-    const msg = {
-        id: Date.now(),
-        senderId: 'me',
-        text: text,
-        type: 'text',
-        timestamp: new Date(),
-        // Add Disappearing properties
-        disappearingMode: disappearingMode, // 'read-once', 'timed', or null
-        expiresAt: expiresAt,
-        viewed: false // For read-once logic
-    };
+                    const msg = {
+                        id: Date.now(),
+                        senderId: 'me',
+                        text: text,
+                        type: 'text',
+                        timestamp: new Date(),
+                        // Add Disappearing properties
+                        disappearingMode: disappearingMode, // 'read-once', 'timed', or null
+                        expiresAt: expiresAt,
+                        viewed: false // For read-once logic
+                    };
 
-    if (!messages[selectedChat]) messages[selectedChat] = [];
-    messages[selectedChat].push(msg);
+                    if (!messages[selectedChat]) messages[selectedChat] = [];
+                    messages[selectedChat].push(msg);
 
-    // Update conversation preview with icons
-    let previewText = text;
-    if (disappearingMode === 'read-once') previewText = '⏱️ Read once message';
-    else if (disappearingMode === 'timed') previewText = '⏳ ' + text;
+                    // Update conversation preview with icons
+                    let previewText = text;
+                    if (disappearingMode === 'read-once') previewText = '⏱️ Read once message';
+                    else if (disappearingMode === 'timed') previewText = '⏳ ' + text;
 
-    conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: previewText, timestamp: new Date() } : c);
-    
-    input.value = '';
-    
-    // Reset disappearing mode after sending
-    disappearingMode = null;
-    updateDisappearingButtons();
-    document.getElementById('disappearingOptions').classList.add('hidden');
+                    conversations = conversations.map(c => c.id === selectedChat ? { ...c, lastMessage: previewText, timestamp: new Date() } : c);
 
-    renderConversations();
-    renderMessages();
-}
+                    input.value = '';
+
+                    // Reset disappearing mode after sending
+                    disappearingMode = null;
+                    updateDisappearingButtons();
+                    document.getElementById('disappearingOptions').classList.add('hidden');
+
+                    renderConversations();
+                    renderMessages();
+                }
 
                 function deleteMessage(id) {
                     if (!selectedChat) return;
@@ -4311,114 +4454,114 @@ function sendMessage() {
                     selectChat(userId);
                 }
 
-let previewPlayer = null;
-let isPreviewPlaying = false;
+                let previewPlayer = null;
+                let isPreviewPlaying = false;
 
-function togglePreview() {
-    const btn = document.getElementById('previewBtn');
-    if (!btn) return;
+                function togglePreview() {
+                    const btn = document.getElementById('previewBtn');
+                    if (!btn) return;
 
-    if (isPreviewPlaying) {
-        stopPreview();
-        return;
-    }
-
-    const start = parseInt(document.getElementById('startTimeInput').value) || 0;
-    const end = parseInt(document.getElementById('endTimeInput').value) || 30;
-
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
-    btn.classList.add('playing');
-
-    // Wait for YouTube API to be ready
-    if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
-        console.error('YouTube API not loaded yet');
-        setTimeout(() => {
-            btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
-            btn.classList.remove('playing');
-            alert('YouTube player is still loading. Please try again in a moment.');
-        }, 500);
-        return;
-    }
-
-    // Destroy existing player
-    if (previewPlayer) {
-        try {
-            previewPlayer.destroy();
-        } catch (e) {
-            console.log('Error destroying preview player:', e);
-        }
-        previewPlayer = null;
-    }
-
-    // Create container if it doesn't exist
-    let container = document.getElementById('preview-player-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'preview-player-container';
-        container.style.display = 'none';
-        document.querySelector('.time-range-selector').appendChild(container);
-    }
-
-    try {
-        previewPlayer = new YT.Player('preview-player-container', {
-            height: '0',
-            width: '0',
-            videoId: selectedVideoForTimeRange.id,
-            playerVars: {
-                autoplay: 1,
-                controls: 0,
-                start: start,
-                end: end,
-                modestbranding: 1,
-                rel: 0
-            },
-            events: {
-                onReady: (event) => {
-                    console.log('Preview player ready');
-                    event.target.playVideo();
-                    btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
-                    isPreviewPlaying = true;
-                },
-                onStateChange: (event) => {
-                    if (event.data === YT.PlayerState.ENDED) {
+                    if (isPreviewPlaying) {
                         stopPreview();
-                    } else if (event.data === YT.PlayerState.PLAYING) {
-                        btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
-                        isPreviewPlaying = true;
+                        return;
                     }
-                },
-                onError: (event) => {
-                    console.error('Preview player error:', event.data);
-                    stopPreview();
-                    alert('Error playing preview. Please try another video.');
+
+                    const start = parseInt(document.getElementById('startTimeInput').value) || 0;
+                    const end = parseInt(document.getElementById('endTimeInput').value) || 30;
+
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Loading...';
+                    btn.classList.add('playing');
+
+                    // Wait for YouTube API to be ready
+                    if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
+                        console.error('YouTube API not loaded yet');
+                        setTimeout(() => {
+                            btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
+                            btn.classList.remove('playing');
+                            alert('YouTube player is still loading. Please try again in a moment.');
+                        }, 500);
+                        return;
+                    }
+
+                    // Destroy existing player
+                    if (previewPlayer) {
+                        try {
+                            previewPlayer.destroy();
+                        } catch (e) {
+                            console.log('Error destroying preview player:', e);
+                        }
+                        previewPlayer = null;
+                    }
+
+                    // Create container if it doesn't exist
+                    let container = document.getElementById('preview-player-container');
+                    if (!container) {
+                        container = document.createElement('div');
+                        container.id = 'preview-player-container';
+                        container.style.display = 'none';
+                        document.querySelector('.time-range-selector').appendChild(container);
+                    }
+
+                    try {
+                        previewPlayer = new YT.Player('preview-player-container', {
+                            height: '0',
+                            width: '0',
+                            videoId: selectedVideoForTimeRange.id,
+                            playerVars: {
+                                autoplay: 1,
+                                controls: 0,
+                                start: start,
+                                end: end,
+                                modestbranding: 1,
+                                rel: 0
+                            },
+                            events: {
+                                onReady: (event) => {
+                                    console.log('Preview player ready');
+                                    event.target.playVideo();
+                                    btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
+                                    isPreviewPlaying = true;
+                                },
+                                onStateChange: (event) => {
+                                    if (event.data === YT.PlayerState.ENDED) {
+                                        stopPreview();
+                                    } else if (event.data === YT.PlayerState.PLAYING) {
+                                        btn.innerHTML = '<i class="fas fa-stop"></i> Stop Preview';
+                                        isPreviewPlaying = true;
+                                    }
+                                },
+                                onError: (event) => {
+                                    console.error('Preview player error:', event.data);
+                                    stopPreview();
+                                    alert('Error playing preview. Please try another video.');
+                                }
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error creating preview player:', error);
+                        btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
+                        btn.classList.remove('playing');
+                    }
                 }
-            }
-        });
-    } catch (error) {
-        console.error('Error creating preview player:', error);
-        btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
-        btn.classList.remove('playing');
-    }
-}
 
-function stopPreview() {
-    isPreviewPlaying = false;
-    const btn = document.getElementById('previewBtn');
-    if (btn) {
-        btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
-        btn.classList.remove('playing');
-    }
+                function stopPreview() {
+                    isPreviewPlaying = false;
+                    const btn = document.getElementById('previewBtn');
+                    if (btn) {
+                        btn.innerHTML = '<i class="fas fa-play"></i> Play Preview';
+                        btn.classList.remove('playing');
+                    }
 
-    if (previewPlayer) {
-        try {
-            previewPlayer.stopVideo();
-            previewPlayer.destroy();
-        } catch (e) {
-            console.log('Error stopping preview:', e);
-        }
-        previewPlayer = null;
-    }
-}
+                    if (previewPlayer) {
+                        try {
+                            previewPlayer.stopVideo();
+                            previewPlayer.destroy();
+                        } catch (e) {
+                            console.log('Error stopping preview:', e);
+                        }
+                        previewPlayer = null;
+                    }
+                }
 
                 function stopPreview() {
                     isPreviewPlaying = false;
@@ -5048,100 +5191,99 @@ function stopPreview() {
                     }
                 }
 
-function renderMessages() {
-    const chat = conversations.find(c => c.id == selectedChat);
-    if (!chat) return;
+                function renderMessages() {
+                    const chat = conversations.find(c => c.id == selectedChat);
+                    if (!chat) return;
 
-    // 1. Filter out expired "24 Hours" messages
-    const now = Date.now();
-    if (messages[selectedChat]) {
-        messages[selectedChat] = messages[selectedChat].filter(m => {
-            if (m.disappearingMode === 'timed' && m.expiresAt && now > m.expiresAt) {
-                return false; // Remove expired message
-            }
-            return true;
-        });
-    }
+                    // 1. Filter out expired "24 Hours" messages
+                    const now = Date.now();
+                    if (messages[selectedChat]) {
+                        messages[selectedChat] = messages[selectedChat].filter(m => {
+                            if (m.disappearingMode === 'timed' && m.expiresAt && now > m.expiresAt) {
+                                return false; // Remove expired message
+                            }
+                            return true;
+                        });
+                    }
 
-    const msgs = messages[selectedChat] || [];
-    const chatBox = document.getElementById('chatMessages');
+                    const msgs = messages[selectedChat] || [];
+                    const chatBox = document.getElementById('chatMessages');
 
-    chatBox.innerHTML = msgs.map(m => {
-        // Unified Actions Container (Emoji + Settings)
-        const actionsHtml = `
-            <div class="message-actions-container">
-                <div class="action-btn reaction-btn" onclick="showReactionMenu(${m.id}, event)" title="Add Reaction">
-                    <i class="far fa-smile"></i>
-                </div>
-                <div class="action-btn options-btn" onclick="showMessageOptions(${m.id}, event)" title="Message Options">
-                    <i class="fas fa-ellipsis-vertical"></i>
-                </div>
-            </div>
-        `;
+                    chatBox.innerHTML = msgs.map(m => {
+                        // Unified Actions Container (Emoji + Settings)
+const actionsHtml = `
+    <div class="message-actions-container">
+        <div class="action-btn reaction-btn" onclick="showReactionMenu(${m.id}, event)" title="Add Reaction">
+            <i class="far fa-smile"></i>
+        </div>
+        <div class="action-btn options-btn delete-action" onclick="showMessageOptions(${m.id}, event)" title="Delete Message">
+            <i class="fas fa-trash-can"></i> </div>
+    </div>
+`;
 
-        // --- DISAPPEARING LOGIC SETUP ---
-        let contentHtml = '';
-        const isReadOnce = m.disappearingMode === 'read-once';
-        const isTimed = m.disappearingMode === 'timed';
-        const isMe = m.senderId === 'me';
-        
-        // Determine if we show content or a placeholder
-        let showContent = true;
-        let placeholderType = null; // 'clickable' or 'opened'
+                        // --- DISAPPEARING LOGIC SETUP ---
+                        let contentHtml = '';
+                        const isReadOnce = m.disappearingMode === 'read-once';
+                        const isTimed = m.disappearingMode === 'timed';
+                        const isMe = m.senderId === 'me';
 
-        if (isReadOnce && !isMe) {
-            // Received Read-Once messages are hidden by default
-            showContent = false; 
-            if (m.viewed) {
-                placeholderType = 'opened';
-            } else {
-                placeholderType = 'clickable';
-            }
-        }
+                        // Determine if we show content or a placeholder
+                        let showContent = true;
+                        let placeholderType = null; // 'clickable' or 'opened'
 
-        // --- GENERATE CONTENT OR PLACEHOLDER ---
-        if (!showContent) {
-            // Render Placeholder
-            if (placeholderType === 'clickable') {
-                const label = (m.attachments && m.attachments.length > 0) ? 'Photo' : 'Text Message';
-                contentHtml = `
+                        if (isReadOnce && !isMe) {
+                            // Received Read-Once messages are hidden by default
+                            showContent = false;
+                            if (m.viewed) {
+                                placeholderType = 'opened';
+                            } else {
+                                placeholderType = 'clickable';
+                            }
+                        }
+
+                        // --- GENERATE CONTENT OR PLACEHOLDER ---
+                        if (!showContent) {
+                            // Render Placeholder
+                            if (placeholderType === 'clickable') {
+                                const label = (m.attachments && m.attachments.length > 0) ? 'Photo' : 'Text Message';
+                                contentHtml = `
                     <div class="read-once-placeholder clickable" onclick="viewReadOnceMessage(${m.id})">
                         <div class="read-once-icon"><i class="fas fa-1"></i></div>
                         <span>${label}</span>
                     </div>`;
-            } else {
-                contentHtml = `
+                            } else {
+                                contentHtml = `
                     <div class="read-once-placeholder viewed">
                         <div class="read-once-icon" style="border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.3);"><i class="fas fa-1"></i></div>
                         <span>Opened</span>
                     </div>`;
-            }
-        } else {
-            // Render Real Content (Standard logic)
-            if (m.attachments && m.attachments.length > 0) {
-                const mediaOnly = m.attachments.filter(a => a.type === 'image' || a.type === 'video');
-                const docsOnly = m.attachments.filter(a => a.type === 'document');
+                            }
+                        } else {
+                            // Render Real Content (Standard logic)
+                            if (m.attachments && m.attachments.length > 0) {
+                                const mediaOnly = m.attachments.filter(a => a.type === 'image' || a.type === 'video');
+                                const docsOnly = m.attachments.filter(a => a.type === 'document');
 
-                if (mediaOnly.length > 0) {
-                    contentHtml += `<div class="media-grid" data-count="${Math.min(mediaOnly.length, 4)}">`;
-                    mediaOnly.slice(0, 4).forEach((att, idx) => {
-                        const isLast = idx === 3 && mediaOnly.length > 4;
-                        const mediaTag = att.type === 'video'
-                            ? `<video src="${att.url}" muted></video>`
-                            : `<img src="${att.url}" alt="media" />`;
+                                if (mediaOnly.length > 0) {
+                                    contentHtml += `<div class="media-grid" data-count="${Math.min(mediaOnly.length, 4)}">`;
+                                    mediaOnly.slice(0, 4).forEach((att, idx) => {
+                                        const isLast = idx === 3 && mediaOnly.length > 4;
+                                        const mediaTag = att.type === 'video'
+                                            ? `<video src="${att.url}" muted></video>`
+                                            : `<img src="${att.url}" alt="media" />`;
 
-                        contentHtml += `
+                                        contentHtml += `
                             <div class="media-item" onclick="openLightbox(${m.id}, ${idx})">
                                 ${mediaTag}
                                 ${isLast ? `<div class="media-overlay">+${mediaOnly.length - 4}</div>` : ''}
                             </div>`;
-                    });
-                    contentHtml += `</div>`;
-                }
+                                    });
+                                    contentHtml += `</div>`;
+                                }
 
-                if (docsOnly.length > 0) {
-                    docsOnly.forEach(doc => {
-                        contentHtml += `
+                                if (docsOnly.length > 0) {
+                                    docsOnly.forEach(doc => {
+                                        contentHtml += `
                             <div class="document-card" onclick="downloadFile('${doc.url}', '${doc.name}')">
                                 <div class="doc-icon"><i class="fas fa-file-lines"></i></div>
                                 <div class="doc-info">
@@ -5150,14 +5292,14 @@ function renderMessages() {
                                 </div>
                                 <div class="doc-download-btn"><i class="fas fa-download"></i></div>
                             </div>`;
-                    });
-                }
+                                    });
+                                }
 
-                if (m.text && !m.text.includes('sent') && !m.text.includes('files')) {
-                    contentHtml += `<p class="message-text-adj">${m.text}</p>`;
-                }
-            } else if (m.type === 'voice') {
-                contentHtml = `
+                                if (m.text && !m.text.includes('sent') && !m.text.includes('files')) {
+                                    contentHtml += `<p class="message-text-adj">${m.text}</p>`;
+                                }
+                            } else if (m.type === 'voice') {
+                                contentHtml = `
                     <div class="voice-message-player">
                         <button class="voice-play-btn" onclick="playVoiceWithWaveform('${m.audioUrl}', this)">
                             <i class="fas fa-play"></i>
@@ -5167,36 +5309,36 @@ function renderMessages() {
                         </div>
                         <span class="voice-duration">${m.duration || '0:00'}</span>
                     </div>`;
-            } else {
-                contentHtml = `<p>${m.text}</p>`;
-            }
-            
-            // Append Icons to the Content Bubble
-            if (isReadOnce) {
-                contentHtml += `<span class="disappearing-icon" title="Read Once"><i class="fas fa-1"></i></span>`;
-            }
-            if (isTimed) {
-                contentHtml += `<span class="disappearing-icon" title="Expires in 24h"><i class="fas fa-hourglass-half"></i></span>`;
-            }
-        }
+                            } else {
+                                contentHtml = `<p>${m.text}</p>`;
+                            }
 
-        // Build reactions HTML
-        let reactionsHtml = '';
-        if (m.reactions && Object.keys(m.reactions).length > 0) {
-            reactionsHtml = '<div class="message-reaction-badge" onclick="event.stopPropagation(); showReactionDetails(' + m.id + ')">';
-            Object.entries(m.reactions).forEach(([emoji, users]) => {
-                const isMyReaction = users.includes('me');
-                reactionsHtml += `
+                            // Append Icons to the Content Bubble
+                            if (isReadOnce) {
+                                contentHtml += `<span class="disappearing-icon" title="Read Once"><i class="fas fa-1"></i></span>`;
+                            }
+                            if (isTimed) {
+                                contentHtml += `<span class="disappearing-icon" title="Expires in 24h"><i class="fas fa-hourglass-half"></i></span>`;
+                            }
+                        }
+
+                        // Build reactions HTML
+                        let reactionsHtml = '';
+                        if (m.reactions && Object.keys(m.reactions).length > 0) {
+                            reactionsHtml = '<div class="message-reaction-badge" onclick="event.stopPropagation(); showReactionDetails(' + m.id + ')">';
+                            Object.entries(m.reactions).forEach(([emoji, users]) => {
+                                const isMyReaction = users.includes('me');
+                                reactionsHtml += `
                     <div class="reaction-pill-item ${isMyReaction ? 'my-reaction' : ''}" 
                          onclick="event.stopPropagation(); toggleReaction(${m.id}, '${emoji}')">
                         <span>${emoji}</span>
                         <span class="count">${users.length}</span>
                     </div>`;
-            });
-            reactionsHtml += '</div>';
-        }
+                            });
+                            reactionsHtml += '</div>';
+                        }
 
-        return `
+                        return `
             <div class="message ${m.senderId === 'me' ? 'sent' : 'received'}" data-message-id="${m.id}">
                 ${m.senderId !== 'me' ? `<img src="${chat.avatar}" class="message-avatar" />` : ''}
                 <div class="message-content">
@@ -5212,14 +5354,14 @@ function renderMessages() {
                 </div>
             </div>
         `;
-    }).join('');
+                    }).join('');
 
-    chatBox.scrollTop = chatBox.scrollHeight;
-    chatBox.onscroll = () => {
-        closeReactionMenu();
-        closeMessageOptions();
-    };
-}
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    chatBox.onscroll = () => {
+                        closeReactionMenu();
+                        closeMessageOptions();
+                    };
+                }
                 function getFileIcon(fileName) {
                     const ext = fileName.split('.').pop().toLowerCase();
                     const icons = {
@@ -5572,119 +5714,119 @@ function renderMessages() {
                     });
                 }
                 // ============================================
-// WHATSAPP-STYLE REACTION SYSTEM
-// ============================================
+                // WHATSAPP-STYLE REACTION SYSTEM
+                // ============================================
 
-let currentReactionMessageId = null;
+                let currentReactionMessageId = null;
 
-// Show reaction menu
-function showReactionMenu(messageId, event) {
-    event.stopPropagation();
-    
-    currentReactionMessageId = messageId;
-    const menu = document.getElementById('reactionMenu');
-    const triggerBtn = event.currentTarget;
-    const bubble = triggerBtn.closest('.message').querySelector('.message-bubble');
-    const rect = bubble.getBoundingClientRect();
+                // Show reaction menu
+                function showReactionMenu(messageId, event) {
+                    event.stopPropagation();
 
-    // Reset menu
-    menu.classList.remove('active');
-    menu.style.display = 'flex';
+                    currentReactionMessageId = messageId;
+                    const menu = document.getElementById('reactionMenu');
+                    const triggerBtn = event.currentTarget;
+                    const bubble = triggerBtn.closest('.message').querySelector('.message-bubble');
+                    const rect = bubble.getBoundingClientRect();
 
-    // Calculate position
-    const menuWidth = 320;
-    const left = rect.left + (rect.width / 2) - (menuWidth / 2);
-    const top = rect.top - 70;
+                    // Reset menu
+                    menu.classList.remove('active');
+                    menu.style.display = 'flex';
 
-    menu.style.left = `${Math.max(10, Math.min(window.innerWidth - menuWidth - 10, left))}px`;
-    menu.style.top = `${top}px`;
+                    // Calculate position
+                    const menuWidth = 320;
+                    const left = rect.left + (rect.width / 2) - (menuWidth / 2);
+                    const top = rect.top - 70;
 
-    // Show menu with animation
-    setTimeout(() => menu.classList.add('active'), 10);
+                    menu.style.left = `${Math.max(10, Math.min(window.innerWidth - menuWidth - 10, left))}px`;
+                    menu.style.top = `${top}px`;
 
-    // Close on outside click
-    setTimeout(() => {
-        document.addEventListener('click', closeReactionMenu, { once: true });
-    }, 10);
-}
+                    // Show menu with animation
+                    setTimeout(() => menu.classList.add('active'), 10);
 
-// Close reaction menu
-function closeReactionMenu() {
-    const menu = document.getElementById('reactionMenu');
-    menu.classList.remove('active');
-    setTimeout(() => {
-        menu.style.display = 'none';
-    }, 350);
-}
+                    // Close on outside click
+                    setTimeout(() => {
+                        document.addEventListener('click', closeReactionMenu, { once: true });
+                    }, 10);
+                }
 
-// Add or remove reaction
-function addReaction(emoji) {
-    if (!selectedChat || !currentReactionMessageId) return;
+                // Close reaction menu
+                function closeReactionMenu() {
+                    const menu = document.getElementById('reactionMenu');
+                    menu.classList.remove('active');
+                    setTimeout(() => {
+                        menu.style.display = 'none';
+                    }, 350);
+                }
 
-    toggleReaction(currentReactionMessageId, emoji);
-    closeReactionMenu();
-}
+                // Add or remove reaction
+                function addReaction(emoji) {
+                    if (!selectedChat || !currentReactionMessageId) return;
 
-// Toggle reaction (add/remove)
-function toggleReaction(messageId, emoji) {
-    const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
-    if (msgIndex === -1) return;
+                    toggleReaction(currentReactionMessageId, emoji);
+                    closeReactionMenu();
+                }
 
-    const msg = messages[selectedChat][msgIndex];
-    if (!msg.reactions) msg.reactions = {};
+                // Toggle reaction (add/remove)
+                function toggleReaction(messageId, emoji) {
+                    const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
+                    if (msgIndex === -1) return;
 
-    // Check if user already reacted with this emoji
-    if (msg.reactions[emoji] && msg.reactions[emoji].includes('me')) {
-        // Remove reaction
-        msg.reactions[emoji] = msg.reactions[emoji].filter(u => u !== 'me');
-        if (msg.reactions[emoji].length === 0) {
-            delete msg.reactions[emoji];
-        }
-    } else {
-        // Add reaction
-        if (!msg.reactions[emoji]) {
-            msg.reactions[emoji] = [];
-        }
-        msg.reactions[emoji].push('me');
-    }
+                    const msg = messages[selectedChat][msgIndex];
+                    if (!msg.reactions) msg.reactions = {};
 
-    renderMessages();
-}
+                    // Check if user already reacted with this emoji
+                    if (msg.reactions[emoji] && msg.reactions[emoji].includes('me')) {
+                        // Remove reaction
+                        msg.reactions[emoji] = msg.reactions[emoji].filter(u => u !== 'me');
+                        if (msg.reactions[emoji].length === 0) {
+                            delete msg.reactions[emoji];
+                        }
+                    } else {
+                        // Add reaction
+                        if (!msg.reactions[emoji]) {
+                            msg.reactions[emoji] = [];
+                        }
+                        msg.reactions[emoji].push('me');
+                    }
 
-// Show reaction details (who reacted)
-function showReactionDetails(messageId) {
-    const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
-    if (msgIndex === -1) return;
+                    renderMessages();
+                }
 
-    const msg = messages[selectedChat][msgIndex];
-    if (!msg.reactions || Object.keys(msg.reactions).length === 0) return;
+                // Show reaction details (who reacted)
+                function showReactionDetails(messageId) {
+                    const msgIndex = messages[selectedChat].findIndex(m => m.id === messageId);
+                    if (msgIndex === -1) return;
 
-    // Build details string
-    let details = 'Reactions:\n\n';
-    Object.entries(msg.reactions).forEach(([emoji, users]) => {
-        const userNames = users.map(u => u === 'me' ? 'You' : getUserName(u)).join(', ');
-        details += `${emoji} ${userNames}\n`;
-    });
+                    const msg = messages[selectedChat][msgIndex];
+                    if (!msg.reactions || Object.keys(msg.reactions).length === 0) return;
 
-    // Show in a simple alert (you can replace with a custom modal)
-    alert(details);
-}
+                    // Build details string
+                    let details = 'Reactions:\n\n';
+                    Object.entries(msg.reactions).forEach(([emoji, users]) => {
+                        const userNames = users.map(u => u === 'me' ? 'You' : getUserName(u)).join(', ');
+                        details += `${emoji} ${userNames}\n`;
+                    });
 
-// Helper function to get user name
-function getUserName(userId) {
-    if (userId === 'me') return 'You';
-    const user = mockUsers.find(u => u.id === userId);
-    return user ? user.name : 'Unknown';
-}
+                    // Show in a simple alert (you can replace with a custom modal)
+                    alert(details);
+                }
 
-// Initialize reaction menu on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Create reaction menu if it doesn't exist
-    if (!document.getElementById('reactionMenu')) {
-        const reactionMenu = document.createElement('div');
-        reactionMenu.id = 'reactionMenu';
-        reactionMenu.className = 'reaction-menu';
-        reactionMenu.innerHTML = `
+                // Helper function to get user name
+                function getUserName(userId) {
+                    if (userId === 'me') return 'You';
+                    const user = mockUsers.find(u => u.id === userId);
+                    return user ? user.name : 'Unknown';
+                }
+
+                // Initialize reaction menu on page load
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Create reaction menu if it doesn't exist
+                    if (!document.getElementById('reactionMenu')) {
+                        const reactionMenu = document.createElement('div');
+                        reactionMenu.id = 'reactionMenu';
+                        reactionMenu.className = 'reaction-menu';
+                        reactionMenu.innerHTML = `
             <div class="reaction-emoji" onclick="addReaction('👍')">👍</div>
             <div class="reaction-emoji" onclick="addReaction('❤️')">❤️</div>
             <div class="reaction-emoji" onclick="addReaction('😂')">😂</div>
@@ -5692,40 +5834,40 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="reaction-emoji" onclick="addReaction('😢')">😢</div>
             <div class="reaction-emoji" onclick="addReaction('🙏')">🙏</div>
         `;
-        document.body.appendChild(reactionMenu);
-    }
-});
-// ============================================
-// MESSAGE OPTIONS MENU (DELETE/CANCEL)
-// ============================================
+                        document.body.appendChild(reactionMenu);
+                    }
+                });
+                // ============================================
+                // MESSAGE OPTIONS MENU (DELETE/CANCEL)
+                // ============================================
 
-let currentOptionsMessageId = null;
-let currentDeleteAction = null;
-let currentDeleteMessageId = null;
+                let currentOptionsMessageId = null;
+                let currentDeleteAction = null;
+                let currentDeleteMessageId = null;
 
-// Show message options menu
-function showMessageOptions(messageId, event) {
-    event.stopPropagation();
-    
-    currentOptionsMessageId = messageId;
-    const menu = document.getElementById('messageOptionsMenu');
-    const triggerBtn = event.currentTarget;
-    const message = triggerBtn.closest('.message');
-    const bubble = message.querySelector('.message-bubble');
-    const rect = bubble.getBoundingClientRect();
+                // Show message options menu
+                function showMessageOptions(messageId, event) {
+                    event.stopPropagation();
 
-    // Get message to check if it's sent by user
-    const msg = messages[selectedChat].find(m => m.id === messageId);
-    const isSentByMe = msg && msg.senderId === 'me';
+                    currentOptionsMessageId = messageId;
+                    const menu = document.getElementById('messageOptionsMenu');
+                    const triggerBtn = event.currentTarget;
+                    const message = triggerBtn.closest('.message');
+                    const bubble = message.querySelector('.message-bubble');
+                    const rect = bubble.getBoundingClientRect();
 
-    // Reset menu
-    menu.classList.remove('active');
-    menu.style.display = 'flex';
+                    // Get message to check if it's sent by user
+                    const msg = messages[selectedChat].find(m => m.id === messageId);
+                    const isSentByMe = msg && msg.senderId === 'me';
 
-    // Update menu content based on message sender
-    if (isSentByMe) {
-        // User's own message - show both delete options
-        menu.innerHTML = `
+                    // Reset menu
+                    menu.classList.remove('active');
+                    menu.style.display = 'flex';
+
+                    // Update menu content based on message sender
+                    if (isSentByMe) {
+                        // User's own message - show both delete options
+                        menu.innerHTML = `
             <button class="message-option-item delete-for-me" onclick="confirmDelete(${messageId}, 'me')">
                 <i class="fas fa-trash"></i>
                 <span>Delete for me</span>
@@ -5740,9 +5882,9 @@ function showMessageOptions(messageId, event) {
                 <span>Cancel</span>
             </button>
         `;
-    } else {
-        // Other person's message - only delete for me
-        menu.innerHTML = `
+                    } else {
+                        // Other person's message - only delete for me
+                        menu.innerHTML = `
             <button class="message-option-item delete-for-me" onclick="confirmDelete(${messageId}, 'me')">
                 <i class="fas fa-trash"></i>
                 <span>Delete for me</span>
@@ -5753,146 +5895,146 @@ function showMessageOptions(messageId, event) {
                 <span>Cancel</span>
             </button>
         `;
-    }
+                    }
 
-    // Calculate position
-    const menuHeight = isSentByMe ? 180 : 130;
-    const left = message.classList.contains('sent') 
-        ? rect.right - 220 
-        : rect.left;
-    const top = rect.top - menuHeight - 10;
+                    // Calculate position
+                    const menuHeight = isSentByMe ? 180 : 130;
+                    const left = message.classList.contains('sent')
+                        ? rect.right - 220
+                        : rect.left;
+                    const top = rect.top - menuHeight - 10;
 
-    menu.style.left = `${Math.max(10, Math.min(window.innerWidth - 230, left))}px`;
-    menu.style.top = `${Math.max(10, top)}px`;
+                    menu.style.left = `${Math.max(10, Math.min(window.innerWidth - 230, left))}px`;
+                    menu.style.top = `${Math.max(10, top)}px`;
 
-    // Show menu with animation
-    setTimeout(() => menu.classList.add('active'), 10);
+                    // Show menu with animation
+                    setTimeout(() => menu.classList.add('active'), 10);
 
-    // Close on outside click
-    setTimeout(() => {
-        document.addEventListener('click', closeMessageOptions, { once: true });
-    }, 10);
-}
+                    // Close on outside click
+                    setTimeout(() => {
+                        document.addEventListener('click', closeMessageOptions, { once: true });
+                    }, 10);
+                }
 
-// Close message options menu
-function closeMessageOptions() {
-    const menu = document.getElementById('messageOptionsMenu');
-    menu.classList.remove('active');
-    setTimeout(() => {
-        menu.style.display = 'none';
-    }, 300);
-}
+                // Close message options menu
+                function closeMessageOptions() {
+                    const menu = document.getElementById('messageOptionsMenu');
+                    menu.classList.remove('active');
+                    setTimeout(() => {
+                        menu.style.display = 'none';
+                    }, 300);
+                }
 
-// Show delete confirmation modal
-function confirmDelete(messageId, action) {
-    closeMessageOptions();
-    
-    currentDeleteMessageId = messageId;
-    currentDeleteAction = action;
-    
-    const modal = document.getElementById('deleteConfirmationModal');
-    const title = modal.querySelector('.delete-confirmation-title');
-    const text = modal.querySelector('.delete-confirmation-text');
-    const icon = modal.querySelector('.delete-confirmation-icon');
-    const confirmBtn = modal.querySelector('.delete-confirmation-btn.confirm');
-    
-    if (action === 'everyone') {
-        title.textContent = 'Delete for everyone?';
-        text.textContent = 'This message will be deleted for everyone in the chat. This action cannot be undone.';
-        icon.classList.remove('warning');
-        icon.classList.add('danger');
-        icon.innerHTML = '<i class="fas fa-trash-can"></i>';
-        confirmBtn.classList.add('danger');
-        confirmBtn.textContent = 'Delete for Everyone';
-    } else {
-        title.textContent = 'Delete for me?';
-        text.textContent = 'This message will be deleted for you. Other chat members will still be able to see it.';
-        icon.classList.remove('danger');
-        icon.classList.add('warning');
-        icon.innerHTML = '<i class="fas fa-trash"></i>';
-        confirmBtn.classList.remove('danger');
-        confirmBtn.textContent = 'Delete for Me';
-    }
-    
-    modal.classList.add('active');
-}
+                // Show delete confirmation modal
+                function confirmDelete(messageId, action) {
+                    closeMessageOptions();
 
-// Close delete confirmation modal
-function closeDeleteConfirmation() {
-    const modal = document.getElementById('deleteConfirmationModal');
-    modal.classList.remove('active');
-    currentDeleteMessageId = null;
-    currentDeleteAction = null;
-}
+                    currentDeleteMessageId = messageId;
+                    currentDeleteAction = action;
 
-// Execute delete action
-function executeDelete() {
-    if (!currentDeleteMessageId || !currentDeleteAction) return;
-    
-    const msgIndex = messages[selectedChat].findIndex(m => m.id === currentDeleteMessageId);
-    if (msgIndex === -1) return;
-    
-    if (currentDeleteAction === 'everyone') {
-        // Delete for everyone - remove from messages completely
-        messages[selectedChat].splice(msgIndex, 1);
-        
-        // Show notification
-        showDeleteNotification('Message deleted for everyone');
-    } else {
-        // Delete for me - mark as deleted but keep in array
-        messages[selectedChat][msgIndex].deletedForMe = true;
-        
-        // Actually remove it from display
-        messages[selectedChat].splice(msgIndex, 1);
-        
-        // Show notification
-        showDeleteNotification('Message deleted');
-    }
-    
-    // Update UI
-    renderMessages();
-    closeDeleteConfirmation();
-}
+                    const modal = document.getElementById('deleteConfirmationModal');
+                    const title = modal.querySelector('.delete-confirmation-title');
+                    const text = modal.querySelector('.delete-confirmation-text');
+                    const icon = modal.querySelector('.delete-confirmation-icon');
+                    const confirmBtn = modal.querySelector('.delete-confirmation-btn.confirm');
 
-// Show delete notification
-function showDeleteNotification(text) {
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = 'delete-notification';
-    notification.innerHTML = `
+                    if (action === 'everyone') {
+                        title.textContent = 'Delete for everyone?';
+                        text.textContent = 'This message will be deleted for everyone in the chat. This action cannot be undone.';
+                        icon.classList.remove('warning');
+                        icon.classList.add('danger');
+                        icon.innerHTML = '<i class="fas fa-trash-can"></i>';
+                        confirmBtn.classList.add('danger');
+                        confirmBtn.textContent = 'Delete for Everyone';
+                    } else {
+                        title.textContent = 'Delete for me?';
+                        text.textContent = 'This message will be deleted for you. Other chat members will still be able to see it.';
+                        icon.classList.remove('danger');
+                        icon.classList.add('warning');
+                        icon.innerHTML = '<i class="fas fa-trash"></i>';
+                        confirmBtn.classList.remove('danger');
+                        confirmBtn.textContent = 'Delete for Me';
+                    }
+
+                    modal.classList.add('active');
+                }
+
+                // Close delete confirmation modal
+                function closeDeleteConfirmation() {
+                    const modal = document.getElementById('deleteConfirmationModal');
+                    modal.classList.remove('active');
+                    currentDeleteMessageId = null;
+                    currentDeleteAction = null;
+                }
+
+                // Execute delete action
+                function executeDelete() {
+                    if (!currentDeleteMessageId || !currentDeleteAction) return;
+
+                    const msgIndex = messages[selectedChat].findIndex(m => m.id === currentDeleteMessageId);
+                    if (msgIndex === -1) return;
+
+                    if (currentDeleteAction === 'everyone') {
+                        // Delete for everyone - remove from messages completely
+                        messages[selectedChat].splice(msgIndex, 1);
+
+                        // Show notification
+                        showDeleteNotification('Message deleted for everyone');
+                    } else {
+                        // Delete for me - mark as deleted but keep in array
+                        messages[selectedChat][msgIndex].deletedForMe = true;
+
+                        // Actually remove it from display
+                        messages[selectedChat].splice(msgIndex, 1);
+
+                        // Show notification
+                        showDeleteNotification('Message deleted');
+                    }
+
+                    // Update UI
+                    renderMessages();
+                    closeDeleteConfirmation();
+                }
+
+                // Show delete notification
+                function showDeleteNotification(text) {
+                    // Create notification element
+                    const notification = document.createElement('div');
+                    notification.className = 'delete-notification';
+                    notification.innerHTML = `
         <i class="fas fa-check-circle"></i>
         <span>${text}</span>
     `;
-    
-    // Add to body
-    document.body.appendChild(notification);
-    
-    // Trigger animation
-    setTimeout(() => notification.classList.add('show'), 10);
-    
-    // Remove after 3 seconds
-    setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => notification.remove(), 300);
-    }, 3000);
-}
 
-// Initialize menus on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Create message options menu if it doesn't exist
-    if (!document.getElementById('messageOptionsMenu')) {
-        const optionsMenu = document.createElement('div');
-        optionsMenu.id = 'messageOptionsMenu';
-        optionsMenu.className = 'message-options-menu';
-        document.body.appendChild(optionsMenu);
-    }
-    
-    // Create delete confirmation modal if it doesn't exist
-    if (!document.getElementById('deleteConfirmationModal')) {
-        const modal = document.createElement('div');
-        modal.id = 'deleteConfirmationModal';
-        modal.className = 'delete-confirmation-modal';
-        modal.innerHTML = `
+                    // Add to body
+                    document.body.appendChild(notification);
+
+                    // Trigger animation
+                    setTimeout(() => notification.classList.add('show'), 10);
+
+                    // Remove after 3 seconds
+                    setTimeout(() => {
+                        notification.classList.remove('show');
+                        setTimeout(() => notification.remove(), 300);
+                    }, 3000);
+                }
+
+                // Initialize menus on page load
+                document.addEventListener('DOMContentLoaded', () => {
+                    // Create message options menu if it doesn't exist
+                    if (!document.getElementById('messageOptionsMenu')) {
+                        const optionsMenu = document.createElement('div');
+                        optionsMenu.id = 'messageOptionsMenu';
+                        optionsMenu.className = 'message-options-menu';
+                        document.body.appendChild(optionsMenu);
+                    }
+
+                    // Create delete confirmation modal if it doesn't exist
+                    if (!document.getElementById('deleteConfirmationModal')) {
+                        const modal = document.createElement('div');
+                        modal.id = 'deleteConfirmationModal';
+                        modal.className = 'delete-confirmation-modal';
+                        modal.innerHTML = `
             <div class="delete-confirmation-content">
                 <div class="delete-confirmation-header">
                     <div class="delete-confirmation-icon warning">
@@ -5913,67 +6055,393 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
-        document.body.appendChild(modal);
-        
-        // Close on background click
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                closeDeleteConfirmation();
-            }
-        });
-    }
-});
-// --- HELPER: Initialize Text Reader Modal ---
-document.addEventListener('DOMContentLoaded', () => {
-    if (!document.getElementById('textViewModal')) {
-        const modal = document.createElement('div');
-        modal.id = 'textViewModal';
-        modal.className = 'text-view-modal';
-        modal.innerHTML = `
+                        document.body.appendChild(modal);
+
+                        // Close on background click
+                        modal.addEventListener('click', (e) => {
+                            if (e.target === modal) {
+                                closeDeleteConfirmation();
+                            }
+                        });
+                    }
+                });
+                // --- HELPER: Initialize Text Reader Modal ---
+                document.addEventListener('DOMContentLoaded', () => {
+                    if (!document.getElementById('textViewModal')) {
+                        const modal = document.createElement('div');
+                        modal.id = 'textViewModal';
+                        modal.className = 'text-view-modal';
+                        modal.innerHTML = `
             <div class="text-view-content">
                 <div class="text-view-close" onclick="closeTextModal()">&times;</div>
                 <div id="textViewText"></div>
             </div>
         `;
-        document.body.appendChild(modal);
+                        document.body.appendChild(modal);
+                    }
+                });
+
+                function closeTextModal() {
+                    const modal = document.getElementById('textViewModal');
+                    modal.classList.remove('active');
+                    setTimeout(() => modal.style.display = 'none', 300);
+                }
+
+                // --- HELPER: Handle Clicking a Read-Once Message ---
+                function viewReadOnceMessage(id) {
+                    if (!selectedChat || !messages[selectedChat]) return;
+
+                    const msg = messages[selectedChat].find(m => m.id === id);
+                    if (!msg) return;
+
+                    // 1. Mark as viewed
+                    msg.viewed = true;
+
+                    // 2. Open Content
+                    if (msg.attachments && msg.attachments.length > 0) {
+                        // If it's media, open the Lightbox (image 0)
+                        openLightbox(id, 0);
+                    } else {
+                        // If it's text, open the Text Modal
+                        const modal = document.getElementById('textViewModal');
+                        const textContainer = document.getElementById('textViewText');
+                        textContainer.textContent = msg.text || "Media Content";
+
+                        modal.style.display = 'flex';
+                        // Force reflow for animation
+                        void modal.offsetWidth;
+                        modal.classList.add('active');
+                    }
+
+                    // 3. Update UI (Changes bubble to "Opened")
+                    renderMessages();
+                }
+                // ============================================
+// WHATSAPP-STYLE REPLY FEATURE
+// ============================================
+
+let replyingToMessage = null;
+
+/**
+ * Initiate reply to a message
+ */
+function replyToMessage(messageId, event) {
+    if (event) {
+        event.stopPropagation();
+    }
+
+    if (!selectedChat || !messages[selectedChat]) return;
+
+    const message = messages[selectedChat].find(m => m.id === messageId);
+    if (!message) return;
+
+    replyingToMessage = {
+        id: message.id,
+        senderId: message.senderId,
+        text: message.text || 'Media message',
+        timestamp: message.timestamp
+    };
+
+    // Update preview UI
+    const preview = document.getElementById('replyPreview');
+    const authorEl = document.getElementById('replyPreviewAuthor');
+    const textEl = document.getElementById('replyPreviewText');
+
+    // Get author name
+    const authorName = message.senderId === 'me' ? 'You' : 
+                      (conversations.find(c => c.userId === message.senderId)?.userName || 'User');
+
+    authorEl.textContent = authorName;
+    textEl.textContent = message.text || '📷 Photo' || '🎤 Voice message';
+
+    preview.classList.remove('hidden');
+
+    // Focus input
+    document.getElementById('messageInput').focus();
+}
+
+/**
+ * Cancel reply
+ */
+function cancelReply() {
+    replyingToMessage = null;
+    document.getElementById('replyPreview').classList.add('hidden');
+}
+
+/**
+ * Scroll to the original message when reply quote is clicked
+ */
+function scrollToMessage(messageId) {
+    const messageElement = document.querySelector(`[data-message-id="${messageId}"]`);
+    if (messageElement) {
+        messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Highlight effect
+        messageElement.style.background = 'rgba(0, 114, 255, 0.2)';
+        setTimeout(() => {
+            messageElement.style.background = '';
+        }, 1000);
+    }
+}
+
+/**
+ * Modified sendMessage function to include reply data
+ */
+function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const text = input.value.trim();
+    if (!text || !selectedChat) return;
+
+    // Determine expiry for disappearing messages
+    let expiresAt = null;
+    if (disappearingMode === 'timed') {
+        expiresAt = Date.now() + (24 * 60 * 60 * 1000);
+    }
+
+    // Create message object
+    const msg = {
+        id: Date.now(),
+        senderId: 'me',
+        text: text,
+        type: 'text',
+        timestamp: new Date(),
+        disappearingMode: disappearingMode,
+        expiresAt: expiresAt,
+        viewed: false,
+        // Add reply data
+        replyTo: replyingToMessage ? {
+            id: replyingToMessage.id,
+            senderId: replyingToMessage.senderId,
+            text: replyingToMessage.text,
+            timestamp: replyingToMessage.timestamp
+        } : null
+    };
+
+    if (!messages[selectedChat]) messages[selectedChat] = [];
+    messages[selectedChat].push(msg);
+
+    // Update conversation preview
+    let previewText = text;
+    if (disappearingMode === 'read-once') previewText = '⏱️ Read once message';
+    else if (disappearingMode === 'timed') previewText = '⏳ ' + text;
+
+    conversations = conversations.map(c => 
+        c.id === selectedChat ? { ...c, lastMessage: previewText, timestamp: new Date() } : c
+    );
+
+    // Clear input and reset states
+    input.value = '';
+    disappearingMode = null;
+    updateDisappearingButtons();
+    document.getElementById('disappearingOptions').classList.add('hidden');
+    
+    // Clear reply state
+    cancelReply();
+
+    renderConversations();
+    renderMessages();
+}
+
+/**
+ * Modified renderMessages function to include reply quotes
+ */
+function renderMessages() {
+    const chat = conversations.find(c => c.id == selectedChat);
+    if (!chat) return;
+
+    // Filter expired messages
+    const now = Date.now();
+    if (messages[selectedChat]) {
+        messages[selectedChat] = messages[selectedChat].filter(m => {
+            if (m.disappearingMode === 'timed' && m.expiresAt && now > m.expiresAt) {
+                return false;
+            }
+            return true;
+        });
+    }
+
+    const msgs = messages[selectedChat] || [];
+    const chatBox = document.getElementById('chatMessages');
+
+    chatBox.innerHTML = msgs.map(m => {
+        // Build reply quote HTML if message is a reply
+        let replyQuoteHtml = '';
+        if (m.replyTo) {
+            const replyAuthorName = m.replyTo.senderId === 'me' ? 'You' : 
+                                   (conversations.find(c => c.userId === m.replyTo.senderId)?.userName || 'User');
+            
+            replyQuoteHtml = `
+                <div class="reply-quote" onclick="scrollToMessage(${m.replyTo.id})">
+                    <div class="reply-quote-bar"></div>
+                    <div class="reply-quote-content">
+                        <div class="reply-quote-author">${escapeHtml(replyAuthorName)}</div>
+                        <div class="reply-quote-text">${escapeHtml(m.replyTo.text)}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Unified Actions Container (Emoji + Reply + Delete)
+        const actionsHtml = `
+            <div class="message-actions-container">
+                <div class="action-btn reaction-btn" onclick="showReactionMenu(${m.id}, event)" title="Add Reaction">
+                    <i class="far fa-smile"></i>
+                </div>
+                <div class="action-btn reply-btn" onclick="replyToMessage(${m.id}, event)" title="Reply">
+                    <i class="fas fa-reply"></i>
+                </div>
+                <div class="action-btn options-btn delete-action" onclick="showMessageOptions(${m.id}, event)" title="Delete Message">
+                    <i class="fas fa-trash-can"></i>
+                </div>
+            </div>
+        `;
+
+        // Build content HTML (existing logic for disappearing messages, media, etc.)
+        let contentHtml = '';
+        const isReadOnce = m.disappearingMode === 'read-once';
+        const isTimed = m.disappearingMode === 'timed';
+        const isMe = m.senderId === 'me';
+
+        let showContent = true;
+        let placeholderType = null;
+
+        if (isReadOnce && !isMe) {
+            showContent = false;
+            placeholderType = m.viewed ? 'opened' : 'clickable';
+        }
+
+        if (!showContent) {
+            if (placeholderType === 'clickable') {
+                const label = (m.attachments && m.attachments.length > 0) ? 'Photo' : 'Text Message';
+                contentHtml = `
+                    <div class="read-once-placeholder clickable" onclick="viewReadOnceMessage(${m.id})">
+                        <div class="read-once-icon"><i class="fas fa-1"></i></div>
+                        <span>${label}</span>
+                    </div>`;
+            } else {
+                contentHtml = `
+                    <div class="read-once-placeholder viewed">
+                        <div class="read-once-icon" style="border-color: rgba(255,255,255,0.3); color: rgba(255,255,255,0.3);"><i class="fas fa-1"></i></div>
+                        <span>Opened</span>
+                    </div>`;
+            }
+        } else {
+            // Handle media attachments
+            if (m.attachments && m.attachments.length > 0) {
+                const mediaOnly = m.attachments.filter(a => a.type === 'image' || a.type === 'video');
+                const docsOnly = m.attachments.filter(a => a.type === 'document');
+
+                if (mediaOnly.length > 0) {
+                    contentHtml += `<div class="media-grid" data-count="${Math.min(mediaOnly.length, 4)}">`;
+                    mediaOnly.slice(0, 4).forEach((att, idx) => {
+                        const isLast = idx === 3 && mediaOnly.length > 4;
+                        const mediaTag = att.type === 'video'
+                            ? `<video src="${att.url}" muted></video>`
+                            : `<img src="${att.url}" alt="media" />`;
+
+                        contentHtml += `
+                            <div class="media-item" onclick="openLightbox(${m.id}, ${idx})">
+                                ${mediaTag}
+                                ${isLast ? `<div class="media-overlay">+${mediaOnly.length - 4}</div>` : ''}
+                            </div>`;
+                    });
+                    contentHtml += `</div>`;
+                }
+
+                if (docsOnly.length > 0) {
+                    docsOnly.forEach(doc => {
+                        contentHtml += `
+                            <div class="document-card" onclick="downloadFile('${doc.url}', '${doc.name}')">
+                                <div class="doc-icon"><i class="fas fa-file-lines"></i></div>
+                                <div class="doc-info">
+                                    <div class="doc-name">${doc.name}</div>
+                                    <div class="doc-size">Download Document</div>
+                                </div>
+                                <div class="doc-download-btn"><i class="fas fa-download"></i></div>
+                            </div>`;
+                    });
+                }
+
+                if (m.text && !m.text.includes('sent') && !m.text.includes('files')) {
+                    contentHtml += `<p class="message-text-adj">${m.text}</p>`;
+                }
+            } else if (m.type === 'voice') {
+                contentHtml = `
+                    <div class="voice-message-player">
+                        <button class="voice-play-btn" onclick="playVoiceWithWaveform('${m.audioUrl}', this)">
+                            <i class="fas fa-play"></i>
+                        </button>
+                        <div class="waveform-container">
+                            ${generateWaveform()} 
+                        </div>
+                        <span class="voice-duration">${m.duration || '0:00'}</span>
+                    </div>`;
+            } else {
+                contentHtml = `<p>${m.text}</p>`;
+            }
+
+            // Add disappearing icons
+            if (isReadOnce) {
+                contentHtml += `<span class="disappearing-icon" title="Read Once"><i class="fas fa-1"></i></span>`;
+            }
+            if (isTimed) {
+                contentHtml += `<span class="disappearing-icon" title="Expires in 24h"><i class="fas fa-hourglass-half"></i></span>`;
+            }
+        }
+
+        // Build reactions HTML
+        let reactionsHtml = '';
+        if (m.reactions && Object.keys(m.reactions).length > 0) {
+            reactionsHtml = '<div class="message-reaction-badge" onclick="event.stopPropagation(); showReactionDetails(' + m.id + ')">';
+            Object.entries(m.reactions).forEach(([emoji, users]) => {
+                const isMyReaction = users.includes('me');
+                reactionsHtml += `
+                    <div class="reaction-pill-item ${isMyReaction ? 'my-reaction' : ''}" 
+                         onclick="event.stopPropagation(); toggleReaction(${m.id}, '${emoji}')">
+                        <span>${emoji}</span>
+                        <span class="count">${users.length}</span>
+                    </div>`;
+            });
+            reactionsHtml += '</div>';
+        }
+
+        return `
+            <div class="message ${m.senderId === 'me' ? 'sent' : 'received'}" data-message-id="${m.id}">
+                ${m.senderId !== 'me' ? `<img src="${chat.avatar}" class="message-avatar" />` : ''}
+                <div class="message-content">
+                    ${actionsHtml}
+                    <div class="message-bubble">
+                        ${replyQuoteHtml}
+                        ${contentHtml}
+                    </div>
+                    ${reactionsHtml}
+                    <div class="message-meta">
+                        <span class="message-time">${formatMessageTime(m.timestamp)}</span>
+                        ${m.senderId === 'me' ? '<i class="fas fa-check-double status-icon"></i>' : ''}
+                    </div>
+                </div>
+            </div>
+        `;
+    }).join('');
+
+    chatBox.scrollTop = chatBox.scrollHeight;
+    
+    // Close menus on scroll
+    chatBox.onscroll = () => {
+        closeReactionMenu();
+        closeMessageOptions();
+    };
+}
+
+// Update the existing sendMessage event listener to use the new function
+document.getElementById('messageInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
     }
 });
 
-function closeTextModal() {
-    const modal = document.getElementById('textViewModal');
-    modal.classList.remove('active');
-    setTimeout(() => modal.style.display = 'none', 300);
-}
-
-// --- HELPER: Handle Clicking a Read-Once Message ---
-function viewReadOnceMessage(id) {
-    if (!selectedChat || !messages[selectedChat]) return;
-    
-    const msg = messages[selectedChat].find(m => m.id === id);
-    if (!msg) return;
-
-    // 1. Mark as viewed
-    msg.viewed = true;
-    
-    // 2. Open Content
-    if (msg.attachments && msg.attachments.length > 0) {
-        // If it's media, open the Lightbox (image 0)
-        openLightbox(id, 0); 
-    } else {
-        // If it's text, open the Text Modal
-        const modal = document.getElementById('textViewModal');
-        const textContainer = document.getElementById('textViewText');
-        textContainer.textContent = msg.text || "Media Content";
-        
-        modal.style.display = 'flex';
-        // Force reflow for animation
-        void modal.offsetWidth;
-        modal.classList.add('active');
-    }
-
-    // 3. Update UI (Changes bubble to "Opened")
-    renderMessages();
-}
+document.getElementById('sendBtn').addEventListener('click', sendMessage);
             </script>
 </body>
 
