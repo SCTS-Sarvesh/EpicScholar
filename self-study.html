@@ -570,6 +570,11 @@
 </head>
 
 <body class="dark-mode">
+    <!-- Page Loader -->
+    <div id="page-loader">
+        <div class="loader-spinner"></div>
+        <div class="loader-text">Loading Self-study...</div>
+    </div>
     <div id="sidebar-placeholder">
         <div class="sidebar glass-element fixed-top-layer">
             <div class="nav-wrap" id="navWrap">
@@ -773,6 +778,48 @@
         </div>
     </div>
 
+    <!-- ⭐ NEW: Custom End Session Modal with Liquid Glass iOS26 Design -->
+    <div id="end-session-modal" class="modal hidden" style="z-index: 99999;">
+        <div class="end-session-modal-content">
+            <div class="end-session-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="36" stroke="url(#endGradient)" stroke-width="4" opacity="0.3" />
+                    <circle cx="40" cy="40" r="30" fill="url(#endGradient)" opacity="0.2" />
+                    <path d="M35 25 L35 55 M45 25 L45 55" stroke="url(#endGradient)" stroke-width="6"
+                        stroke-linecap="round" />
+                    <defs>
+                        <linearGradient id="endGradient" x1="0" y1="0" x2="80" y2="80">
+                            <stop offset="0%" stop-color="#FF6B6B" />
+                            <stop offset="100%" stop-color="#FF416C" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+            <h2 class="end-session-title">End Session?</h2>
+            <p class="end-session-message" id="end-session-message-text">
+                Are you sure you want to end this session? This will permanently remove it from your sessions list.
+            </p>
+            <div class="end-session-details" id="end-session-details">
+                <div class="detail-item">
+                    <span class="detail-label">Session:</span>
+                    <span class="detail-value" id="end-session-name">-</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Duration:</span>
+                    <span class="detail-value" id="end-session-duration">-</span>
+                </div>
+            </div>
+            <div class="end-session-buttons">
+                <button id="end-session-cancel-btn" class="end-session-btn cancel-btn">
+                    <span>Cancel</span>
+                </button>
+                <button id="end-session-confirm-btn" class="end-session-btn confirm-btn">
+                    <span>End Session</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Video Player Modal -->
     <div id="video-player-modal" class="modal hidden">
         <div class="modal-content">
@@ -801,7 +848,6 @@
             <h1 id="live-session-title" class="gradient-text"></h1>
             <div class="live-session-header-controls">
                 <span id="live-session-timer">00:00</span>
-                <button id="live-take-test-btn" class="secondary-button">Take Test</button>
                 <button id="pause-session-btn" class="secondary-button">Pause Session</button>
                 <button id="end-session-btn" class="action-btn">End Session</button>
             </div>
@@ -860,7 +906,8 @@
     </div>
     <!-- Quiz Modal - Add this before closing </body> tag -->
     <div id="quiz-modal" class="modal hidden">
-        <div class="modal-content" style="width: 90%; max-width: 900px; max-height: 90vh; overflow-y: auto;">
+        <div class="modal-content"
+            style="width: 90%; max-width: 900px; max-height: 75vh; overflow-y: auto; display: flex; flex-direction: column;">
             <button class="modal-close-btn" data-modal-id="quiz-modal">&times;</button>
 
             <div id="quiz-loading" style="text-align: center; padding: 3rem;">
@@ -877,9 +924,10 @@
                     style="display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;">
                 </div>
 
-                <div id="quiz-questions-wrapper" style="position: relative; min-height: 400px;"></div>
+                <div id="quiz-questions-wrapper"
+                    style="position: relative; min-height: 300px; flex: 1; overflow-y: auto;"></div>
 
-                <div id="quiz-nav-buttons" style="display: none; gap: 1rem; margin-top: 2rem;">
+                <div id="quiz-nav-buttons" style="display: flex; gap: 1rem; margin-top: 2rem; flex-shrink: 0;">
                     <button class="secondary-button" id="quiz-prev-btn" onclick="quizPrevQuestion()">← Previous</button>
                     <button class="secondary-button" id="quiz-next-btn" onclick="quizNextQuestion()">Next →</button>
                     <button class="gradient-button" id="quiz-submit-btn" onclick="submitQuizAnswers()"
@@ -964,11 +1012,11 @@
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
 
-        // Default Data
+        // Default Data - Using timestamp-based IDs for consistency
         const defaultSessions = [
-            { id: 1, title: "Quick Geometry Recap", type: "Session", subject: "Math", duration: 45, datetime: new Date(new Date().getTime() - 3600000).toISOString() },
-            { id: 2, title: "The French Revolution", type: "Test", subject: "History", duration: 60, datetime: new Date(new Date().getTime() + 120000).toISOString() },
-            { id: 3, title: "Laws of Motion (Revision)", type: "Session", subject: "Physics", duration: 90, datetime: new Date(new Date().getTime() + 86400000).toISOString() }
+            { id: Date.now() - 10000, title: "Quick Geometry Recap", type: "Session", subject: "Math", duration: 45, datetime: new Date(new Date().getTime() - 3600000).toISOString() },
+            { id: Date.now() - 5000, title: "The French Revolution", type: "Test", subject: "History", duration: 60, datetime: new Date(new Date().getTime() + 120000).toISOString() },
+            { id: Date.now(), title: "Laws of Motion (Revision)", type: "Session", subject: "Physics", duration: 90, datetime: new Date(new Date().getTime() + 86400000).toISOString() }
         ];
         const defaultTimetable = [
             { title: "Midterm Exam", subject: "Calculus", date: "2026-01-10", time: "09:00 AM", status: "Upcoming" },
@@ -1383,8 +1431,13 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 subject: subject,
                 type: 'Session',
                 datetime: new Date().toISOString(),
-                duration: 60
+                duration: 60,
+                isTemporary: true  // ⭐ Mark as temporary AI session
             };
+
+            // ⭐ FIX: Add temp session to sessions array so pause/end can find it
+            sessions.push(tempSession);
+            console.log('✅ Temporary AI session added to sessions array:', tempSession.id);
 
             // Open the live session page immediately
             openLiveSession(tempSession);
@@ -1569,7 +1622,9 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         // =================================================================
 
         function saveDataToLocalStorage() {
-            localStorage.setItem('epicScholarSessions', JSON.stringify(sessions));
+            // ⭐ FIX: Don't save temporary AI sessions to localStorage
+            const permanentSessions = sessions.filter(s => !s.isTemporary);
+            localStorage.setItem('epicScholarSessions', JSON.stringify(permanentSessions));
             localStorage.setItem('epicScholarTimetable', JSON.stringify(examTimetableData));
             localStorage.setItem('epicScholarResources', JSON.stringify(resourcesData));
         }
@@ -1579,7 +1634,24 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             const savedTimetable = localStorage.getItem('epicScholarTimetable');
             const savedResources = localStorage.getItem('epicScholarResources');
 
-            sessions = savedSessions ? JSON.parse(savedSessions) : defaultSessions;
+            // ⭐ FIX: Migrate old session IDs to timestamp format
+            let loadedSessions = savedSessions ? JSON.parse(savedSessions) : defaultSessions;
+
+            // Check if sessions have old-style IDs (small numbers like 1, 2, 3)
+            const hasOldIds = loadedSessions.some(s => s.id < 1000000000000); // Timestamps are 13 digits
+
+            if (hasOldIds) {
+                console.log('⚙️ Migrating old session IDs to timestamp format...');
+                loadedSessions = loadedSessions.map((session, index) => ({
+                    ...session,
+                    id: Date.now() + index // Convert to timestamp
+                }));
+                // Save migrated sessions
+                localStorage.setItem('epicScholarSessions', JSON.stringify(loadedSessions));
+                console.log('✅ Session IDs migrated successfully');
+            }
+
+            sessions = loadedSessions;
             examTimetableData = savedTimetable ? JSON.parse(savedTimetable) : defaultTimetable;
             resourcesData = savedResources ? JSON.parse(savedResources) : defaultResources;
         }
@@ -1644,11 +1716,85 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             return result;
         };
 
+        // RENDER SESSIONS - Updated to show Resume button for paused sessions
         const renderSessions = () => {
             sessionsContainer.innerHTML = '';
+
+            // ⭐ FIX: Filter out temporary AI sessions for display count
+            const permanentSessions = sessions.filter(s => !s.isTemporary);
+
+            // ⭐ EMPTY STATE: Horizontal layout with image left, content right
+            if (permanentSessions.length === 0) {
+                sessionsContainer.innerHTML = `
+                    <div class="empty-state-container">
+                        <img src="no-sessions.png" alt="No sessions" class="empty-state-image" />
+                        <div class="empty-state-content">
+                            <h2 class="empty-state-title">No Active Sessions</h2>
+                            <p class="empty-state-message">
+                                Start your learning journey by creating a study session or test schedule.
+                            </p>
+                            <button class="empty-state-button" onclick="document.getElementById('add-session-btn').click()">
+                                <span>✨</span> Create Session
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
             sessions.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
 
+            // Load paused session data from localStorage
+            let pausedSession = null;
+            let activeSession = null;
+
+            try {
+                // Check for paused session
+                const savedPausedSession = localStorage.getItem('epicScholarPausedSession');
+                if (savedPausedSession) {
+                    pausedSession = JSON.parse(savedPausedSession);
+
+                    // Verify the paused session still exists in sessions array
+                    const sessionExists = sessions.some(s => s.id === pausedSession.id);
+                    if (!sessionExists) {
+                        console.warn('⚠️ Paused session no longer exists, clearing data');
+                        localStorage.removeItem('epicScholarPausedSession');
+                        pausedSessionData = null;
+                        pausedSession = null;
+                    } else {
+                        pausedSessionData = pausedSession;
+                        console.log('✅ Loaded paused session:', pausedSession.sessionTitle);
+                    }
+                }
+
+                // ⭐ NEW: Check for active (running) session
+                const savedActiveSession = localStorage.getItem('epicScholarActiveSession');
+                if (savedActiveSession) {
+                    activeSession = JSON.parse(savedActiveSession);
+
+                    // Verify the active session still exists
+                    const sessionExists = sessions.some(s => s.id === activeSession.id);
+                    if (!sessionExists) {
+                        console.warn('⚠️ Active session no longer exists, clearing data');
+                        localStorage.removeItem('epicScholarActiveSession');
+                        activeSession = null;
+                    } else {
+                        console.log('✅ Loaded active session:', activeSession.sessionTitle);
+                    }
+                }
+            } catch (e) {
+                console.error('❌ Error loading session state:', e);
+                localStorage.removeItem('epicScholarPausedSession');
+                localStorage.removeItem('epicScholarActiveSession');
+                pausedSessionData = null;
+                pausedSession = null;
+                activeSession = null;
+            }
+
             sessions.forEach(session => {
+                // Skip rendering temporary AI sessions in the list
+                if (session.isTemporary) return;
+
                 const card = document.createElement('div');
                 card.className = 'session-card floating-card glass-effect';
                 card.setAttribute('data-id', session.id);
@@ -1658,33 +1804,68 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 const formattedDate = sessionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
                 const formattedTime = sessionDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-                card.innerHTML = `
-                <div class="card-actions">
-                    <button class="card-action-btn edit-btn" title="Edit" data-action="edit-session">✏️</button>
-                    <button class="card-action-btn cancel-btn" title="Cancel" data-action="cancel-session">❌</button>
-                </div>
-                <p class="session-title">🎯 ${session.title}</p>
-                <p class="session-subject">Subject: ${session.subject || 'General'} (AI-Powered)</p>
-                <p class="session-datetime">Scheduled: ${formattedDate} | ${formattedTime}</p>
-                <p class="session-duration">Duration: ${session.duration} minutes</p>
-            `;
+                // ⭐ IMPROVED: Check for both paused AND active states
+                const isPaused = pausedSession && pausedSession.id === session.id;
+                const isActive = activeSession && activeSession.id === session.id && !isPaused;
+                const isInProgress = isPaused || isActive;
 
-                if (session.type === 'Test') {
+                let remainingTime = null;
+                let statusBadge = '';
+
+                if (isPaused) {
+                    remainingTime = pausedSession.totalDuration - pausedSession.elapsedSeconds;
+                    statusBadge = '⏸️ PAUSED';
+                } else if (isActive) {
+                    remainingTime = activeSession.totalDuration - activeSession.elapsedSeconds;
+                    statusBadge = '⚡ IN PROGRESS';
+                }
+
+                card.innerHTML = `
+            <div class="card-actions">
+                <button class="card-action-btn edit-btn" title="Edit" data-action="edit-session">✏️</button>
+                <button class="card-action-btn cancel-btn" title="Cancel" data-action="cancel-session">❌</button>
+            </div>
+            <p class="session-title">🎯 ${session.title}</p>
+            <p class="session-subject">Subject: ${session.subject || 'General'} ${statusBadge}</p>
+            <p class="session-datetime">Scheduled: ${formattedDate} | ${formattedTime}</p>
+            <p class="session-duration">Duration: ${session.duration} minutes</p>
+            ${isInProgress ? `<p style="color: ${isPaused ? 'var(--warning-color)' : 'var(--info-color)'}; font-weight: 600; margin-top: 8px;">⏱️ ${formatTime(remainingTime)} remaining</p>` : ''}
+        `;
+
+                // ⭐ IMPROVED: Show resume button for BOTH paused and active sessions
+                if (isInProgress) {
                     card.innerHTML += `
-                    <button class="start-session-btn gradient-button" data-action="start-full-test" style="margin-top: 10px; width: 100%; border: none; padding: 14px 20px; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
-                        📝 Start Full Test
-                    </button>
-                 `;
+                <button class="start-session-btn gradient-button" data-action="resume-session" 
+                        style="margin-top: 10px; width: 100%; background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%); 
+                        border: none; padding: 14px 20px; border-radius: 12px; color: white; font-weight: 600; 
+                        cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);">
+                    ▶️ Resume Session (${formatTime(remainingTime)} left)
+                </button>
+            `;
+                } else if (session.type === 'Test') {
+                    // Only show "Start Full Test" if NOT paused
+                    card.innerHTML += `
+                <button class="start-session-btn gradient-button" data-action="start-full-test" 
+                        style="margin-top: 10px; width: 100%; border: none; padding: 14px 20px; border-radius: 12px; 
+                        color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    📝 Start Full Test
+                </button>
+            `;
                 } else {
+                    // Only show "Start AI Session" if NOT paused
                     card.innerHTML += `
-                    <button class="start-session-btn gradient-button" data-action="start-ai-session" style="margin-top: 10px; width: 100%; background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); border: none; padding: 14px 20px; border-radius: 12px; color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);">
-                        🤖 Start AI Learning Session
-                    </button>
-                 `;
+                <button class="start-session-btn gradient-button" data-action="start-ai-session" 
+                        style="margin-top: 10px; width: 100%; background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); 
+                        border: none; padding: 14px 20px; border-radius: 12px; color: white; font-weight: 600; 
+                        cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);">
+                    🤖 Start AI Learning Session
+                </button>
+            `;
                 }
 
                 sessionsContainer.appendChild(card);
             });
+
             revealCards('#sessions-container');
         };
 
@@ -2532,17 +2713,34 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             return `${mins}:${secs}`;
         }
 
+        // UPDATE SESSION TIMER - Replace existing function
         function updateSessionTimer() {
-            if (sessionPaused) return;
+            if (sessionPaused) {
+                // When paused, show PAUSED indicator
+                liveSessionTimer.textContent = `⏸ ${formatTime(sessionTotalDuration - sessionElapsedSeconds)}`;
+                return;
+            }
 
+            // Calculate elapsed time
             sessionElapsedSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
             const remainingSeconds = Math.max(0, sessionTotalDuration - sessionElapsedSeconds);
 
+            // Update timer display
             liveSessionTimer.textContent = formatTime(remainingSeconds);
+
+            // Visual warning when time is running low (last 5 minutes)
+            if (remainingSeconds <= 300 && remainingSeconds > 0) {
+                liveSessionTimer.style.color = "var(--warning-color)";
+                liveSessionTimer.style.animation = "pulse 1s infinite";
+            } else {
+                liveSessionTimer.style.color = "";
+                liveSessionTimer.style.animation = "";
+            }
 
             // Auto-end session when time runs out
             if (remainingSeconds <= 0) {
                 clearInterval(sessionTimerInterval);
+                liveSessionTimer.style.color = "var(--secondary-color)";
                 showSessionCompletionDialog();
             }
         }
@@ -3266,8 +3464,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             initAISession(aiSessionState.topic, aiSessionState.subject);
         }
 
+        // OPEN LIVE SESSION - Updated to handle resume from pause
         const openLiveSession = (session) => {
-            currentSessionId = session.id;
+            // ⭐ CRITICAL: Set currentSessionId FIRST - ensure it's a number
+            currentSessionId = Number(session.id);
+
+            console.log('📖 Opening live session. ID:', currentSessionId, 'Title:', session.title);
 
             document.getElementById('live-session-title').textContent = session.title;
             liveSessionPage.classList.remove('hidden', 'hiding');
@@ -3276,73 +3478,129 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             mainContent.classList.add('hiding');
 
             // Check if resuming a paused session
-            if (pausedSessionData && pausedSessionData.id === session.id) {
-                // Resume from paused state
+            // FIX: Ensure ID type match (both numbers)
+            if (pausedSessionData && Number(pausedSessionData.id) === currentSessionId) {
+                // RESUME from paused state
+                console.log('▶️ Resuming from pause:', pausedSessionData);
+
                 sessionTotalDuration = pausedSessionData.totalDuration;
                 sessionElapsedSeconds = pausedSessionData.elapsedSeconds;
                 sessionPaused = false;
                 sessionStartTime = Date.now() - (sessionElapsedSeconds * 1000);
 
                 // Restore chat history
-                chatbotMessages.innerHTML = pausedSessionData.chatHistory;
+                if (pausedSessionData.chatHistory) {
+                    chatbotMessages.innerHTML = pausedSessionData.chatHistory;
+                }
 
-                pausedSessionData = null; // Clear paused data
+                // Restore video search query
+                if (pausedSessionData.videoSearchQuery) {
+                    liveSearchInput.value = pausedSessionData.videoSearchQuery;
+                }
+
+                // Update UI
+                pauseSessionBtn.textContent = "Pause Session";
+                pauseSessionBtn.style.background = "";
+                liveSessionTimer.style.color = "";
+                liveSessionTimer.style.border = "";
+
+                const remainingTime = sessionTotalDuration - sessionElapsedSeconds;
+                showToast(`Session resumed - ${formatTime(remainingTime)} remaining`, 'fa-play');
+                console.log(`✅ Resumed: ${session.title} (${formatTime(sessionElapsedSeconds)} elapsed)`);
+
             } else {
-                // Start new session
-                sessionTotalDuration = session.duration * 60; // Convert minutes to seconds
+                // START new session
+                console.log('🆕 Starting new session');
+
+                sessionTotalDuration = session.duration * 60;
                 sessionElapsedSeconds = 0;
                 sessionPaused = false;
                 sessionStartTime = Date.now();
 
+                // Setup initial chat
                 const initialPrompt = `Summarize key concepts for: ${session.title} (${session.subject}) from ${DEFAULT_CURRICULUM} ${DEFAULT_GRADE} syllabus.`;
                 chatInput.value = initialPrompt;
                 chatbotMessages.innerHTML = '';
                 appendChatMessage("bot", "Welcome! The Edubot is active. Ask me anything or use the pre-filled prompt to start.");
+
+                // Setup video search
+                liveSearchInput.value = `${session.title} ${session.subject} tutorial`;
+
+                console.log(`✅ Started new session: ${session.title}, ID: ${currentSessionId}`);
             }
 
-            pauseSessionBtn.textContent = "Pause Session";
+            // Start/resume timer
             updateSessionTimer();
             sessionTimerInterval = setInterval(updateSessionTimer, 1000);
 
             chatInput.disabled = false;
 
+            // Show floating icons
             pdfIcon.classList.add('visible');
             chatbotIcon.classList.add('visible');
             chatbotContainer.classList.remove('visible');
             pdfContainer.classList.remove('visible');
 
-            liveSearchInput.value = `${session.title} ${session.subject} tutorial`;
+            // Setup video search controls
             liveSearchInput.disabled = true;
             liveSearchBtn.textContent = "Refresh Videos";
             liveSearchBtn.disabled = false;
+
+            // Perform video search
             performYouTubeSearch(liveSearchInput.value);
 
             liveSearchBtn.onclick = () => performYouTubeSearch(liveSearchInput.value, currentNextPageToken);
+
+            // ⭐ FIX: Save active session state to show "Resume" button on dashboard
+            const activeSessionData = {
+                id: Number(currentSessionId),
+                sessionTitle: session.title,
+                sessionSubject: session.subject,
+                sessionType: session.type,
+                elapsedSeconds: sessionElapsedSeconds,
+                totalDuration: sessionTotalDuration,
+                isActive: true,  // Mark as active, not paused
+                startedAt: Date.now()
+            };
+            localStorage.setItem('epicScholarActiveSession', JSON.stringify(activeSessionData));
+            console.log('✅ Active session saved to localStorage:', session.title);
         };
 
+        // CLOSE LIVE SESSION - Don't clear paused session data
         const closeLiveSession = () => {
             liveSessionPage.classList.remove('open');
             liveSessionPage.classList.add('hiding');
             mainContent.classList.remove('hiding');
 
-            clearInterval(sessionTimerInterval);
-            sessionTimerInterval = null;
-            sessionPaused = false;
-            sessionElapsedSeconds = 0;
-            sessionTotalDuration = 0;
+            // Don't clear timer if session is paused (it's already cleared)
+            if (!sessionPaused && sessionTimerInterval) {
+                clearInterval(sessionTimerInterval);
+                sessionTimerInterval = null;
+            }
 
+            // ⭐ FIX: Clear active session state when closing (not pausing)
+            if (!sessionPaused) {
+                localStorage.removeItem('epicScholarActiveSession');
+                sessionElapsedSeconds = 0;
+                sessionTotalDuration = 0;
+                currentSessionId = null;
+            }
+
+            // Hide floating icons
             pdfIcon.classList.remove('visible');
             chatbotIcon.classList.remove('visible');
             chatbotContainer.classList.remove('visible');
             pdfContainer.classList.remove('visible');
+
+            // Reset chat input
             chatInput.disabled = false;
             chatInput.value = "";
 
+            // Clear video section
             videosSection.innerHTML = '';
             liveLoader.style.display = 'none';
             liveSearchBtn.onclick = null;
             currentNextPageToken = null;
-            currentSessionId = null;
 
             liveSessionPage.addEventListener('transitionend', () => {
                 liveSessionPage.classList.add('hidden');
@@ -3422,56 +3680,209 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             closeModal(sessionFormModal);
         });
 
+        // PAUSE SESSION - Return to home page with resume capability
         pauseSessionBtn.addEventListener('click', () => {
-            // Pause session and close live session view
+            console.log('⏸️ PAUSE CLICKED');
+            console.log('   Current Session ID:', currentSessionId, typeof currentSessionId);
+            console.log('   All sessions:', sessions.map(s => ({ id: s.id, type: typeof s.id, title: s.title })));
+
+            // Pause the session
             sessionPaused = true;
             clearInterval(sessionTimerInterval);
 
-            // Save current session state
-            const currentSession = sessions.find(s => s.id === currentSessionId);
+            // Calculate elapsed time up to this point
+            sessionElapsedSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
+
+            // Get current session - FIX: Ensure currentSessionId is valid and convert to number
+            if (!currentSessionId) {
+                console.error('❌ No active session ID found');
+                showToast('Error: No active session found', 'fa-circle-xmark');
+                return;
+            }
+
+            // ⭐ FIX: Convert to number to ensure type consistency
+            const sessionIdNum = Number(currentSessionId);
+            const currentSession = sessions.find(s => Number(s.id) === sessionIdNum);
+
+            if (!currentSession) {
+                console.error('❌ Current session not found');
+                console.error('   Looking for ID:', sessionIdNum, typeof sessionIdNum);
+                console.error('   Available IDs:', sessions.map(s => s.id));
+                console.error('   Type check:', sessions.map(s => typeof s.id));
+
+                showToast('Error: Session not found', 'fa-circle-xmark');
+                return;
+            }
+
+            console.log('✅ Found session to pause:', currentSession.title);
+
+            // Save paused session state to localStorage
             pausedSessionData = {
-                id: currentSessionId,
-                session: currentSession,
+                id: sessionIdNum,  // ⭐ Store as number
+                sessionTitle: currentSession.title,
+                sessionSubject: currentSession.subject,
+                sessionType: currentSession.type,
                 elapsedSeconds: sessionElapsedSeconds,
                 totalDuration: sessionTotalDuration,
-                chatHistory: chatbotMessages.innerHTML
+                chatHistory: chatbotMessages.innerHTML,
+                pausedAt: Date.now(),
+                videoSearchQuery: liveSearchInput.value
             };
 
-            // Update the session card to show "Resume Session" button
-            const sessionCard = document.querySelector(`.session-card[data-id="${currentSessionId}"]`);
-            if (sessionCard) {
-                const startBtn = sessionCard.querySelector('.start-session-btn');
-                if (startBtn) {
-                    startBtn.textContent = `Resume Session (${formatTime(sessionTotalDuration - sessionElapsedSeconds)} left)`;
-                    startBtn.classList.remove('hidden');
-                }
-            }
+            // ⭐ FIX: Clear active session and save paused session
+            localStorage.removeItem('epicScholarActiveSession');
+            localStorage.setItem('epicScholarPausedSession', JSON.stringify(pausedSessionData));
+            console.log('✅ Paused session saved to localStorage');
 
-            // Close live session view
+            // Calculate remaining time
+            const remainingSeconds = sessionTotalDuration - sessionElapsedSeconds;
+
+            console.log(`✅ Session paused: ${currentSession.title}`);
+            console.log(`   Elapsed: ${formatTime(sessionElapsedSeconds)}`);
+            console.log(`   Remaining: ${formatTime(remainingSeconds)}`);
+
+            // Show toast notification
+            showToast(`Session paused - ${formatTime(remainingSeconds)} remaining`, 'fa-pause');
+
+            // Close live session and return to home page
             closeLiveSession();
+
+            // Re-render sessions to show resume button
+            renderSessions();
         });
 
+        // END SESSION - Delete from localStorage and remove from list  
         endSessionBtn.addEventListener('click', () => {
-            if (currentSessionId) {
-                sessions = sessions.filter(s => s.id !== currentSessionId);
-                saveDataToLocalStorage();
-                renderSessions();
-            }
-            closeLiveSession();
+            // ⭐ FIX: Convert to number for consistency
+            const sessionIdNum = Number(currentSessionId);
+
+            // Get current session details for confirmation
+            const currentSession = sessions.find(s => Number(s.id) === sessionIdNum);
+            const sessionTitle = currentSession ? currentSession.title : 'this session';
+            const sessionDuration = currentSession ? `${currentSession.duration} minutes` : '- minutes';
+
+            // ⭐ CUSTOM MODAL: Replace browser confirm() with premium modal
+            const endModal = document.getElementById('end-session-modal');
+            const endConfirmBtn = document.getElementById('end-session-confirm-btn');
+            const endCancelBtn = document.getElementById('end-session-cancel-btn');
+
+            // Populate modal with session details
+            document.getElementById('end-session-name').textContent = sessionTitle;
+            document.getElementById('end-session-duration').textContent = sessionDuration;
+
+            // Show modal with animation
+            endModal.classList.remove('hidden');
+
+            // Handle confirm button
+            const onConfirm = () => {
+                // Close modal
+                endModal.classList.add('hidden');
+
+                // Find and remove the session from the array
+                if (currentSessionId) {
+                    const sessionIndex = sessions.findIndex(s => Number(s.id) === sessionIdNum);
+
+                    if (sessionIndex !== -1) {
+                        const endedSession = sessions[sessionIndex];
+
+                        // ENHANCED: Animate card removal before deleting
+                        const card = document.querySelector(`.session-card[data-id="${sessionIdNum}"]`);
+                        if (card) {
+                            // Add deletion animation
+                            card.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                            card.style.opacity = '0';
+                            card.style.transform = 'scale(0.8) translateY(-20px)';
+                            card.style.maxHeight = card.offsetHeight + 'px';
+
+                            // Wait for animation, then remove
+                            setTimeout(() => {
+                                card.style.maxHeight = '0';
+                                card.style.margin = '0';
+                                card.style.padding = '0';
+
+                                setTimeout(() => {
+                                    card.remove();
+                                }, 400);
+                            }, 200);
+                        }
+
+                        // Remove from sessions array
+                        sessions.splice(sessionIndex, 1);
+
+                        // Save updated sessions to localStorage
+                        saveDataToLocalStorage();
+
+                        console.log(`✅ Session "${endedSession.title}" ended and removed from storage`);
+
+                        // Show completion toast
+                        showToast(`Session "${endedSession.title}" completed and removed!`, 'fa-check-circle');
+                    } else {
+                        console.warn('⚠️ Session not found in array');
+                        console.warn('   Looking for ID:', sessionIdNum, typeof sessionIdNum);
+                        console.warn('   Available IDs:', sessions.map(s => ({ id: s.id, type: typeof s.id })));
+                        showToast('Warning: Session not found', 'fa-exclamation-triangle');
+                    }
+
+                    // Clear paused session data from memory and localStorage
+                    if (pausedSessionData && Number(pausedSessionData.id) === sessionIdNum) {
+                        pausedSessionData = null;
+                        localStorage.removeItem('epicScholarPausedSession');
+                        console.log('✅ Cleared paused session data');
+                    }
+                } else {
+                    console.warn('⚠️ No current session ID found');
+                }
+
+                // Clear timer and reset state
+                clearInterval(sessionTimerInterval);
+                sessionTimerInterval = null;
+                sessionPaused = false;
+                sessionElapsedSeconds = 0;
+                sessionTotalDuration = 0;
+                currentSessionId = null;
+
+                // Reset pause button to default state
+                pauseSessionBtn.textContent = "Pause Session";
+                pauseSessionBtn.style.background = "";
+                liveSessionTimer.style.color = "";
+                liveSessionTimer.style.border = "";
+
+                // Close live session view and return to home
+                closeLiveSession();
+
+                // Re-render remaining sessions (if needed for cleanup)
+                setTimeout(() => {
+                    renderSessions();
+                }, 800);
+
+                // Remove event listeners
+                endConfirmBtn.removeEventListener('click', onConfirm);
+                endCancelBtn.removeEventListener('click', onCancel);
+            };
+
+            // Handle cancel button
+            const onCancel = () => {
+                // Close modal with animation
+                endModal.classList.add('hidden');
+
+                // Remove event listeners
+                endConfirmBtn.removeEventListener('click', onConfirm);
+                endCancelBtn.removeEventListener('click', onCancel);
+            };
+
+            // Attach event listeners
+            endConfirmBtn.addEventListener('click', onConfirm);
+            endCancelBtn.addEventListener('click', onCancel);
+
+            // Also close on backdrop click
+            endModal.addEventListener('click', (e) => {
+                if (e.target === endModal) {
+                    onCancel();
+                }
+            }, { once: true });
         });
 
-        // Replace the existing liveTakeTestBtn event listener with this:
 
-        liveTakeTestBtn.addEventListener('click', () => {
-            // Get the current session details
-            const currentSession = sessions.find(s => s.id === currentSessionId);
-            if (currentSession) {
-                // Generate quiz based on the session's topic and subject
-                generateQuizForSession(currentSession.title, currentSession.subject);
-            } else {
-                alert("Session information not found. Please try again.");
-            }
-        });
 
         // Global Click Handler
         document.addEventListener('click', (e) => {
@@ -3501,7 +3912,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 openSessionForm('Test');
             }
 
-            // ✨ NEW: Enhanced Toggle Marks - Show popup with test history
+            // ✨ Toggle Marks - Show popup with test history
             if (action === 'toggle-marks') {
                 const box = target.closest('.subject-score-box');
                 const subject = box.dataset.subject;
@@ -3533,25 +3944,21 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                     marksContent.innerHTML = `<p style="padding: 12px; text-align: center; color: var(--subtext-dark);">No test history found for ${subject}.</p>`;
                 }
 
-                // Calculate transform origin relative to modal content
                 marksModal.classList.remove('hidden');
-
-                // Force a reflow to ensure the modal is rendered before calculating positions
                 void marksModal.offsetWidth;
 
-                // Get modal position after it's rendered (but still invisible)
                 const modalRect = modalContent.getBoundingClientRect();
                 const deltaX = marksModalOrigin.x - (modalRect.left + modalRect.width / 2);
                 const deltaY = marksModalOrigin.y - (modalRect.top + modalRect.height / 2);
 
-                // Set transform origin to the clicked box position
                 modalContent.style.transformOrigin = `calc(50% + ${deltaX}px) calc(50% + ${deltaY}px)`;
 
-                // Show modal with animation
                 setTimeout(() => {
                     marksModal.classList.add('visible');
                 }, 10);
             }
+
+            // ==================== SESSION CARD ACTIONS ====================
 
             // AI Session Start
             if (action === 'start-ai-session') {
@@ -3560,8 +3967,10 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 const session = sessions.find(s => s.id === sessionId);
 
                 if (session) {
-                    // Use session title and subject for AI session
+                    console.log('🤖 Starting AI session:', session.title);
                     initAISession(session.title, session.subject || 'General');
+                } else {
+                    console.error('❌ Session not found for AI start');
                 }
             }
 
@@ -3572,11 +3981,42 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 const session = sessions.find(s => s.id === sessionId);
 
                 if (session) {
+                    console.log('📝 Starting full test:', session.title);
                     startFullScreenTest(session.title, session.subject);
+                } else {
+                    console.error('❌ Session not found for test start');
                 }
             }
 
-            // Session Card Actions
+            // ⭐ RESUME PAUSED SESSION - THIS IS CRITICAL
+            if (action === 'resume-session') {
+                const card = target.closest('.session-card');
+                const sessionId = parseInt(card.getAttribute('data-id'));
+                const session = sessions.find(s => s.id === sessionId);
+
+                console.log('▶️ Resume button clicked. Session ID:', sessionId);
+                console.log('   Found session:', session);
+                console.log('   Paused data:', pausedSessionData);
+
+                if (session && pausedSessionData && pausedSessionData.id === sessionId) {
+                    console.log(`✅ Resuming paused session: ${session.title}`);
+                    openLiveSession(session);
+                } else {
+                    console.error('❌ Could not find paused session data');
+                    console.error('   Session exists:', !!session);
+                    console.error('   Paused data exists:', !!pausedSessionData);
+                    console.error('   IDs match:', pausedSessionData?.id === sessionId);
+
+                    showToast('Error: Paused session data not found', 'fa-circle-xmark');
+
+                    // Clear invalid paused session data
+                    localStorage.removeItem('epicScholarPausedSession');
+                    pausedSessionData = null;
+                    renderSessions();
+                }
+            }
+
+            // Regular Session Actions (start/edit/cancel)
             if (action === 'start-session' || action === 'cancel-session' || action === 'edit-session') {
                 const card = target.closest('.session-card');
                 const sessionId = parseInt(card.getAttribute('data-id'));
@@ -3584,21 +4024,19 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
                 if (action === 'start-session' && session) {
                     if (session.type === 'Test') {
-                        // Instead of redirecting to quiz.html, open the quiz modal
+                        console.log('📝 Starting test session:', session.title);
                         generateQuizForSession(session.title, session.subject);
                     } else {
-                        // Check if this is a paused session being resumed
-                        if (pausedSessionData && pausedSessionData.id === sessionId) {
-                            openLiveSession(session);
-                        } else {
-                            openLiveSession(session);
-                        }
+                        console.log('📖 Starting regular session:', session.title);
+                        openLiveSession(session);
                     }
                 }
 
                 if (action === 'edit-session' && session) {
+                    console.log('✏️ Editing session:', session.title);
                     openSessionForm(session.type, sessionId);
                 }
+
                 if (action === 'cancel-session' && session) {
                     sessionToCancel = sessionId;
                     document.getElementById('confirm-modal-message').textContent = `Do you really want to cancel "${session.title}"?`;
@@ -3609,19 +4047,36 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             // Confirmation Modal Buttons
             if (target.closest('#confirm-btn-yes')) {
                 if (sessionToCancel) {
+                    // Animate card removal
+                    const card = document.querySelector(`.session-card[data-id="${sessionToCancel}"]`);
+                    if (card) {
+                        card.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                        card.style.opacity = '0';
+                        card.style.transform = 'scale(0.8) translateY(-20px)';
+
+                        setTimeout(() => {
+                            card.remove();
+                        }, 400);
+                    }
+
                     sessions = sessions.filter(s => s.id !== sessionToCancel);
                     saveDataToLocalStorage();
-                    renderSessions();
+
+                    setTimeout(() => {
+                        renderSessions();
+                    }, 500);
+
                     sessionToCancel = null;
                 }
                 closeModal(confirmModal);
             }
+
             if (target.closest('#confirm-btn-no')) {
                 closeModal(confirmModal);
                 sessionToCancel = null;
             }
 
-            // ✨ NEW: Close marks modal when clicking outside
+            // Close marks modal when clicking outside
             if (target.id === 'marks-modal' && marksModal.classList.contains('visible')) {
                 const modalContent = marksModal.querySelector('.marks-modal-content');
                 if (!modalContent.contains(e.target)) {
@@ -3696,30 +4151,57 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             resourcesContainer.innerHTML = '';
 
             if (!resourcesData || resourcesData.length === 0) {
-                resourcesContainer.innerHTML = '<p style="color: var(--subtext-dark);">No resources available yet.</p>';
+                resourcesContainer.innerHTML = '<p style="color: var(--subtext-dark); text-align: center; padding: 20px;">No shared resources available yet.</p>';
                 return;
             }
 
             resourcesData.forEach(resource => {
                 const card = document.createElement('div');
                 card.className = 'resource-card floating-card glass-effect';
+                card.style.transition = 'transform 0.3s, box-shadow 0.3s';
 
+                // Determine icon and color based on type
                 let icon = '📄';
-                if (resource.type === 'video') icon = '🎥';
-                if (resource.type === 'photo') icon = '📷';
+                let iconBg = 'var(--primary-gradient)';
+
+                if (resource.type === 'video') {
+                    icon = '🎥';
+                    iconBg = 'linear-gradient(135deg, #FF416C 0%, #FF4B2B 100%)';
+                } else if (resource.type === 'photo') {
+                    icon = '📷';
+                    iconBg = 'linear-gradient(135deg, #FDC830 0%, #F37335 100%)';
+                }
 
                 card.innerHTML = `
-            <h4>${icon} ${resource.title}</h4>
-            <p>Subject: ${resource.subject}</p>
-        `;
+                    <div style="display: flex; align-items: start; gap: 15px;">
+                        <div style="width: 50px; height: 50px; border-radius: 12px; background: ${iconBg}; display: flex; align-items: center; justify-content: center; font-size: 1.5em; color: white; flex-shrink: 0;">
+                            ${icon}
+                        </div>
+                        <div style="flex-grow: 1;">
+                            <h4 style="margin: 0 0 5px 0; font-size: 1.1em;">${resource.title}</h4>
+                            <p style="margin: 0; font-size: 0.9em; color: var(--subtext-dark);">${resource.subject}</p>
+                        </div>
+                        <button class="action-btn" title="Download" style="width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1);">
+                            ⬇️
+                        </button>
+                    </div>
+                `;
+
+                // Add hover effect via JS for cleaner inline styles
+                card.onmouseenter = () => { card.style.transform = 'translateY(-5px)'; card.style.boxShadow = '0 10px 25px rgba(0,0,0,0.2)'; };
+                card.onmouseleave = () => { card.style.transform = 'translateY(0)'; card.style.boxShadow = 'none'; };
 
                 resourcesContainer.appendChild(card);
             });
 
             revealCards('#resources-container');
         }
-        // INITIALIZATION BLOCK
+        // INITIALIZATION BLOCK - Replace existing DOMContentLoaded
         document.addEventListener('DOMContentLoaded', () => {
+            // ⭐ REMOVED LOADING SCREEN - Content loads instantly
+            // document.body.classList.add('loading'); // REMOVED
+
+            // Set theme before content loads
             const savedTheme = localStorage.getItem('theme');
             if (savedTheme === 'light') {
                 body.classList.remove('dark-mode');
@@ -3731,17 +4213,40 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 modeToggleCheckbox.checked = false;
             }
 
+            // Load data
             loadDataFromLocalStorage();
+
+            // Render content in sequence
             renderSessions();
             renderTimetable();
             renderResources();
-            revealCards('.dashboard-grid');
 
+            // Update progress
             const overallPercentage = 88.5;
             updateCircularProgress(overallPercentage);
 
+            // ⭐ INSTANT DISPLAY - No loading delay
+            document.body.classList.add('loaded');
+            // Trigger card animations immediately
+            revealCards('.dashboard-grid');
+
+            // Start periodic session status checks
             setInterval(checkSessionStatus, 10000);
         });
+
+        // Add this function to check session status
+        function checkSessionStatus() {
+            // Your existing session status checking logic
+            // This prevents layout shifts during status updates
+            const now = new Date();
+            sessions.forEach(session => {
+                const sessionTime = new Date(session.datetime);
+                const card = document.querySelector(`.session-card[data-id="${session.id}"]`);
+                if (card && sessionTime <= now) {
+                    card.classList.add('ready-to-start');
+                }
+            });
+        }
         // Function to close marks modal
         // Function to close marks modal with animation back to origin
         // Initialize Quiz Variables
@@ -3754,13 +4259,34 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         const QUIZ_NUM_QUESTIONS = 10;
         const QUIZ_DIFFICULTY = "medium";
         function renderTimetable() {
+            const timetableBody = document.getElementById('timetable-body');
+            if (!timetableBody) return;
 
-            const timetableContainer = document.getElementById('timetable-container');
-            if (!timetableContainer) return;
+            timetableBody.innerHTML = '';
 
-            // Your timetable rendering logic here
-            // If you don't have one, you can leave this empty for now
-            console.log('Timetable rendered');
+            if (!examTimetableData || examTimetableData.length === 0) {
+                timetableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 20px; color: var(--subtext-dark);">No exams scheduled yet.</td></tr>';
+                return;
+            }
+
+            examTimetableData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                // Staggered animation for rows
+                row.style.animation = `fadeInUp 0.4s ease forwards ${index * 0.1}s`;
+                row.style.opacity = '0';
+
+                const statusClass = item.status.toLowerCase().replace(/\s+/g, '-');
+
+                row.innerHTML = `
+                    <td><strong>${item.title}</strong></td>
+                    <td>${item.subject}</td>
+                    <td>${item.date}</td>
+                    <td>${item.time}</td>
+                    <td><span class="status-badge status-${statusClass}">${item.status}</span></td>
+                `;
+                timetableBody.appendChild(row);
+            });
+            console.log('✅ Timetable rendered with', examTimetableData.length, 'entries');
         }
         // Quiz Functions - Add these functions to your script section
         async function generateQuizForSession(topic, subject) {
