@@ -44,6 +44,7 @@
             width: 100%;
             height: 100%;
             transform: rotate(-90deg);
+            transform-origin: 50% 50%;
             overflow: visible;
         }
 
@@ -54,6 +55,7 @@
             cx: 90;
             cy: 90;
             r: 80;
+            transform-box: fill-box;
         }
 
         .light-mode #overall-performance-box .progress-circle-bg {
@@ -132,136 +134,6 @@
         }
 
         .light-mode #overall-performance-box .progress-label {
-            color: var(--subtext-light);
-        }
-
-        /* =================================================================
- * AI SESSION SIDEBAR PROGRESS CIRCLE - COMPLETE FIX
- * =================================================================
- */
-
-        /* Container for the progress circle in sidebar */
-        .session-sidebar .progress-circle-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        /* The circular progress wrapper */
-        .session-sidebar .circular-progress {
-            width: 120px;
-            height: 120px;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-
-        /* SVG element - NO ROTATION HERE */
-        .session-sidebar .circular-progress svg {
-            width: 120px;
-            height: 120px;
-            position: absolute;
-            top: 0;
-            left: 0;
-            overflow: visible;
-            /* Remove any transform here */
-            transform: none;
-        }
-
-        /* Background circle */
-        .session-sidebar .circular-progress circle.bg,
-        .session-sidebar .circular-progress .progress-circle-bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 8;
-            cx: 60;
-            cy: 60;
-            r: 50;
-            /* Rotate THIS circle only */
-            transform: rotate(-90deg);
-            transform-origin: center;
-        }
-
-        .light-mode .session-sidebar .circular-progress circle.bg,
-        .light-mode .session-sidebar .circular-progress .progress-circle-bg {
-            stroke: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Progress circle - THIS is the one that fills */
-        .session-sidebar .circular-progress circle.progress,
-        .session-sidebar .circular-progress #ai-progress-circle {
-            fill: none;
-            stroke: url(#gradient);
-            stroke-width: 8;
-            stroke-linecap: round;
-            cx: 60;
-            cy: 60;
-            r: 50;
-            stroke-dasharray: 314.16;
-            stroke-dashoffset: 314.16;
-            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            /* Rotate THIS circle to start from top */
-            transform: rotate(-90deg);
-            transform-origin: center;
-            filter: drop-shadow(0 0 8px rgba(0, 114, 255, 0.6));
-            animation: progressGlowSidebar 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes progressGlowSidebar {
-            0% {
-                filter: drop-shadow(0 0 6px rgba(0, 114, 255, 0.5));
-            }
-
-            100% {
-                filter: drop-shadow(0 0 12px rgba(0, 114, 255, 0.8));
-            }
-        }
-
-        /* Progress text overlay - stays upright */
-        .session-sidebar .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            pointer-events: none;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Percentage text */
-        .session-sidebar .progress-text #ai-progress-percentage,
-        .session-sidebar .progress-text .progress-percentage {
-            display: block;
-            font-size: 1.8em;
-            font-weight: 700;
-            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-            margin: 0;
-        }
-
-        /* Label text */
-        .session-sidebar .progress-text .progress-label {
-            display: block;
-            font-size: 0.75em;
-            color: var(--subtext-dark);
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        .light-mode .session-sidebar .progress-text .progress-label {
             color: var(--subtext-light);
         }
 
@@ -434,121 +306,8 @@
  * =================================================================
  */
 
-        /* Container for the progress circle in sidebar */
-        .session-sidebar .progress-circle-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 20px;
-            position: relative;
-            width: 120px;
-            height: 120px;
-            margin-left: auto;
-            margin-right: auto;
-        }
 
-        /* The circular progress wrapper */
-        .session-sidebar .circular-progress {
-            width: 120px;
-            height: 120px;
-            position: relative;
-        }
 
-        /* SVG element - NO rotation on container */
-        .session-sidebar .circular-progress svg {
-            width: 100%;
-            height: 100%;
-            display: block;
-            overflow: visible;
-        }
-
-        /* Background circle - rotated -90deg to start at top */
-        .session-sidebar .circular-progress circle.bg,
-        .session-sidebar .circular-progress .progress-circle-bg {
-            fill: none;
-            stroke: rgba(255, 255, 255, 0.1);
-            stroke-width: 8;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-
-        .light-mode .session-sidebar .circular-progress circle.bg,
-        .light-mode .session-sidebar .circular-progress .progress-circle-bg {
-            stroke: rgba(0, 0, 0, 0.1);
-        }
-
-        /* Progress circle - rotated -90deg to start at top and fill clockwise */
-        .session-sidebar .circular-progress circle.progress,
-        .session-sidebar .circular-progress #ai-progress-circle {
-            fill: none;
-            stroke: url(#gradient);
-            stroke-width: 8;
-            stroke-linecap: round;
-            stroke-dasharray: 314.16;
-            stroke-dashoffset: 314.16;
-            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-            filter: drop-shadow(0 0 8px rgba(0, 114, 255, 0.6));
-            animation: progressGlowSidebar 2s ease-in-out infinite alternate;
-        }
-
-        @keyframes progressGlowSidebar {
-            0% {
-                filter: drop-shadow(0 0 6px rgba(0, 114, 255, 0.5));
-            }
-
-            100% {
-                filter: drop-shadow(0 0 12px rgba(0, 114, 255, 0.8));
-            }
-        }
-
-        /* Progress text overlay - stays upright and centered */
-        .session-sidebar .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            pointer-events: none;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* Percentage text */
-        .session-sidebar .progress-text #ai-progress-percentage,
-        .session-sidebar .progress-text .progress-percentage {
-            display: block;
-            font-size: 1.8em;
-            font-weight: 700;
-            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            line-height: 1;
-            margin: 0;
-        }
-
-        /* Label text */
-        .session-sidebar .progress-text .progress-label {
-            display: block;
-            font-size: 0.75em;
-            color: var(--subtext-dark);
-            margin-top: 5px;
-            font-weight: 600;
-        }
-
-        .light-mode .session-sidebar .progress-text .progress-label {
-            color: var(--subtext-light);
-        }
-
-        /* Ensure proper SVG viewBox for scaling */
-        .session-sidebar .circular-progress svg {
-            viewBox: 0 0 120 120;
-        }
 
         /* Responsive adjustments */
         @media (max-width: 768px) {
@@ -570,6 +329,11 @@
 </head>
 
 <body class="dark-mode">
+    <div id="liquid-glass-container">
+        <div class="glass-blob blob-1"></div>
+        <div class="glass-blob blob-2"></div>
+        <div class="glass-blob blob-3"></div>
+    </div>
     <!-- Page Loader -->
     <div id="page-loader">
         <div class="loader-spinner"></div>
@@ -980,10 +744,11 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://www.youtube.com/iframe_api"></script> <!-- Added YouTube IFrame API -->
-    <script>/* ============================================
-* ADD TO EXISTING <script> SECTION
-* Paste after the updateProgress() function (around line 1450)
-* ============================================ */
+    <script>
+        /* ============================================
+        * ADD TO EXISTING <script> SECTION
+        * Paste after the updateProgress() function (around line 1450)
+        * ============================================ */
 
         // Ensure SVG viewBox is properly set for session progress circle
         document.addEventListener('DOMContentLoaded', function () {
@@ -1007,7 +772,7 @@
 
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyCfZbarNzyRD_McJ5wPWz5VNUAFs-VL-GY";
+        const GEMINI_API_KEY = "AAIzaSyBDWtsgqrQnwk2VZajbPe9Jm9OJnwhLt9c";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1068,6 +833,7 @@
         let currentNextPageToken = null;
         let sessionTimerInterval = null;
         let sessionStartTime = 0;
+        let sessionActualStartTime = 0; // NEW: Track the real first start time for display
         let sessionElapsedSeconds = 0;
         let sessionTotalDuration = 0;
         let sessionPaused = false;
@@ -1414,7 +1180,11 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             }
         }
 
-        async function initAISession(topic, subject) { // Removed default 'Calculus'
+        // ============================================
+        // UPDATED INIT AI SESSION
+        // Replace your existing initAISession function
+        // ============================================
+        async function initAISession(topic, subject, duration = 60, originalSessionId = null) {
             aiSessionState.active = true;
             aiSessionState.topic = topic;
             aiSessionState.subject = subject;
@@ -1422,36 +1192,33 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             aiSessionState.videoWatched = false;
             aiSessionState.quizAnswered = false;
             aiSessionState.scores = {};
-            aiSessionState.concepts = []; // Initialize empty
+            aiSessionState.concepts = [];
 
-            // Create a temporary session object to open the live session page
+            // Create a temporary session object
             const tempSession = {
                 id: Date.now(),
                 title: topic,
                 subject: subject,
                 type: 'Session',
                 datetime: new Date().toISOString(),
-                duration: 60,
-                isTemporary: true  // ⭐ Mark as temporary AI session
+                duration: duration,
+                originalSessionId: originalSessionId,
+                isTemporary: true  // ⭐ Mark as temporary
             };
 
-            // ⭐ FIX: Add temp session to sessions array so pause/end can find it
+            // ⭐ Add temp session to sessions array (so pause/end can find it)
             sessions.push(tempSession);
-            console.log('✅ Temporary AI session added to sessions array:', tempSession.id);
+            console.log('✅ Temporary AI session added:', tempSession.id);
 
-            // Open the live session page immediately
+            // Open the live session page
             openLiveSession(tempSession);
 
             // Fetch concepts asynchronously
             try {
-                // Determine the correct context for the URL
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GEMINI_API_KEY}`;
-
-                // Show loading state in the UI if possible, or reliance on breakdownTopicIntoConcepts' loader
                 const concepts = await breakdownTopicIntoConcepts(topic, subject);
                 aiSessionState.concepts = concepts;
 
-                // Now replace content and load first concept
+                // Render AI session layout and load first concept
                 renderAISessionLayout();
                 loadConcept(0);
             } catch (error) {
@@ -1460,31 +1227,43 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             }
         }
 
+        // Find your loadConcept function (around line 1850) and update it:
+
         async function loadConcept(index) {
             if (index < 0 || index >= aiSessionState.concepts.length) {
                 showAISessionCompletion();
                 return;
             }
 
+            // ⭐ FIX: Update current index FIRST
             aiSessionState.currentConceptIndex = index;
-            aiSessionState.videoWatched = false;
-            aiSessionState.quizAnswered = false;
+
+            // ⭐ FIX: Don't reset video/quiz state when resuming
+            const isResuming = pausedSessionData && pausedSessionData.isAISession;
+
+            if (!isResuming) {
+                aiSessionState.videoWatched = false;
+                aiSessionState.quizAnswered = false;
+            }
 
             const concept = aiSessionState.concepts[index];
 
-            // Update sidebar
+            console.log(`📚 Loading concept ${index + 1}/${aiSessionState.concepts.length}: ${concept.title}`);
+
+            // Update sidebar to show current concept
             renderConceptsSidebar();
 
-            // Hide quiz initially
+            // Hide quiz initially (unless resuming after quiz completion)
             const quizContainer = document.getElementById('ai-quiz-container');
-            if (quizContainer) quizContainer.style.display = 'none';
+            if (quizContainer && !isResuming) {
+                quizContainer.style.display = 'none';
+            }
 
             // Load video
             try {
                 await searchAndPlayVideo(concept.videoQuery, concept.title);
             } catch (error) {
                 console.error('Error loading video:', error);
-                // Show error message in video container
                 const videoContainer = document.getElementById('ai-video-container');
                 if (videoContainer) {
                     const titleElement = videoContainer.querySelector('h3');
@@ -1542,9 +1321,21 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                     <!-- Right Sidebar -->
                     <div class="session-sidebar">
                         <h3 class="gradient-text" style="font-size: 1.2em; margin: 0 0 15px 0;">📋 Concepts</h3>
+                        
+                        <!-- NEW: Linear Progress Bar (The 'Straight' one) -->
+                        <div class="linear-progress-wrapper" style="margin-bottom: 25px;">
+                            <div style="display: flex; justify-content: space-between; font-size: 0.8em; margin-bottom: 8px; color: var(--subtext-dark); font-weight: 600;">
+                                <span>Overall Progress</span>
+                                <span id="ai-progress-percentage-linear">0%</span>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                                <div id="ai-progress-bar-fill" style="width: 0%; height: 100%; background: var(--gradient); transition: width 1.2s cubic-bezier(0.34, 1.56, 0.64, 1); box-shadow: 0 0 15px rgba(0, 114, 255, 0.6);"></div>
+                            </div>
+                        </div>
+
                         <div class="concepts-list" id="concepts-list"></div>
 
-                        <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+                        <hr style="border-color: rgba(255,255,255,0.1); margin: 25px 0;">
 
                         <div class="progress-circle-container">
                             <div class="circular-progress">
@@ -1654,6 +1445,24 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             sessions = loadedSessions;
             examTimetableData = savedTimetable ? JSON.parse(savedTimetable) : defaultTimetable;
             resourcesData = savedResources ? JSON.parse(savedResources) : defaultResources;
+
+            // ⭐ FIX: Recover temporary AI session if it was paused/active
+            const paused = JSON.parse(localStorage.getItem('epicScholarPausedSession') || 'null');
+            if (paused && paused.isAISession && paused.id) {
+                const exists = sessions.some(s => Number(s.id) === Number(paused.id));
+                if (!exists) {
+                    sessions.push({
+                        id: Number(paused.id),
+                        title: paused.sessionTitle,
+                        subject: paused.sessionSubject,
+                        type: paused.sessionType || 'Session',
+                        duration: (paused.totalDuration || 0) / 60,
+                        originalSessionId: paused.originalSessionId,
+                        isTemporary: true
+                    });
+                    console.log('✅ Recovered temporary AI session from pause data:', paused.id);
+                }
+            }
         }
 
         // =================================================================
@@ -1716,111 +1525,97 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             return result;
         };
 
-        // RENDER SESSIONS - Updated to show Resume button for paused sessions
+        // Replace your existing renderSessions function (around line 1450)
         const renderSessions = () => {
             sessionsContainer.innerHTML = '';
 
-            // ⭐ FIX: Filter out temporary AI sessions for display count
+            // Filter out temporary AI sessions
             const permanentSessions = sessions.filter(s => !s.isTemporary);
 
-            // ⭐ EMPTY STATE: Horizontal layout with image left, content right
+            // Empty State Check
             if (permanentSessions.length === 0) {
                 sessionsContainer.innerHTML = `
-                    <div class="empty-state-container">
-                        <img src="no-sessions.png" alt="No sessions" class="empty-state-image" />
-                        <div class="empty-state-content">
-                            <h2 class="empty-state-title">No Active Sessions</h2>
-                            <p class="empty-state-message">
-                                Start your learning journey by creating a study session or test schedule.
-                            </p>
-                            <button class="empty-state-button" onclick="document.getElementById('add-session-btn').click()">
-                                <span>✨</span> Create Session
-                            </button>
-                        </div>
-                    </div>
-                `;
+            <div class="empty-state-container">
+                <img src="no-sessions.png" alt="No sessions" class="empty-state-image" />
+                <div class="empty-state-content">
+                    <h2 class="empty-state-title">No Active Sessions</h2>
+                    <p class="empty-state-message">Start your learning journey by creating a study session.</p>
+                    <button class="empty-state-button" onclick="document.getElementById('add-session-btn').click()">
+                        <span>✨</span> Create Session
+                    </button>
+                </div>
+            </div>`;
                 return;
             }
 
             sessions.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
 
-            // Load paused session data from localStorage
+            // Load states from storage
             let pausedSession = null;
             let activeSession = null;
-
             try {
-                // Check for paused session
-                const savedPausedSession = localStorage.getItem('epicScholarPausedSession');
-                if (savedPausedSession) {
-                    pausedSession = JSON.parse(savedPausedSession);
+                const savedPaused = localStorage.getItem('epicScholarPausedSession');
+                if (savedPaused) pausedSession = JSON.parse(savedPaused);
 
-                    // Verify the paused session still exists in sessions array
-                    const sessionExists = sessions.some(s => s.id === pausedSession.id);
-                    if (!sessionExists) {
-                        console.warn('⚠️ Paused session no longer exists, clearing data');
-                        localStorage.removeItem('epicScholarPausedSession');
-                        pausedSessionData = null;
-                        pausedSession = null;
-                    } else {
-                        pausedSessionData = pausedSession;
-                        console.log('✅ Loaded paused session:', pausedSession.sessionTitle);
-                    }
-                }
-
-                // ⭐ NEW: Check for active (running) session
-                const savedActiveSession = localStorage.getItem('epicScholarActiveSession');
-                if (savedActiveSession) {
-                    activeSession = JSON.parse(savedActiveSession);
-
-                    // Verify the active session still exists
-                    const sessionExists = sessions.some(s => s.id === activeSession.id);
-                    if (!sessionExists) {
-                        console.warn('⚠️ Active session no longer exists, clearing data');
-                        localStorage.removeItem('epicScholarActiveSession');
-                        activeSession = null;
-                    } else {
-                        console.log('✅ Loaded active session:', activeSession.sessionTitle);
-                    }
-                }
-            } catch (e) {
-                console.error('❌ Error loading session state:', e);
-                localStorage.removeItem('epicScholarPausedSession');
-                localStorage.removeItem('epicScholarActiveSession');
-                pausedSessionData = null;
-                pausedSession = null;
-                activeSession = null;
-            }
+                const savedActive = localStorage.getItem('epicScholarActiveSession');
+                if (savedActive) activeSession = JSON.parse(savedActive);
+            } catch (e) { console.error("Error loading session states", e); }
 
             sessions.forEach(session => {
-                // Skip rendering temporary AI sessions in the list
                 if (session.isTemporary) return;
 
                 const card = document.createElement('div');
                 card.className = 'session-card floating-card glass-effect';
                 card.setAttribute('data-id', session.id);
-                card.setAttribute('data-time', session.datetime);
 
                 const sessionDate = new Date(session.datetime);
-                const formattedDate = sessionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                const formattedDate = sessionDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
                 const formattedTime = sessionDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 
-                // ⭐ IMPROVED: Check for both paused AND active states
-                const isPaused = pausedSession && pausedSession.id === session.id;
-                const isActive = activeSession && activeSession.id === session.id && !isPaused;
-                const isInProgress = isPaused || isActive;
+                // Check if this session is paused or active
+                let isPaused = pausedSession && Number(pausedSession.id) === Number(session.id);
+                let isActive = activeSession && Number(activeSession.id) === Number(session.id) && !isPaused;
 
-                let remainingTime = null;
+                // ⭐ NEW: Check if an AI session linked to THIS session is active or paused
+                const linkedAIPaused = pausedSession && Number(pausedSession.originalSessionId) === Number(session.id);
+                const linkedAIActive = activeSession && Number(activeSession.originalSessionId) === Number(session.id) && !linkedAIPaused;
+
+                let remainingSeconds = 0;
                 let statusBadge = '';
+                let resumeTimeStr = '';
 
-                if (isPaused) {
-                    remainingTime = pausedSession.totalDuration - pausedSession.elapsedSeconds;
-                    statusBadge = '⏸️ PAUSED';
-                } else if (isActive) {
-                    remainingTime = activeSession.totalDuration - activeSession.elapsedSeconds;
-                    statusBadge = '⚡ IN PROGRESS';
+                const formatResumeTime = (s) => {
+                    const mins = Math.floor(Math.max(0, s) / 60);
+                    const secs = Math.floor(Math.max(0, s) % 60);
+                    return `${mins}:${secs.toString().padStart(2, '0')}`;
+                };
+
+                if (isPaused || linkedAIPaused) {
+                    const data = pausedSession;
+                    isPaused = true;
+                    remainingSeconds = (data.totalDuration || 0) - (data.elapsedSeconds || 0);
+                    statusBadge = '<span class="status-badge status-drafting" style="margin-left:8px">⏸️ PAUSED</span>';
+                    resumeTimeStr = `(Resume from ${formatResumeTime(remainingSeconds)})`;
+                } else if (isActive || linkedAIActive) {
+                    const data = activeSession;
+                    isActive = true;
+                    remainingSeconds = (data.totalDuration || 0) - (data.elapsedSeconds || 0);
+                    statusBadge = '<span class="status-badge status-upcoming" style="margin-left:8px">⚡ ACTIVE</span>';
+                    resumeTimeStr = `(Resume from ${formatResumeTime(remainingSeconds)})`;
                 }
 
-                card.innerHTML = `
+                const formatRemaining = (secs) => {
+                    const m = Math.floor(secs / 60);
+                    const s = Math.floor(secs % 60);
+                    return `${m}m ${s}s`;
+                };
+
+                // ⭐ NEW: Check if this is an AI session pause/active
+                const isAIState = (isPaused && (pausedSession?.isAISession || linkedAIPaused)) ||
+                    (isActive && (activeSession?.isAISession || linkedAIActive));
+
+                // Base Card HTML
+                let cardHTML = `
             <div class="card-actions">
                 <button class="card-action-btn edit-btn" title="Edit" data-action="edit-session">✏️</button>
                 <button class="card-action-btn cancel-btn" title="Cancel" data-action="cancel-session">❌</button>
@@ -1829,40 +1624,35 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             <p class="session-subject">Subject: ${session.subject || 'General'} ${statusBadge}</p>
             <p class="session-datetime">Scheduled: ${formattedDate} | ${formattedTime}</p>
             <p class="session-duration">Duration: ${session.duration} minutes</p>
-            ${isInProgress ? `<p style="color: ${isPaused ? 'var(--warning-color)' : 'var(--info-color)'}; font-weight: 600; margin-top: 8px;">⏱️ ${formatTime(remainingTime)} remaining</p>` : ''}
         `;
 
-                // ⭐ IMPROVED: Show resume button for BOTH paused and active sessions
-                if (isInProgress) {
-                    card.innerHTML += `
-                <button class="start-session-btn gradient-button" data-action="resume-session" 
-                        style="margin-top: 10px; width: 100%; background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%); 
-                        border: none; padding: 14px 20px; border-radius: 12px; color: white; font-weight: 600; 
-                        cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4);">
-                    ▶️ Resume Session (${formatTime(remainingTime)} left)
-                </button>
-            `;
+                // ⭐ ENHANCED BUTTON LOGIC: Resume vs Start
+                if (isPaused || isActive) {
+                    // RESUME BUTTON (shows for both regular and AI sessions)
+                    const action = (linkedAIPaused || linkedAIActive) ? 'resume-linked-ai' : 'resume-session';
+                    cardHTML += `
+                <button class="gradient-button" data-action="${action}" 
+                        style="margin-top: 15px; width: 100%; background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%); 
+                        box-shadow: 0 4px 15px rgba(255, 193, 7, 0.4); text-transform: none;">
+                    ▶️ Resume ${isAIState ? 'AI Session' : 'Session'} ${resumeTimeStr}
+                </button>`;
                 } else if (session.type === 'Test') {
-                    // Only show "Start Full Test" if NOT paused
-                    card.innerHTML += `
-                <button class="start-session-btn gradient-button" data-action="start-full-test" 
-                        style="margin-top: 10px; width: 100%; border: none; padding: 14px 20px; border-radius: 12px; 
-                        color: white; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    // TEST START BUTTON
+                    cardHTML += `
+                <button class="gradient-button" data-action="start-full-test" 
+                        style="margin-top: 15px; width: 100%;">
                     📝 Start Full Test
-                </button>
-            `;
+                </button>`;
                 } else {
-                    // Only show "Start AI Session" if NOT paused
-                    card.innerHTML += `
-                <button class="start-session-btn gradient-button" data-action="start-ai-session" 
-                        style="margin-top: 10px; width: 100%; background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%); 
-                        border: none; padding: 14px 20px; border-radius: 12px; color: white; font-weight: 600; 
-                        cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);">
-                    🤖 Start AI Learning Session
-                </button>
-            `;
+                    // ⭐ AI SESSION START BUTTON (default for Session type)
+                    cardHTML += `
+                <button class="gradient-button" data-action="start-ai-session" 
+                        style="margin-top: 15px; width: 100%;">
+                    🤖 Start AI Session
+                </button>`;
                 }
 
+                card.innerHTML = cardHTML;
                 sessionsContainer.appendChild(card);
             });
 
@@ -2383,7 +2173,27 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+        // Add this function anywhere in your script section (around line 1400):
 
+        function debugAISessionState() {
+            console.group('🔍 AI Session Debug Info');
+            console.log('Active:', aiSessionState.active);
+            console.log('Current Concept Index:', aiSessionState.currentConceptIndex);
+            console.log('Total Concepts:', aiSessionState.concepts.length);
+            console.log('Scores:', aiSessionState.scores);
+            console.log('Progress:', aiSessionState.overallProgress);
+
+            if (pausedSessionData) {
+                console.log('Paused Data:', {
+                    isAI: pausedSessionData.isAISession,
+                    savedIndex: pausedSessionData.aiSessionData?.currentConceptIndex,
+                    savedScores: pausedSessionData.aiSessionData?.scores
+                });
+            }
+            console.groupEnd();
+        }
+
+        // Call this in browser console when debugging: debugAISessionState()
         /* ---------- Markdown Formatter ---------- */
         function escapeHtml(unsafe) {
             return unsafe
@@ -3257,15 +3067,18 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             // Launch full-screen quiz modal
             await launchConceptQuiz(concept.title, aiSessionState.subject);
         }
+        // Find renderConceptsSidebar (around line 2100) and replace with:
+
         function renderConceptsSidebar() {
             const conceptsList = document.getElementById('concepts-list');
             if (!conceptsList) return;
 
-            // Calculate the highest unlocked index (number of completed/passed concepts)
-            // Concepts are unlocked if their index <= number of passed concepts
-            // We assume strict sequential learning: must pass (score > 60) to unlock next.
+            // Calculate the highest unlocked index
             const successfulConcepts = Object.values(aiSessionState.scores).filter(s => s >= 60).length;
             const highestUnlockedIndex = successfulConcepts;
+
+            // ⭐ FIX: Get current index from state
+            const currentIndex = aiSessionState.currentConceptIndex;
 
             conceptsList.innerHTML = aiSessionState.concepts.map((concept, idx) => {
                 let className = 'concept-item';
@@ -3280,8 +3093,8 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                     if (aiSessionState.scores[idx] !== undefined) {
                         className += ' completed';
                     }
-                    if (idx === aiSessionState.currentConceptIndex) {
-                        // Ensure active class is added even if completed (if reviewing)
+                    // ⭐ FIX: Highlight the CURRENT concept, not just index 0
+                    if (idx === currentIndex) {
                         className += ' active';
                     }
                 }
@@ -3289,10 +3102,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 const onClick = isLocked ? '' : `onclick="loadConcept(${idx})"`;
 
                 return `<div class="${className}" ${onClick}>
-                            <span style="flex-grow: 1;">${concept.title}</span>
-                            ${icon}
-                        </div>`;
+                    <span style="flex-grow: 1;">${concept.title}</span>
+                    ${icon}
+                </div>`;
             }).join('');
+
+            console.log(`✅ Sidebar updated - Current: ${currentIndex + 1}/${aiSessionState.concepts.length}`);
         }
         /**
          * Launch full-screen quiz for a specific concept (used in AI sessions)
@@ -3357,6 +3172,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 const offset = circumference - (percentage / 100) * circumference;
                 circle.style.strokeDashoffset = offset;
                 text.textContent = `${percentage}%`;
+
+                // Update linear progress fill
+                const barFill = document.getElementById('ai-progress-bar-fill');
+                const linearText = document.getElementById('ai-progress-percentage-linear');
+                if (barFill) barFill.style.width = `${percentage}%`;
+                if (linearText) linearText.textContent = `${percentage}%`;
             }
 
             // Update concepts sidebar
@@ -3464,106 +3285,91 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             initAISession(aiSessionState.topic, aiSessionState.subject);
         }
 
-        // OPEN LIVE SESSION - Updated to handle resume from pause
-        const openLiveSession = (session) => {
-            // ⭐ CRITICAL: Set currentSessionId FIRST - ensure it's a number
+        // ============================================
+        // 3. UPDATED OPEN LIVE SESSION FUNCTION
+        // Replace your existing openLiveSession() function
+        // ============================================
+        const openLiveSession = (session, forceResume = false) => {
             currentSessionId = Number(session.id);
 
-            console.log('📖 Opening live session. ID:', currentSessionId, 'Title:', session.title);
-
+            // UI Setup
             document.getElementById('live-session-title').textContent = session.title;
             liveSessionPage.classList.remove('hidden', 'hiding');
             void liveSessionPage.offsetWidth;
             liveSessionPage.classList.add('open');
             mainContent.classList.add('hiding');
 
-            // Check if resuming a paused session
-            // FIX: Ensure ID type match (both numbers)
-            if (pausedSessionData && Number(pausedSessionData.id) === currentSessionId) {
-                // RESUME from paused state
-                console.log('▶️ Resuming from pause:', pausedSessionData);
+            // Check localStorage for paused data
+            let storedPausedData = null;
+            try {
+                const stored = localStorage.getItem('epicScholarPausedSession');
+                if (stored) storedPausedData = JSON.parse(stored);
+            } catch (e) { }
+
+            // DETERMINE IF RESUMING
+            // We resume if forceResume is true AND we have matching data
+            const isResuming = forceResume &&
+                storedPausedData &&
+                Number(storedPausedData.id) === currentSessionId;
+
+            if (isResuming) {
+                // --- RESUME LOGIC ---
+                console.log("♻️ Resuming session...");
+                pausedSessionData = storedPausedData; // Update global state
 
                 sessionTotalDuration = pausedSessionData.totalDuration;
                 sessionElapsedSeconds = pausedSessionData.elapsedSeconds;
-                sessionPaused = false;
+
+                // CRITICAL: Back-calculate start time so timer continues correctly
+                // If 10 mins elapsed, pretend we started 10 mins ago
                 sessionStartTime = Date.now() - (sessionElapsedSeconds * 1000);
 
-                // Restore chat history
-                if (pausedSessionData.chatHistory) {
-                    chatbotMessages.innerHTML = pausedSessionData.chatHistory;
-                }
+                // ⭐ FIX: Preserve the ACTUAL start time for display (Started at 10:45 AM)
+                sessionActualStartTime = pausedSessionData.actualStartTime || pausedSessionData.startedAt || sessionStartTime;
 
-                // Restore video search query
+                // Restore Chat & Search
+                if (pausedSessionData.chatHistory) chatbotMessages.innerHTML = pausedSessionData.chatHistory;
                 if (pausedSessionData.videoSearchQuery) {
                     liveSearchInput.value = pausedSessionData.videoSearchQuery;
+                    performYouTubeSearch(pausedSessionData.videoSearchQuery);
                 }
 
-                // Update UI
                 pauseSessionBtn.textContent = "Pause Session";
-                pauseSessionBtn.style.background = "";
-                liveSessionTimer.style.color = "";
-                liveSessionTimer.style.border = "";
-
-                const remainingTime = sessionTotalDuration - sessionElapsedSeconds;
-                showToast(`Session resumed - ${formatTime(remainingTime)} remaining`, 'fa-play');
-                console.log(`✅ Resumed: ${session.title} (${formatTime(sessionElapsedSeconds)} elapsed)`);
-
+                showToast("Session Resumed!");
             } else {
-                // START new session
-                console.log('🆕 Starting new session');
-
+                // --- NEW START LOGIC ---
+                console.log("🆕 Starting new session...");
                 sessionTotalDuration = session.duration * 60;
                 sessionElapsedSeconds = 0;
-                sessionPaused = false;
                 sessionStartTime = Date.now();
+                sessionActualStartTime = sessionStartTime; // NEW: Mark first start time
 
-                // Setup initial chat
-                const initialPrompt = `Summarize key concepts for: ${session.title} (${session.subject}) from ${DEFAULT_CURRICULUM} ${DEFAULT_GRADE} syllabus.`;
-                chatInput.value = initialPrompt;
+                // Reset Chat
                 chatbotMessages.innerHTML = '';
-                appendChatMessage("bot", "Welcome! The Edubot is active. Ask me anything or use the pre-filled prompt to start.");
+                appendChatMessage("bot", "Welcome! Edubot is ready.");
 
-                // Setup video search
+                // Default Search
                 liveSearchInput.value = `${session.title} ${session.subject} tutorial`;
-
-                console.log(`✅ Started new session: ${session.title}, ID: ${currentSessionId}`);
+                performYouTubeSearch(liveSearchInput.value);
             }
 
-            // Start/resume timer
-            updateSessionTimer();
+            // Start Timer
+            sessionPaused = false;
+            updateSessionTimer(); // Run once immediately
+            if (sessionTimerInterval) clearInterval(sessionTimerInterval);
             sessionTimerInterval = setInterval(updateSessionTimer, 1000);
 
-            chatInput.disabled = false;
-
-            // Show floating icons
-            pdfIcon.classList.add('visible');
-            chatbotIcon.classList.add('visible');
-            chatbotContainer.classList.remove('visible');
-            pdfContainer.classList.remove('visible');
-
-            // Setup video search controls
-            liveSearchInput.disabled = true;
-            liveSearchBtn.textContent = "Refresh Videos";
-            liveSearchBtn.disabled = false;
-
-            // Perform video search
-            performYouTubeSearch(liveSearchInput.value);
-
-            liveSearchBtn.onclick = () => performYouTubeSearch(liveSearchInput.value, currentNextPageToken);
-
-            // ⭐ FIX: Save active session state to show "Resume" button on dashboard
-            const activeSessionData = {
-                id: Number(currentSessionId),
+            // Save as Active Session (so if browser crashes, we know it was running)
+            const activeData = {
+                id: currentSessionId,
                 sessionTitle: session.title,
-                sessionSubject: session.subject,
-                sessionType: session.type,
-                elapsedSeconds: sessionElapsedSeconds,
                 totalDuration: sessionTotalDuration,
-                isActive: true,  // Mark as active, not paused
-                startedAt: Date.now()
+                elapsedSeconds: sessionElapsedSeconds,
+                startedAt: sessionStartTime, // Reference for timer
+                actualStartTime: sessionActualStartTime, // For display
+                originalSessionId: session.originalSessionId || null
             };
-            localStorage.setItem('epicScholarActiveSession', JSON.stringify(activeSessionData));
-            console.log('✅ Active session saved to localStorage:', session.title);
+            localStorage.setItem('epicScholarActiveSession', JSON.stringify(activeData));
         };
 
         // CLOSE LIVE SESSION - Don't clear paused session data
@@ -3680,157 +3486,152 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             closeModal(sessionFormModal);
         });
 
-        // PAUSE SESSION - Return to home page with resume capability
+        // Find pauseSessionBtn.addEventListener (around line 2890) and add logging:
+
         pauseSessionBtn.addEventListener('click', () => {
-            console.log('⏸️ PAUSE CLICKED');
-            console.log('   Current Session ID:', currentSessionId, typeof currentSessionId);
-            console.log('   All sessions:', sessions.map(s => ({ id: s.id, type: typeof s.id, title: s.title })));
-
-            // Pause the session
-            sessionPaused = true;
             clearInterval(sessionTimerInterval);
-
-            // Calculate elapsed time up to this point
+            sessionPaused = true;
             sessionElapsedSeconds = Math.floor((Date.now() - sessionStartTime) / 1000);
 
-            // Get current session - FIX: Ensure currentSessionId is valid and convert to number
-            if (!currentSessionId) {
-                console.error('❌ No active session ID found');
-                showToast('Error: No active session found', 'fa-circle-xmark');
-                return;
-            }
-
-            // ⭐ FIX: Convert to number to ensure type consistency
-            const sessionIdNum = Number(currentSessionId);
-            const currentSession = sessions.find(s => Number(s.id) === sessionIdNum);
+            const currentSession = sessions.find(s => Number(s.id) === Number(currentSessionId));
 
             if (!currentSession) {
-                console.error('❌ Current session not found');
-                console.error('   Looking for ID:', sessionIdNum, typeof sessionIdNum);
-                console.error('   Available IDs:', sessions.map(s => s.id));
-                console.error('   Type check:', sessions.map(s => typeof s.id));
-
-                showToast('Error: Session not found', 'fa-circle-xmark');
+                showToast('Error: Could not save session state.', 'fa-circle-xmark');
+                closeLiveSession();
                 return;
             }
 
-            console.log('✅ Found session to pause:', currentSession.title);
-
-            // Save paused session state to localStorage
+            // Create pause data
             pausedSessionData = {
-                id: sessionIdNum,  // ⭐ Store as number
+                id: Number(currentSession.id),
                 sessionTitle: currentSession.title,
                 sessionSubject: currentSession.subject,
                 sessionType: currentSession.type,
                 elapsedSeconds: sessionElapsedSeconds,
                 totalDuration: sessionTotalDuration,
                 chatHistory: chatbotMessages.innerHTML,
+                videoSearchQuery: liveSearchInput.value,
                 pausedAt: Date.now(),
-                videoSearchQuery: liveSearchInput.value
+                startedAt: sessionStartTime, // For timer math
+                actualStartTime: sessionActualStartTime, // For display
+                originalSessionId: currentSession.originalSessionId || null,
+                isAISession: aiSessionState.active,
+                aiSessionData: aiSessionState.active ? {
+                    topic: aiSessionState.topic,
+                    subject: aiSessionState.subject,
+                    concepts: aiSessionState.concepts,
+                    currentConceptIndex: aiSessionState.currentConceptIndex,
+                    videoWatched: aiSessionState.videoWatched,
+                    quizAnswered: aiSessionState.quizAnswered,
+                    scores: aiSessionState.scores,
+                    overallProgress: aiSessionState.overallProgress
+                } : null
             };
 
-            // ⭐ FIX: Clear active session and save paused session
-            localStorage.removeItem('epicScholarActiveSession');
+            // ⭐ DEBUG LOGGING
+            console.log('💾 Saving paused session:', {
+                isAI: pausedSessionData.isAISession,
+                currentConcept: pausedSessionData.aiSessionData?.currentConceptIndex,
+                scores: pausedSessionData.aiSessionData?.scores
+            });
+
             localStorage.setItem('epicScholarPausedSession', JSON.stringify(pausedSessionData));
-            console.log('✅ Paused session saved to localStorage');
+            localStorage.removeItem('epicScholarActiveSession');
 
-            // Calculate remaining time
-            const remainingSeconds = sessionTotalDuration - sessionElapsedSeconds;
+            showToast(`Session Paused. ${formatTime(sessionTotalDuration - sessionElapsedSeconds)} remaining.`);
 
-            console.log(`✅ Session paused: ${currentSession.title}`);
-            console.log(`   Elapsed: ${formatTime(sessionElapsedSeconds)}`);
-            console.log(`   Remaining: ${formatTime(remainingSeconds)}`);
-
-            // Show toast notification
-            showToast(`Session paused - ${formatTime(remainingSeconds)} remaining`, 'fa-pause');
-
-            // Close live session and return to home page
             closeLiveSession();
-
-            // Re-render sessions to show resume button
-            renderSessions();
+            setTimeout(() => {
+                renderSessions();
+            }, 100);
         });
-
-        // END SESSION - Delete from localStorage and remove from list  
+        // ============================================
+        // UPDATED END SESSION HANDLER
+        // Replace the endSessionBtn event listener section
+        // ============================================
         endSessionBtn.addEventListener('click', () => {
-            // ⭐ FIX: Convert to number for consistency
             const sessionIdNum = Number(currentSessionId);
-
-            // Get current session details for confirmation
             const currentSession = sessions.find(s => Number(s.id) === sessionIdNum);
             const sessionTitle = currentSession ? currentSession.title : 'this session';
             const sessionDuration = currentSession ? `${currentSession.duration} minutes` : '- minutes';
 
-            // ⭐ CUSTOM MODAL: Replace browser confirm() with premium modal
+            // Show custom modal
             const endModal = document.getElementById('end-session-modal');
             const endConfirmBtn = document.getElementById('end-session-confirm-btn');
             const endCancelBtn = document.getElementById('end-session-cancel-btn');
 
-            // Populate modal with session details
             document.getElementById('end-session-name').textContent = sessionTitle;
             document.getElementById('end-session-duration').textContent = sessionDuration;
 
-            // Show modal with animation
             endModal.classList.remove('hidden');
 
-            // Handle confirm button
             const onConfirm = () => {
-                // Close modal
                 endModal.classList.add('hidden');
 
-                // Find and remove the session from the array
                 if (currentSessionId) {
                     const sessionIndex = sessions.findIndex(s => Number(s.id) === sessionIdNum);
 
                     if (sessionIndex !== -1) {
                         const endedSession = sessions[sessionIndex];
+                        const isTemporary = endedSession.isTemporary;
+                        const originalId = isTemporary ? Number(endedSession.originalSessionId) : null;
 
-                        // ENHANCED: Animate card removal before deleting
-                        const card = document.querySelector(`.session-card[data-id="${sessionIdNum}"]`);
-                        if (card) {
-                            // Add deletion animation
-                            card.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-                            card.style.opacity = '0';
-                            card.style.transform = 'scale(0.8) translateY(-20px)';
-                            card.style.maxHeight = card.offsetHeight + 'px';
-
-                            // Wait for animation, then remove
-                            setTimeout(() => {
-                                card.style.maxHeight = '0';
-                                card.style.margin = '0';
-                                card.style.padding = '0';
-
+                        // Animate card removal (only if not temporary)
+                        if (!isTemporary) {
+                            const card = document.querySelector(`.session-card[data-id="${sessionIdNum}"]`);
+                            if (card) {
+                                card.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+                                card.style.opacity = '0';
+                                card.style.transform = 'scale(0.8) translateY(-20px)';
                                 setTimeout(() => {
-                                    card.remove();
-                                }, 400);
-                            }, 200);
+                                    card.style.maxHeight = '0';
+                                    card.style.margin = '0';
+                                    card.style.padding = '0';
+                                    setTimeout(() => card.remove(), 400);
+                                }, 200);
+                            }
                         }
 
-                        // Remove from sessions array
+                        // Remove active session
                         sessions.splice(sessionIndex, 1);
 
-                        // Save updated sessions to localStorage
+                        // ⭐ FIX: If ending an AI session, also delete the parent session
+                        if (originalId) {
+                            const parentIndex = sessions.findIndex(s => Number(s.id) === originalId);
+                            if (parentIndex !== -1) {
+                                console.log(`🗑️ Removing parent session ID: ${originalId}`);
+                                sessions.splice(parentIndex, 1);
+
+                                // Also remove parent card from DOM if it exists on the dashboard
+                                const parentCard = document.querySelector(`.session-card[data-id="${originalId}"]`);
+                                if (parentCard) {
+                                    parentCard.style.transition = 'all 0.4s ease';
+                                    parentCard.style.opacity = '0';
+                                    parentCard.style.transform = 'scale(0.8)';
+                                    setTimeout(() => parentCard.remove(), 400);
+                                }
+                            }
+                        }
+
+                        // Always save since we modified the sessions array
                         saveDataToLocalStorage();
 
-                        console.log(`✅ Session "${endedSession.title}" ended and removed from storage`);
+                        console.log(`✅ Session "${endedSession.title}" ended and removed`);
+                        showToast(`Session "${endedSession.title}" completed!`, 'fa-check-circle');
 
-                        // Show completion toast
-                        showToast(`Session "${endedSession.title}" completed and removed!`, 'fa-check-circle');
-                    } else {
-                        console.warn('⚠️ Session not found in array');
-                        console.warn('   Looking for ID:', sessionIdNum, typeof sessionIdNum);
-                        console.warn('   Available IDs:', sessions.map(s => ({ id: s.id, type: typeof s.id })));
-                        showToast('Warning: Session not found', 'fa-exclamation-triangle');
-                    }
+                        // Clear paused session data
+                        if (pausedSessionData && (Number(pausedSessionData.id) === sessionIdNum || Number(pausedSessionData.originalSessionId) === originalId)) {
+                            pausedSessionData = null;
+                            localStorage.removeItem('epicScholarPausedSession');
+                        }
 
-                    // Clear paused session data from memory and localStorage
-                    if (pausedSessionData && Number(pausedSessionData.id) === sessionIdNum) {
-                        pausedSessionData = null;
-                        localStorage.removeItem('epicScholarPausedSession');
-                        console.log('✅ Cleared paused session data');
+                        // ⭐ Reset AI session state if active
+                        if (aiSessionState.active) {
+                            aiSessionState.active = false;
+                            aiSessionState.concepts = [];
+                            aiSessionState.scores = {};
+                        }
                     }
-                } else {
-                    console.warn('⚠️ No current session ID found');
                 }
 
                 // Clear timer and reset state
@@ -3841,53 +3642,33 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 sessionTotalDuration = 0;
                 currentSessionId = null;
 
-                // Reset pause button to default state
                 pauseSessionBtn.textContent = "Pause Session";
-                pauseSessionBtn.style.background = "";
                 liveSessionTimer.style.color = "";
-                liveSessionTimer.style.border = "";
 
-                // Close live session view and return to home
                 closeLiveSession();
+                setTimeout(() => renderSessions(), 800);
 
-                // Re-render remaining sessions (if needed for cleanup)
-                setTimeout(() => {
-                    renderSessions();
-                }, 800);
-
-                // Remove event listeners
                 endConfirmBtn.removeEventListener('click', onConfirm);
                 endCancelBtn.removeEventListener('click', onCancel);
             };
 
-            // Handle cancel button
             const onCancel = () => {
-                // Close modal with animation
                 endModal.classList.add('hidden');
-
-                // Remove event listeners
                 endConfirmBtn.removeEventListener('click', onConfirm);
                 endCancelBtn.removeEventListener('click', onCancel);
             };
 
-            // Attach event listeners
             endConfirmBtn.addEventListener('click', onConfirm);
             endCancelBtn.addEventListener('click', onCancel);
-
-            // Also close on backdrop click
             endModal.addEventListener('click', (e) => {
-                if (e.target === endModal) {
-                    onCancel();
-                }
+                if (e.target === endModal) onCancel();
             }, { once: true });
         });
-
-
 
         // Global Click Handler
         document.addEventListener('click', (e) => {
             const target = e.target;
-            const action = target.closest('[data-action]')?.dataset.action;
+            let action = target.closest('[data-action]')?.dataset.action;
 
             // Modal Close
             if (target.classList.contains('modal')) {
@@ -3967,8 +3748,18 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 const session = sessions.find(s => s.id === sessionId);
 
                 if (session) {
+                    // ⭐ TIME RESTRICTION: Check if session time has arrived
+                    const sessionTime = new Date(session.datetime).getTime();
+                    const now = Date.now();
+
+                    if (now < sessionTime) {
+                        const timeDiff = Math.ceil((sessionTime - now) / 60000); // minutes
+                        showToast(`Session starts in ${timeDiff} minutes! Please wait.`, 'fa-clock');
+                        return;
+                    }
+
                     console.log('🤖 Starting AI session:', session.title);
-                    initAISession(session.title, session.subject || 'General');
+                    initAISession(session.title, session.subject || 'General', session.duration, session.id);
                 } else {
                     console.error('❌ Session not found for AI start');
                 }
@@ -3981,38 +3772,134 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 const session = sessions.find(s => s.id === sessionId);
 
                 if (session) {
+                    // ⭐ TIME RESTRICTION
+                    const sessionTime = new Date(session.datetime).getTime();
+                    const now = Date.now();
+
+                    if (now < sessionTime) {
+                        const timeDiff = Math.ceil((sessionTime - now) / 60000);
+                        showToast(`Test available in ${timeDiff} minutes.`, 'fa-clock');
+                        return;
+                    }
+
                     console.log('📝 Starting full test:', session.title);
                     startFullScreenTest(session.title, session.subject);
                 } else {
                     console.error('❌ Session not found for test start');
                 }
             }
+            // Find "if (action === 'resume-session')" around line 3150 and replace with:
 
-            // ⭐ RESUME PAUSED SESSION - THIS IS CRITICAL
+            // NEW: Resume Linked AI Session
+            if (action === 'resume-linked-ai') {
+                const card = target.closest('.session-card');
+                const originalSessionId = parseInt(card.getAttribute('data-id'));
+
+                // Get paused/active data to find the temporary session ID
+                let paused = JSON.parse(localStorage.getItem('epicScholarPausedSession') || 'null');
+                let active = JSON.parse(localStorage.getItem('epicScholarActiveSession') || 'null');
+
+                let targetId = null;
+                if (paused && Number(paused.originalSessionId) === originalSessionId) targetId = paused.id;
+                else if (active && Number(active.originalSessionId) === originalSessionId) targetId = active.id;
+
+                if (targetId) {
+                    let tempSession = sessions.find(s => Number(s.id) === Number(targetId));
+
+                    // IF MISSING: Reconstruct from paused data
+                    if (!tempSession && paused && Number(paused.id) === Number(targetId)) {
+                        tempSession = {
+                            id: Number(paused.id),
+                            title: paused.sessionTitle,
+                            subject: paused.sessionSubject,
+                            type: paused.sessionType || 'Session',
+                            duration: (paused.totalDuration || 0) / 60,
+                            originalSessionId: originalSessionId,
+                            isTemporary: true
+                        };
+                        sessions.push(tempSession);
+                    }
+
+                    if (tempSession) {
+                        // Switch to regular resume logic using the temp session ID
+                        target.closest('.session-card').setAttribute('data-id', targetId);
+                        action = 'resume-session';
+                    }
+                }
+            }
+
             if (action === 'resume-session') {
                 const card = target.closest('.session-card');
                 const sessionId = parseInt(card.getAttribute('data-id'));
-                const session = sessions.find(s => s.id === sessionId);
+                const session = sessions.find(s => Number(s.id) === sessionId);
 
-                console.log('▶️ Resume button clicked. Session ID:', sessionId);
-                console.log('   Found session:', session);
-                console.log('   Paused data:', pausedSessionData);
+                if (session) {
+                    // ⭐ FAILSAFE: Load from LocalStorage if variable is missing
+                    if (!pausedSessionData) {
+                        const stored = localStorage.getItem('epicScholarPausedSession');
+                        if (stored) {
+                            try {
+                                pausedSessionData = JSON.parse(stored);
+                                console.log('✅ Recovered paused session data from storage');
+                            } catch (e) {
+                                console.error('Failed to parse paused session data', e);
+                            }
+                        }
+                    }
 
-                if (session && pausedSessionData && pausedSessionData.id === sessionId) {
-                    console.log(`✅ Resuming paused session: ${session.title}`);
-                    openLiveSession(session);
-                } else {
-                    console.error('❌ Could not find paused session data');
-                    console.error('   Session exists:', !!session);
-                    console.error('   Paused data exists:', !!pausedSessionData);
-                    console.error('   IDs match:', pausedSessionData?.id === sessionId);
+                    if (pausedSessionData && Number(pausedSessionData.id) === sessionId) {
+                        console.log(`✅ Resuming session: ${session.title}`);
 
-                    showToast('Error: Paused session data not found', 'fa-circle-xmark');
+                        // ⭐ CRITICAL FIX: Restore AI session state BEFORE opening live session
+                        const isAISession = pausedSessionData.isAISession && pausedSessionData.aiSessionData;
 
-                    // Clear invalid paused session data
-                    localStorage.removeItem('epicScholarPausedSession');
-                    pausedSessionData = null;
-                    renderSessions();
+                        if (isAISession) {
+                            // Restore the FULL AI session state
+                            aiSessionState.active = true;
+                            aiSessionState.topic = pausedSessionData.aiSessionData.topic;
+                            aiSessionState.subject = pausedSessionData.aiSessionData.subject;
+                            aiSessionState.concepts = pausedSessionData.aiSessionData.concepts;
+                            aiSessionState.currentConceptIndex = pausedSessionData.aiSessionData.currentConceptIndex;
+                            aiSessionState.videoWatched = pausedSessionData.aiSessionData.videoWatched || false;
+                            aiSessionState.quizAnswered = pausedSessionData.aiSessionData.quizAnswered || false;
+                            aiSessionState.scores = pausedSessionData.aiSessionData.scores || {};
+                            aiSessionState.overallProgress = pausedSessionData.aiSessionData.overallProgress || 0;
+
+                            console.log('✅ Restored AI session state:', {
+                                currentConcept: aiSessionState.currentConceptIndex,
+                                totalConcepts: aiSessionState.concepts.length,
+                                scores: aiSessionState.scores,
+                                progress: aiSessionState.overallProgress
+                            });
+                        }
+
+                        // Open live session (timer restoration happens here)
+                        openLiveSession(session, true);
+
+                        // ⭐ CRITICAL FIX: Restore AI UI AFTER live session opens
+                        if (isAISession) {
+                            setTimeout(() => {
+                                // Render AI layout
+                                renderAISessionLayout();
+
+                                // Update progress circle FIRST
+                                updateProgress();
+
+                                // Then load the CORRECT concept (not 0)
+                                const conceptIndex = aiSessionState.currentConceptIndex;
+                                console.log(`🔄 Loading concept ${conceptIndex + 1}/${aiSessionState.concepts.length}`);
+                                loadConcept(conceptIndex);
+
+                                showToast(`Resumed at Concept ${conceptIndex + 1}: ${aiSessionState.concepts[conceptIndex].title}`);
+                            }, 800); // Increased delay to ensure DOM is ready
+                        }
+                    } else {
+                        console.error('❌ Could not find matching paused session data');
+                        showToast('Error: Paused session data not found', 'fa-circle-xmark');
+                        localStorage.removeItem('epicScholarPausedSession');
+                        pausedSessionData = null;
+                        renderSessions();
+                    }
                 }
             }
 
@@ -4023,6 +3910,16 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 const session = sessions.find(s => s.id === sessionId);
 
                 if (action === 'start-session' && session) {
+                    // ⭐ TIME RESTRICTION
+                    const sessionTime = new Date(session.datetime).getTime();
+                    const now = Date.now();
+
+                    if (now < sessionTime) {
+                        const timeDiff = Math.ceil((sessionTime - now) / 60000);
+                        showToast(`Session starts in ${timeDiff} minutes.`, 'fa-clock');
+                        return;
+                    }
+
                     if (session.type === 'Test') {
                         console.log('📝 Starting test session:', session.title);
                         generateQuizForSession(session.title, session.subject);
@@ -4115,9 +4012,20 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
         // Theme Toggle Logic
         modeToggleCheckbox.addEventListener('change', () => {
-            body.classList.toggle('dark-mode');
-            body.classList.toggle('light-mode');
-            localStorage.setItem('theme', body.classList.contains('dark-mode') ? 'dark' : 'light');
+            const isDarkMode = body.classList.contains('dark-mode');
+            const newTheme = isDarkMode ? 'light' : 'dark';
+
+            if (newTheme === 'light') {
+                body.classList.remove('dark-mode');
+                body.classList.add('light-mode');
+                document.documentElement.setAttribute('data-theme', 'light');
+            } else {
+                body.classList.remove('light-mode');
+                body.classList.add('dark-mode');
+                document.documentElement.removeAttribute('data-theme');
+            }
+
+            localStorage.setItem('theme', newTheme);
         });
 
         // Circular Progress Update
@@ -4202,14 +4110,16 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             // document.body.classList.add('loading'); // REMOVED
 
             // Set theme before content loads
-            const savedTheme = localStorage.getItem('theme');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
             if (savedTheme === 'light') {
                 body.classList.remove('dark-mode');
                 body.classList.add('light-mode');
+                document.documentElement.setAttribute('data-theme', 'light');
                 modeToggleCheckbox.checked = true;
             } else {
                 body.classList.add('dark-mode');
                 body.classList.remove('light-mode');
+                document.documentElement.removeAttribute('data-theme');
                 modeToggleCheckbox.checked = false;
             }
 
