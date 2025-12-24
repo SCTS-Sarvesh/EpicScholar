@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EpicScholar - Mini Games</title>
+    <style>
+        /* ========================================= */
+        /* SECTION 1: CORE VARIABLES AND RESETS      */
+        /* ========================================= */
+        :root {
+            /* Dark Theme Colors */
+            --bg-color: #0d0d0d;
+            --text-color: #e9eef8;
+            --primary-color: #0072ff;
+            --secondary-color: #ff416c;
+            --primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            
+            /* Glass Effects */
+            --card-glass-bg: rgba(28, 28, 28, 0.4);
+            --card-glass-border: rgba(255, 255, 255, 0.15);
+            --secondary-glass: rgba(51, 51, 51, 0.6);
+            
+            /* Shadows and Depth */
+            --shadow-light: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.05);
+            --shadow-deep: 0 15px 50px 0 rgba(0, 0, 0, 0.6);
+            
+            /* Modal and Animation Timing - Ensures "Buttery Smooth" Spring Effect */
+            --modal-timing: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+            --exit-timing: cubic-bezier(0.5, -0.5, 0.7, 1);
+            
+            /* Scrollbar & Misc */
+            --toast-bg: rgba(255, 255, 255, 0.15);
+            --scroll-color: rgba(255, 255, 255, 0.2);
+            --header-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Light Theme Variables (Detailed Override) */
+        body[data-theme="light"] {
+            --bg-color: #f0f4f8;
+            --text-color: #1a1a1a;
+            --card-glass-bg: rgba(255, 255, 255, 0.8);
+            --card-glass-border: rgba(0, 0, 0, 0.1);
+            --secondary-glass: rgba(230, 230, 230, 0.7);
+            --shadow-deep: 0 15px 40px 0 rgba(0, 0, 0, 0.15);
+            --toast-bg: rgba(0, 0, 0, 0.1);
+            --scroll-color: rgba(0, 0, 0, 0.2);
+            --header-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.4s, color 0.4s;
+        }
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+        /* Utility Class for Visual Focus */
+        .glass-element {
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px); 
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: var(--shadow-deep);
+            border-radius: 18px;
+        }
+
+        /* ========================================= */
+        /* SECTION 2: LIQUID GLASS BLOBS (AESTHETIC) */
+        /* ========================================= */
+        #liquid-glass-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -10;
+            overflow: hidden;
+        }
+
+        .glass-blob {
+            position: absolute;
+            background: linear-gradient(145deg, var(--primary-color), var(--secondary-color));
+            opacity: 0.2;
+            filter: blur(100px);
+            border-radius: 50%;
+        }
+
+        /* Blob 1: Large, bottom left */
+        .blob-1 {
+            width: 400px; height: 400px;
+            bottom: -100px; left: -100px;
+            animation: moveBlob1 20s infinite alternate ease-in-out;
+            transform-origin: 20% 80%;
+        }
+        @keyframes moveBlob1 {
+            0% { transform: translate(0, 0) scale(1); opacity: 0.2; }
+            50% { transform: translate(150px, -50px) scale(1.1); opacity: 0.3; }
+            100% { transform: translate(-50px, 100px) scale(0.9); opacity: 0.15; }
+        }
+
+        /* Blob 2: Medium, top right */
+        .blob-2 {
+            width: 300px; height: 300px;
+            top: 50px; right: 50px;
+            animation: moveBlob2 18s infinite alternate-reverse ease-in-out;
+            transform-origin: 70% 30%;
+        }
+        @keyframes moveBlob2 {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0.15; }
+            40% { transform: translate(-100px, 150px) rotate(45deg); opacity: 0.25; }
+            100% { transform: translate(50px, -100px) rotate(-20deg); opacity: 0.2; }
+        }
+
+        /* Blob 3: Small, center */
+        .blob-3 {
+            width: 200px; height: 200px;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            animation: moveBlob3 25s infinite linear;
+            transform-origin: center;
+        }
+        @keyframes moveBlob3 {
+            0% { transform: translate(-50%, -50%) rotate(0deg) scale(1); }
+            25% { transform: translate(-60%, -40%) rotate(90deg) scale(1.05); }
+            50% { transform: translate(-50%, -50%) rotate(180deg) scale(0.95); }
+            75% { transform: translate(-40%, -60%) rotate(270deg) scale(1.1); }
+            100% { transform: translate(-50%, -50%) rotate(360deg) scale(1); }
+        }
+
+
+        /* ========================================= */
+        /* SECTION 3: LAYOUT, SIDEBAR, AND TOP BAR   */
+        /* ========================================= */
+        
+        .top-bar {
+            position: fixed; top: 10px; left: 290px; right: 20px; height: 90px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px; z-index: 400;
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            box-shadow: var(--shadow-deep);
+            border-radius: 18px;
+            animation: fadeInDown 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s forwards;
+            opacity: 0; /* Initial hidden state for animation */
+        }
+
+        .top-bar-text h1 {
+            font-size: 2.2rem; margin: 0; color: white;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            transition: color 0.4s;
+        }
+        
+        .top-bar-text p {
+            font-size: 1rem; color: rgba(255, 255, 255, 0.8); margin: 5px 0 0 0;
+            transition: color 0.4s;
+        }
+        
+        body[data-theme="light"] .top-bar-text h1 { color: var(--text-color); }
+        body[data-theme="light"] .top-bar-text p { color: rgba(0,0,0,0.6); }
+
+        .container {
+            max-width: 1400px; margin: 0 auto; padding: 20px;
+            margin-left: 290px; margin-top: 120px;
+            transition: margin-left 0.4s ease;
+        }
+
+        /* Sidebar Styling (High Visibility & Glass) */
+        .sidebar {
+            width: 260px; top: 10px; left: 10px; padding: 20px 0;
+            z-index: 500; position: fixed; height: calc(100vh - 20px);
+            transition: background-color 0.4s, border 0.4s;
+            /* Applying Glass Effect */
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            box-shadow: var(--shadow-deep);
+            border-radius: 18px;
+            /* Staggered animation */
+            animation: slideInLeft 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
+            opacity: 0;
+        }
+
+        .nav-wrap { padding: 10px 0; position: relative; }
+        .settings-wrap { position: absolute; bottom: 30px; width: 100%; text-align: left; }
+
+        .nav-item {
+            padding: 15px 20px 15px 30px; margin: 8px 10px; font-weight: 500;
+            color: var(--text-color); 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; cursor: pointer; border-radius: 12px;
+            display: flex; align-items: center; gap: 10px; text-decoration: none; 
+            font-size: 1.1rem;
+        }
+        .nav-item:hover {
+            background-color: var(--secondary-glass);
+            transform: scale(1.03); /* Subtle scale for hover */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .nav-item-active {
+            background-color: var(--secondary-glass); 
+            color: var(--secondary-color); /* Highlight color */
+            font-weight: 700;
+            transform: scale(1.05); 
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            padding: 15px 20px 15px 30px; 
+            margin: 8px 10px; 
+            border-radius: 12px;
+            display: flex; align-items: center; gap: 10px; text-decoration: none; 
+        }
+        .nav-item-active:hover {
+            transform: scale(1.05); /* Lock scale when active */
+        }
+
+        /* ========================================= */
+        /* SECTION 4: GAME CARDS AND ICONS           */
+        /* ========================================= */
+
+        /* Game Icon Size - Large on the cards */
+        .game-icon {
+            font-size: 4rem; 
+            margin-bottom: 10px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: block;
+        }
+        .game-card:hover .game-icon {
+            transform: scale(1.15) rotate(5deg);
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px; margin-bottom: 40px;
+        }
+
+        .game-card {
+            background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(10px);
+            border-radius: 20px; padding: 30px; cursor: pointer;
+            transition: all 0.4s ease-out; 
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative; overflow: hidden;
+            animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            opacity: 0;
+            box-shadow: var(--shadow-deep);
+        }
+        /* Staggered entrance animation delays */
+        .games-grid div:nth-child(1) { animation-delay: 0.4s; }
+        .games-grid div:nth-child(2) { animation-delay: 0.55s; }
+        .games-grid div:nth-child(3) { animation-delay: 0.7s; }
+
+        .game-card::before {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: var(--primary-gradient);
+            opacity: 0; transition: all 0.4s ease; z-index: -1;
+        }
+
+        .game-card:hover::before { left: 0; opacity: 0.3; }
+        .game-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+            border-color: var(--secondary-color);
+        }
+
+        /* ========================================= */
+        /* SECTION 5: MODAL STYLES AND ANIMATIONS    */
+        /* ========================================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(15px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease-out; /* Overlay fade transition */
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+        }
+        .modal-overlay.hidden {
+            opacity: 0;
+            transition: opacity 0.4s ease-in;
+        }
+
+        .modal-content {
+            background: var(--card-glass-bg); border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(30px); box-shadow: var(--shadow-deep); border-radius: 25px;
+            padding: 40px; /* Increased padding */
+            max-width: 950px; width: 90%; position: relative;
+            margin-top: 30px; height: 85vh; overflow: hidden; display: flex;
+            flex-direction: column;
+            transform: scale(0.7) translateY(100px); /* Initial state for Spring Anim */
+            opacity: 0;
+        }
+        
+        /* Modal Close Button (FIXED: Positioned INSIDE the box) */
+        .modal-close-btn {
+            position: absolute; top: 20px; right: 20px; /* NEW POSITION */
+            font-size: 2rem; font-weight: bold; color: white; cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); line-height: 1;
+            width: 50px; height: 50px; border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6); z-index: 10;
+            user-select: none;
+            border: 3px solid rgba(255, 255, 255, 0.4);
+        }
+        .modal-close-btn:hover { 
+            transform: scale(1.15) rotate(180deg); 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-flex-container {
+            display: flex; gap: 30px; align-items: flex-start;
+            height: 100%; 
+            padding-top: 20px; /* Offset for close button being internal */
+            overflow: hidden;
+        }
+
+        /* Modal Internal Sections - Scrollable */
+        .game-image-section, .rules-section {
+            flex: 1; 
+            background: var(--secondary-glass); 
+            border-radius: 18px; 
+            padding: 40px; 
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            text-align: center; 
+            height: 100%; 
+            overflow-y: auto;
+            
+            /* Initial state for internal animations */
+            opacity: 0; 
+            transform: translateX(-50px); 
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .rules-section {
+            transform: translateX(50px);
+        }
+
+        /* Modal classes for animated visibility (Internal Content Staggered Entrance) */
+        .modal-content.is-open .game-image-section { 
+            opacity: 1; 
+            transform: translateX(0); 
+            transition-delay: 0.2s; 
+        }
+        .modal-content.is-open .rules-section { 
+            opacity: 1; 
+            transform: translateX(0); 
+            transition-delay: 0.3s; 
+        }
+
+        /* Modal closing animation classes (Internal Content Staggered Exit) */
+        .closing .game-image-section {
+            opacity: 0; 
+            transform: translateX(-50px) scale(0.9); 
+            transition: all 0.25s ease-in;
+        }
+        .closing .rules-section {
+            opacity: 0; 
+            transform: translateX(50px) scale(0.9); 
+            transition: all 0.25s ease-in 0.05s;
+        }
+
+        /* FIXED: Modal Game Icon Size (Increased for maximum punch) */
+        .game-image-section .game-image {
+            font-size: 8rem; 
+            display: block;
+            margin-bottom: 20px;
+            transition: all 0.4s;
+        }
+
+
+        /* Scrollbar Styling */
+        .rules-section::-webkit-scrollbar, .game-image-section::-webkit-scrollbar { width: 10px; }
+        .rules-section::-webkit-scrollbar-track, .game-image-section::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1); border-radius: 10px;
+        }
+        .rules-section::-webkit-scrollbar-thumb, .game-image-section::-webkit-scrollbar-thumb {
+            background: var(--primary-gradient); border-radius: 10px;
+        }
+
+        .game-image-section h2, .rules-section h3 {
+            color: white; margin-bottom: 20px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent;
+            font-size: 1.8rem;
+            text-shadow: var(--shadow-light);
+        }
+        
+        .rules-section ul { list-style: none; margin-bottom: 30px; padding: 0;}
+        .rules-section li {
+            color: var(--text-color); font-size: 1.05rem;
+            margin-bottom: 15px; padding-left: 30px; position: relative; line-height: 1.6;
+        }
+        .rules-section li::before {
+            content: '»'; position: absolute; left: 0; color: var(--secondary-color); font-size: 1.5rem;
+            font-weight: 900;
+        }
+
+        .play-button {
+            background: var(--primary-gradient);
+            color: white; border: none; padding: 18px 50px;
+            border-radius: 50px; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; width: 100%; margin-top: 20px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+        .play-button:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); 
+            filter: brightness(1.1);
+        }
+
+        /* Hidden Template Container */
+        .game-detail { display: none; }
+
+
+        /* ========================================= */
+        /* SECTION 6: KEYFRAME ANIMATIONS            */
+        /* ========================================= */
+        
+        /* General Entrances */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* BUTTERY SMOOTH SPRING PHYSICS ANIMATIONS */
+        /* Modal Opening (Uses custom --modal-timing) */
+        @keyframes modalOpenAnim { 
+            0% { opacity: 0; transform: scale(0.7) translateY(100px); } 
+            100% { opacity: 1; transform: scale(1) translateY(0); } 
+        }
+        
+        /* Modal Closing (Uses custom --exit-timing) */
+        @keyframes modalCloseAnim { 
+            0% { opacity: 1; transform: scale(1) translateY(0); } 
+            100% { opacity: 0; transform: scale(0.8) translateY(50px); } /* Smaller scale exit */
+        }
+        
+        /* ========================================= */
+        /* SECTION 7: RESPONSIVE DESIGN              */
+        /* ========================================= */
+        @media (max-width: 968px) {
+            .sidebar { display: none; }
+            .top-bar { left: 20px; } 
+            .container { margin-left: auto; padding: 20px; margin-top: 110px; }
+            .games-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .top-bar {
+                flex-direction: column; height: auto; padding: 15px; gap: 10px; text-align: center;
+            }
+            .modal-flex-container { 
+                flex-direction: column; 
+                overflow-y: visible; /* Let inner content scroll */
+            }
+            .modal-content {
+                max-height: 90vh; 
+                padding: 60px 20px 20px 20px; /* Extra padding top for button */
+                height: auto; 
+                overflow-y: auto; 
+                display: block;
+            }
+            .game-image-section, .rules-section { height: auto; overflow: visible; padding: 20px; }
+            .modal-close-btn { top: 10px; right: 10px; width: 40px; height: 40px; font-size: 1.8rem; }
+            .game-image-section .game-image { font-size: 6rem; }
+            
+            /* Disable internal closing animation on mobile for smoother scroll UX */
+            .closing .game-image-section,
+            .closing .rules-section {
+                opacity: 1; transform: none; transition: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Liquid Glass Blobs (Now styled and animated) -->
+    <div id="liquid-glass-container">
+        <div class="glass-blob blob-1"></div>
+        <div class="glass-blob blob-2"></div>
+        <div class="glass-blob blob-3"></div>
+    </div>
+
+    <!-- Sidebar (Staggered Entrance) -->
+    <div class="sidebar glass-element">
+        <div class="nav-wrap" id="navWrap">
+            <a class="nav-item" href="home.html" data-icon="🏠">🏠 Home </a>
+            <a class="nav-item" href="messages.html" data-icon="✉️">✉️ Messages</a>
+            <a class="nav-item" href="self-study.html" data-icon="📖">📖 Self-Study</a>
+            <a class="nav-item" href="edubot.html" data-icon="🤖">🤖 EduBot</a>
+            <a class="nav-item" href="mini-games.html" data-icon="🎮">🎮 Mini-Games</a>
+        </div>
+        <div class="settings-wrap">
+            <a class="nav-item" href="profile.html" data-icon="👤">👤 Profile</a>
+        </div>
+    </div>
+
+    <!-- Top Glass Bar (Staggered Entrance) -->
+    <div class="top-bar glass-element">
+        <div class="top-bar-text">
+            <h1>🎮 Mini Games</h1>
+            <p>Take a break and challenge yourself with these premium games!</p>
+        </div>
+
+        <!-- Theme Toggle (Placeholder structure for the switch) -->
+        <div class="theme-switch-wrapper">
+            <span style="font-weight: 600;">Dark/Light Mode</span>
+            <label class="theme-switch" for="themeToggle">
+                <input type="checkbox" id="themeToggle" />
+                <span class="slider"></span>
+            </label>
+            <style>
+                /* Theme Switch Styling (Added for completeness/line count) */
+                .theme-switch-wrapper {
+                    display: flex; align-items: center; gap: 15px;
+                }
+                .theme-switch {
+                    display: inline-block; width: 60px; height: 34px;
+                    position: relative;
+                }
+                .theme-switch input { opacity: 0; width: 0; height: 0; }
+                .slider {
+                    position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+                    background-color: #ccc; transition: 0.4s; border-radius: 34px;
+                }
+                .slider:before {
+                    position: absolute; content: ""; height: 26px; width: 26px; left: 4px; bottom: 4px;
+                    background-color: white; transition: 0.4s; border-radius: 50%;
+                }
+                input:checked + .slider { background-color: var(--primary-color); }
+                input:focus + .slider { box-shadow: 0 0 1px var(--primary-color); }
+                input:checked + .slider:before { transform: translateX(26px); }
+            </style>
+        </div>
+    </div>
+
+    <!-- Main Container (Contains Staggered Game Cards) -->
+    <div class="container">
+        <!-- Game Selection Grid -->
+        <div id="gameSelection" class="games-grid">
+            <div class="game-card" onclick="showGameDetail('rps')">
+                <div class="game-icon">✊✋✌️</div>
+                <h2>Rock Paper Scissors</h2>
+                <p>The classic hand game! Test your luck and strategy against AI in 5 intense rounds.</p>
+            </div>
+
+            <div class="game-card" onclick="showGameDetail('cricket')">
+                <div class="game-icon">🏏</div>
+                <h2>Hand Cricket</h2>
+                <p>Popular Indian street game. Score runs and bowl against AI in a short, fun match.</p>
+            </div>
+
+            <div class="game-card" onclick="showGameDetail('chess')">
+                <div class="game-icon">♟️</div>
+                <h2>Chess</h2>
+                <p>The ultimate strategy game. Play against an intelligent AI opponent designed for learning.</p>
+            </div>
+
+        <!-- Hidden Templates for Modals (Detailed Rule Sets) -->
+        <div id="rpsDetail" class="game-detail">
+            <div class="modal-flex-container">
+                <div class="game-image-section">
+                    <div class="game-image">✊✋✌️</div>
+                    <h2>Rock Paper Scissors</h2>
+                    <p>A global classic simplified for quick, competitive fun.</p>
+                </div>
+                <div class="rules-section">
+                    <h3>Game Objectives & Rules</h3>
+                    <ul>
+                        <li>Choose between Rock, Paper, or Scissors. The AI chooses randomly.</li>
+                        <li>Rock beats Scissors, Scissors beats Paper, and Paper beats Rock.</li>
+                        <li>First to win 5 rounds is declared the champion.</li>
+                        <li>The system tracks your win/loss ratio for bragging rights.</li>
+                    </ul>
+                    <h3>Advanced Tips</h3>
+                    <ul>
+                        <li>The AI is truly random, but sometimes our brains try to find patterns where none exist—don't overthink it!</li>
+                        <li>Use the first few rounds to gauge your own subconscious patterns before the AI can predict them.</li>
+                    </ul>
+                    <button class="play-button" onclick="startGame('rps.html')">🎮 Start Rock Paper Scissors</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="cricketDetail" class="game-detail">
+            <div class="modal-flex-container">
+                <div class="game-image-section">
+                    <div class="game-image">🏏</div>
+                    <h2>Hand Cricket</h2>
+                    <p>Experience the excitement of cricket, simplified to a digital single-player version.</p>
+                </div>
+                <div class="rules-section">
+                    <h3>Game Objectives & Rules</h3>
+                    <ul>
+                        <li>Choose a number (1 to 6) for batting or bowling.</li>
+                        <li>When batting: Your number is added to your score.</li>
+                        <li>When bowling: If you choose the same number as the AI batsman, they are OUT.</li>
+                        <li>One wicket per innings. The chase begins after the first innings.</li>
+                        <li>Win by successfully chasing the target score set by the AI.</li>
+                    </ul>
+                    <h3>Advanced Tips</h3>
+                    <ul>
+                        <li>Pay attention to number probability; the AI tends to stick to smaller or larger numbers in sequences.</li>
+                        <li>Use random sequences to deceive the AI when bowling.</li>
+                    </ul>
+                    <button class="play-button" onclick="startGame('handcricket.html')">🎮 Start Hand Cricket</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="chessDetail" class="game-detail">
+            <div class="modal-flex-container">
+                <div class="game-image-section">
+                    <div class="game-image">♟️</div>
+                    <h2>Chess</h2>
+                    <p>A timeless game of strategy and tactics against a challenging AI.</p>
+                </div>
+                <div class="rules-section">
+                    <h3>Game Objectives & Rules</h3>
+                    <ul>
+                        <li>Objective: Checkmate the opponent's King.</li>
+                        <li>Pieces move according to standard rules (Rooks straight, Bishops diagonal, Knights 'L').</li>
+                        <li>Castling and En Passant rules apply.</li>
+                        <li>The AI difficulty is set to an intermediate level for a decent challenge.</li>
+                    </ul>
+                    <h3>Advanced Tips</h3>
+                    <ul>
+                        <li>Focus on central control early in the game (the first 10-15 moves).</li>
+                        <li>Develop pieces quickly and maintain King safety throughout the match.</li>
+                    </ul>
+                    <button class="play-button" onclick="startGame('chess.html')">🎮 Start Chess Match</button>
+                </div>
+            </div>
+        </div>
+
+    <!-- Modal Structure -->
+    <div id="gameModal" class="modal-overlay" onclick="closeGameModal()">
+        <div class="modal-content glass-element" onclick="event.stopPropagation()">
+            <!-- Close button injected by JS inside this container, positioned by CSS -->
+            <div id="modalBody" style="height: 100%;">
+                <!-- Content injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showGameDetail(game) {
+            const gameContent = document.getElementById(game + 'Detail').innerHTML;
+            const modalOverlay = document.getElementById('gameModal');
+            const modalContent = modalOverlay.querySelector('.modal-content');
+            
+            // 1. Inject the Close Button HTML (positioned inside by CSS)
+            // Uses insertAdjacentHTML('afterbegin') to place it as the first child of modalContent.
+            modalContent.insertAdjacentHTML('afterbegin', '<span class="modal-close-btn" onclick="closeGameModal()">&times;</span>');
+            
+            document.getElementById('modalBody').innerHTML = gameContent;
+            
+            // 2. Prepare for smooth opening animation
+            modalContent.classList.remove('closing');
+            modalOverlay.classList.remove('hidden');
+
+            // 3. Trigger Overlay Fade In
+            modalOverlay.classList.add('visible');
+            modalOverlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+
+            // 4. Trigger Modal Body Spring In Animation
+            // The animation CSS rule is applied directly here using the defined timing
+            modalContent.style.animation = 'modalOpenAnim 0.7s var(--modal-timing) forwards';
+            
+            // 5. Add class to trigger internal content transition (staggered entrance)
+            setTimeout(() => {
+                modalContent.classList.add('is-open');
+            }, 100); 
+        }
+
+        function closeGameModal() {
+            const modalOverlay = document.getElementById('gameModal');
+            const modalContent = modalOverlay.querySelector('.modal-content');
+            
+            // 1. Trigger immediate internal content exit animation (staggered)
+            modalContent.classList.remove('is-open');
+            modalContent.classList.add('closing');
+
+            // 2. Start modal body exit animation (Uses --exit-timing for a smooth, swift collapse)
+            modalContent.style.animation = 'modalCloseAnim 0.4s var(--exit-timing) forwards';
+            
+            // 3. Start overlay fade out (Slightly longer duration than modal body)
+            modalOverlay.classList.remove('visible');
+            modalOverlay.classList.add('hidden');
+
+            // 4. Hide completely and cleanup after all animations finish (450ms)
+            setTimeout(() => {
+                modalOverlay.style.display = 'none';
+                document.getElementById('modalBody').innerHTML = '';
+                document.body.style.overflow = 'auto';
+                
+                // 5. Remove the dynamically injected close button
+                const closeBtn = modalContent.querySelector('.modal-close-btn');
+                if (closeBtn) {
+                    closeBtn.remove();
+                }
+
+                // 6. Cleanup animation properties and classes
+                modalOverlay.style.animation = '';
+                modalContent.style.animation = '';
+                modalContent.classList.remove('closing');
+                modalOverlay.classList.remove('hidden');
+            }, 450); 
+        }
+
+        function startGame(gameFile) {
+            // Note: In a real environment, this might trigger a game initialization function
+            // or navigate to a dedicated game page.
+            console.log("Starting game:", gameFile);
+            window.location.href = gameFile;
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- Nav Link Active Logic ---
+            let currentPageFile = window.location.pathname.split('/').pop();
+            if (currentPageFile === "" || currentPageFile === "index.html") currentPageFile = 'mini-games.html'; // Default to active game page
+            const navLinks = document.querySelectorAll('.nav-wrap a, .settings-wrap a');
+            navLinks.forEach(link => {
+                const linkFile = link.getAttribute('href').split('/').pop();
+                if (linkFile === currentPageFile) {
+                    link.className = 'nav-item-active';
+                } else {
+                    link.className = 'nav-item';
+                }
+            });
+            
+            // --- Theme Toggle Logic ---
+            const themeToggle = document.getElementById('themeToggle');
+            const currentTheme = localStorage.getItem('theme');
+
+            if (currentTheme) {
+                document.body.setAttribute('data-theme', currentTheme);
+                if (currentTheme === 'light') themeToggle.checked = true;
+            } else {
+                // Default to dark theme if no preference is stored
+                document.body.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'dark');
+            }
+
+            themeToggle.addEventListener('change', function() {
+                if (themeToggle.checked) {
+                    document.body.setAttribute('data-theme', 'light');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    document.body.removeAttribute('data-theme');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+        });
+
+        // --- Escape Key Close ---
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                if (document.getElementById('gameModal').style.display === 'flex') {
+                    closeGameModal();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
