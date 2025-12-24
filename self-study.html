@@ -325,6 +325,225 @@
                 font-size: 1.5em;
             }
         }
+
+        /* Add to your <style> section */
+
+        /* Disabled button styling */
+        #quiz-prev-btn:disabled,
+        #fs-prev-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Button hover states */
+        #quiz-prev-btn:not(:disabled):hover,
+        #quiz-next-btn:hover,
+        #fs-prev-btn:not(:disabled):hover,
+        #fs-next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.3);
+        }
+
+        /* Submit button emphasis */
+        #quiz-submit-btn,
+        #fs-submit-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        #quiz-submit-btn:hover,
+        #fs-submit-btn:hover {
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        /* Add to your <style> section */
+
+        /* Test completion card removal animation */
+        @keyframes cardFadeOutScale {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.95) translateY(-10px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-30px);
+                max-height: 0;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        .session-card.test-completed {
+            animation: cardFadeOutScale 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            pointer-events: none;
+        }
+
+        /* Success toast styling */
+        .toast.test-complete {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .toast.test-complete i {
+            color: white;
+        }
+
+        .toast.test-complete span {
+            color: white;
+        }
+
+        /* Add to your <style> section */
+
+        /* =================================================================
+ * ERROR DISPLAY STYLING
+ * =================================================================
+ */
+
+        .error-display-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            text-align: center;
+            animation: errorSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes errorSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .error-icon {
+            margin: 0 auto 2rem;
+            animation: errorPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes errorPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        .error-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin: 0 0 1.5rem 0;
+            font-weight: 700;
+        }
+
+        .error-message {
+            background: rgba(255, 65, 108, 0.1);
+            border: 2px solid rgba(255, 65, 108, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .light-mode .error-message {
+            background: rgba(255, 65, 108, 0.05);
+        }
+
+        .error-message p {
+            margin: 0;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .light-mode .error-message p {
+            color: var(--text-light);
+        }
+
+        .error-suggestions {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .light-mode .error-suggestions {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .error-suggestions h4 {
+            margin: 0 0 1rem 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .error-suggestions ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .error-suggestions li {
+            margin: 0.8rem 0;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .light-mode .error-suggestions li {
+            color: var(--text-light);
+        }
+
+        .error-suggestions strong {
+            color: var(--primary-color);
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-actions button {
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .error-help {
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .light-mode .error-help {
+            border-top-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .error-help p {
+            color: var(--subtext-dark);
+        }
+
+        .light-mode .error-help p {
+            color: var(--subtext-light);
+        }
     </style>
 </head>
 
@@ -772,7 +991,7 @@
 
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AAIzaSyBDWtsgqrQnwk2VZajbPe9Jm9OJnwhLt9c";
+        const GEMINI_API_KEY = "AIzaSyDdKWoIlKEe28ymVOfw9LRl8FuXWKL73yw";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -838,7 +1057,112 @@
         let sessionTotalDuration = 0;
         let sessionPaused = false;
         let pausedSessionData = null; // NEW: Store paused session data
+        // ============================================
+        // QUIZ NAVIGATION FUNCTIONS - Add after line 2450
+        // ============================================
 
+        /**
+         * Navigate to previous question in quiz modal
+         */
+        function quizPrevQuestion() {
+            if (quizCurrentQuestion > 0) {
+                quizCurrentQuestion--;
+                renderQuizQuestions();
+                renderQuizNavDots();
+                updateQuizNavigationButtons();
+            }
+        }
+
+        /**
+         * Navigate to next question in quiz modal
+         */
+        function quizNextQuestion() {
+            if (quizCurrentQuestion < quizQuestions.length - 1) {
+                quizCurrentQuestion++;
+                renderQuizQuestions();
+                renderQuizNavDots();
+                updateQuizNavigationButtons();
+            }
+        }
+
+        /**
+         * Navigate to previous question in full-screen test
+         */
+        function fsPrevQuestion() {
+            if (fsCurrent > 0) {
+                fsCurrent--;
+                renderFsQuestion();
+                renderFsNav();
+            }
+        }
+
+        /**
+         * Navigate to next question in full-screen test
+         */
+        function fsNextQuestion() {
+            if (fsCurrent < fsQuestions.length - 1) {
+                fsCurrent++;
+                renderFsQuestion();
+                renderFsNav();
+            }
+        }
+
+        /**
+         * Select an answer in quiz modal
+         */
+        function selectQuizAnswer(questionIndex, answer) {
+            if (!quizShowResults) {
+                quizSelectedAnswers[questionIndex] = answer;
+                renderQuizNavDots();
+                renderQuizQuestions();
+                updateQuizNavigationButtons();
+            }
+        }
+
+        /**
+         * Go to specific question in quiz modal
+         */
+        function goToQuizQuestion(idx) {
+            quizCurrentQuestion = idx;
+            renderQuizQuestions();
+            renderQuizNavDots();
+            updateQuizNavigationButtons();
+        }
+
+        /**
+         * Select an answer in full-screen test
+         */
+        function selectFsAnswer(ans) {
+            fsSelected[fsCurrent] = ans;
+            renderFsQuestion();
+            renderFsNav();
+        }
+
+        /**
+         * Go to specific question in full-screen test
+         */
+        function goToFsQuestion(idx) {
+            fsCurrent = idx;
+            renderFsQuestion();
+            renderFsNav();
+        }
+
+        /**
+         * Update navigation button states in quiz modal
+         */
+        function updateQuizNavigationButtons() {
+            const prevBtn = document.getElementById('quiz-prev-btn');
+            const nextBtn = document.getElementById('quiz-next-btn');
+            const submitBtn = document.getElementById('quiz-submit-btn');
+
+            if (prevBtn) prevBtn.disabled = quizCurrentQuestion === 0;
+
+            const isLastQuestion = quizCurrentQuestion === quizQuestions.length - 1;
+            const allAnswered = Object.keys(quizSelectedAnswers).length === quizQuestions.length;
+
+            if (nextBtn) nextBtn.style.display = isLastQuestion ? 'none' : 'block';
+            if (submitBtn) submitBtn.style.display = (isLastQuestion && allAnswered) ? 'block' : 'none';
+        }
         // =================================================================
         // AI SESSION STATE & DATA (NEW)
         // =================================================================
@@ -861,16 +1185,6 @@
 
         const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-        // =================================================================
-        // DYNAMIC AI SESSION GENERATION
-        // =================================================================
-        /**
-         * Unified AI Quiz Generator - Used for ALL quiz types
-         * @param {string} topic - The topic/concept to quiz on
-         * @param {string} subject - The subject area
-         * @param {number} numQuestions - Number of questions to generate (default 5)
-         * @returns {Promise<Array>} Array of quiz questions
-         */
         async function generateAIQuiz(topic, subject, numQuestions = 5) {
             const prompt = `Generate ${numQuestions} multiple-choice quiz questions about "${topic}" in ${subject} for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
 
@@ -917,13 +1231,27 @@ Respond ONLY with valid JSON (no markdown, no backticks):
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('❌ AI Quiz API Error:', errorData);
-                    throw new Error(errorData.error?.message || `API error: ${response.status}`);
+
+                    // ⭐ NEW: Throw detailed error instead of fallback
+                    let errorMessage = 'Failed to generate quiz';
+
+                    if (response.status === 403) {
+                        errorMessage = 'Invalid API Key - Please check your Gemini API key';
+                    } else if (response.status === 429) {
+                        errorMessage = 'API Rate Limit Exceeded - Please wait a moment and try again';
+                    } else if (response.status === 500) {
+                        errorMessage = 'Gemini API Server Error - Please try again later';
+                    } else if (errorData.error?.message) {
+                        errorMessage = errorData.error.message;
+                    }
+
+                    throw new Error(errorMessage);
                 }
 
                 const data = await response.json();
 
                 if (!data.candidates || !data.candidates[0]) {
-                    throw new Error('Invalid API response structure');
+                    throw new Error('Invalid API response - No candidates returned');
                 }
 
                 let text = data.candidates[0].content.parts[0].text;
@@ -936,12 +1264,12 @@ Respond ONLY with valid JSON (no markdown, no backticks):
                     .trim();
 
                 const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) throw new Error('Could not parse JSON from response');
+                if (!jsonMatch) throw new Error('Could not parse JSON from AI response');
 
                 const quizData = JSON.parse(jsonMatch[0]);
 
                 if (!quizData.questions || !Array.isArray(quizData.questions)) {
-                    throw new Error('Invalid quiz data structure');
+                    throw new Error('Invalid quiz data structure from AI');
                 }
 
                 console.log('✅ AI Quiz Generated:', quizData.questions.length, 'questions');
@@ -949,25 +1277,11 @@ Respond ONLY with valid JSON (no markdown, no backticks):
 
             } catch (error) {
                 console.error('❌ AI Quiz Generation Error:', error);
-                console.warn('⚠️ Using fallback quiz');
 
-                // Fallback quiz
-                return [{
-                    question: `What is an important concept in ${topic}?`,
-                    options: {
-                        A: "Understanding fundamental principles",
-                        B: "Memorizing definitions only",
-                        C: "Skipping practice problems",
-                        D: "Ignoring real-world applications"
-                    },
-                    correct: "A",
-                    explanation: `${topic} requires understanding fundamental principles and applying them to solve problems effectively.`
-                }];
+                // ⭐ NEW: Re-throw the error instead of using fallback
+                throw error; // This will propagate to the calling function
             }
         }
-        /**
-         * Generate topic breakdown using Gemini API
-         */
         async function generateTopicBreakdown(topic, subject) {
             const prompt = `Generate a structured learning plan for the topic: "${topic}" in the subject: "${subject}" for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
 
@@ -987,7 +1301,6 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
             try {
                 console.log(`🤖 AI GENERATING TOPIC BREAKDOWN: ${topic} in ${subject}`);
 
-                // FIX: Use correct model endpoint
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
                 const response = await fetch(apiUrl, {
@@ -1005,7 +1318,19 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('❌ Topic API Error:', errorData);
-                    throw new Error(`API error: ${response.status}`);
+
+                    // ⭐ NEW: Detailed error
+                    let errorMessage = 'Failed to generate topic breakdown';
+
+                    if (response.status === 403) {
+                        errorMessage = 'Invalid API Key';
+                    } else if (response.status === 429) {
+                        errorMessage = 'API Rate Limit Exceeded';
+                    } else if (errorData.error?.message) {
+                        errorMessage = errorData.error.message;
+                    }
+
+                    throw new Error(errorMessage);
                 }
 
                 const data = await response.json();
@@ -1017,7 +1342,6 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
                 let generatedText = data.candidates[0].content.parts[0].text;
                 console.log('📝 Raw Topic Breakdown:', generatedText);
 
-                // Clean markdown
                 generatedText = generatedText.trim()
                     .replace(/```json\n?/g, '')
                     .replace(/```\n?/g, '')
@@ -1044,14 +1368,11 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
 
             } catch (error) {
                 console.error('❌ Topic Breakdown Error:', error);
-                console.warn('⚠️ Using fallback topic breakdown');
-                return generateFallbackConcepts(topic, subject);
+
+                // ⭐ NEW: Re-throw error instead of fallback
+                throw error;
             }
         }
-
-        /**
-         * Generate quiz question using Gemini API
-         */
         async function generateQuizQuestion(conceptTitle, subject) {
             const prompt = `Create ONE multiple-choice quiz question to test understanding of: "${conceptTitle}" in ${subject} for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
 
@@ -1072,7 +1393,6 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             try {
                 console.log(`🤖 AI GENERATING QUIZ: ${conceptTitle} in ${subject}`);
 
-                // FIX: Use correct model endpoint
                 const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
 
                 const response = await fetch(apiUrl, {
@@ -1094,13 +1414,24 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 if (!response.ok) {
                     const errorData = await response.json();
                     console.error('❌ API Error:', errorData);
-                    throw new Error(`API error: ${response.status} - ${errorData.error?.message || 'Unknown error'}`);
+
+                    // ⭐ NEW: Detailed error messages
+                    let errorMessage = 'Failed to generate quiz question';
+
+                    if (response.status === 403) {
+                        errorMessage = 'Invalid API Key';
+                    } else if (response.status === 429) {
+                        errorMessage = 'API Rate Limit Exceeded';
+                    } else if (errorData.error?.message) {
+                        errorMessage = errorData.error.message;
+                    }
+
+                    throw new Error(errorMessage);
                 }
 
                 const data = await response.json();
 
                 if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                    console.error('❌ Invalid API response:', data);
                     throw new Error('Invalid response structure from Gemini API');
                 }
 
@@ -1115,7 +1446,6 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
                 const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
                 if (!jsonMatch) {
-                    console.error('❌ No JSON found in response:', generatedText);
                     throw new Error('Could not parse JSON from AI response');
                 }
 
@@ -1126,7 +1456,6 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                     typeof quizData.correctIndex !== 'number' ||
                     quizData.correctIndex < 0 || quizData.correctIndex > 3 ||
                     !quizData.explanation) {
-                    console.error('❌ Invalid quiz structure:', quizData);
                     throw new Error('Quiz data structure is invalid');
                 }
 
@@ -1135,19 +1464,9 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             } catch (error) {
                 console.error('❌ Quiz Generation Error:', error);
-                console.warn('⚠️ Using fallback quiz due to AI error');
 
-                return {
-                    question: `Which statement best describes the main concept of ${conceptTitle}?`,
-                    options: [
-                        `${conceptTitle} involves understanding fundamental principles and their applications`,
-                        `${conceptTitle} is purely theoretical with no practical use`,
-                        `${conceptTitle} only requires memorization without comprehension`,
-                        `${conceptTitle} is unrelated to ${subject}`
-                    ],
-                    correctIndex: 0,
-                    explanation: `${conceptTitle} is an important concept in ${subject} that requires both theoretical understanding and practical application. Mastering this concept involves learning the fundamentals and applying them to solve problems.`
-                };
+                // ⭐ NEW: Re-throw error instead of fallback
+                throw error;
             }
         }
         function generateFallbackConcepts(topic, subject) {
@@ -1179,7 +1498,58 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 if (indicator) indicator.remove();
             }
         }
+        // ============================================
+        // ERROR DISPLAY FUNCTIONS - Add after line 1500
+        // ============================================
 
+        /**
+         * Display error message with retry option
+         */
+        function showQuizError(container, errorMessage, retryCallback) {
+            container.innerHTML = `
+        <div class="error-display-container">
+            <div class="error-icon">
+                <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                    <circle cx="40" cy="40" r="36" stroke="#ff416c" stroke-width="3" opacity="0.3"/>
+                    <path d="M40 25 L40 45 M40 55 L40 57" stroke="#ff416c" stroke-width="6" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h3 class="error-title">⚠️ Quiz Generation Failed</h3>
+            <div class="error-message">
+                <p><strong>Error:</strong> ${errorMessage}</p>
+            </div>
+            <div class="error-actions">
+                <button class="gradient-button" onclick="${retryCallback}">
+                    <i class="fa-solid fa-rotate-right"></i> Try Again
+                </button>
+                <button class="secondary-button" onclick="closeErrorModal()">
+                    Cancel
+                </button>
+            </div>
+            <div class="error-help">
+                <p style="font-size: 0.9em; opacity: 0.7; margin-top: 20px;">
+                    Need help? Check the browser console (F12) for detailed error logs.
+                </p>
+            </div>
+        </div>
+    `;
+        }
+
+        /**
+         * Close error modal
+         */
+        function closeErrorModal() {
+            const modal = document.getElementById('full-screen-test-modal');
+            const quizModal = document.getElementById('quiz-modal');
+
+            if (modal && !modal.classList.contains('hidden')) {
+                closeFullScreenTest();
+            }
+
+            if (quizModal && !quizModal.classList.contains('hidden')) {
+                closeQuizModal();
+            }
+        }
         // ============================================
         // UPDATED INIT AI SESSION
         // Replace your existing initAISession function
@@ -1531,7 +1901,11 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             // Filter out temporary AI sessions
             const permanentSessions = sessions.filter(s => !s.isTemporary);
-
+            console.log('🎨 Rendering sessions:', {
+                total: sessions.length,
+                permanent: permanentSessions.length,
+                filtered: sessions.filter(s => s.isTemporary).length
+            });
             // Empty State Check
             if (permanentSessions.length === 0) {
                 sessionsContainer.innerHTML = `
@@ -1664,7 +2038,10 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         let fsSelected = {};
         let fsCurrent = 0;
 
+        // Update startFullScreenTest error handler (around line 2150)
         async function startFullScreenTest(topic, subject) {
+            aiSessionState.active = false;
+
             const modal = document.getElementById('full-screen-test-modal');
             const loading = document.getElementById('fs-loading');
             const quizSection = document.getElementById('fs-quiz-section');
@@ -1682,7 +2059,6 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             fsCurrent = 0;
 
             try {
-                // Generate 10 questions for full test
                 const questions = await generateAIQuiz(topic, subject, 10);
                 fsQuestions = questions;
 
@@ -1695,21 +2071,105 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             } catch (e) {
                 console.error('❌ Full Test Error:', e);
-                loading.innerHTML = `
-            <div class="error-box" style="text-align: center; padding: 2rem; color: var(--secondary-color);">
-                <i class="fa-solid fa-exclamation-triangle" style="font-size: 3em; margin-bottom: 20px;"></i>
-                <h3>Failed to generate test</h3>
-                <p>${e.message}</p>
-            </div>
-            <button class="gradient-button" onclick="closeFullScreenTest()" style="margin-top: 1rem;">
-                Close
-            </button>
-        `;
+
+                // ⭐ NEW: Use error display function
+                showQuizError(
+                    loading,
+                    e.message,
+                    `startFullScreenTest('${topic.replace(/'/g, "\\'")}', '${subject.replace(/'/g, "\\'")}')`
+                );
+            }
+        }
+
+        // Update generateQuizForSession error handler (around line 2400)
+        async function generateQuizForSession(topic, subject) {
+            const quizModal = document.getElementById('quiz-modal');
+            const quizLoading = document.getElementById('quiz-loading');
+            const quizContent = document.getElementById('quiz-content');
+
+            quizLoading.classList.remove('hidden');
+            quizContent.classList.add('hidden');
+            document.getElementById('quiz-nav-buttons').style.display = 'none';
+            document.getElementById('quiz-questions-wrapper').style.display = 'block';
+            document.getElementById('quiz-question-nav').style.display = 'flex';
+            document.getElementById('quiz-results-container').style.display = 'none';
+
+            openModal(quizModal);
+
+            quizQuestions = [];
+            quizSelectedAnswers = {};
+            quizCurrentQuestion = 0;
+            quizShowResults = false;
+
+            try {
+                const questions = await generateAIQuiz(topic, subject, 10);
+                quizQuestions = questions;
+
+                console.log('✅ Quiz Modal Generated:', quizQuestions.length, 'questions');
+
+                document.getElementById('quiz-topic-title').textContent = `Quiz: ${topic} - ${subject}`;
+                quizLoading.classList.add('hidden');
+                quizContent.classList.remove('hidden');
+
+                renderQuizUI();
+
+            } catch (err) {
+                console.error('❌ Quiz Modal Error:', err);
+
+                // ⭐ NEW: Use error display function
+                showQuizError(
+                    quizLoading,
+                    err.message,
+                    `generateQuizForSession('${topic.replace(/'/g, "\\'")}', '${subject.replace(/'/g, "\\'")}')`
+                );
+            }
+        }
+
+        // Update launchConceptQuiz error handler (around line 2700)
+        async function launchConceptQuiz(conceptTitle, subject) {
+            const modal = document.getElementById('full-screen-test-modal');
+            const loading = document.getElementById('fs-loading');
+            const quizSection = document.getElementById('fs-quiz-section');
+            const results = document.getElementById('fs-results-container');
+
+            document.body.classList.add('quiz-active');
+
+            modal.classList.remove('hidden');
+            loading.classList.remove('hidden');
+            quizSection.classList.add('hidden');
+            results.classList.add('hidden');
+
+            fsQuestions = [];
+            fsSelected = {};
+            fsCurrent = 0;
+
+            try {
+                const questions = await generateAIQuiz(conceptTitle, subject, 5);
+                fsQuestions = questions;
+
+                loading.classList.add('hidden');
+                quizSection.classList.remove('hidden');
+                document.getElementById('fs-quiz-title').textContent = `Quiz: ${conceptTitle}`;
+
+                renderFsQuestion();
+                renderFsNav();
+
+            } catch (e) {
+                console.error('❌ Concept Quiz Error:', e);
+
+                // ⭐ NEW: Use error display function
+                showQuizError(
+                    loading,
+                    e.message,
+                    `launchConceptQuiz('${conceptTitle.replace(/'/g, "\\'")}', '${subject.replace(/'/g, "\\'")}')`
+                );
             }
         }
 
         function closeFullScreenTest() {
-            document.getElementById('full-screen-test-modal').classList.add('hidden');
+            const modal = document.getElementById('full-screen-test-modal');
+
+            modal.classList.add('hidden');
             document.body.classList.remove('quiz-active');
         }
 
@@ -1748,21 +2208,31 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             });
 
             wrapper.innerHTML = `
-        <div class="fs-question-card active">
-            <h3 class="gradient-text" style="font-size: 1.5em; margin-bottom: 20px;">
-                Question ${fsCurrent + 1} of ${fsQuestions.length}
-            </h3>
-            <p style="font-size: 1.2em; margin-bottom: 30px; line-height: 1.6;">${q.question}</p>
-            <div class="fs-options">
-                ${optionsHTML}
-            </div>
+    <div class="fs-question-card active">
+        <h3 class="gradient-text" style="font-size: 1.5em; margin-bottom: 20px;">
+            Question ${fsCurrent + 1} of ${fsQuestions.length}
+        </h3>
+        <p style="font-size: 1.2em; margin-bottom: 30px; line-height: 1.6;">${q.question}</p>
+        <div class="fs-options">
+            ${optionsHTML}
         </div>
-    `;
+    </div>
+`;
 
-            document.getElementById('fs-prev-btn').disabled = fsCurrent === 0;
+            // Update button states
+            const prevBtn = document.getElementById('fs-prev-btn');
+            const nextBtn = document.getElementById('fs-next-btn');
+            const submitBtn = document.getElementById('fs-submit-btn');
+
+            prevBtn.disabled = fsCurrent === 0;
             const isLast = fsCurrent === fsQuestions.length - 1;
-            document.getElementById('fs-next-btn').style.display = isLast ? 'none' : 'block';
-            document.getElementById('fs-submit-btn').style.display = isLast ? 'block' : 'none';
+            nextBtn.style.display = isLast ? 'none' : 'block';
+            submitBtn.style.display = isLast ? 'block' : 'none';
+
+            // Add event listeners
+            prevBtn.onclick = fsPrevQuestion;
+            nextBtn.onclick = fsNextQuestion;
+            submitBtn.onclick = fsSubmitQuiz;
 
             renderFsNav();
         }
@@ -2149,7 +2619,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             }
         }
 
-        /* ---------- Toast Notification ---------- */
+        // Update your existing showToast function to handle trophy icon
         function showToast(message, icon = 'fa-circle-check') {
             let container = document.getElementById('toast-container');
             if (!container) {
@@ -2160,6 +2630,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             const toast = document.createElement('div');
             toast.className = 'toast';
+
+            // Add special class for test completion
+            if (icon === 'fa-trophy') {
+                toast.classList.add('test-complete');
+            }
+
             toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
 
             container.appendChild(toast);
@@ -2172,6 +2648,32 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+        /**
+ * Safe version with confirmation - Replace fsSubmitQuiz deletion section with this
+ */
+        function handleTestCompletion(testId) {
+            const testIndex = sessions.findIndex(s => Number(s.id) === Number(testId));
+
+            if (testIndex !== -1) {
+                const completedTest = sessions[testIndex];
+
+                // Auto-delete without confirmation
+                sessions.splice(testIndex, 1);
+                saveDataToLocalStorage();
+
+                // Animate card removal on dashboard
+                const card = document.querySelector(`.session-card[data-id="${testId}"]`);
+                if (card) {
+                    card.classList.add('test-completed');
+                    setTimeout(() => card.remove(), 600);
+                }
+
+                console.log(`✅ Test "${completedTest.title}" auto-deleted after completion`);
+                return true;
+            }
+
+            return false;
         }
         // Add this function anywhere in your script section (around line 1400):
 
@@ -3113,6 +3615,10 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
          * Launch full-screen quiz for a specific concept (used in AI sessions)
          */
         async function launchConceptQuiz(conceptTitle, subject) {
+            // ⭐ FIX: Ensure AI session state is TRUE for concept quizzes
+            // (It should already be true, but let's be explicit)
+            // aiSessionState.active is already set in initAISession, so no need to change it here
+
             const modal = document.getElementById('full-screen-test-modal');
             const loading = document.getElementById('fs-loading');
             const quizSection = document.getElementById('fs-quiz-section');
@@ -3155,6 +3661,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         `;
             }
         }
+
         function updateProgress() {
             // Count only passed concepts (score >= 60)
             const completed = Object.values(aiSessionState.scores).filter(s => s >= 60).length;
@@ -3782,7 +4289,10 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                         return;
                     }
 
-                    console.log('📝 Starting full test:', session.title);
+                    // ⭐ FIX: Set currentSessionId BEFORE starting the test
+                    currentSessionId = sessionId;
+
+                    console.log('📝 Starting full test:', session.title, 'ID:', currentSessionId);
                     startFullScreenTest(session.title, session.subject);
                 } else {
                     console.error('❌ Session not found for test start');
@@ -4269,6 +4779,8 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
         function renderQuizQuestions() {
             const wrapper = document.getElementById('quiz-questions-wrapper');
+            if (!wrapper) return;
+
             wrapper.innerHTML = '';
 
             quizQuestions.forEach((q, idx) => {
@@ -4281,11 +4793,20 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 Object.entries(q.options).forEach(([letter, option]) => {
                     const isSelected = quizSelectedAnswers[idx] === letter;
                     const btnClass = isSelected ? 'quiz-option-btn selected' : 'quiz-option-btn';
-                    optionsHTML += `<button class="${btnClass}" onclick="selectQuizAnswer(${idx}, '${letter}')"><strong>${letter}.</strong> ${option}</button>`;
+                    optionsHTML += `
+                <button class="${btnClass}" onclick="selectQuizAnswer(${idx}, '${letter}')">
+                    <strong>${letter}.</strong> ${option}
+                </button>
+            `;
                 });
 
                 card.innerHTML = `
-            <div class="quiz-question-title gradient-text">${idx + 1}. ${q.question}</div>
+            <div class="quiz-question-title gradient-text">
+                Question ${idx + 1} of ${quizQuestions.length}
+            </div>
+            <p style="font-size: 1.2em; margin-bottom: 25px; line-height: 1.6; color: var(--text-dark);">
+                ${q.question}
+            </p>
             ${optionsHTML}
         `;
 
@@ -4339,6 +4860,22 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             const score = calculateQuizScore();
             const percentage = (score / quizQuestions.length) * 100;
 
+            // ⭐ NEW: Delete the test after completion
+            if (currentSessionId) {
+                const testIndex = sessions.findIndex(s => Number(s.id) === Number(currentSessionId));
+
+                if (testIndex !== -1) {
+                    const completedTest = sessions[testIndex];
+
+                    // Only delete if it's a Test type (not a regular Session)
+                    if (completedTest.type === 'Test') {
+                        console.log(`✅ Test "${completedTest.title}" completed. Removing from dashboard...`);
+                        sessions.splice(testIndex, 1);
+                        saveDataToLocalStorage();
+                    }
+                }
+            }
+
             let commentary, detail;
             if (percentage === 100) {
                 commentary = "🎉 Perfect Score! Incredible!";
@@ -4375,12 +4912,29 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 <button class="gradient-button" onclick="reviewQuizAnswers()" style="flex: 1;">
                     Review Answers
                 </button>
-                <button class="secondary-button" onclick="closeQuizModal()" style="flex: 1;">
+                <button class="secondary-button" onclick="closeQuizModalAndRefresh()" style="flex: 1;">
                     Close Quiz
                 </button>
             </div>
         </div>
     `;
+        }
+        /**
+ * Close quiz modal and refresh dashboard
+ */
+        function closeQuizModalAndRefresh() {
+            closeQuizModal();
+
+            // Wait for modal close animation
+            setTimeout(() => {
+                renderSessions();
+                showToast('Quiz completed!', 'fa-check-circle');
+
+                // Close live session if open
+                if (liveSessionPage.classList.contains('open')) {
+                    closeLiveSession();
+                }
+            }, 400);
         }
 
         function calculateQuizScore() {
@@ -4654,6 +5208,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             // Update progress
             updateProgress();
         }
+
         function fsSubmitQuiz() {
             const total = fsQuestions.length;
             let correct = 0;
@@ -4664,13 +5219,70 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             const percentage = Math.round((correct / total) * 100);
 
+            const isFromAISession = aiSessionState.active;
+            const isStandaloneTest = !isFromAISession && currentSessionId;
+
+            console.log('📊 Quiz Results:', {
+                correct,
+                total,
+                percentage,
+                isAISession: isFromAISession,
+                isStandaloneTest: isStandaloneTest,
+                currentSessionId: currentSessionId
+            });
+
             // If this is from an AI session, update session state
-            if (aiSessionState.active) {
+            if (isFromAISession) {
                 const currentIndex = aiSessionState.currentConceptIndex;
                 aiSessionState.scores[currentIndex] = percentage;
                 aiSessionState.quizAnswered = true;
-
                 console.log(`✅ Concept ${currentIndex + 1} completed with ${percentage}%`);
+            }
+
+            // ⭐ ENHANCED: If this is a standalone test, delete it after completion
+            if (isStandaloneTest) {
+                const testIndex = sessions.findIndex(s => Number(s.id) === Number(currentSessionId));
+
+                console.log('🔍 Looking for test to delete:', {
+                    searchingForId: currentSessionId,
+                    foundIndex: testIndex,
+                    totalSessions: sessions.length
+                });
+
+                if (testIndex !== -1) {
+                    const completedTest = sessions[testIndex];
+                    console.log(`✅ Test "${completedTest.title}" completed. Removing from dashboard...`);
+
+                    // ⭐ Animate card removal if it exists on page
+                    const card = document.querySelector(`.session-card[data-id="${currentSessionId}"]`);
+                    if (card) {
+                        console.log('🎬 Animating card removal...');
+                        card.classList.add('test-completed');
+
+                        // Wait for animation before removing from DOM
+                        setTimeout(() => {
+                            card.remove();
+                            console.log('✅ Card removed from DOM');
+                        }, 600);
+                    }
+
+                    // Remove from sessions array
+                    sessions.splice(testIndex, 1);
+
+                    // Save to localStorage
+                    saveDataToLocalStorage();
+
+                    console.log('✅ Test deleted from sessions array and saved to localStorage');
+                    console.log('📊 Remaining sessions:', sessions.length);
+
+                    // Show completion toast
+                    showToast(`Test "${completedTest.title}" completed and removed!`, 'fa-check-circle');
+                } else {
+                    console.error('❌ Could not find test to delete!', {
+                        currentSessionId: currentSessionId,
+                        availableIds: sessions.map(s => s.id)
+                    });
+                }
             }
 
             const results = document.getElementById('fs-results-container');
@@ -4697,10 +5309,28 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 commentary = "Don't Give Up!";
             }
 
-            const isFromAISession = aiSessionState.active;
-            const nextAction = isFromAISession
-                ? determineNextConceptAction(percentage >= 60)
-                : '';
+            let actionButtons = '';
+
+            if (isFromAISession) {
+                const nextAction = determineNextConceptAction(percentage >= 60);
+                actionButtons = `
+            <button class="btn btn-primary" onclick="reviewFsAnswers()">
+                Review Answers
+            </button>
+            <button class="btn btn-primary" onclick="${nextAction}">
+                ${percentage >= 60 ? '→ Continue to Next Concept' : '↺ Review This Concept'}
+            </button>
+        `;
+            } else {
+                actionButtons = `
+            <button class="btn btn-primary" onclick="reviewFsAnswers()">
+                Review Answers
+            </button>
+            <button class="btn btn-primary" onclick="closeFullScreenTestAndRefresh()">
+                Close Test
+            </button>
+        `;
+            }
 
             results.innerHTML = `
         <div class="results-container">
@@ -4712,26 +5342,47 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             <div class="commentary-detail">You got ${correct} out of ${total} questions correct</div>
             
             <div class="button-group">
-                <button class="btn btn-primary" onclick="reviewFsAnswers()">
-                    Review Answers
-                </button>
-                ${isFromAISession ? `
-                    <button class="btn btn-primary" onclick="${nextAction}">
-                        ${percentage >= 60 ? '→ Continue to Next Concept' : '↺ Review This Concept'}
-                    </button>
-                ` : `
-                    <button class="btn btn-primary" onclick="closeFullScreenTest()">
-                        Close Test
-                    </button>
-                `}
+                ${actionButtons}
             </div>
         </div>
     `;
 
-            // Update progress if in AI session
-            if (aiSessionState.active) {
+            if (isFromAISession) {
                 updateProgress();
             }
+        }
+        // ============================================
+        // CLOSE FULL SCREEN TEST WITH DASHBOARD REFRESH
+        // Add after your existing closeFullScreenTest() function
+        // ============================================
+
+        /**
+         * Close full-screen test and refresh dashboard to show deleted test
+         */
+        function closeFullScreenTestAndRefresh() {
+            console.log('🔄 Closing test and refreshing dashboard...');
+
+            // Close the modal
+            const modal = document.getElementById('full-screen-test-modal');
+            modal.classList.add('hidden');
+            document.body.classList.remove('quiz-active');
+
+            // ⭐ NOW reset currentSessionId after deletion is complete
+            currentSessionId = null;
+
+            // Wait for modal animation to complete, then refresh dashboard
+            setTimeout(() => {
+                // Re-render sessions to update the UI
+                renderSessions();
+
+                // Show success message
+                showToast('Test completed successfully!', 'fa-trophy');
+
+                // If live session page is open, close it too
+                if (liveSessionPage.classList.contains('open')) {
+                    closeLiveSession();
+                }
+            }, 400);
         }
         /**
  * Determine next action after concept quiz based on score
