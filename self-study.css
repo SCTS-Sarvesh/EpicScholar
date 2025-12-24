@@ -3656,6 +3656,10 @@ body.quiz-active {
 
 /* Quiz Card with Glass Effect */
 .fs-card {
+    width: 100%;
+    max-width: 900px;
+    height: 100%;
+    max-height: 700px;
     background: rgba(28, 28, 38, 0.85);
     border-radius: 2.5rem;
     padding: 3rem;
@@ -3671,7 +3675,7 @@ body.quiz-active {
     max-height: 92vh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow: auto;
     position: relative;
 }
 
