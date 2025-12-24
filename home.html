@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EpicScholar | Home</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .mini-card .mini-content {
+    display: none;
+}
+
+.mini-card:hover .mini-content,
+.mini-card.active .mini-content {
+    display: block;
+}
+.mini-icon {
+    background: linear-gradient(135deg, #0072ff, #ff416c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.mini-icon svg path {
+    fill: url(#gradient-fill);
+}
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+}
+.feed-post video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain !important;
+    background: #000; /* avoids white gaps */
+}
+/* default */
+#searchBar {
+    border: 2px solid #3a3a3a;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+
+/* active */
+#searchBar:focus {
+    outline: none;
+    border: 2px solid transparent;
+    background-image:
+        linear-gradient(#151515, #151515),
+        linear-gradient(135deg, #0072ff, #ff416c);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+/* COMMENTS: user vs others */
+.comment {
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:12px;
+  background: rgba(255,255,255,0.03);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+  overflow:hidden;
+}
+.comment .cavatar{
+  width:40px;height:40px;min-width:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:#fff;background:rgba(0,0,0,0.2);
+}
+.comment .ctext{flex:1;display:flex;flex-direction:column;gap:6px;}
+.comment .ctext .meta{font-size:13px;opacity:.85}
+.comment .ctext .body{font-size:14px;color:var(--text-color);line-height:1.45}
+
+/* other people's comments = muted grey box */
+.comment:not(.mine){
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.03);
+  color: rgba(233,238,248,0.95);
+}
+
+/* your own comments = gradient bubble */
+.comment.mine{
+  background: linear-gradient(135deg, rgba(0,114,255,0.16), rgba(255,65,108,0.08));
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #fff;
+  align-self: flex-end;
+}
+
+/* small timestamp for comments */
+.comment .ctext .time { font-size:12px; opacity:0.65; }
+
+/* SHARE MENU: show/hide class */
+.share-menu {
+  /* base inline styles in createPostEl remain; just define show state */
+  transition: opacity 0.18s ease, transform 0.18s ease;
+  opacity: 0; pointer-events: none; transform: translateY(8px);
+}
+.share-menu.show {
+  opacity: 1; pointer-events: auto; transform: translateY(0);
+}
+
+/* keep share-menu visually distinct on dark theme */
+.share-menu button { background:none; border:none; padding:8px 10px; text-align:left; cursor:pointer; color:var(--text-color); border-radius:8px; }
+.share-menu button:hover { background: rgba(255,255,255,0.02); }
+
+/* 1) Hide mini-card content until hovered */
+.mini-card-content { display: none; }
+.mini-card:hover .mini-card-content,
+.mini-card.active .mini-card-content { display: block; }
+
+/* 2) Gradient icon for mini-cards using data-icon attribute */
+.mini-card {
+  position: relative;
+  padding: 12px;
+  cursor: pointer;
+}
+.mini-card::before{
+  content: attr(data-icon);
+  display: inline-block;
+  font-size: 22px;
+  width: 42px; height: 42px;
+  line-height: 42px;
+  text-align: center;
+  border-radius: 10px;
+  vertical-align: middle;
+  background: linear-gradient(135deg,#0072ff,#ff416c);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Optionally position the pseudo-icon on the left of the card content */
+.mini-card .mini-card-content { margin-left: 6px; }
+
+/* 3) Global gradient scrollbar thumb for the page and key scrollable containers */
+:root{
+  --scroll-thumb: #888;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); }
+*::-webkit-scrollbar-thumb {
+  background: var(--scroll-thumb);
+  border-radius: 10px;
+  border: 2px solid rgba(0,0,0,0.12);
+}
+.feed-viewport::-webkit-scrollbar-thumb,
+.panel-full::-webkit-scrollbar-thumb,
+.commentModalList::-webkit-scrollbar-thumb { background: var(--scroll-thumb); }
+
+/* 4) Ensure video always fully visible within media placeholder */
+.media video,
+.media .video-container video,
+.feed-post video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important; /* ensure whole video visible, no cropping */
+  background: #000;
+}
+
+/* 5) Search bar: dark grey border default, gradient border on focus */
+#searchBar{
+  border: 2px solid #3a3a3a;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  padding: 10px 16px;
+  border-radius: 28px;
+  transition: box-shadow .18s, border .18s, background .18s;
+}
+#searchBar:focus{
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 3px rgba(0,114,255,0.08);
+  background-image: linear-gradient(#151515,#151515), linear-gradient(135deg,#0072ff,#ff416c);
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+}
+
+/* 6) Share menu visible state handled by .show */
+.share-menu { opacity: 0; pointer-events: none; transform: translateY(8px); transition: opacity .16s, transform .16s; }
+.share-menu.show { opacity: 1; pointer-events: auto; transform: translateY(0); }
+/* Styling for all lists inside the right panel mini-cards */
+#right-panel-wrapper .mini-card ul {
+    list-style: none; /* Remove default bullet points */
+    padding: 0;
+    margin: 0;
+}
+
+/* Styling for each individual list item (the "box wrapper") */
+#right-panel-wrapper .mini-card li {
+    /* Box Model */
+    padding: 10px 15px; /* Add some spacing inside */
+    margin-bottom: 8px; /* Space between the list items */
+    border-radius: 8px; /* Rounded corners for the box */
+    
+    /* Appearance (The 'Box' Look) */
+    background: var(--bg-color-2); /* A slightly different background color for distinction */
+    border: 1px solid var(--card-glass-border); /* A subtle border */
+    font-size: 14px;
+    line-height: 1.4;
+    cursor: default;
+    
+    /* Visual Effect */
+    transition: all 0.2s ease-in-out;
+}
+
+/* Hover effect for a little interactivity */
+#right-panel-wrapper .mini-card li:hover {
+    background: var(--bg-color-3); /* Darken/lighten slightly on hover */
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ensure the last item in the list doesn't have extra bottom margin */
+#right-panel-wrapper .mini-card li:last-child {
+    margin-bottom: 0;
+}
+.image-modal {
+  position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+  background: rgba(12,12,18,0.92);
+  z-index: 5002;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; pointer-events: none; transition: opacity .22s;
+}
+.image-modal.show {
+  opacity: 1; pointer-events: auto; display:flex;
+}
+
+/* Modal image transitions with a bouncy cubic-bezier */
+.image-modal img {
+  max-width: 95vw; max-height: 90vh; border-radius: 14px; box-shadow: 0 0 30px #222;
+  will-change: transform, opacity;
+  transition:
+    border-radius 0.27s cubic-bezier(.61,-0.13,.43,1.38),
+    box-shadow 0.16s,
+    opacity 0.25s,
+    transform 0.62s cubic-bezier(.23,1.43,.26,1.01);
+  opacity: 0;
+  transform: scale(0.7) translateZ(0);
+}
+
+/* When animating in or out, the inline style may be overridden for transform! */
+.image-modal.show .modal-image-animate-in {
+  opacity: 1;
+  transform: scale(1) translateZ(0);
+  transition:
+    border-radius 0.27s cubic-bezier(.61,-0.13,.43,1.38),
+    box-shadow 0.16s,
+    opacity 0.29s 0.03s,
+    transform 0.62s cubic-bezier(.23,1.43,.26,1.01);
+}
+
+.image-modal .modal-image-animate-out {
+  opacity: 0;
+  transform: scale(0.7) translateZ(0);
+  transition:
+    border-radius 0.27s cubic-bezier(.61,-0.13,.43,1.38),
+    box-shadow 0.16s,
+    opacity 0.22s,
+    transform 0.57s cubic-bezier(.16,1.59,.19,.99);
+}
+
+.image-modal .modal-close-btn {
+  position: absolute;
+  top: 38px;
+  right: 52px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 2.15rem;
+  color: #fff;
+  background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.27),
+    0 0 0 5px rgba(0,114,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  border: none;
+  outline: none;
+  opacity: 0.94;
+  transition: 
+    transform 0.21s cubic-bezier(.23,1.54,.23,1),
+    box-shadow 0.19s,
+    background 0.24s,
+    opacity 0.18s;
+}
+.image-modal .modal-close-btn:hover, 
+.image-modal .modal-close-btn:focus {
+  background: linear-gradient(135deg, #ff416c 0%, #0072ff 100%);
+  box-shadow:
+    0 12px 28px 5px rgba(0, 114, 255, 0.12),
+    0 0 0 8px rgba(255,65,108,0.1),
+    0 0 18px 7px rgba(255,65,108,0.22);
+  color: #fff;
+  opacity: 1;
+  transform: scale(1.13) rotateZ(-8deg);
+  outline: none;
+  border: none;
+}
+.image-modal .modal-close-btn:active {
+  opacity: .77;
+  transform: scale(0.98);
+  background: linear-gradient(135deg, #407cfa, #ff416c 95%);
+}
+.settings-wrap {
+    position: absolute;
+    bottom: 50px;
+    width: 100%;
+    text-align: left;
+}
+/* --- New Rule for Simple Refresh Button --- */
+#refreshBtn {
+    background: var(--secondary-glass);
+    color: var(--text-color);
+    width: 54px;  /* Fixed size for a circle */
+    height: 54px;
+    padding: 0;
+    border-radius: 50%; /* Make it circular */
+    border: 1px solid var(--card-glass-border);
+    cursor: pointer;
+    font-size: 24px;   /* Larger icon */
+    font-weight: bold;
+    box-shadow: var(--shadow-light);
+    transition: transform 0.2s, opacity 0.2s, background 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#refreshBtn:hover {
+    background: var(--card-glass-bg);
+    box-shadow: var(--shadow-deep);
+    transform: translateY(-2px);
+}
+
+#refreshBtn:active {
+    transform: translateY(0);
+    opacity: 0.8;
+}
+/* --- UPDATED Rules for Share Menu Animation & Styling --- */
+
+/* Base styles for the menu (hidden state) */
+.share-menu {
+    /* --- Animation Properties --- */
+    opacity: 0; 
+    transform: scale(0.8) translateY(10px); /* Start scaled down and slightly up */
+    transform-origin: bottom right; /* Emerge from bottom-right corner */
+    pointer-events: none; 
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* --- Styling Properties --- */
+    padding: 8px; /* Sleeker padding */
+    width: 180px; /* Give it a consistent width */
+    box-sizing: border-box;
+    
+    /* --- Other properties from your HTML style tag --- */
+    position: absolute; 
+    bottom: 55px; 
+    right: 0; 
+    background: var(--card-glass-bg); 
+    backdrop-filter: blur(15px); 
+    border: 1px solid var(--card-glass-border); 
+    border-radius: 12px; 
+    box-shadow: var(--shadow-deep); 
+    display: flex; 
+    flex-direction: column; 
+    z-index: 1200;
+}
+
+/* Visible state for the menu */
+.share-menu.show {
+    opacity: 1; 
+    pointer-events: auto; 
+    transform: scale(1) translateY(0); /* Animate to full size and original position */
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: absolute;
+    left: 100px;
+}
+
+/* Base styles for buttons inside the menu */
+.share-menu button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    padding: 10px 14px; /* Consistent padding */
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    
+    /* --- Enhancements --- */
+    display: flex;
+    align-items: center;
+    gap: 10px; /* Space between icon and text */
+    font-weight: 500;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+/* Hover state for menu buttons */
+.share-menu button:hover { 
+    background-color: var(--secondary-glass); /* Use a glass variable */
+    transform: translateX(-3px); /* "Lift" effect */
+}
+
+/* Active (click) state for menu buttons */
+.share-menu button:active {
+    transform: translateX(0); /* Return to original position */
+    opacity: 0.8;
+    transition-duration: 0.05s; /* Make the click feel instant */
+}
+/* --- NEW Rules for Video Volume Controls --- */
+.volume-container {
+    display: flex;
+    align-items: center;
+}
+
+.volume-slider {
+    /* Hide the slider by default */
+    width: 0;
+    max-width: 0;
+    opacity: 0;
+    margin-left: 0;
+    transition: max-width 0.3s ease, opacity 0.2s ease, margin-left 0.3s ease;
+    cursor: pointer;
+    /* Remove default browser styles for a cleaner look */
+    -webkit-appearance: none;
+    appearance: none;
+        /* ... existing styles ... */
+    
+    /* Set initial fill (100% volume) */
+    /* This gradient will be updated by JavaScript */
+    background: linear-gradient(to right, var(--primary-color) 100%, rgba(255, 255, 255, 0.4) 100%);
+    height: 18px; /* Taller hit area */
+}
+
+/* Show the slider when hovering over the container */
+.volume-container:hover .volume-slider {
+    max-width: 80px; /* Expand to this width */
+    opacity: 1;
+    margin-left: 5px;
+    height: 10px;
+    width: 80px;
+    background: linear-gradient(to right, var(--primary-gradient) 45%, rgba(255, 255, 255, 0.4) 45%);
+    border-radius: 10px;
+}
+
+/* --- NEW: Entry Animations --- */
+@keyframes slideInDown {
+    from { transform: translateY(-100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInLeft {
+    from { transform: translateX(-100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInRight {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Apply animations to the main layout elements */
+.header {
+    /* ... existing styles ... */
+    animation: slideInDown 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.sidebar {
+    /* ... existing styles ... */
+    animation: slideInLeft 0.7s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; /* Start hidden */
+}
+#right-panel-wrapper {
+    /* ... existing styles ... */
+    animation: slideInRight 0.7s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; /* Start hidden */
+}
+
+/* Animate search and feed on home page */
+#searchContainer {
+    animation: fadeIn 0.8s 0.6s ease-out forwards;
+    opacity: 0;
+}
+#feed {
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    opacity: 0; /* Start hidden, JS/CSS animation will show it */
+}
+
+/* 2. Make the native track transparent so the element's background shows through */
+.volume-slider::-webkit-slider-runnable-track {
+    background: transparent; /* Track must be transparent */
+    height: 4px;
+    border-radius: 3px;
+}
+
+.volume-slider::-moz-range-track {
+    background: transparent; /* Track must be transparent */
+    height: 4px;
+    border-radius: 3px;
+}
+
+/* 3. (Optional) Tweak thumb to look better on the gradient */
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px; /* Slightly larger */
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0,0,0,0.8);
+  margin-top: -6px; /* Re-center on the 4px track */
+  border: 2px solid #fff;
+}
+
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0,0,0,0.8);
+  border: 2px solid #fff;
+}
+
+/* --- FIX: Modal Close Animation (Modify This) --- */
+/* Find your existing rule and *remove* the 'transform' property */
+.image-modal .modal-image-animate-out {
+  opacity: 0;
+  /* transform: scale(0.7) translateZ(0); */ /* <-- DELETE THIS LINE */
+  transition:
+    border-radius 0.27s cubic-bezier(.61,-0.13,.43,1.38),
+    box-shadow 0.16s,
+    opacity 0.22s,
+    transform 0.57s cubic-bezier(.16,1.59,.19,.99);
+}
+
+/* --- Entry Animations & Volume Slider (Add if missing) --- */
+@keyframes slideInDown {
+    from { transform: translateY(-100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInLeft {
+    from { transform: translateX(-100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInRight {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+.header {
+    animation: slideInDown 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.sidebar {
+    animation: slideInLeft 0.7s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; 
+}
+#right-panel-wrapper {
+    animation: slideInRight 0.7s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; 
+}
+#searchContainer {
+    animation: fadeIn 0.8s 0.6s ease-out forwards;
+    opacity: 0;
+}
+#feed {
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    opacity: 0; 
+}
+.volume-slider {
+    background: linear-gradient(to right, var(--primary-color) 100%, rgba(255, 255, 255, 0.4) 100%);
+}
+.volume-slider::-webkit-slider-runnable-track {
+    background: transparent;
+    height: 4px;
+    border-radius: 3px;
+}
+.volume-slider::-moz-range-track {
+    background: transparent;
+    height: 4px;
+    border-radius: 3px;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px; 
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0,0,0,0.8);
+  margin-top: -6px;
+  border: 2px solid #fff;
+}
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0,0,0,0.8);
+  border: 2px solid #fff;
+}
+/* --- NEW: Entry Animations --- */
+@keyframes slideInDown {
+    from { transform: translateY(-100px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@keyframes slideInLeft {
+    from { transform: translateX(-100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes slideInRight {
+    from { transform: translateX(100px); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Apply animations to the main layout elements */
+.header {
+    animation: slideInDown 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+.sidebar {
+    animation: slideInLeft 0.7s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; /* Start hidden */
+}
+#right-panel-wrapper {
+    animation: slideInRight 0.7s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0; /* Start hidden */
+}
+#searchContainer {
+    animation: fadeIn 0.8s 0.6s ease-out forwards;
+    opacity: 0;
+}
+#feed {
+    /* Opacity is handled by JS/CSS combination */
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    opacity: 0; 
+}
+
+
+/* --- NEW: Gradient Volume Slider (JS-Driven) --- */
+.volume-slider {
+    /* Set initial fill (100% volume) */
+    background: linear-gradient(to right, var(--primary-color) 100%, rgba(255, 255, 255, 0.4) 100%);
+}
+.volume-slider::-webkit-slider-runnable-track {
+    background: transparent; /* Track must be transparent */
+    height: 4px;
+    border-radius: 3px;
+}
+.volume-slider::-moz-range-track {
+    background: transparent; /* Track must be transparent */
+    height: 4px;
+    border-radius: 3px;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px; 
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0,0,0,0.8);
+  margin-top: -6px; /* Re-center on the 4px track */
+  border: 2px solid #fff;
+}
+.volume-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 4px rgba(0,0,0,0.8);
+  border: 2px solid #fff;
+}
+.nav-wrap {
+    position: relative;
+    bottom: 50px;
+}
+
+.nav-item {
+    padding: 15px 20px 15px 30px; 
+    margin: 8px 10px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    cursor: pointer;
+    border-radius: 12px;
+}
+.nav-item.active {
+    color: var(--secondary-color);
+    font-weight: 700;
+}
+
+
+/* --- 2. MODIFY: Page Transition Animation --- */
+/* (Replace your old .view-section rules with these) */
+
+.view-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    
+    /* Base (Hidden) State */
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(30px); /* Start slightly to the right */
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+/* Active (Visible) State */
+.view-section.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0); /* Slide in to center */
+    transition-delay: 0.2s; /* Wait for exit to mostly finish */
+    z-index: 5;
+}
+
+/* NEW: Exit State */
+.view-section.exit {
+    opacity: 0;
+    pointer-events: auto; /* Keep clickable during exit */
+    transform: translateX(-30px); /* Slide out to the left */
+    transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+    z-index: 4; /* Keep it below the new active view */
+}
+.image-modal .modal-image-animate-out {
+  opacity: 0;
+  transition:
+    border-radius 0.27s cubic-bezier(.61,-0.13,.43,1.38),
+    box-shadow 0.16s,
+    opacity 0.22s,
+    transform 0.57s cubic-bezier(.16,1.59,.19,.99);
+}
+.post.post-enter {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+    max-height: 0;
+    overflow: hidden;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+.post.post-enter-active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    max-height: 1000px; /* Set to a large value */
+    margin-bottom: 30px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    transition: opacity 0.4s ease, 
+                transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                max-height 0.6s ease-out,
+                margin-bottom 0.4s ease-out,
+                padding-top 0.4s ease-out,
+                padding-bottom 0.4s ease-out;
+}
+/* --- Styling for the Menubar Wrappers --- */
+.nav-wrap {
+    padding: 10px 0;
+    position: relative;
+}
+
+.settings-wrap {
+    position: absolute;
+    bottom: 100px;
+    width: 100%;
+    text-align: left;
+}
+
+/* --- Styling for the Nav Items (<a> tags) --- */
+.nav-item {
+    padding: 15px 20px 15px 30px; 
+    margin: 8px 10px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    top: 50px;
+    cursor: pointer;
+    border-radius: 12px;
+    
+    /* This makes the <a> tags behave like the original <div>s */
+    display: block; 
+    text-decoration: none; 
+}
+
+/* --- Hover Effect (for all items) --- */
+.nav-item:hover {
+    background-color: var(--secondary-glass);
+    transform: scale(1.05); /* Aggressive lift animation */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* * --- Active Text Effect (for the current page) --- 
+ * The JavaScript 'setActiveNav()' function will automatically
+ * add the .active class to the link of the page you are on.
+*/
+.nav-item-active {
+    background-color: var(--secondary-glass);
+    color:  #ff416c;
+    font-weight: 700;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    padding: 15px 20px 15px 30px; 
+    margin: 8px 10px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    top: 50px;
+    cursor: pointer;
+    border-radius: 12px;
+    display: block; 
+    text-decoration: none; 
+}
+    </style>
+</head>
+<body>
+
+    <!-- LIQUID GLASS ANIMATIVE BACKGROUND -->
+    <div id="liquid-glass-container">
+        <div class="glass-blob blob-1"></div>
+        <div class="glass-blob blob-2"></div>
+        <div class="glass-blob blob-3"></div>
+    </div>
+
+    <!-- Header (Glass) - Fixed Top Layer -->
+    <div class="header glass-element fixed-top-layer">
+        <h1>EpicScholar</h1>
+        <!-- Theme Toggle (Glass) - Fixed Top Layer -->
+        <div id="themeToggleContainer">
+            <label class="toggle-switch glass-element" aria-label="Toggle Dark/Light Theme">
+                <input type="checkbox" id="themeToggle">
+                <span class="slider"></span>
+                <span class="label-dark">🌙</span>
+                <span class="label-light">☀️</span>
+            </label>
+        </div>
+    </div>
+
+<div class="sidebar glass-element fixed-top-layer">
+        <div class="nav-wrap" id="navWrap">
+            <a class="nav-item-active" href="index.html" data-icon="🏠">🏠 Home </a>
+            <a class="nav-item" href="messages.html" data-icon="✉️">✉️ Messages</a>
+            <a class="nav-item" href="self-study.html" data-icon="📖">📖 Self-Study</a>
+            <a class="nav-item" href="edubot.html" data-icon="🤖">🤖 EduBot</a>
+            <a class="nav-item" href="mini-games.html" data-icon="🎮">🎮 Mini-Games</a>
+        </div>
+        
+        <div class="settings-wrap">
+            <a class="nav-item" href="profile.html" data-icon="👤">👤 Profile</a>
+        </div>
+    </div>
+    <!-- MAIN CENTRAL CONTENT CONTAINER -->
+    <div id="main-content-wrapper">
+        
+        <!-- ============================================= -->
+        <!-- 1. HOME FEED VIEW (Scrollable) -->
+        <!-- ============================================= -->
+        <div id="home-view" class="view-section active">
+            <div id="feed-container">
+                
+                <!-- Search & Refresh Container (Glass) -->
+                <div id="searchContainer" class="glass-element" style="padding: 15px; border-radius: 18px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; background: rgba(50, 50, 50, 0.4);">
+                    <input type="search" id="searchBar" placeholder="Search posts or users..." style="flex-grow: 1; padding: 15px 25px; border-radius: 30px;; background-color: var(--bg-color); color: var(--text-color); font-size: 17px; transition: border-color 0.3s, box-shadow 0.3s;">
+                    <button id="refreshBtn" title="Refresh Feed">🔄</button>
+                </div>
+
+                <!-- Feed Box -->
+                <div id="feed" style="min-height: 500px; transition: opacity 0.3s;">
+                    <!-- Posts will be rendered here by JS -->
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================= -->
+        <!-- 2. OTHER FIXED VIEWS (Non-Scrollable Main Area) -->
+        <!-- ============================================= -->
+        
+        <div id="messages-view" class="view-section">
+    </div>
+
+    <!-- Right-side panels wrapper (Fixed) -->
+    <div id="right-panel-wrapper">
+        
+        <!-- Add Epic Card -->
+        <div id="addEpicCard" class="mini-card" data-icon="➕" data-label="New Epic">
+            <div class="mini-card-content glass-element">
+                <h3 style="margin-top: 0; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Add New Epic</h3>
+                <input type="file" id="epicFileInput" accept="image/*,video/*" style="display:none;">
+                <label for="epicFileInput" id="fileChooseLabel" style="width: 100%; text-align: center; padding: 10px; border-radius: 8px; border: 1px dashed var(--primary-color); cursor: pointer; background: var(--secondary-glass); transition: all 0.2s;position: relative;right: 15px;display: flex; justify-content: center; align-items: center;">Select file</label>
+                <div id="epicPreview" style="flex-grow: 1; border: 2px dashed var(--card-glass-border); border-radius: 8px; margin: 10px 0; width: 100%; display: flex; justify-content: center; align-items: center; font-size: 14px; opacity: 0.8;position: relative;right: 10px;">Preview</div>
+                <textarea id="epicCaption" placeholder="What's this about?" rows="2" style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 10px; border: 1px solid var(--card-glass-border); background-color: var(--bg-color); color: var(--text-color); resize: none;position: relative;right: 15px;"></textarea>
+                <div class="upload-buttons" style="display: flex; gap: 10px; justify-content: flex-end; width: 100%;">
+                    <button id="cancelUpload" class="panel-btn" style="background: var(--secondary-glass); color: var(--text-color); border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: transform 0.2s;">Cancel</button>
+                    <button id="confirmUpload" class="panel-btn" style="background: var(--primary-gradient); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: transform 0.2s;">Post</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reminder Card -->
+        <div id="reminderCard" class="mini-card" data-icon="⏰" data-label="Reminders">
+            <div class="mini-card-content glass-element">
+                <h3 style="margin-top: 0;">⏰ Reminders</h3>
+                <ul id="remindersList" style="list-style: none; padding: 0; margin: 10px 0; width: 100%;"></ul>
+                <button id="closeReminder" class="panel-btn" style="margin-top: auto; align-self: flex-end; background: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: transform 0.2s;">Done</button>
+            </div>
+        </div>
+
+        <!-- Notifications Card -->
+        <div id="notifsCard" class="mini-card" data-icon="🔔" data-label="Notifications">
+            <div class="mini-card-content glass-element">
+                <h3 style="margin-top: 0;">🔔 Notifications</h3>
+                <ul id="notifList" style="list-style: none; padding: 0; margin: 10px 0; width: 100%;"></ul>
+                <button id="closeNotifs" class="panel-btn" style="margin-top: auto; align-self: flex-end; background: var(--secondary-color); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: transform 0.2s;">Clear All</button>
+            </div>
+        </div>
+        
+        <!-- Schedule Card -->
+        <div id="scheduleCard" class="mini-card" data-icon="🗓️" data-label="Schedule">
+            <div class="mini-card-content glass-element">
+                <h3 style="margin-top: 0;">🗓️ Schedule</h3>
+                <ul id="schedulesList" style="list-style: none; padding: 0; margin: 10px 0; width: 100%;"></ul>
+                <button id="closeSchedule" class="panel-btn" style="margin-top: auto; align-self: flex-end; background: var(--primary-color); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: transform 0.2s;">View Calendar</button>
+            </div>
+        </div>
+        
+        <!-- Tests/Quizzes Card -->
+        <div id="testsCard" class="mini-card" data-icon="📒" data-label="Tests">
+            <div class="mini-card-content glass-element">
+                <h3 style="margin-top: 0;">📒 Tests & Quizzes</h3>
+                <ul id="testsList" style="list-style: none; padding: 0; margin: 10px 0; width: 100%;"></ul>
+                <button id="closeTests" class="panel-btn" style="margin-top: auto; align-self: flex-end; background: var(--secondary-color); color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; transition: transform 0.2s;">Start Test</button>
+            </div>
+        </div>
+        
+    </div>
+    <defs>
+  <linearGradient id="gradient-fill" x1="0" x2="1" y1="0" y2="1">
+    <stop offset="0%" stop-color="#0072ff"/>
+    <stop offset="100%" stop-color="#ff416c"/>
+  </linearGradient>
+</defs>
+
+    <!-- Comment Modal (Slide-Up) -->
+    <div id="commentModal" class="modal">
+        <div class="modal-content">
+            <h3 style="margin-top: 0; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; font-size: 24px;">Comments</h3>
+            <div id="commentModalList" style="flex-grow: 1; overflow-y: auto; margin-bottom: 20px; padding-right: 10px; scroll-behavior: smooth;"></div>
+            <div class="modal-input-area" style="display: flex; gap: 10px; padding-top: 15px; border-top: 1px solid var(--card-glass-border);">
+                <textarea id="commentModalTextarea" placeholder="Write a comment..." rows="1" style="flex-grow: 1; padding: 12px 20px; border-radius: 25px; border: 1px solid var(--primary-color); background-color: var(--bg-color); color: var(--text-color); resize: none; transition: border-color 0.3s; font-size: 16px;"></textarea>
+                <button id="commentModalPostBtn" class="commentModalPostBtn" style="background: var(--primary-gradient); color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: 700; transition: transform 0.2s;">Post</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Feedback Message Container (Toast) -->
+    <div id="feedback-message"></div>
+<!-- Enlarged image modal -->
+<div id="imageModal" class="image-modal" style="display:none;">
+  <span id="imageModalClose" class="modal-close-btn">&#10005;</span>
+  <img id="modalImage" src="" alt="Enlarged image" />
+</div>
+<script src="script.js"></script>
+</body>
+</html>
