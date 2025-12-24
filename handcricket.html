@@ -1,0 +1,2047 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hand Cricket</title>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Material+Icons&display=swap" rel="stylesheet">
+  <style>
+/*
+|================================================================================
+| 0. ROOT VARIABLES & THEME DEFINITIONS
+|================================================================================
+| Defines color schemes, RGB fallbacks for transparency, and animation variables.
+*/
+
+:root {
+    /* --- GLASS BLOB GRADIENT & BASE COLORS --- */
+    --glass-blob-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+    
+    /* Primary Color Palette */
+    --primary: #0072ff; 
+    --primary-rgb: 0, 114, 255; /* Added RGB for transparency effects */
+    --primary-dark: #005bb5; 
+    --error: #ff416c; 
+    --error-rgb: 255, 65, 108;
+    --success: #00c853; 
+    
+    /* Text/Surface Colors - LIGHT MODE */
+    --bg-color: #ffffff; 
+    --bg-color-rgb: 255, 255, 255;
+    --surface: #ffffff; 
+    --surface-rgb: 255, 255, 255; 
+    --on-surface: #202124; 
+    --on-surface-subtle: #616161;
+    
+    /* Visual Effects */
+    --blur: blur(28px); /* Stronger blur for deep glass effect */
+    --overlay: rgba(0, 0, 0, 0.5);
+    --card-shadow: 0 12px 30px rgba(0,0,0,0.18);
+
+    /* Pop-out 3D variables */
+    --hover-shadow: 0 20px 40px rgba(0, 114, 255, 0.35); 
+    --hover-transform: translateY(-8px) scale(1.03);
+    
+    /* Transition Defaults */
+    --default-transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dark-theme {
+    /* Dark Mode Color Palette */
+    --primary: #4da3ff; 
+    --primary-rgb: 77, 163, 255;
+    --primary-dark: #0072ff;
+    --error: #ff6b8b; 
+    --error-rgb: 255, 107, 139;
+    --success: #81c995;
+    
+    /* Text/Surface Colors - DARK MODE */
+    --bg-color: #000000;
+    --bg-color-rgb: 0, 0, 0;
+    --surface: #121212; 
+    --surface-rgb: 18, 18, 18;
+    --on-surface: #e8eaed; 
+    --on-surface-subtle: #a0a0a0;
+    
+    /* Visual Effects */
+    --overlay: rgba(0, 0, 0, 0.85);
+    --card-shadow: 0 12px 30px rgba(0,0,0,0.6);
+    --hover-shadow: 0 20px 40px rgba(0,0,0,0.7);
+}
+
+/* |================================================================================
+| 1. CORE ANIMATIONS & UTILITIES
+|================================================================================
+| Defines reusable keyframes for movement, fading, and pulse effects.
+*/
+
+@keyframes fadeInSlideUp {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+    0% { opacity: 0; transform: scale(0.6); }
+    80% { transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-7px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+@keyframes pulseBorder {
+    0% { box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(var(--primary-rgb), 0); }
+    100% { box-shadow: 0 0 0 0 rgba(var(--primary-rgb), 0); }
+}
+
+@keyframes blobMove {
+    0% { transform: translate(-15%, -15%) rotate(0deg) scale(1); }
+    33% { transform: translate(10%, 20%) rotate(10deg) scale(1.1); }
+    66% { transform: translate(-5%, 5%) rotate(-5deg) scale(0.95); }
+    100% { transform: translate(-15%, -15%) rotate(0deg) scale(1); }
+}
+
+/* |================================================================================
+| 2. GLASS EFFECT UTILITIES (Refined)
+|================================================================================
+| Centralized styles for the "glass" look, ensuring consistent translucency.
+*/
+
+.glass-card {
+    background: rgba(var(--surface-rgb), 0.35); /* More transparent */
+    backdrop-filter: var(--blur); 
+    border: 1px solid rgba(var(--surface-rgb), 0.15); 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: var(--default-transition);
+}
+
+.glass-ui {
+    background: rgba(var(--surface-rgb), 0.6);
+    backdrop-filter: blur(15px); 
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: var(--default-transition);
+}
+
+.dark-theme .glass-card {
+    background: rgba(var(--surface-rgb), 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* |================================================================================
+| 3. GLOBAL STYLES & LAYOUT (Alignment Fixes) 📐
+|================================================================================
+*/
+
+body {
+    font-family: 'Google Sans', system-ui, sans-serif;
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--on-surface);
+    line-height: 1.6;
+    min-height: 100vh;
+    transition: background-color 0.6s ease-in-out, color 0.6s ease-in-out;
+    overflow-x: hidden;
+    position: relative;
+    padding-top: 80px; 
+    box-sizing: border-box; /* Crucial for proper padding and layout */
+}
+
+/* --- Content Alignment --- */
+.game-section {
+    /* Use Flexbox to center content vertically and horizontally */
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.6s ease-in-out, visibility 0.6s ease-in-out;
+    padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    z-index: 10;
+}
+
+.game-section.visible {
+    opacity: 1;
+    visibility: visible;
+    animation: fadeInSlideUp 0.8s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* --- GLASS BLOBS STYLING --- */
+.glass-blob {
+    position: fixed; 
+    background: var(--glass-blob-gradient);
+    border-radius: 50%;
+    filter: blur(100px); 
+    opacity: 0.5;
+    z-index: 0;
+    transition: background 0.8s ease-in-out;
+    pointer-events: none;
+}
+
+.glass-blob-1 {
+    top: -100px;
+    left: -100px;
+    width: 450px;
+    height: 450px;
+    animation: blobMove 30s infinite alternate;
+}
+
+.glass-blob-2 {
+    bottom: 5%;
+    right: -150px;
+    width: 350px;
+    height: 350px;
+    opacity: 0.4;
+    animation: blobMove 22s infinite alternate-reverse;
+}
+
+.glass-blob-3 {
+    top: 20%;
+    left: 20%;
+    width: 250px;
+    height: 250px;
+    opacity: 0.3;
+    animation: blobMove 35s infinite alternate;
+}
+
+/* |================================================================================
+| 4. FIXED UI CONTROLS (Top Bar)
+|================================================================================
+*/
+
+.ui-controls-top {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 1000;
+    animation: float 4s ease-in-out infinite;
+}
+
+.icon-btn {
+    @extend .glass-ui;
+    pointer-events: auto;
+    border: none;
+    border-radius: 50%;
+    width: 48px; 
+    height: 48px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: var(--card-shadow);
+    transition: var(--default-transition);
+}
+
+.icon-btn:hover {
+    transform: scale(1.15) rotate(5deg);
+    box-shadow: var(--hover-shadow);
+    color: var(--error); 
+}
+
+.icon-btn span {
+    transition: transform 0.3s ease;
+}
+
+.icon-btn:hover span {
+    transform: scale(1.1);
+}
+
+.theme-switch-wrapper {
+    @extend .glass-ui;
+    padding: 6px 10px;
+    border-radius: 30px;
+    gap: 8px;
+    user-select: none;
+}
+
+.theme-icon {
+    font-size: 20px;
+    color: var(--on-surface-subtle);
+    transition: var(--default-transition);
+}
+
+.theme-switch input:checked ~ .theme-icon:last-child {
+    color: var(--primary);
+}
+
+.theme-switch input:not(:checked) ~ .theme-icon:first-child {
+    color: var(--primary);
+}
+
+.slider {
+    background-color: var(--on-surface-subtle);
+    transition: background-color 0.4s ease;
+}
+
+.slider:before {
+    background-color: var(--surface);
+}
+
+input:checked + .slider {
+    background-color: var(--primary);
+}
+
+
+/* |================================================================================
+| 5. GAME SECTIONS & CARDS
+|================================================================================
+*/
+
+.setup-card, .card {
+    background: rgba(25, 25, 25, 0.9);
+    border-radius: 36px;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 550px;
+    text-align: center;
+    transition: var(--default-transition);
+    transform: scale(1);
+    will-change: transform;
+    margin: auto; /* Centering fix for modals/overlaid cards */
+}
+
+.setup-card:hover, .card:hover {
+    box-shadow: 0 15px 40px rgba(var(--primary-rgb), 0.2);
+}
+
+.animated-text {
+    font-size: 36px;
+    font-weight: 900;
+    margin-bottom: 25px;
+    color: transparent; 
+    background: var(--glass-blob-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: var(--default-transition);
+}
+
+.animated-text:hover {
+    letter-spacing: 2px;
+}
+
+/* |================================================================================
+| 6. SETUP GRID & OPTIONS
+|================================================================================
+*/
+
+.setup-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+    text-align: left;
+    animation: fadeInSlideUp 0.8s ease-out 0.2s backwards;
+}
+
+.range-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.range-container label {
+    display: block;
+    font-weight: 700;
+    color: var(--primary); 
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: var(--default-transition);
+}
+
+/* --- Options Buttons (0-6, Easy/Medium) --- */
+
+.number-limit-options, .difficulty-options {
+    display: flex;
+    gap: 12px;
+}
+
+.number-option, .difficulty-btn {
+    flex: 1;
+    padding: 16px;
+    border: 3px solid var(--primary);
+    background: var(--surface);
+    color: var(--primary);
+    border-radius: 18px;
+    cursor: pointer;
+    font-weight: 600;
+    text-align: center;
+    transition: var(--default-transition);
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+}
+
+.number-limit-options :nth-child(1) { animation-delay: 0.3s; }
+.number-limit-options :nth-child(2) { animation-delay: 0.4s; }
+.difficulty-options :nth-child(1) { animation-delay: 0.5s; }
+.difficulty-options :nth-child(2) { animation-delay: 0.6s; }
+.difficulty-options :nth-child(3) { animation-delay: 0.7s; }
+
+.number-option:hover, .difficulty-btn:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 114, 255, 0.2);
+}
+
+.number-option.selected, .difficulty-btn.selected {
+    background: var(--primary);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 0 0 3px white, 0 8px 15px rgba(0, 114, 255, 0.6);
+}
+
+.dark-theme .number-option.selected, .dark-theme .difficulty-btn.selected {
+    box-shadow: 0 0 0 3px var(--surface), 0 8px 15px rgba(0, 114, 255, 0.6);
+}
+
+/* --- Select Dropdowns --- */
+.select-choice, .modern-select {
+    @extend .glass-ui;
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 18px;
+    border: 2px solid var(--primary);
+    color: var(--on-surface);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    outline: none;
+    background-position: right 20px center;
+    background-size: 20px;
+    transition: var(--default-transition);
+    background: var(--surface);
+}
+.select-choice:focus, .modern-select:focus {
+    border-color: var(--error);
+    box-shadow: 0 0 0 3px rgba(var(--error-rgb), 0.3);
+}
+
+/* --- Range Slider --- */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding-top: 10px;
+}
+
+#wicket-limit {
+    flex-grow: 1;
+    height: 8px;
+    background: var(--on-surface-subtle);
+    border-radius: 4px;
+    appearance: none;
+    -webkit-appearance: none;
+    transition: var(--default-transition);
+    cursor: grab;
+}
+
+#wicket-limit::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--primary);
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 114, 255, 0.4);
+    transition: var(--default-transition);
+}
+
+#wicket-limit::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+}
+
+.range-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--error);
+    min-width: 30px;
+    text-align: right;
+}
+
+/* |================================================================================
+| 7. BUTTONS (Common Styles)
+|================================================================================
+*/
+
+.btn {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    border: none;
+    padding: 18px 40px;
+    border-radius: 20px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    width: 100%;
+    letter-spacing: 0.5px;
+    background-size: 200% auto; 
+    transition: background-position 0.6s ease, var(--default-transition);
+    margin-top: 30px; /* Separator from setup grid */
+}
+
+.btn:hover {
+    background-position: right center; 
+    transform: var(--hover-transform);
+    box-shadow: var(--hover-shadow);
+}
+
+.btn span {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.btn:hover span {
+    transform: rotate(-10deg) scale(1.1);
+}
+
+.exit {
+    background: transparent;
+    color: var(--error);
+    border: 2px solid var(--error);
+    padding: 16px 40px;
+    border-radius: 20px;
+    font-size: 16px;
+    font-weight: 700;
+    margin-top: 20px;
+    transition: var(--default-transition);
+    width: 100%;
+}
+
+.exit:hover {
+    background: var(--error);
+    color: white;
+    border-color: var(--error);
+    box-shadow: 0 15px 30px rgba(255, 65, 108, 0.4);
+    transform: translateY(-4px);
+}
+
+/* |================================================================================
+| 8. TOSS SECTION
+|================================================================================
+*/
+
+#toss-section .card {
+    animation-delay: 0.1s;
+}
+
+.toss-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    margin-bottom: 30px;
+    width: 100%;
+}
+
+#toss-numbers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    padding: 15px;
+    border-radius: 20px;
+    background: rgba(var(--surface-rgb), 0.15); 
+    transition: var(--default-transition);
+}
+
+#toss-numbers .number-option {
+    padding: 18px 10px;
+    border-width: 1px;
+    font-size: 20px;
+}
+
+#toss-numbers .number-option.selected {
+    animation: pulseBorder 1.5s infinite;
+}
+
+/* |================================================================================
+| 9. MAIN GAME AREA (Scoreboard & Controls)
+|================================================================================
+*/
+
+/* --- Commentary Box --- */
+.commentary-box {
+    @extend .glass-card;
+    background: rgba(var(--surface-rgb), 0.1); 
+    backdrop-filter: blur(8px);
+    border-left: 6px solid var(--primary);
+    padding: 18px 25px;
+    margin-bottom: 25px;
+    border-radius: 0 20px 20px 0;
+    max-width: 650px;
+    width: 100%;
+    transition: var(--default-transition);
+    display: flex; /* Aligns mic icon and text */
+    align-items: center;
+    gap: 15px;
+    box-sizing: border-box;
+}
+
+.commentary-box:hover {
+    transform: translateX(10px);
+    border-color: var(--error);
+}
+
+.mic-icon {
+    color: var(--error);
+    animation: pulse 1.8s infinite alternate;
+    flex-shrink: 0;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.05); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.scrolling-text {
+    font-weight: 500;
+    font-style: italic;
+    color: var(--on-surface);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    display: block; 
+    flex-grow: 1;
+}
+
+/* --- Scoreboard --- */
+.scoreboard {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 20px;
+    max-width: 650px;
+    width: 100%;
+    margin-bottom: 30px;
+    align-items: center;
+    animation: fadeInSlideUp 0.6s ease-out 0.1s backwards;
+}
+
+.score-card {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    padding: 25px;
+    border-radius: 25px;
+    text-align: center;
+    transition: var(--default-transition);
+    box-shadow: 0 10px 20px rgba(0, 114, 255, 0.4);
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.score-card h3 {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.score-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+    z-index: 0;
+}
+
+.score-card:hover::before {
+    transform: translateX(0);
+}
+
+.score-card > * {
+    position: relative; /* Keep content above the pseudo-element */
+    z-index: 2;
+}
+
+.score-card:hover {
+    transform: translateY(-10px) scale(1.03);
+    box-shadow: 0 18px 35px rgba(0, 114, 255, 0.6);
+}
+
+.vs-badge {
+    @extend .glass-ui;
+    color: var(--on-surface);
+    font-weight: 900;
+    padding: 10px;
+    border-radius: 50%;
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    transition: var(--default-transition);
+    animation: float 3s ease-in-out infinite 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.vs-badge:hover {
+    transform: rotate(360deg) scale(1.1);
+    background: var(--error);
+    color: white;
+}
+
+.score-number {
+    font-size: 56px;
+    font-weight: 900;
+    margin: 10px 0;
+    letter-spacing: -2px;
+}
+
+.stats-row {
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+.badge {
+    font-size: 11px;
+    background: rgba(255,255,255,0.3);
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-weight: bold;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+/* --- Info Bar --- */
+.match-info-bar {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    animation: fadeInSlideUp 0.6s ease-out 0.3s backwards;
+    width: 100%;
+    max-width: 650px;
+}
+
+.info-pill {
+    background: linear-gradient(90deg, var(--primary), var(--error));
+    color: var(--surface);
+    padding: 10px 20px;
+    border-radius: 30px;
+    font-size: 14px;
+    font-weight: 700;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    transition: var(--default-transition);
+    flex-shrink: 0;
+}
+
+.info-pill:hover {
+    transform: scale(1.05);
+    background: linear-gradient(90deg, var(--error), var(--primary));
+}
+
+.status-text {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--primary);
+    transition: var(--default-transition);
+    text-align: center;
+}
+
+/* --- Game Controls --- */
+.game-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 650px;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.play-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 40px;
+    perspective: 1500px;
+    width: 100%;
+    animation: fadeInSlideUp 0.6s ease-out 0.4s backwards;
+}
+
+/* --- Number Grid --- */
+.number-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    animation: fadeInSlideUp 0.6s ease-out 0.5s backwards;
+}
+
+.number-btn {
+    width: 75px;
+    height: 75px;
+    border-radius: 20px;
+    font-size: 28px;
+    font-weight: 800;
+    border: none;
+    background: var(--surface);
+    color: var(--primary);
+    box-shadow: 0 8px 0 var(--primary-dark), 0 8px 15px rgba(0,0,0,0.15);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transform: translateY(0);
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+}
+
+/* Staggered animation for the grid buttons */
+.number-grid :nth-child(1) { animation-delay: 0.6s; }
+.number-grid :nth-child(2) { animation-delay: 0.65s; }
+.number-grid :nth-child(3) { animation-delay: 0.7s; }
+.number-grid :nth-child(4) { animation-delay: 0.75s; }
+.number-grid :nth-child(5) { animation-delay: 0.8s; }
+.number-grid :nth-child(6) { animation-delay: 0.85s; }
+
+.number-btn:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 0 var(--primary-dark), 0 25px 30px rgba(0, 114, 255, 0.4);
+    background: var(--primary);
+    color: white;
+}
+
+.number-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 4px 0 var(--primary-dark), inset 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* --- 3D Flip Card --- */
+.last-action-display {
+    width: 120px;
+    min-width: 120px; /* Ensure fixed size */
+    height: 150px;
+    animation: float 5s ease-in-out infinite 0.7s;
+    position: relative;
+    transform-style: preserve-3d;
+}
+
+.flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1.5);
+    transform-style: preserve-3d;
+}
+
+.flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 25px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.flip-card-front {
+    background: linear-gradient(135deg, #0072ff, #ff416c);
+    font-size: 50px;
+    color: white;
+}
+
+.flip-card-back {
+    @extend .glass-card;
+    background: rgba(var(--surface-rgb), 0.7);
+    color: var(--primary);
+    border: 3px solid var(--primary);
+    transform: rotateY(180deg);
+}
+
+#round-result-val {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1;
+    color: transparent;
+    background: var(--glass-blob-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: var(--default-transition);
+}
+
+#round-result-text {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--on-surface-subtle);
+}
+
+.do-flip {
+    transform: rotateY(180deg);
+}
+
+/* |================================================================================
+| 10. OVERLAYS (Toss & Modal)
+|================================================================================
+*/
+
+.toss-overlay, .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--overlay);
+    backdrop-filter: var(--blur);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    z-index: 2000;
+    padding: 20px;
+}
+
+.toss-overlay.visible, .modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.toss-result-card {
+    @extend .glass-card;
+    background: rgba(var(--surface-rgb), 0.8);
+    border-radius: 35px;
+    padding: 50px;
+    max-width: 450px;
+    width: 100%;
+    box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+    transform: scale(0.8);
+    transition: 0.5s cubic-bezier(0.23, 1, 0.32, 1.275);
+    text-align: center;
+}
+
+.toss-overlay.visible .toss-result-card {
+    transform: scale(1);
+}
+
+.toss-result-card h2 {
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--primary);
+    margin-top: 0;
+}
+
+#toss-numbers-display {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    margin: 30px 0;
+}
+
+#toss-numbers-display > div {
+    background: var(--glass-blob-gradient);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-weight: bold;
+    font-size: 24px;
+    box-shadow: 0 6px 15px rgba(0, 114, 255, 0.4);
+    animation: popIn 0.4s ease-out 0.1s;
+}
+
+#toss-winner-display {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    animation: fadeInSlideUp 0.6s ease-out 0.3s;
+}
+
+
+/* --- Modal Guide --- */
+
+.modal-card {
+    @extend .glass-card;
+    background: rgba(var(--surface-rgb), 0.9);
+    border-radius: 30px;
+    max-width: 500px;
+    width: 100%;
+    padding: 40px;
+    transform: translateY(50px) scale(0.8);
+    text-align: center;
+}
+
+.modal-overlay.active .modal-card {
+    transform: translateY(0) scale(1);
+}
+
+.guide-steps {
+    text-align: left;
+    margin: 25px 0;
+}
+
+.step {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+    opacity: 0;
+    animation: fadeInSlideUp 0.5s ease-out forwards;
+}
+
+.guide-steps .step:nth-child(1) { animation-delay: 0.3s; }
+.guide-steps .step:nth-child(2) { animation-delay: 0.4s; }
+.guide-steps .step:nth-child(3) { animation-delay: 0.5s; }
+.guide-steps .step:nth-child(4) { animation-delay: 0.6s; }
+
+.step-icon {
+    font-size: 28px;
+    color: var(--primary);
+    animation: float 3s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+.step p {
+    margin: 0;
+    line-height: 1.4;
+    font-size: 16px;
+}
+
+.step strong {
+    color: var(--error);
+}
+
+/* --- Celebration --- */
+.celebration {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+@media (max-width: 600px) {
+    /* Responsive adjustments for smaller screens */
+    .game-section {
+        padding-top: 100px;
+        padding-bottom: 20px;
+        justify-content: flex-start; /* Start content near the top */
+    }
+    
+    .setup-card, .card {
+        padding: 30px 20px;
+    }
+    
+    .animated-text {
+        font-size: 30px;
+    }
+    
+    .scoreboard {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .vs-badge {
+        display: none; /* Hide VS badge on small screens */
+    }
+    
+    .score-number {
+        font-size: 40px;
+    }
+
+    .game-controls {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .play-area {
+        flex-direction: column-reverse; /* Put the numbers above the result */
+        gap: 30px;
+    }
+
+    .number-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        width: 100%;
+    }
+    
+    .number-btn {
+        width: 60px;
+        height: 60px;
+        font-size: 24px;
+    }
+
+    .last-action-display {
+        width: 100px;
+        height: 130px;
+    }
+
+    .flip-card-front {
+        font-size: 40px;
+    }
+
+    #round-result-val {
+        font-size: 50px;
+    }
+}
+  </style>
+</head>
+<body>
+  <div class="glass-blob glass-blob-1"></div>
+<div class="glass-blob glass-blob-2"></div>
+<div class="glass-blob glass-blob-3"></div>
+  <div class="ui-controls-top">
+    <button class="icon-btn" onclick="toggleSound()" id="sound-btn" title="Toggle Sound">
+      <span class="material-icons">volume_up</span>
+    </button>
+    <button class="icon-btn" onclick="showGuide()" title="How to Play">
+      <span class="material-icons">help_outline</span>
+    </button>
+    <div class="theme-switch-wrapper">
+      <span class="material-icons theme-icon">light_mode</span>
+      <label class="theme-switch">
+        <input type="checkbox" onchange="toggleTheme()" id="theme-toggle">
+        <span class="slider"></span>
+      </label>
+      <span class="material-icons theme-icon">dark_mode</span>
+    </div>
+  </div>
+  
+  <!-- Setup Section -->
+  <div class="game-section visible" id="setup-section">
+    <div class="setup-card pop-in">
+      <h1 class="animated-text">🏏 Hand Cricket</h1>
+      
+      <div class="setup-grid">
+        <!-- Range Options -->
+        <div class="range-container">
+          <label>Numbers per turn</label>
+          <div class="number-limit-options">
+            <button class="number-option selected" onclick="selectNumberLimit(6)">0-6</button>
+            <button class="number-option" onclick="selectNumberLimit(10)">0-10</button>
+          </div>
+        </div>
+
+        <!-- Difficulty -->
+        <div class="range-container">
+          <label>Bot Difficulty</label>
+          <div class="difficulty-options">
+            <button class="difficulty-btn selected" onclick="selectDifficulty('easy')">Easy</button>
+            <button class="difficulty-btn" onclick="selectDifficulty('medium')">Medium</button>
+            <button class="difficulty-btn" onclick="selectDifficulty('hard')">Hard</button>
+          </div>
+        </div>
+
+        <!-- Scenarios -->
+        <div class="range-container">
+          <label>Game Mode</label>
+          <select id="scenario-select" class="modern-select" onchange="handleScenarioChange()">
+            <option value="standard">Standard Match</option>
+            <option value="chase20">Chase 20 (12 balls)</option>
+            <option value="superover">Super Over (6 balls)</option>
+            <option value="survival">Survival (1 Wicket)</option>
+          </select>
+        </div>
+
+        <!-- Wickets (Hidden for some scenarios) -->
+        <div class="range-container" id="wicket-setting">
+          <label for="wicket-limit">Wickets per innings</label>
+          <div class="slider-container">
+            <input type="range" id="wicket-limit" min="1" max="10" value="3" />
+            <div class="range-value" id="wicket-value">3</div>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn primary-btn" onclick="startGame()">
+        Start Match
+        <span class="material-icons">sports_cricket</span>
+      </button>
+      <button class="exit" onclick="location.href='mini-games.html'">
+        Go back to Mini-Games
+      </button>
+    </div>
+  </div>
+
+  <!-- Toss Section -->
+  <div class="game-section" id="toss-section">
+    <div class="card flip-in">
+      <h2>Toss Time! 🪙</h2>
+      <div class="toss-controls">
+        <div class="number-grid" id="toss-numbers"></div>
+        <div class="select-container">
+          <select class="select-choice" id="player-choice">
+            <option value="odd">Odd Total</option>
+            <option value="even">Even Total</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn" onclick="doToss()">Toss Coin</button>
+    </div>
+  </div>
+
+  <!-- Main Game Section -->
+  <div class="game-section" id="game-section">
+    <!-- Commentary Box -->
+    <div class="commentary-box">
+      <span class="material-icons mic-icon">mic</span>
+      <div id="commentary-text" class="scrolling-text">Welcome to the match! Waiting for the first ball...</div>
+    </div>
+
+    <div class="scoreboard">
+      <div class="score-card player-card">
+        <h3>You</h3>
+        <div class="score-number" id="player-score">0</div>
+        <div class="stats-row">
+          <span>Wickets: <span id="player-wickets">0</span>/<span id="player-max-wickets">3</span></span>
+        </div>
+      </div>
+      
+      <div class="vs-badge">VS</div>
+
+      <div class="score-card bot-card">
+        <h3>Bot <span id="bot-difficulty-label" class="badge">Easy</span></h3>
+        <div class="score-number" id="bot-score">0</div>
+        <div class="stats-row">
+          <span>Wickets: <span id="bot-wickets">0</span>/<span id="bot-max-wickets">3</span></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="match-info-bar">
+      <span id="balls-remaining" class="info-pill hidden">Balls Left: 12</span>
+      <span id="target-display" class="info-pill hidden">Target: 20</span>
+    </div>
+
+    <div class="game-controls">
+      <h3 id="game-status" class="status-text">Choose your number</h3>
+      
+      <!-- 3D Card Flip Container for Result -->
+      <div class="play-area">
+        <div class="number-grid" id="number-grid"></div>
+        
+        <div class="last-action-display" id="last-action-display">
+          <div class="flip-card-inner" id="flip-card">
+            <div class="flip-card-front">
+              <span class="material-icons">sports_cricket</span>
+            </div>
+            <div class="flip-card-back">
+              <div id="round-result-val">?</div>
+              <div id="round-result-text">RUNS</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Overlays -->
+  <div class="toss-overlay" id="toss-overlay">
+    <div class="toss-result-card">
+      <h2>Toss Result</h2>
+      <div id="toss-numbers-display"></div>
+      <div id="toss-winner-display"></div>
+    </div>
+  </div>
+
+  <!-- Guide Modal -->
+  <div class="modal-overlay" id="guide-modal">
+    <div class="modal-card">
+      <h2>📖 How to Play</h2>
+      <div class="guide-steps">
+        <div class="step">
+          <span class="step-icon">👆</span>
+          <p><strong>Choose a number:</strong> Select 1-6 (or 10) to bat or bowl.</p>
+        </div>
+        <div class="step">
+          <span class="step-icon">🤖</span>
+          <p><strong>Batting:</strong> If your number matches the Bot's, you are <strong>OUT</strong>. Otherwise, you score points equal to your number.</p>
+        </div>
+        <div class="step">
+          <span class="step-icon">⚾</span>
+          <p><strong>Bowling:</strong> Try to match the Bot's number to get them OUT.</p>
+        </div>
+        <div class="step">
+          <span class="step-icon">🏆</span>
+          <p><strong>Winning:</strong> Score more runs than the Bot to win!</p>
+        </div>
+      </div>
+      <button class="btn" onclick="closeGuide()">Got it!</button>
+    </div>
+  </div>
+
+  <div id="celebration" class="celebration"></div>
+  
+  <!-- Audio Elements -->
+  <audio id="bgm" src="sounds/bgm_cricket.mp3" loop></audio>
+  <audio id="sfx-click" src="sounds/click.mp3"></audio>
+  <audio id="sfx-run" src="sounds/run.mp3"></audio>
+  <audio id="sfx-out" src="sounds/out.mp3"></audio>
+  <audio id="sfx-win" src="sounds/win.mp3"></audio>
+  <audio id="sfx-loss" src="sounds/loss.mp3"></audio>
+
+<script>
+const gameState = {
+  playerScore: 0,
+  botScore: 0,
+  wickets: 0,
+  maxWickets: 3,
+  ballsBowled: 0,
+  ballsRemaining: null,
+  isPlayerBatting: true,
+  botScoreFinal: null,
+  playerScoreFinal: null,
+  maxNumbers: 6,
+  animations: true,
+  difficulty: 'easy',
+  scenario: 'standard',
+  soundEnabled: true,
+  playerHistory: [],
+  targetSet: false,
+  targetToChase: 0,
+  currentWickets: 0,
+  botWickets: 0,
+  isFreeHit: false,
+  superOverPhase: 'player',
+  celebrationActive: false
+};
+
+const commentaryData = {
+  0: ["Defensive block! No run.", "Well played defensively.", "Straight to the fielder, dot ball."],
+  1: ["Quick single taken!", "Pushed into the gap for one.", "Smart rotation of strike."],
+  2: ["Two runs added to the tally.", "Pushed hard for two!", "Good running between the wickets."],
+  3: ["Three runs! Great placement.", "They're running hard, that's three!", "Superb gap finding."],
+  4: ["FOUR! What a shot!", "Cracked through the covers for 4!", "Boundary! The crowd loves it!"],
+  5: ["Five runs? That's rare!", "Overthrows! Five runs added.", "Excellent running, five runs!"],
+  6: ["SIX! Out of the park!", "Huge hit! That's a maximum!", "Massive six over long on!"],
+  10: ["Perfect TEN! Unbelievable!", "Double digits in one ball!", "Maximum power used!"],
+  out: ["OUT! Clean bowled!", "Caught! He's gone!", "Wicket! The stumps are flying!", "That's the end of a fine innings."],
+  win: ["What a victory! A comprehensive win.", "They've done it! Champions!", "Incredible scenes as they win the match!"],
+  loss: ["Heartbreak! Better luck next time.", "A tough loss to swallow.", "They fought hard, but it wasn't enough."]
+};
+
+/* --- Initialization & Theme --- */
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+  setupSound();
+  setupSlider();
+});
+
+function toggleTheme() {
+  const isDark = document.getElementById('theme-toggle').checked;
+  document.body.classList.toggle('dark-theme', isDark);
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+}
+
+function initTheme() {
+  const isDark = localStorage.getItem('theme') === 'dark';
+  document.body.classList.toggle('dark-theme', isDark);
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+  document.getElementById('theme-toggle').checked = isDark;
+  
+  // Apply toggle switch styles dynamically
+  const themeSwitch = document.querySelector('.theme-switch');
+  const slider = document.querySelector('.slider');
+  
+  if (themeSwitch && slider) {
+    // Create toggle switch styles if not already in CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      .theme-switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 26px;
+        margin: 0;
+      }
+
+      .theme-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.4s;
+        border-radius: 26px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background-color: white;
+        transition: 0.4s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: var(--primary);
+      }
+
+      input:focus + .slider {
+        box-shadow: 0 0 1px var(--primary);
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(24px);
+      }
+
+      .theme-switch:hover {
+        opacity: 1 !important;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+}
+
+/* --- Slider Setup --- */
+function setupSlider() {
+  const slider = document.getElementById('wicket-limit');
+  const valueDisplay = document.getElementById('wicket-value');
+  
+  if (slider && valueDisplay) {
+    valueDisplay.innerText = slider.value;
+    slider.addEventListener('input', function() {
+      valueDisplay.innerText = this.value;
+    });
+  }
+}
+
+/* --- Sound System --- */
+function setupSound() {
+  const bgm = document.getElementById('bgm');
+  bgm.volume = 0.2;
+}
+
+function toggleSound() {
+  gameState.soundEnabled = !gameState.soundEnabled;
+  const btn = document.getElementById('sound-btn');
+  const bgm = document.getElementById('bgm');
+  
+  btn.innerHTML = `<span class="material-icons">${gameState.soundEnabled ? 'volume_up' : 'volume_off'}</span>`;
+  
+  if (gameState.soundEnabled) {
+    bgm.play().catch(e => console.log("Audio blocked:", e));
+  } else {
+    bgm.pause();
+  }
+}
+
+function playSound(id) {
+  if (!gameState.soundEnabled) return;
+  const sound = document.getElementById(id);
+  if (sound) {
+    sound.currentTime = 0;
+    sound.play().catch(() => {});
+  }
+}
+
+/* --- Setup & Configuration --- */
+function selectNumberLimit(val) {
+  gameState.maxNumbers = val;
+  document.querySelectorAll('.number-option').forEach(b => 
+    b.classList.toggle('selected', b.innerText.includes(val)));
+}
+
+function selectDifficulty(level) {
+  gameState.difficulty = level;
+  document.querySelectorAll('.difficulty-btn').forEach(b => 
+    b.classList.toggle('selected', b.innerText.toLowerCase() === level));
+  document.getElementById('bot-difficulty-label').innerText = level.charAt(0).toUpperCase() + level.slice(1);
+}
+
+function handleScenarioChange() {
+  const scenario = document.getElementById('scenario-select').value;
+  gameState.scenario = scenario;
+  
+  const wicketSection = document.getElementById('wicket-setting');
+  if (scenario === 'survival' || scenario === 'superover' || scenario === 'chase20') {
+    wicketSection.style.display = 'none';
+  } else {
+    wicketSection.style.display = 'flex';
+  }
+}
+
+function showGuide() {
+  document.getElementById('guide-modal').classList.add('active');
+}
+
+function closeGuide() {
+  document.getElementById('guide-modal').classList.remove('active');
+}
+
+/* --- Game Logic --- */
+function startGame() {
+  const wicketInput = parseInt(document.getElementById('wicket-limit').value);
+  
+  gameState.ballsBowled = 0;
+  gameState.ballsRemaining = null;
+  gameState.targetSet = false;
+  gameState.playerHistory = [];
+  gameState.superOverPhase = 'player';
+  gameState.celebrationActive = false;
+  
+  if (gameState.scenario === 'standard') {
+    gameState.maxWickets = wicketInput;
+  } else if (gameState.scenario === 'chase20') {
+    gameState.maxWickets = 3;
+    gameState.targetToChase = 20;
+    gameState.targetSet = true;
+    gameState.ballsRemaining = 12;
+    gameState.botScoreFinal = 19;
+  } else if (gameState.scenario === 'superover') {
+    gameState.maxWickets = 2;
+    gameState.ballsRemaining = 6;
+  } else if (gameState.scenario === 'survival') {
+    gameState.maxWickets = 1;
+    gameState.targetSet = false;
+  }
+
+  resetScores();
+  
+  playSound('sfx-click');
+  
+  if (gameState.scenario === 'chase20') {
+    startPlayerInnings();
+    showSection('setup-section', 'game-section');
+    updateCommentary(`Scenario: Chase 20 runs in 12 balls!`);
+  } else if (gameState.scenario === 'superover') {
+    startPlayerInnings();
+    showSection('setup-section', 'game-section');
+    updateCommentary(`Super Over! 6 balls each. Player batting first!`);
+  } else {
+    initNumberGrid(null, 'toss-numbers', 5);
+    showSection('setup-section', 'toss-section');
+  }
+}
+
+function resetScores() {
+  gameState.playerScore = 0;
+  gameState.botScore = 0;
+  gameState.currentWickets = 0;
+  gameState.botWickets = 0;
+  
+  document.getElementById('player-score').innerText = '0';
+  document.getElementById('bot-score').innerText = gameState.scenario === 'chase20' ? '20' : '0';
+  document.getElementById('player-wickets').innerText = '0';
+  document.getElementById('bot-wickets').innerText = '0';
+  document.getElementById('player-max-wickets').innerText = gameState.maxWickets;
+  document.getElementById('bot-max-wickets').innerText = gameState.maxWickets;
+  
+  const ballsDisplay = document.getElementById('balls-remaining');
+  const targetDisplay = document.getElementById('target-display');
+  
+  if (gameState.ballsRemaining !== null) {
+    ballsDisplay.classList.remove('hidden');
+    ballsDisplay.innerText = `Balls Left: ${gameState.ballsRemaining}`;
+  } else {
+    ballsDisplay.classList.add('hidden');
+  }
+  
+  if (gameState.targetSet) {
+    targetDisplay.classList.remove('hidden');
+    targetDisplay.innerText = `Target: ${gameState.targetToChase}`;
+  } else {
+    targetDisplay.classList.add('hidden');
+  }
+}
+
+/* --- AI Logic --- */
+function getBotMove(playerMove) {
+  gameState.playerHistory.push(playerMove);
+  if (gameState.playerHistory.length > 5) gameState.playerHistory.shift();
+
+  const max = gameState.maxNumbers;
+  let botMove;
+
+  if (gameState.difficulty === 'easy') {
+    botMove = Math.floor(Math.random() * (max + 1));
+  } 
+  else if (gameState.difficulty === 'medium') {
+    do {
+      botMove = Math.floor(Math.random() * (max + 1));
+    } while (botMove === gameState.lastBotMove);
+  } 
+  else {
+    const mostFrequent = getMostFrequent(gameState.playerHistory);
+    
+    if (gameState.isPlayerBatting) {
+      if (Math.random() > 0.4) botMove = mostFrequent;
+      else botMove = Math.floor(Math.random() * (max + 1));
+    } else {
+      if (gameState.targetSet && (gameState.targetToChase - gameState.botScore) < 6) {
+        botMove = Math.floor(Math.random() * 4);
+      } else {
+        botMove = Math.random() > 0.5 ? 6 : Math.floor(Math.random() * max);
+      }
+    }
+  }
+
+  gameState.lastBotMove = botMove;
+  return botMove;
+}
+
+function getMostFrequent(arr) {
+  return arr.sort((a,b) =>
+        arr.filter(v => v===a).length
+      - arr.filter(v => v===b).length
+  ).pop();
+}
+
+/* --- Gameplay --- */
+function handleInput(playerVal) {
+  const card = document.getElementById('flip-card');
+  card.classList.remove('do-flip');
+  
+  setTimeout(() => {
+    const botVal = getBotMove(playerVal);
+    
+    document.getElementById('round-result-val').innerText = botVal;
+    document.getElementById('round-result-text').innerText = "BOT";
+    card.classList.add('do-flip');
+
+    if (gameState.isPlayerBatting) {
+      processBatting(playerVal, botVal);
+    } else {
+      processBowling(playerVal, botVal);
+    }
+
+    if (gameState.ballsRemaining !== null) {
+      gameState.ballsRemaining--;
+      document.getElementById('balls-remaining').innerText = `Balls Left: ${gameState.ballsRemaining}`;
+      
+      if (gameState.ballsRemaining <= 0) {
+        if (gameState.scenario === 'superover') {
+          handleSuperOverTransition();
+        } else {
+          endGame("Balls Finished!");
+        }
+        return;
+      }
+    }
+
+  }, 50);
+}
+
+function processBatting(playerVal, botVal) {
+  if (playerVal === botVal) {
+    gameState.currentWickets++;
+    document.getElementById('player-wickets').innerText = gameState.currentWickets;
+    playSound('sfx-out');
+    updateCommentary(null, 'out');
+    
+    if (gameState.currentWickets >= gameState.maxWickets) {
+      if (gameState.scenario === 'superover') {
+        handleSuperOverTransition();
+      } else {
+        endInnings();
+      }
+    }
+  } else {
+    gameState.playerScore += playerVal;
+    updateScore('player', gameState.playerScore);
+    playSound(playerVal >= 4 ? 'sfx-run' : 'sfx-click');
+    updateCommentary(playerVal);
+    
+    if (gameState.targetSet && gameState.playerScore > gameState.botScoreFinal) {
+      endGame("You chased the target!");
+    }
+  }
+}
+
+function processBowling(playerVal, botVal) {
+  if (playerVal === botVal) {
+    gameState.botWickets++;
+    document.getElementById('bot-wickets').innerText = gameState.botWickets;
+    playSound('sfx-out');
+    updateCommentary(null, 'out');
+    
+    if (gameState.botWickets >= gameState.maxWickets) {
+      if (gameState.scenario === 'superover') {
+        handleSuperOverTransition();
+      } else {
+        endInnings();
+      }
+    }
+  } else {
+    gameState.botScore += botVal;
+    updateScore('bot', gameState.botScore);
+    playSound(botVal >= 4 ? 'sfx-run' : 'sfx-click');
+    updateCommentary(botVal);
+    
+    if (gameState.targetSet && gameState.botScore > gameState.playerScoreFinal) {
+      endGame("Bot chased the target!");
+    }
+  }
+}
+
+function updateCommentary(val, type = 'run') {
+  const box = document.getElementById('commentary-text');
+  let text = "";
+  
+  if (typeof val === 'string') {
+    text = val;
+  } else if (type === 'out') {
+    text = commentaryData.out[Math.floor(Math.random() * commentaryData.out.length)];
+  } else {
+    const options = commentaryData[val] || ["Good play."];
+    text = options[Math.floor(Math.random() * options.length)];
+  }
+  
+  box.style.opacity = 0;
+  setTimeout(() => {
+    box.innerText = text;
+    box.style.opacity = 1;
+  }, 200);
+}
+
+/* --- Flow Control --- */
+function endInnings() {
+  if (gameState.scenario === 'chase20') {
+    endGame();
+    return;
+  }
+
+  if (gameState.targetSet) {
+    endGame();
+  } else {
+    gameState.targetSet = true;
+    if (gameState.isPlayerBatting) {
+      gameState.targetToChase = gameState.playerScore + 1;
+      gameState.playerScoreFinal = gameState.playerScore;
+      alert(`Innings Over! Target: ${gameState.targetToChase}`);
+      startBotInnings();
+    } else {
+      gameState.targetToChase = gameState.botScore + 1;
+      gameState.botScoreFinal = gameState.botScore;
+      alert(`Innings Over! Target: ${gameState.targetToChase}`);
+      startPlayerInnings();
+    }
+    
+    document.getElementById('target-display').classList.remove('hidden');
+    document.getElementById('target-display').innerText = `Target: ${gameState.targetToChase}`;
+  }
+}
+
+function handleSuperOverTransition() {
+  if (gameState.superOverPhase === 'player') {
+    gameState.superOverPhase = 'bot';
+    gameState.playerScoreFinal = gameState.playerScore;
+    gameState.targetToChase = gameState.playerScore + 1;
+    gameState.botScore = 0;
+    gameState.botWickets = 0;
+    gameState.ballsRemaining = 6;
+    
+    document.getElementById('bot-score').innerText = '0';
+    document.getElementById('bot-wickets').innerText = '0';
+    document.getElementById('target-display').innerText = `Target: ${gameState.targetToChase}`;
+    
+    alert(`Player Innings Over! Target: ${gameState.targetToChase}`);
+    startBotInnings();
+  } else {
+    endGame("Super Over Complete!");
+  }
+}
+
+function startBotInnings() {
+  gameState.isPlayerBatting = false;
+  if (gameState.scenario !== 'superover') {
+    gameState.botScore = 0;
+    gameState.botWickets = 0;
+  }
+  
+  document.getElementById('bot-score').innerText = gameState.botScore;
+  document.getElementById('bot-wickets').innerText = gameState.botWickets;
+  document.getElementById('bot-max-wickets').innerText = gameState.maxWickets;
+  
+  document.getElementById('game-status').innerText = "Bot is Batting (Bowling Time!)";
+  updateCommentary("Innings begins. You are bowling.");
+  initNumberGrid(handleInput);
+}
+
+function startPlayerInnings() {
+  gameState.isPlayerBatting = true;
+  if (gameState.scenario !== 'superover') {
+    gameState.playerScore = 0;
+    gameState.currentWickets = 0;
+  }
+  
+  document.getElementById('player-score').innerText = gameState.playerScore;
+  document.getElementById('player-wickets').innerText = gameState.currentWickets;
+  document.getElementById('player-max-wickets').innerText = gameState.maxWickets;
+  
+  document.getElementById('game-status').innerText = "You are Batting";
+  updateCommentary("First ball coming up. Good luck!");
+  initNumberGrid(handleInput);
+}
+
+function endGame(reason = "") {
+  const pScore = gameState.playerScore;
+  const bScore = gameState.botScore;
+  let playerWon = false;
+  let draw = false;
+
+  if (gameState.scenario === 'chase20') {
+     playerWon = pScore >= 20;
+  } else if (gameState.scenario === 'superover') {
+    if (pScore > bScore) playerWon = true;
+    else if (pScore === bScore) draw = true;
+  } else {
+    if (gameState.isPlayerBatting) {
+      playerWon = pScore >= gameState.targetToChase;
+    } else {
+      playerWon = bScore > gameState.playerScoreFinal;
+    }
+    if (pScore === bScore) draw = true;
+  }
+  
+  let title = draw ? "Match Drawn!" : (playerWon ? "Victory!" : "Defeat");
+  let msg = draw ? "What a game!" : (playerWon ? "You defeated the AI!" : "The Bot wins this round.");
+  
+  if (playerWon) {
+    playSound('sfx-win');
+    gameState.celebrationActive = true;
+    createConfetti();
+    createFireworks();
+    updateCommentary(null, 'win');
+  } else {
+    playSound('sfx-loss');
+    updateCommentary(null, 'loss');
+  }
+  
+  showGameResult(pScore, bScore, title, msg, playerWon);
+}
+
+function showGameResult(pScore, bScore, title, msg, playerWon) {
+  const overlay = document.getElementById('toss-overlay');
+  const resultCard = document.querySelector('.toss-result-card');
+  
+  // Clear toss result specific content
+  document.getElementById('toss-numbers-display').innerHTML = '';
+  
+  // Update the result display
+  document.getElementById('toss-winner-display').innerHTML = `
+    <h2 class="${playerWon ? 'win-title' : 'lose-title'}">${title}</h2>
+    <p>${msg}</p>
+    <p>Score: You ${pScore} - ${bScore} Bot</p>
+    <button class="btn" onclick="stopCelebration(); location.reload()">Play Again</button>
+    <button class="btn" style="background: linear-gradient(135deg, #ff416c, #0072ff);" onclick="stopCelebration(); location.href='activity.html'">Go to Mini-games</button>
+  `;
+  
+  overlay.classList.add('visible');
+}
+
+/* --- Utilities --- */
+function showSection(hideId, showId) {
+  document.getElementById(hideId).classList.remove('visible');
+  setTimeout(() => {
+    document.getElementById(hideId).style.display = 'none';
+    const showEl = document.getElementById(showId);
+    showEl.style.display = 'flex';
+    setTimeout(() => showEl.classList.add('visible'), 50);
+  }, 500);
+}
+
+function updateScore(who, val) {
+  const el = document.getElementById(`${who}-score`);
+  el.style.transform = "scale(1.5)";
+  el.innerText = val;
+  setTimeout(() => el.style.transform = "scale(1)", 200);
+}
+
+function initNumberGrid(cb, id='number-grid', limit=null) {
+  const grid = document.getElementById(id);
+  grid.innerHTML = '';
+  const max = limit || gameState.maxNumbers;
+  const nums = Array.from({length: max + 1}, (_, i) => i);
+  
+  nums.forEach(n => {
+    const btn = document.createElement('button');
+    btn.className = 'number-btn';
+    btn.innerText = n;
+    btn.onclick = () => {
+       if (cb) cb(n);
+       else {
+         document.querySelectorAll('#toss-numbers .number-btn').forEach(b => b.classList.remove('selected'));
+         btn.classList.add('selected');
+       }
+    };
+    grid.appendChild(btn);
+  });
+  
+  grid.style.gridTemplateColumns = `repeat(${nums.length > 6 ? 4 : 3}, 1fr)`;
+}
+
+function createConfetti() {
+  const c = document.getElementById('celebration');
+  c.innerHTML = '';
+  
+  const confettiInterval = setInterval(() => {
+    if (!gameState.celebrationActive) {
+      clearInterval(confettiInterval);
+      return;
+    }
+    
+    for(let i=0; i<5; i++) {
+      const d = document.createElement('div');
+      d.className = 'confetti';
+      d.style.left = Math.random()*100 + 'vw';
+      d.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 50%)`;
+      d.style.animationDuration = (Math.random()*2 + 2) + 's';
+      c.appendChild(d);
+    }
+  }, 200);
+}
+
+function createFireworks() {
+  const c = document.getElementById('celebration');
+  
+  const fireworksInterval = setInterval(() => {
+    if (!gameState.celebrationActive) {
+      clearInterval(fireworksInterval);
+      return;
+    }
+    
+    for(let i=0; i<3; i++) {
+      setTimeout(() => {
+        if (!gameState.celebrationActive) return;
+        
+        const firework = document.createElement('div');
+        firework.style.position = 'fixed';
+        firework.style.left = Math.random() * 100 + 'vw';
+        firework.style.top = Math.random() * 50 + 'vh';
+        firework.style.width = '10px';
+        firework.style.height = '10px';
+        firework.style.backgroundColor = `hsl(${Math.random()*360}, 100%, 60%)`;
+        firework.style.borderRadius = '50%';
+        firework.style.pointerEvents = 'none';
+        firework.style.zIndex = '9999';
+        firework.style.boxShadow = `0 0 ${Math.random()*20 + 10}px currentColor`;
+        c.appendChild(firework);
+        
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 5 + 3;
+        let x = parseFloat(firework.style.left);
+        let y = parseFloat(firework.style.top);
+        let vx = Math.cos(angle) * velocity;
+        let vy = Math.sin(angle) * velocity;
+        let life = 1;
+        
+        const animate = () => {
+          x += vx;
+          y += vy;
+          vy += 0.1;
+          life -= 0.02;
+          
+          firework.style.left = x + 'px';
+          firework.style.top = y + 'px';
+          firework.style.opacity = life;
+          
+          if (life > 0) {
+            requestAnimationFrame(animate);
+          } else {
+            firework.remove();
+          }
+        };
+        animate();
+      }, i * 50);
+    }
+  }, 300);
+}
+
+/* --- Toss Logic --- */
+function doToss() {
+  const pChoice = document.getElementById('player-choice').value;
+  const selectedBtn = document.querySelector('#toss-numbers .number-btn.selected');
+  
+  if (!selectedBtn) {
+    alert("Select a number first!");
+    return;
+  }
+  
+  const pNum = parseInt(selectedBtn.innerText);
+  const bNum = Math.floor(Math.random() * 6);
+  const sum = pNum + bNum;
+  const isEven = sum % 2 === 0;
+  
+  const playerWon = (pChoice === 'even' && isEven) || (pChoice === 'odd' && !isEven);
+  
+  showTossResult(pNum, bNum, playerWon ? "You" : "Bot");
+}
+
+function showTossResult(pNum, bNum, winner) {
+  const overlay = document.getElementById('toss-overlay');
+  const disp = document.getElementById('toss-numbers-display');
+  const winDisp = document.getElementById('toss-winner-display');
+  
+  disp.innerHTML = `
+    <div class="toss-numbers">
+       <div class="toss-number">You: ${pNum}</div>
+       <div class="toss-number">Bot: ${bNum}</div>
+    </div>`;
+    
+  if (winner === "You") {
+    winDisp.innerHTML = `
+      <h3>You Won the Toss!</h3>
+      <div class="toss-choice-buttons">
+        <button class="btn" onclick="closeToss(true)">Bat</button>
+        <button class="btn" onclick="closeToss(false)">Bowl</button>
+      </div>`;
+  } else {
+    winDisp.innerHTML = `<h3>Bot Won! Elected to Bat.</h3>`;
+    setTimeout(() => closeToss(false), 2000);
+  }
+  
+  overlay.classList.add('visible');
+}
+
+function closeToss(playerBatting) {
+  document.getElementById('toss-overlay').classList.remove('visible');
+  showSection('toss-section', 'game-section');
+  if (playerBatting) startPlayerInnings();
+  else startBotInnings();
+}
+
+function stopCelebration() {
+  gameState.celebrationActive = false;
+  const c = document.getElementById('celebration');
+  c.innerHTML = '';
+}
+</script>
+</body>
+</html>
