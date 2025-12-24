@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHESS - Setup</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        /* --- CSS VARIABLES --- */
+        :root {
+            --radius-lg: 24px;
+            --radius-md: 14px;
+            --radius-sm: 8px;
+            
+            /* Dark Theme (Default) */
+            --bg-color: #000000;
+            --glass-bg: rgba(20, 20, 20, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-muted: #a0a0a0;
+            --input-bg: rgba(255, 255, 255, 0.07);
+            --input-border: rgba(255, 255, 255, 0.1);
+            --highlight: rgba(255, 255, 255, 0.1);
+
+            --accent-primary: #0072ff;
+            --accent-secondary: #ff416c;
+            --danger-color: #ff4757;
+            
+            --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Light Theme Override */
+        [data-theme="light"] {
+            --bg-color: #eef2f5;
+            --glass-bg: rgba(255, 255, 255, 0.65);
+            --glass-border: rgba(255, 255, 255, 0.8);
+            --text-main: #1a1a1a;
+            --text-muted: #666666;
+            --input-bg: rgba(0, 0, 0, 0.04);
+            --input-border: rgba(0, 0, 0, 0.08);
+            --highlight: rgba(0, 0, 0, 0.05);
+            --shadow-card: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* --- BACKGROUND ANIMATION --- */
+        .blob-container {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: moveAndRotate 20s infinite alternate;
+        }
+
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: var(--accent-primary); animation-duration: 25s; }
+        .blob-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: var(--accent-secondary); animation-duration: 18s; animation-delay: -5s; }
+        .blob-3 { top: 40%; left: 40%; width: 20vw; height: 20vw; background: #8e2de2; animation: floatMiddle 12s infinite ease-in-out; opacity: 0.4; }
+
+        @keyframes moveAndRotate {
+            0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            100% { transform: translate(50px, 30px) rotate(20deg) scale(1.1); }
+        }
+        @keyframes floatMiddle {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-40%, -60%) scale(1.2); }
+        }
+
+        /* --- MAIN CARD CONTAINER --- */
+        .menu-card {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 440px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-lg);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-card);
+            
+            /* Continuous Floating Animation */
+            animation: cardFloat 6s ease-in-out infinite;
+            transform-origin: center;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* --- STAGGERED ENTRANCE ANIMATIONS --- */
+        .anim-element {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .delay-0 { animation-delay: 0.1s; }
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.3s; }
+        .delay-3 { animation-delay: 0.4s; }
+        .delay-4 { animation-delay: 0.5s; }
+        .delay-5 { animation-delay: 0.6s; }
+
+        @keyframes fadeInUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- HEADER & TOGGLE --- */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .theme-toggle-wrapper { display: flex; align-items: center; gap: 10px; }
+        .toggle-switch { position: relative; width: 54px; height: 28px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--input-bg); border: 1px solid var(--input-border);
+            border-radius: 34px; transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 20px; width: 20px;
+            left: 3px; bottom: 3px; background-color: var(--text-muted);
+            border-radius: 50%; transition: .4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider { background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary)); border-color: transparent; }
+        input:checked + .slider:before { transform: translateX(26px); background-color: #fff; }
+        .toggle-icon { font-size: 0.9rem; color: var(--text-muted); transition: 0.3s; }
+        .toggle-icon.active { color: var(--text-main); }
+
+        /* --- FORM ELEMENTS --- */
+        .form-group { margin-bottom: 1.2rem; }
+        label {
+            display: block; font-size: 0.8rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1.2px;
+            color: var(--text-muted); margin-bottom: 0.5rem;
+        }
+
+        .custom-select-wrapper { position: relative; transition: transform 0.2s; }
+        .custom-select-wrapper:hover { transform: translateY(-2px); }
+        
+        select, input {
+            width: 100%; padding: 14px 16px; border-radius: var(--radius-md);
+            border: 1px solid var(--input-border); background: var(--input-bg);
+            color: var(--text-main); font-size: 1rem; outline: none; appearance: none;
+            transition: all 0.3s; cursor: pointer;
+        }
+        select:focus, input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(0, 114, 255, 0.2); background: var(--highlight); }
+        .select-arrow { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); pointer-events: none; color: var(--text-muted); }
+
+        .btn-group {
+            display: flex; background: var(--input-bg); padding: 5px;
+            border-radius: var(--radius-md); border: 1px solid var(--input-border);
+            gap: 5px;
+        }
+        .option-btn {
+            flex: 1; padding: 10px; border: none; background: transparent;
+            color: var(--text-muted); font-weight: 600; border-radius: var(--radius-sm);
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative; overflow: hidden;
+        }
+        .option-btn.active { background: var(--text-main); color: var(--bg-color); box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .option-btn:hover:not(.active) { color: var(--text-main); background: rgba(255,255,255,0.05); }
+
+        .time-wrapper { display: flex; gap: 10px; }
+        .time-input-container { flex: 1; }
+        .presets-container { flex: 2; }
+
+        /* --- BUTTONS --- */
+        .start-btn {
+            width: 100%; padding: 18px; border: none; border-radius: var(--radius-md);
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white; font-size: 1.1rem; font-weight: 800; letter-spacing: 0.5px;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 20px -5px rgba(0, 114, 255, 0.4);
+            margin-top: 1rem; position: relative; overflow: hidden;
+        }
+        
+        .start-btn::after {
+            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: 0.5s;
+        }
+        .start-btn:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 15px 30px -5px rgba(0, 114, 255, 0.6); }
+        .start-btn:hover::after { left: 100%; }
+        .start-btn:active { transform: scale(0.98); }
+
+        /* --- EXIT BOX WRAPPER --- */
+        .exit-box-wrapper {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border: 1px solid rgba(255, 71, 87, 0.3);
+            border-radius: var(--radius-md);
+            background: rgba(255, 71, 87, 0.05);
+            display: flex;
+            justify-content: center;
+            transition: all 0.3s ease;
+            cursor: pointer; /* Makes it look clickable */
+        }
+
+        .exit-box-wrapper:hover {
+            border-color: var(--danger-color);
+            background: rgba(255, 71, 87, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.2);
+        }
+
+        .exit-btn {
+            background: transparent; border: none;
+            color: var(--danger-color); font-weight: 700; font-size: 0.95rem;
+            cursor: pointer; display: flex; align-items: center; gap: 8px;
+            pointer-events: none; /* Let clicks pass through to wrapper for better UX */
+        }
+        .exit-btn i { font-size: 1.1rem; }
+
+        /* --- PAGE EXIT ANIMATION CLASSES --- */
+        body.page-exit .menu-card {
+            animation: zoomOut 0.6s cubic-bezier(0.7, 0, 0.3, 1) forwards;
+        }
+        body.page-exit .blob-container {
+            transform: scale(1.5);
+            opacity: 0;
+            transition: 0.8s ease-in;
+        }
+
+        @keyframes zoomOut {
+            0% { transform: scale(1); opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { transform: scale(3); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="blob-container">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="menu-card">
+        
+        <div class="card-header anim-element delay-0">
+            <h1 class="logo">CHESS</h1>
+            <div class="theme-toggle-wrapper">
+                <i class="fas fa-sun toggle-icon" id="icon-sun"></i>
+                <label class="switch toggle-switch">
+                    <input type="checkbox" id="theme-checkbox" onchange="toggleTheme(this)">
+                    <span class="slider"></span>
+                </label>
+                <i class="fas fa-moon toggle-icon" id="icon-moon"></i>
+            </div>
+        </div>
+
+        <div class="form-group anim-element delay-1">
+            <label for="ai-difficulty">AI Difficulty</label>
+            <div class="custom-select-wrapper">
+                <select id="ai-difficulty">
+                    <option value="1">Novice (Easy)</option>
+                    <option value="2" selected>Grandmaster (Medium)</option>
+                    <option value="3">Stockfish (Hard)</option>
+                </select>
+                <i class="fas fa-chevron-down select-arrow"></i>
+            </div>
+        </div>
+
+        <div class="form-group anim-element delay-2">
+            <label>Board Theme</label>
+            <div class="btn-group" id="theme-group">
+                <button class="option-btn active" onclick="selectBoardTheme('classic', this)">Classic</button>
+                <button class="option-btn" onclick="selectBoardTheme('modern', this)">Modern</button>
+                <button class="option-btn" onclick="selectBoardTheme('pastel', this)">Pastel</button>
+            </div>
+        </div>
+
+        <div class="form-group anim-element delay-3">
+            <label>Timer (Minutes)</label>
+            <div class="time-wrapper">
+                <div class="time-input-container">
+                    <input type="number" id="game-time" value="10" min="1" max="60">
+                </div>
+                <div class="presets-container btn-group">
+                    <button class="option-btn" onclick="setTimer(5, this)">5m</button>
+                    <button class="option-btn active" onclick="setTimer(10, this)">10m</button>
+                    <button class="option-btn" onclick="setTimer(30, this)">30m</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="anim-element delay-4">
+            <button class="start-btn" onclick="startGame()">
+                START GAME
+            </button>
+        </div>
+
+        <div class="exit-box-wrapper anim-element delay-5" onclick="exitGame()">
+            <button class="exit-btn">
+                <i class="fas fa-power-off"></i>
+                Exit to Desktop
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        let currentBoardTheme = 'classic';
+
+        // --- Initialization ---
+        window.onload = () => {
+            const savedAppTheme = localStorage.getItem('appTheme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedAppTheme);
+            
+            const toggle = document.getElementById('theme-checkbox');
+            toggle.checked = savedAppTheme === 'dark';
+            
+            updateIcons(savedAppTheme);
+        };
+
+        // --- Logic: Toggle Theme ---
+        function toggleTheme(checkbox) {
+            const theme = checkbox.checked ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('appTheme', theme);
+            updateIcons(theme);
+        }
+
+        function updateIcons(theme) {
+            document.getElementById('icon-sun').classList.toggle('active', theme === 'light');
+            document.getElementById('icon-moon').classList.toggle('active', theme === 'dark');
+        }
+
+        // --- Logic: Selection Helpers ---
+        function selectBoardTheme(themeName, btnElement) {
+            currentBoardTheme = themeName;
+            const container = document.getElementById('theme-group');
+            Array.from(container.children).forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+
+        function setTimer(minutes, btnElement) {
+            document.getElementById('game-time').value = minutes;
+            const container = btnElement.parentElement;
+            Array.from(container.children).forEach(btn => btn.classList.remove('active'));
+            btnElement.classList.add('active');
+        }
+
+        // --- Logic: Game Start ---
+        function startGame() {
+            const settings = {
+                difficulty: document.getElementById('ai-difficulty').value,
+                theme: currentBoardTheme,
+                time: document.getElementById('game-time').value,
+                appTheme: document.documentElement.getAttribute('data-theme')
+            };
+            localStorage.setItem('chessSettings', JSON.stringify(settings));
+
+            // Trigger Animation
+            document.body.classList.add('page-exit');
+            setTimeout(() => {
+                window.location.href = 'board.html';
+            }, 600);
+        }
+
+        // --- Logic: Exit Game ---
+        function exitGame() {
+            // Trigger same nice exit animation
+            document.body.classList.add('page-exit');
+            setTimeout(() => {
+                window.location.href = 'mini-games.html';
+            }, 600);
+        }
+    </script>
+</body>
+</html>
