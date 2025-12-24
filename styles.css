@@ -1,0 +1,600 @@
+:root {
+/* Dark Theme */
+--bg-color: #0d0d0d;
+--text-color: #e9eef8;
+--primary-color: #0072ff;
+--secondary-color: #ff416c;
+--primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+--card-glass-bg: rgba(28, 28, 28, 0.4); /* Frosted dark glass */
+--card-glass-border: rgba(255, 255, 255, 0.15);
+--secondary-glass: rgba(51, 51, 51, 0.6);
+--shadow-light: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.05);
+--shadow-deep: 0 10px 40px 0 rgba(0, 0, 0, 0.5); /* Deeper shadow for depth */
+--modal-bg: rgba(0, 0, 0, 0.85);
+--toast-bg: rgba(255, 255, 255, 0.15);
+--scroll-color: rgba(255, 255, 255, 0.2);
+}
+
+
+[data-theme="light"] {
+/* Light Theme */
+--bg-color: #f0f2f5;
+--text-color: #1c1e21;
+--primary-color: #1877f2;
+--secondary-color: #ff5e3a;
+--primary-gradient: linear-gradient(135deg, #1877f2 0%, #ff5e3a 100%);
+--card-glass-bg: rgba(255, 255, 255, 0.65); /* Frosted light glass */
+--card-glass-border: rgba(0, 0, 0, 0.1);
+--secondary-glass: rgba(200, 200, 200, 0.8);
+--shadow-light: 0 0 10px rgba(0, 0, 0, 0.05), inset 0 0 5px rgba(255, 255, 255, 0.5);
+--shadow-deep: 0 10px 40px 0 rgba(0, 0, 0, 0.15);
+--modal-bg: rgba(255, 255, 255, 0.9);
+--toast-bg: rgba(0, 0, 0, 0.15);
+--scroll-color: rgba(0, 0, 0, 0.1);
+}
+
+::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+::-webkit-scrollbar-thumb {
+background: var(--scroll-color);
+border-radius: 10px;
+transition: background 0.3s;
+}
+::-webkit-scrollbar-thumb:hover {
+background: var(--primary-color);
+}
+::-webkit-scrollbar-track {
+background: transparent;
+}
+
+
+/* --- 2. Global Base and Typography --- */
+body {
+font-family: 'Inter', sans-serif;
+margin: 0;
+padding: 0;
+background-color: var(--bg-color);
+color: var(--text-color);
+transition: background-color 0.5s, color 0.5s;
+display: flex;
+height: 100vh;
+overflow: hidden; /* Only the designated section will scroll */
+-webkit-font-smoothing: antialiased;
+}
+        
+        /* --- 3. Liquid Glass Background (Ambient Shimmer) --- */
+        #liquid-glass-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; overflow: hidden;
+        }
+
+        .glass-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: var(--primary-gradient);
+            border-radius: 50%;
+            opacity: 0.18; /* Increased opacity for more presence */
+            filter: blur(150px);
+            animation: moveBlob 30s infinite alternate;
+        }
+        .blob-1 { top: -20%; left: -20%; animation-duration: 34s; }
+        .blob-2 { bottom: -25%; right: -25%; background: var(--secondary-color); opacity: 0.12; filter: blur(120px); animation-duration: 28s; }
+        .blob-3 { top: 60%; left: 40%; width: 400px; height: 400px; opacity: 0.25; animation-duration: 32s; }
+
+        @keyframes moveBlob {
+            0% { transform: translate(0, 0) scale(1.0); filter: hue-rotate(0deg) blur(150px); }
+            50% { transform: translate(150px, -100px) scale(1.1); filter: hue-rotate(10deg) blur(180px); }
+            100% { transform: translate(-80px, 80px) scale(0.9); filter: hue-rotate(0deg) blur(150px); }
+        }
+
+        /* --- 4. Glass Element Base Style (Applied to Header, Sidebar, Cards, Modal) --- */
+        .glass-element {
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px); /* Increased blur for stronger effect */
+            -webkit-backdrop-filter: blur(25px);
+            box-shadow: var(--shadow-deep);
+            border-radius: 18px; /* Slightly larger radius */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        /* --- 5. Header & Fixed Elements --- */
+        .fixed-top-layer {
+            position: fixed;
+            top: 10px;
+            z-index: 1000;
+        }
+        .header {
+            height: 70px; 
+            left: 10px;
+            width: calc(100% - 20px);
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .header h1 {
+            font-size: 30px;
+            font-weight: 900;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+        }
+        #themeToggleContainer {
+            right: 25px;
+            top: 25px;
+        }
+
+        /* --- 6. Sidebar & Navigation (Glass) --- */
+        .sidebar {
+            width: 260px; /* Slightly wider */
+            top: 90px;
+            left: 10px;
+            height: calc(100% - 100px);
+            padding: 20px 0;
+            z-index: 500;
+        }
+
+        .nav-wrap {
+            padding: 10px 0;
+            position: relative;
+        }
+        
+        .nav-item {
+            padding: 15px 20px 15px 30px; 
+            margin: 8px 10px;
+            font-weight: 500;
+            color: var(--text-color);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            cursor: pointer;
+            border-radius: 12px;
+        }
+
+        .nav-item.active, .nav-item:hover {
+            background-color: var(--secondary-glass);
+            transform: scale(1.05); /* Aggressive lift animation */
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        .nav-item.active {
+            color: var(--secondary-color);
+            font-weight: 700;
+        }
+
+        /* --- 7. Theme Toggle Styling (Premium Switch) --- */
+        .toggle-switch {
+            position: relative;
+            right: 50%;
+            display: inline-block;
+            width: 70px;
+            height: 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            width: 75px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, #1c1c1c, #0d0d0d);
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+        
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 30px;
+            width: 30px;
+            left: 5px;
+            bottom: 5px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.8);
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(145deg, #f0f2f5, #e6e9f0);
+        }
+
+        input:checked + .slider::before {
+            transform: translateX(30px);
+            background-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 114, 255, 0.8);
+        }
+        
+        /* Icon labels */
+        .label-dark, .label-light {
+            position: absolute;
+            font-size: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .label-dark { left: 45px; opacity: 1; }
+        .label-light { right: 45px; opacity: 0; }
+
+        input:checked ~ .label-dark { opacity: 0; }
+        input:checked ~ .label-light { opacity: 1; }
+
+
+        /* --- 8. Main Content Container & View Management --- */
+        #main-content-wrapper {
+            margin-left: 280px;
+            padding-top: 100px; 
+            width: calc(100% - 280px);
+            height: 100vh;
+            box-sizing: border-box;
+            overflow: hidden; /* Main wrapper should not scroll */
+            position: relative;
+            transition: margin-left 0.4s;
+        }
+
+        .view-section {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateX(100px); /* Slide in/out animation */
+            transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
+
+        .view-section.active {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateX(0);
+            z-index: 5;
+        }
+        
+        /* Specific scrollable content area for Home Feed ONLY */
+        #feed-container {
+            max-width: 700px;
+            width: 100%;
+            height: calc(100% - 100px); /* Adjusted for padding */
+            overflow-y: auto; /* Scrollable area */
+            padding-right: 20px;
+            padding-bottom: 20px;
+            box-sizing: border-box;
+            position: relative;
+            top: 100px;
+        }
+        
+        /* Styles for other views (non-scrolling) */
+        .other-view-content {
+            max-width: 900px;
+            width: 100%;
+            height: 100%;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            text-align: center;
+            border-radius: 20px;
+            color: var(--primary-color);
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(25px);
+        }
+        .other-view-content h2 {
+            font-weight: 800;
+            margin-bottom: 20px;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* --- 9. Post Card & Feed Styling --- */
+        .post {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(15px);
+            border: 1px solid var(--card-glass-border);
+            border-radius: 20px;
+            box-shadow: var(--shadow-deep);
+            transform: translateY(0);
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
+            overflow: hidden;
+        }
+        .post:hover {
+            transform: translateY(-8px); /* Deeper lift */
+            box-shadow: var(--shadow-deep), 0 18px 60px rgba(0, 114, 255, 0.3); /* Stronger glow shadow */
+        }
+        /* (Avatar, Meta, Text, Media, Actions styles remain from previous version - included in JS for brevity) */
+        .actions .btn {
+            background: var(--secondary-glass);
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-size: 16px;
+        }
+        .actions .btn:hover {
+            transform: scale(1.08); /* Bounce on hover */
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        /* --- 10. Fixed Right Panels (Moving Leftwards & Downwards) --- */
+        #right-panel-wrapper {
+            position: fixed;
+            right: 20px;
+            top: 100px; 
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            z-index: 100;
+           align-items: flex-end;
+        }
+        
+        .mini-card {
+            width: 65px;
+            height: 65px;
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-deep);
+            border-radius: 18px;
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); /* Slower, smoother transition */
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transform-origin: right top;
+            transform: translate(0, 0); /* Base position */
+        }
+        
+        .mini-card:hover {
+            box-shadow: var(--shadow-deep), 0 0 25px var(--secondary-color);
+        }
+        
+        .mini-card::before {
+            font-size: 32px;
+            transition: opacity 0.3s;
+        }
+
+        /* ACTIVE STATE: Move Leftwards and Downwards, and Expand */
+        .mini-card.active {
+            width: 320px; /* Expanded width */
+            min-height: 250px;
+            height: auto;
+            z-index: 150; 
+            padding: 0;
+            
+            /* **KEY ANIMATION: Move Left and Down** */
+            /* We translate based on the difference between expanded size (320px) and default size (65px) */
+            /* And move 15px down for a 'pop-out' feel */
+            transform: translate(-10px, 15px); /* -(320-65) and +15px vertical offset */
+            
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 40px var(--primary-color);
+        }
+        
+        .mini-card-content {
+            opacity: 0;
+            pointer-events: none;
+            width: 320px;
+            padding: 20px;
+            padding-right: 10px;
+            box-sizing: border-box;
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            transition: opacity 0.3s 0.2s; /* Delayed fade in */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .mini-card.active .mini-card-content {
+            opacity: 1;
+            pointer-events: auto;
+            position: fixed;
+          overflow: auto;
+          overflow-x: hidden;
+        }
+        .mini-card.active::before {
+            opacity: 0;
+        }
+        
+        /* --- 11. Comment Modal (Social Media Slide-Up) --- */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--modal-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; 
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s;
+            z-index: 2000;
+        }
+
+        .modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 750px;
+            max-height: 85vh; /* Taller modal */
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(30px); /* Max blur */
+            border-top-left-radius: 30px;
+            border-top-right-radius: 30px;
+            border: 1px solid var(--card-glass-border);
+            padding: 25px 40px;
+            box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.7);
+            
+            /* Slide-Up Animation */
+            transform: translateY(100%);
+            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+        }
+        .modal.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .commentModalPostBtn {
+            box-shadow: 0 5px 15px var(--secondary-color), inset 0 0 5px white;
+        }
+        /* (Comment list and input styles remain similar) */
+
+
+        /* --- 12. Feedback Toast Message (Styled and High Z-Index) --- */
+        #feedback-message {
+            position: fixed;
+            top: 90px;
+            left: 50%;
+            transform: translate(-50%, -100%); /* Start above screen */
+            background: var(--toast-bg);
+            color: var(--text-color);
+            padding: 12px 25px;
+            border-radius: 12px;
+            border: 1px solid var(--card-glass-border);
+            backdrop-filter: blur(25px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+            font-weight: 600;
+            opacity: 0;
+            visibility: hidden;
+            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s, visibility 0.5s;
+            z-index: 3000; /* Highest possible z-index */
+        }
+
+        #feedback-message.show {
+            transform: translate(-50%, 0); /* Slide down */
+            opacity: 1;
+            visibility: visible;
+        }
+
+
+        /* --- 13. Media Queries (Responsiveness) --- */
+        @media (max-width: 1200px) {
+            #right-panel-wrapper {
+                opacity: 0; 
+                pointer-events: none;
+            }
+            #main-content-wrapper {
+                margin-left: 280px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            /* Collapsed Sidebar */
+            .sidebar { width: 70px; padding: 10px; overflow: hidden; }
+            .sidebar .nav-item { padding: 12px 10px; text-align: center; font-size: 0; }
+            .sidebar .nav-item::before { content: attr(data-icon); font-size: 24px; margin: 0; }
+            .nav-underline { display: none; }
+            #main-content-wrapper { margin-left: 90px; padding-top: 90px; width: calc(100% - 90px); }
+            .header { padding: 0 15px; }
+            .modal-content { max-width: 100%; border-radius: 0; padding: 15px; }
+            #feed-container { padding-right: 10px; }
+        }
+        /* --- 10. Fixed Right Panels --- */
+
+/* Add content: attr(data-icon) and opacity: 1 to this existing rule */
+.mini-card::before {
+    content: attr(data-icon); /* This displays the icon */
+    font-size: 32px;
+    opacity: 1; /* Make sure it's visible by default */
+    transition: opacity 0.3s;
+}
+
+/* This existing rule already correctly hides the icon when active (hovered) */
+.mini-card.active::before {
+    opacity: 0;
+}
+/* Find this existing rule */
+.mini-card.active {
+    width: 320px; 
+    min-height: 250px;
+    height: auto;
+    z-index: 150; 
+    padding: 0;
+    
+    /* REMOVE or COMMENT OUT this line to stop the card from moving 
+      left and down when it expands.
+    */
+    /* transform: translate(-10px, 15px); */
+    
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 40px var(--primary-color);
+}
+/* --- 9. Post Card & Feed Styling (Additions) --- */
+
+/* Style for the "pop-up" heart/thumb animation */
+.thumb-overlay.show,
+.heart-overlay.show {
+    transform: translate(-50%, -50%) scale(1); /* Scale up to 1 */
+    opacity: 1;
+}
+
+/* Style for the toggled Like/Love buttons */
+.btn.toggled {
+    background: var(--primary-color) !important; /* Force background */
+    color: white !important; /* Force text color */
+    box-shadow: 0 0 15px var(--primary-color);
+}
+.btn.loveBtn.toggled {
+    background: var(--secondary-color) !important;
+    box-shadow: 0 0 15px var(--secondary-color);
+}
+/* Find or add this rule for .share-menu */
+.share-menu {
+    position: absolute;
+    bottom: 45px;
+    right: 0;
+    background: var(--card-glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--card-glass-border);
+    border-radius: 12px;
+    padding: 10px;
+    box-shadow: var(--shadow-deep);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    z-index: 100; /* INCREASE THIS! Should be higher than other elements */
+}
+
+/* Ensure these are present as well */
+.share-menu.show {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.share-menu button:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Add a hover effect */
+}
