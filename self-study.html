@@ -991,7 +991,7 @@
 
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyDYfTjd4bhHN9RchWq2DiWLf3nlZ1kiyGI";
+        const GEMINI_API_KEY = "AIzaSyBVZnabEldN4ZMVQp4YJb3y4gaulc4uQ6A";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1591,6 +1591,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 // Render AI session layout and load first concept
                 renderAISessionLayout();
                 loadConcept(0);
+
+                // ⭐ NEW: Ensure icons stay visible after AI layout loads
+                setTimeout(() => {
+                    pdfIcon.classList.add('visible');
+                    chatbotIcon.classList.add('visible');
+                }, 800);
             } catch (error) {
                 console.error("Failed to init AI session:", error);
                 alert("Failed to generate session plan. Please check your API key.");
@@ -1731,6 +1737,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                     </div>
                 </div>
             `;
+
+            // ⭐ NEW: Show floating icons after layout renders
+            setTimeout(() => {
+                pdfIcon.classList.add('visible');
+                chatbotIcon.classList.add('visible');
+            }, 500);
         }
 
 
@@ -2871,12 +2883,41 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             chatbotMessages.appendChild(typingDiv);
             chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
+            // ⭐ CONTEXT AWARENESS LOGIC
+            let finalPrompt = userMessage;
+
+            if (aiSessionState.active) {
+                const currentConcept = aiSessionState.concepts[aiSessionState.currentConceptIndex];
+                const planList = aiSessionState.concepts.map((c, i) => `${i + 1}. ${c.title}`).join('\n');
+
+                const systemContext = `
+[SYSTEM CONTEXT]
+You are an AI Tutor guiding the user through a session on "${aiSessionState.topic}" (${aiSessionState.subject}).
+
+The current session plan is:
+${planList}
+
+The user is currently studying Step ${aiSessionState.currentConceptIndex + 1}: "${currentConcept ? currentConcept.title : 'Overview'}".
+
+INSTRUCTIONS:
+- Answer the user's question specifically in the context of this topic and concept.
+- If they ask "what is this", refer to the current concept ("${currentConcept ? currentConcept.title : 'Current Topic'}").
+- Keep answers concise, encouraging, and educational.
+- Do not mention "[SYSTEM CONTEXT]" in your response.
+
+[USER QUESTION]
+${userMessage}
+`;
+                finalPrompt = systemContext;
+                console.log("🧠 Context-Aware Prompt Sent");
+            }
+
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: userMessage }] }],
+                        contents: [{ parts: [{ text: finalPrompt }] }],
                     }),
                 });
 
@@ -3877,6 +3918,10 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 originalSessionId: session.originalSessionId || null
             };
             localStorage.setItem('epicScholarActiveSession', JSON.stringify(activeData));
+
+            // ⭐ NEW: Show floating icons
+            pdfIcon.classList.add('visible');
+            chatbotIcon.classList.add('visible');
         };
 
         // CLOSE LIVE SESSION - Don't clear paused session data
