@@ -1663,17 +1663,17 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
         async function retryConcept(index) {
             if (index < 0 || index >= aiSessionState.concepts.length) return;
-            
+
             aiSessionState.currentConceptIndex = index;
             aiSessionState.videoWatched = false;
             aiSessionState.quizAnswered = false;
-            
+
             const concept = aiSessionState.concepts[index];
             renderConceptsSidebar();
-            
+
             const quizContainer = document.getElementById('ai-quiz-container');
             if (quizContainer) quizContainer.style.display = 'none';
-            
+
             try {
                 // Append alternative keywords to ensure a different video
                 const alternativeQuery = concept.videoQuery + " alternative explanation " + Math.floor(Math.random() * 1000);
@@ -2416,7 +2416,43 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             reviewHTML += '</div>';
 
-            results.innerHTML = `
+            const reviewMain = document.getElementById('fs-review-main');
+            const resultsMain = document.getElementById('fs-results-main');
+            if (reviewMain && resultsMain) {
+                reviewMain.innerHTML = `
+            <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
+                <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
+                <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 2rem; color: #10b981; font-weight: 700;">
+                            ${correctCount}
+                        </div>
+                        <div style="color: #aaa; font-size: 0.9rem;">Correct</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 2rem; color: #ef4444; font-weight: 700;">
+                            ${fsQuestions.length - correctCount}
+                        </div>
+                        <div style="color: #aaa; font-size: 0.9rem;">Incorrect</div>
+                    </div>
+                </div>
+            </div>
+            ${reviewHTML}
+            <div class="review-footer button-group" style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+                <button class="secondary-button" onclick="backToFsResults()" style="max-width: 200px;">
+                    ← Back to Results
+                </button>
+                <button class="gradient-button" onclick="closeFullScreenTestAndRefresh()" style="max-width: 200px;">
+                    Close Test
+                </button>
+            </div>
+        `;
+                resultsMain.classList.remove('active');
+                resultsMain.classList.add('hidden');
+                reviewMain.classList.remove('hidden');
+                reviewMain.classList.add('active');
+            } else {
+                results.innerHTML = `
         <div class="results-container" style="flex-direction: column; width: 100%;">
             <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
                 <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
@@ -2436,16 +2472,30 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 </div>
             </div>
             ${reviewHTML}
-            <div class="review-footer">
-                <button class="btn btn-primary" onclick="fsSubmitQuiz()" style="max-width: 200px;">
+            <div class="review-footer button-group" style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+                <button class="secondary-button" onclick="fsSubmitQuiz()" style="max-width: 200px;">
                     ← Back to Results
                 </button>
-                <button class="btn btn-primary" onclick="closeFullScreenTest()" style="max-width: 200px;">
+                <button class="gradient-button" onclick="closeFullScreenTestAndRefresh()" style="max-width: 200px;">
                     Close Test
                 </button>
             </div>
         </div>
     `;
+            }
+        }
+        
+        function backToFsResults() {
+            const reviewMain = document.getElementById('fs-review-main');
+            const resultsMain = document.getElementById('fs-results-main');
+            if (reviewMain && resultsMain) {
+                reviewMain.classList.remove('active');
+                reviewMain.classList.add('hidden');
+                resultsMain.classList.remove('hidden');
+                resultsMain.classList.add('active');
+            } else {
+                fsSubmitQuiz();
+            }
         }
         // =================================================================
         // AI SESSION BUTTON HELPERS
@@ -3308,7 +3358,7 @@ ${userMessage}
 
                 if (data.items && data.items.length > 0) {
                     let selectedVideoId = data.items[0].id.videoId;
-                    
+
                     if (aiSessionState.playedVideoIds) {
                         for (const item of data.items) {
                             if (!aiSessionState.playedVideoIds.includes(item.id.videoId)) {
@@ -3318,7 +3368,7 @@ ${userMessage}
                         }
                         aiSessionState.playedVideoIds.push(selectedVideoId);
                     }
-                    
+
                     playAIVideo(selectedVideoId);
                 } else {
                     const controls = document.getElementById('ai-video-controls');
@@ -4997,14 +5047,14 @@ ${userMessage}
             const resultsContainer = document.getElementById('quiz-results-container');
             resultsContainer.style.display = 'flex';
             resultsContainer.innerHTML = `
-        <div class="quiz-results-container">
+        <div id="quiz-results-main" class="quiz-results-container fade-view active">
             <div class="quiz-score-circle">
                 <div class="quiz-score-number">${score}/${quizQuestions.length}</div>
                 <div class="quiz-score-label">${percentage.toFixed(0)}%</div>
             </div>
             <div class="quiz-commentary gradient-text">${commentary}</div>
             <div class="quiz-commentary-detail">${detail}</div>
-            <div style="display: flex; gap: 1rem; width: 100%; max-width: 500px;">
+            <div class="button-group" style="display: flex; gap: 1rem; width: 100%; max-width: 500px;">
                 <button class="gradient-button" onclick="reviewQuizAnswers()" style="flex: 1;">
                     Review Answers
                 </button>
@@ -5013,6 +5063,7 @@ ${userMessage}
                 </button>
             </div>
         </div>
+        <div id="quiz-review-main" class="quiz-results-container fade-view hidden" style="flex-direction: column; width: 100%;"></div>
     `;
         }
         /**
@@ -5109,7 +5160,44 @@ ${userMessage}
             reviewHTML += '</div>';
 
             const resultsContainer = document.getElementById('quiz-results-container');
-            resultsContainer.innerHTML = `
+            const reviewMain = document.getElementById('quiz-review-main');
+            const resultsMain = document.getElementById('quiz-results-main');
+            
+            if (reviewMain && resultsMain) {
+                reviewMain.innerHTML = `
+            <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
+                <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
+                <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 2rem; color: #10b981; font-weight: 700;">
+                            ${correctCount}
+                        </div>
+                        <div style="color: var(--subtext-dark); font-size: 0.9rem;">Correct</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 2rem; color: #ef4444; font-weight: 700;">
+                            ${quizQuestions.length - correctCount}
+                        </div>
+                        <div style="color: var(--subtext-dark); font-size: 0.9rem;">Incorrect</div>
+                    </div>
+                </div>
+            </div>
+            ${reviewHTML}
+            <div class="button-group" style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+                <button class="secondary-button" onclick="backToQuizResults()" style="max-width: 200px;">
+                    ← Back to Results
+                </button>
+                <button class="gradient-button" onclick="closeQuizModalAndRefresh()" style="max-width: 200px;">
+                    Close Quiz
+                </button>
+            </div>
+        `;
+                resultsMain.classList.remove('active');
+                resultsMain.classList.add('hidden');
+                reviewMain.classList.remove('hidden');
+                reviewMain.classList.add('active');
+            } else {
+                resultsContainer.innerHTML = `
         <div class="quiz-results-container" style="flex-direction: column; width: 100%;">
             <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
                 <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
@@ -5133,18 +5221,28 @@ ${userMessage}
                 <button class="secondary-button" onclick="backToQuizResults()" style="max-width: 200px;">
                     ← Back to Results
                 </button>
-                <button class="gradient-button" onclick="closeQuizModal()" style="max-width: 200px;">
+                <button class="gradient-button" onclick="closeQuizModalAndRefresh()" style="max-width: 200px;">
                     Close Quiz
                 </button>
             </div>
         </div>
     `;
+            }
 
             resultsContainer.style.display = 'flex';
         }
 
         function backToQuizResults() {
-            submitQuizAnswers();
+            const reviewMain = document.getElementById('quiz-review-main');
+            const resultsMain = document.getElementById('quiz-results-main');
+            if (reviewMain && resultsMain) {
+                reviewMain.classList.remove('active');
+                reviewMain.classList.add('hidden');
+                resultsMain.classList.remove('hidden');
+                resultsMain.classList.add('active');
+            } else {
+                submitQuizAnswers();
+            }
         }
 
         function closeQuizModal() {
@@ -5429,7 +5527,7 @@ ${userMessage}
             }
 
             results.innerHTML = `
-        <div class="results-container">
+        <div id="fs-results-main" class="results-container fade-view active">
             <div class="score-circle">
                 <div class="score-number">${correct}/${total}</div>
                 <div class="score-label">${percentage}%</div>
@@ -5441,6 +5539,7 @@ ${userMessage}
                 ${actionButtons}
             </div>
         </div>
+        <div id="fs-review-main" class="results-container fade-view hidden" style="flex-direction: column; width: 100%;"></div>
     `;
 
             if (isFromAISession) {
