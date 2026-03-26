@@ -5004,6 +5004,9 @@ body.loaded #page-loader {
     margin-top: 30px;
     justify-content: center;
     width: 100%;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
     flex-wrap: wrap;
 }
 
@@ -5051,4 +5054,23 @@ body.loaded #page-loader {
 @keyframes glowPulse {
     0%, 100% { filter: drop-shadow(0 0 5px var(--primary-color)); }
     50% { filter: drop-shadow(0 0 15px var(--primary-color)); }
+}
+
+/* Mature Fade View Transition */
+.fade-view {
+    opacity: 0;
+    visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    z-index: 1;
+}
+
+.fade-view.active {
+    opacity: 1;
+    visibility: visible;
+    position: relative;
+    z-index: 2;
 }
