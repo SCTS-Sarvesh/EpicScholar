@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EpicScholar Dashboard | AI-Powered Study Platform</title>
-    <link rel="stylesheet" href="edubot.css" />
+    <link rel="stylesheet" href="self-study.css" />
     <style>
         /* =================================================================
  * CIRCULAR PROGRESS FIXES - COMPLETE REPLACEMENT
@@ -543,6 +543,45 @@
 
         .light-mode .error-help p {
             color: var(--subtext-light);
+        }
+        /* =================================================================
+ * GEMINI LIVE MODE FOR EDUBOT
+ * =================================================================
+ */
+        #chatbot-container.gemini-live-mode {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 450px !important;
+            height: 650px !important;
+            max-width: 90vw;
+            max-height: 90vh;
+            z-index: 100000 !important;
+            border-radius: 20px !important;
+            box-shadow: 0 0 30px #0072ff !important;
+            border: 3px solid transparent !important;
+            background: linear-gradient(rgba(22, 22, 30, 0.9), rgba(22, 22, 30, 0.9)) padding-box,
+                        linear-gradient(45deg, #0072ff, #00c6ff, #0072ff) border-box !important;
+            animation: geminiVoicePulse 2s ease-in-out infinite !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+
+        .light-mode #chatbot-container.gemini-live-mode {
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)) padding-box,
+                        linear-gradient(45deg, #0072ff, #00c6ff, #0072ff) border-box !important;
+        }
+
+        @keyframes geminiVoicePulse {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 114, 255, 0.4), inset 0 0 10px rgba(0, 114, 255, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 50px rgba(0, 114, 255, 0.8), inset 0 0 20px rgba(0, 114, 255, 0.4);
+            }
+            100% {
+                box-shadow: 0 0 20px rgba(0, 114, 255, 0.4), inset 0 0 10px rgba(0, 114, 255, 0.2);
+            }
         }
     </style>
 </head>
@@ -1630,7 +1669,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             // Update sidebar to show current concept
             renderConceptsSidebar();
-            
+
             // ⭐ FIX: Update progress circle upon loading to ensure correct state visualization
             updateProgress();
 
@@ -5608,6 +5647,107 @@ ${userMessage}
                 return `closeFullScreenTest(); retryConcept(${currentIndex});`;
             }
         }
+
+        // ============================================
+        // VOICE ACTIVATION (EDUBOT GEMINI LIVE)
+        // ============================================
+        let voiceActiveRecognition = null;
+        let voiceSessionRecognition = null;
+        
+        function initVoiceActivation() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return;
+            
+            voiceActiveRecognition = new SpeechRecognition();
+            voiceActiveRecognition.continuous = true;
+            voiceActiveRecognition.interimResults = false;
+            voiceActiveRecognition.lang = 'en-US';
+            
+            voiceActiveRecognition.onresult = (event) => {
+                const lastIdx = event.results.length - 1;
+                const transcript = event.results[lastIdx][0].transcript.toLowerCase();
+                
+                if (transcript.includes('edubot') || transcript.includes('edu bot')) {
+                    activateEdubotVoiceMode();
+                }
+            };
+            
+            voiceActiveRecognition.onend = () => {
+                if (chatbotContainer && !chatbotContainer.classList.contains('gemini-live-mode')) {
+                    try { voiceActiveRecognition.start(); } catch(e) {}
+                }
+            };
+            
+            try { voiceActiveRecognition.start(); } catch(e) {}
+        }
+
+        function activateEdubotVoiceMode() {
+            // Pause video safely
+            const yIframe = document.getElementById('youtube-iframe');
+            if (yIframe && yIframe.contentWindow) {
+                yIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+            }
+            if (window.player && window.player.pauseVideo) {
+                window.player.pauseVideo();
+            }
+            
+            // UI Changes
+            if (pdfContainer) pdfContainer.classList.remove("visible");
+            if (chatbotContainer) {
+                chatbotContainer.classList.add("visible");
+                chatbotContainer.classList.add("gemini-live-mode");
+            }
+            if (chatbotIcon) chatbotIcon.classList.remove("visible");
+            if (pdfIcon) pdfIcon.classList.add("visible");
+            
+            // Stop background listener
+            if (voiceActiveRecognition) voiceActiveRecognition.stop();
+            
+            // Start conversational voice input
+            startConversationalVoice();
+        }
+        
+        function startConversationalVoice() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return;
+            
+            voiceSessionRecognition = new SpeechRecognition();
+            voiceSessionRecognition.continuous = false;
+            voiceSessionRecognition.interimResults = false;
+            voiceSessionRecognition.lang = 'en-US';
+            
+            voiceSessionRecognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                if (transcript.trim().length > 0) {
+                    if (typeof appendChatMessage === 'function') appendChatMessage("user", transcript);
+                    if (typeof getBotResponse === 'function') getBotResponse(transcript);
+                }
+            };
+            
+            voiceSessionRecognition.onend = () => {
+                if (chatbotContainer && chatbotContainer.classList.contains('gemini-live-mode')) {
+                    try { voiceSessionRecognition.start(); } catch(e) {}
+                }
+            };
+            
+            try { voiceSessionRecognition.start(); } catch(e) {}
+        }
+        
+        // Listen for close to stop conversational mode
+        if (chatCloseBtn) {
+            chatCloseBtn.addEventListener("click", () => {
+                if (chatbotContainer) chatbotContainer.classList.remove("gemini-live-mode");
+                if (voiceSessionRecognition) voiceSessionRecognition.stop();
+                if (voiceActiveRecognition) {
+                    try { voiceActiveRecognition.start(); } catch(e) {}
+                }
+            });
+        }
+
+        // Initialize background listener on load
+        document.addEventListener('DOMContentLoaded', () => {
+            initVoiceActivation();
+        });
     </script>
 </body>
 
