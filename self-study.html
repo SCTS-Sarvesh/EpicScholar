@@ -893,9 +893,10 @@
             style="width: 90%; max-width: 900px; max-height: 75vh; overflow-y: auto; display: flex; flex-direction: column;">
             <button class="modal-close-btn" data-modal-id="quiz-modal">&times;</button>
 
-            <div id="quiz-loading" style="text-align: center; padding: 3rem;">
-                <div class="theme-loader" style="margin: 0 auto;"></div>
-                <p style="margin-top: 1rem; color: var(--text-dark);">Generating quiz questions...</p>
+            <div id="quiz-loading" class="modern-loading-container" style="text-align: center; padding: 3rem;">
+                <div class="futuristic-spinner" style="margin: 0 auto;"></div>
+                <h3 class="gradient-text status-text" style="margin-top: 1.5rem;">Loading Quiz...</h3>
+                <p style="color: var(--subtext-dark);">Generating intelligent questions</p>
             </div>
 
             <div id="quiz-content" class="hidden">
@@ -932,9 +933,9 @@
 
         <div class="fs-container">
             <!-- Loading State -->
-            <div id="fs-loading" class="fs-card" style="text-align: center;">
-                <div class="theme-loader" style="width: 60px; height: 60px; margin: 0 auto;"></div>
-                <h2 class="gradient-text" style="margin-top: 20px;">Generating Full-Screen Test...</h2>
+            <div id="fs-loading" class="fs-card modern-loading-container" style="text-align: center;">
+                <div class="futuristic-spinner" style="margin: 0 auto;"></div>
+                <h2 class="gradient-text status-text" style="margin-top: 20px;">Preparing Session...</h2>
                 <p style="opacity: 0.7;">Analyzing topic and crafting questions</p>
             </div>
 
@@ -988,10 +989,9 @@
         // =================================================================
         // DATA STORE & GLOBAL CONFIG
         // =================================================================
-
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyBOjIgLZB5fjPnrRUEy35rnPG1FMus5XTg";
+        const GEMINI_API_KEY = "AIzaSyAa5gvFwsg2bLPCw7fhOmW4cKjWkaKpDW0";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1176,7 +1176,8 @@
             videoWatched: false,
             quizAnswered: false,
             scores: {},
-            overallProgress: 0
+            overallProgress: 0,
+            playedVideoIds: []
         };
 
         // =================================================================
@@ -1288,7 +1289,7 @@ Respond ONLY with valid JSON (no markdown, no backticks):
 Break it down into 3-5 key concepts that should be learned in sequence, from basic to advanced.
 For each concept, provide:
 1. A clear concept name (2-5 words)
-2. A YouTube search query to find relevant educational videos
+2. A YouTube search query to find relevant educational videos. Make sure the search query is highly specific and distinct for each concept to avoid duplicate video results.
 
 Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
 [
@@ -1563,6 +1564,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             aiSessionState.quizAnswered = false;
             aiSessionState.scores = {};
             aiSessionState.concepts = [];
+            aiSessionState.playedVideoIds = [];
 
             // Create a temporary session object
             const tempSession = {
@@ -1628,6 +1630,9 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             // Update sidebar to show current concept
             renderConceptsSidebar();
+            
+            // ⭐ FIX: Update progress circle upon loading to ensure correct state visualization
+            updateProgress();
 
             // Hide quiz initially (unless resuming after quiz completion)
             const quizContainer = document.getElementById('ai-quiz-container');
@@ -1640,6 +1645,43 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 await searchAndPlayVideo(concept.videoQuery, concept.title);
             } catch (error) {
                 console.error('Error loading video:', error);
+                const videoContainer = document.getElementById('ai-video-container');
+                if (videoContainer) {
+                    const titleElement = videoContainer.querySelector('h3');
+                    if (titleElement) titleElement.textContent = `Current Topic: ${concept.title}`;
+
+                    const wrapper = videoContainer.querySelector('.ai-video-wrapper');
+                    if (wrapper) {
+                        wrapper.innerHTML = `
+                    <div style="padding: 40px; text-align: center; color: var(--warning-color);">
+                        <i class="fa-solid fa-exclamation-triangle" style="font-size: 3em; margin-bottom: 20px;"></i>
+                        <p>Could not load video. You can skip to the quiz.</p>
+                    </div>
+                `;
+                    }
+                }
+            }
+        }
+
+        async function retryConcept(index) {
+            if (index < 0 || index >= aiSessionState.concepts.length) return;
+
+            aiSessionState.currentConceptIndex = index;
+            aiSessionState.videoWatched = false;
+            aiSessionState.quizAnswered = false;
+
+            const concept = aiSessionState.concepts[index];
+            renderConceptsSidebar();
+
+            const quizContainer = document.getElementById('ai-quiz-container');
+            if (quizContainer) quizContainer.style.display = 'none';
+
+            try {
+                // Append alternative keywords to ensure a different video
+                const alternativeQuery = concept.videoQuery + " alternative explanation " + Math.floor(Math.random() * 1000);
+                await searchAndPlayVideo(alternativeQuery, concept.title);
+            } catch (error) {
+                console.error('Error loading retry video:', error);
                 const videoContainer = document.getElementById('ai-video-container');
                 if (videoContainer) {
                     const titleElement = videoContainer.querySelector('h3');
@@ -2376,7 +2418,43 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             reviewHTML += '</div>';
 
-            results.innerHTML = `
+            const reviewMain = document.getElementById('fs-review-main');
+            const resultsMain = document.getElementById('fs-results-main');
+            if (reviewMain && resultsMain) {
+                reviewMain.innerHTML = `
+            <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
+                <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
+                <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 2rem; color: #10b981; font-weight: 700;">
+                            ${correctCount}
+                        </div>
+                        <div style="color: #aaa; font-size: 0.9rem;">Correct</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 2rem; color: #ef4444; font-weight: 700;">
+                            ${fsQuestions.length - correctCount}
+                        </div>
+                        <div style="color: #aaa; font-size: 0.9rem;">Incorrect</div>
+                    </div>
+                </div>
+            </div>
+            ${reviewHTML}
+            <div class="review-footer button-group" style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+                <button class="secondary-button" onclick="backToFsResults()" style="max-width: 200px;">
+                    ← Back to Results
+                </button>
+                <button class="gradient-button" onclick="closeFullScreenTestAndRefresh()" style="max-width: 200px;">
+                    Close Test
+                </button>
+            </div>
+        `;
+                resultsMain.classList.remove('active');
+                resultsMain.classList.add('hidden');
+                reviewMain.classList.remove('hidden');
+                reviewMain.classList.add('active');
+            } else {
+                results.innerHTML = `
         <div class="results-container" style="flex-direction: column; width: 100%;">
             <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
                 <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
@@ -2396,16 +2474,30 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 </div>
             </div>
             ${reviewHTML}
-            <div class="review-footer">
-                <button class="btn btn-primary" onclick="fsSubmitQuiz()" style="max-width: 200px;">
+            <div class="review-footer button-group" style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+                <button class="secondary-button" onclick="fsSubmitQuiz()" style="max-width: 200px;">
                     ← Back to Results
                 </button>
-                <button class="btn btn-primary" onclick="closeFullScreenTest()" style="max-width: 200px;">
+                <button class="gradient-button" onclick="closeFullScreenTestAndRefresh()" style="max-width: 200px;">
                     Close Test
                 </button>
             </div>
         </div>
     `;
+            }
+        }
+
+        function backToFsResults() {
+            const reviewMain = document.getElementById('fs-review-main');
+            const resultsMain = document.getElementById('fs-results-main');
+            if (reviewMain && resultsMain) {
+                reviewMain.classList.remove('active');
+                reviewMain.classList.add('hidden');
+                resultsMain.classList.remove('hidden');
+                resultsMain.classList.add('active');
+            } else {
+                fsSubmitQuiz();
+            }
         }
         // =================================================================
         // AI SESSION BUTTON HELPERS
@@ -3258,7 +3350,7 @@ ${userMessage}
             const titleElement = videoContainer.querySelector('h3');
             if (titleElement) titleElement.textContent = `Current Topic: ${conceptTitle}`;
 
-            const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&videoDuration=medium&maxResults=1`;
+            const searchUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&q=${encodeURIComponent(query)}&part=snippet&type=video&videoDuration=medium&maxResults=5`;
 
             try {
                 const res = await fetch(searchUrl);
@@ -3267,8 +3359,19 @@ ${userMessage}
                 if (data.error) throw new Error(data.error.message);
 
                 if (data.items && data.items.length > 0) {
-                    const videoId = data.items[0].id.videoId;
-                    playAIVideo(videoId);
+                    let selectedVideoId = data.items[0].id.videoId;
+
+                    if (aiSessionState.playedVideoIds) {
+                        for (const item of data.items) {
+                            if (!aiSessionState.playedVideoIds.includes(item.id.videoId)) {
+                                selectedVideoId = item.id.videoId;
+                                break;
+                            }
+                        }
+                        aiSessionState.playedVideoIds.push(selectedVideoId);
+                    }
+
+                    playAIVideo(selectedVideoId);
                 } else {
                     const controls = document.getElementById('ai-video-controls');
                     if (controls) controls.innerHTML = '<p style="color: var(--subtext-dark); text-align: center;">No video found for this topic</p>';
@@ -3319,6 +3422,10 @@ ${userMessage}
 <button onclick="skipVideoAndGoToQuiz()" 
          style="padding: 10px 20px; background: #f59e0b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
     Skip Video and Go to Quiz
+</button>
+<button onclick="retryConcept(aiSessionState.currentConceptIndex)" 
+         style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+    Change Video
 </button>
                 <div id="video-status-msg" style="font-size: 0.9em; opacity: 0.8; white-space: nowrap;">
                     <i class="fa-solid fa-play" style="margin-right: 5px;"></i>Watching...
@@ -3677,13 +3784,17 @@ ${userMessage}
             fsCurrent = 0;
 
             try {
-                // Generate 5 questions for concept quiz
-                const questions = await generateAIQuiz(conceptTitle, subject, 5);
+                // Generate 5 questions for concept quiz, or 10 questions for final concept test
+                const isFinalConcept = aiSessionState.currentConceptIndex === aiSessionState.concepts.length - 1;
+                const questionCount = isFinalConcept ? 10 : 5;
+                const finalTopic = isFinalConcept ? aiSessionState.topic : conceptTitle;
+
+                const questions = await generateAIQuiz(finalTopic, subject, questionCount);
                 fsQuestions = questions;
 
                 loading.classList.add('hidden');
                 quizSection.classList.remove('hidden');
-                document.getElementById('fs-quiz-title').textContent = `Quiz: ${conceptTitle}`;
+                document.getElementById('fs-quiz-title').textContent = isFinalConcept ? `Test: ${finalTopic}` : `Quiz: ${conceptTitle}`;
 
                 renderFsQuestion();
                 renderFsNav();
@@ -4946,14 +5057,14 @@ ${userMessage}
             const resultsContainer = document.getElementById('quiz-results-container');
             resultsContainer.style.display = 'flex';
             resultsContainer.innerHTML = `
-        <div class="quiz-results-container">
+        <div id="quiz-results-main" class="quiz-results-container fade-view active">
             <div class="quiz-score-circle">
                 <div class="quiz-score-number">${score}/${quizQuestions.length}</div>
                 <div class="quiz-score-label">${percentage.toFixed(0)}%</div>
             </div>
             <div class="quiz-commentary gradient-text">${commentary}</div>
             <div class="quiz-commentary-detail">${detail}</div>
-            <div style="display: flex; gap: 1rem; width: 100%; max-width: 500px;">
+            <div class="button-group" style="display: flex; gap: 1rem; width: 100%; max-width: 500px;">
                 <button class="gradient-button" onclick="reviewQuizAnswers()" style="flex: 1;">
                     Review Answers
                 </button>
@@ -4962,6 +5073,7 @@ ${userMessage}
                 </button>
             </div>
         </div>
+        <div id="quiz-review-main" class="quiz-results-container fade-view hidden" style="flex-direction: column; width: 100%;"></div>
     `;
         }
         /**
@@ -5058,7 +5170,44 @@ ${userMessage}
             reviewHTML += '</div>';
 
             const resultsContainer = document.getElementById('quiz-results-container');
-            resultsContainer.innerHTML = `
+            const reviewMain = document.getElementById('quiz-review-main');
+            const resultsMain = document.getElementById('quiz-results-main');
+
+            if (reviewMain && resultsMain) {
+                reviewMain.innerHTML = `
+            <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
+                <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
+                <div style="display: flex; justify-content: center; gap: 2rem; margin-bottom: 1rem;">
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 2rem; color: #10b981; font-weight: 700;">
+                            ${correctCount}
+                        </div>
+                        <div style="color: var(--subtext-dark); font-size: 0.9rem;">Correct</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column; align-items: center;">
+                        <div style="font-size: 2rem; color: #ef4444; font-weight: 700;">
+                            ${quizQuestions.length - correctCount}
+                        </div>
+                        <div style="color: var(--subtext-dark); font-size: 0.9rem;">Incorrect</div>
+                    </div>
+                </div>
+            </div>
+            ${reviewHTML}
+            <div class="button-group" style="display: flex; gap: 1rem; margin-top: 1rem; justify-content: center;">
+                <button class="secondary-button" onclick="backToQuizResults()" style="max-width: 200px;">
+                    ← Back to Results
+                </button>
+                <button class="gradient-button" onclick="closeQuizModalAndRefresh()" style="max-width: 200px;">
+                    Close Quiz
+                </button>
+            </div>
+        `;
+                resultsMain.classList.remove('active');
+                resultsMain.classList.add('hidden');
+                reviewMain.classList.remove('hidden');
+                reviewMain.classList.add('active');
+            } else {
+                resultsContainer.innerHTML = `
         <div class="quiz-results-container" style="flex-direction: column; width: 100%;">
             <div style="width: 100%; text-align: center; margin-bottom: 2rem;">
                 <h2 class="gradient-text" style="font-size: 1.8rem; margin-bottom: 1rem;">Review Your Answers</h2>
@@ -5082,18 +5231,28 @@ ${userMessage}
                 <button class="secondary-button" onclick="backToQuizResults()" style="max-width: 200px;">
                     ← Back to Results
                 </button>
-                <button class="gradient-button" onclick="closeQuizModal()" style="max-width: 200px;">
+                <button class="gradient-button" onclick="closeQuizModalAndRefresh()" style="max-width: 200px;">
                     Close Quiz
                 </button>
             </div>
         </div>
     `;
+            }
 
             resultsContainer.style.display = 'flex';
         }
 
         function backToQuizResults() {
-            submitQuizAnswers();
+            const reviewMain = document.getElementById('quiz-review-main');
+            const resultsMain = document.getElementById('quiz-results-main');
+            if (reviewMain && resultsMain) {
+                reviewMain.classList.remove('active');
+                reviewMain.classList.add('hidden');
+                resultsMain.classList.remove('hidden');
+                resultsMain.classList.add('active');
+            } else {
+                submitQuizAnswers();
+            }
         }
 
         function closeQuizModal() {
@@ -5359,26 +5518,26 @@ ${userMessage}
             if (isFromAISession) {
                 const nextAction = determineNextConceptAction(percentage >= 60);
                 actionButtons = `
-            <button class="btn btn-primary" onclick="reviewFsAnswers()">
+            <button class="gradient-button" onclick="reviewFsAnswers()">
                 Review Answers
             </button>
-            <button class="btn btn-primary" onclick="${nextAction}">
-                ${percentage >= 60 ? '→ Continue to Next Concept' : '↺ Review This Concept'}
+            <button class="${percentage >= 60 ? 'gradient-button' : 'secondary-button'}" onclick="${nextAction}">
+                ${percentage >= 60 ? '→ Continue to Next Concept' : '↺ Retry This Concept'}
             </button>
         `;
             } else {
                 actionButtons = `
-            <button class="btn btn-primary" onclick="reviewFsAnswers()">
+            <button class="gradient-button" onclick="reviewFsAnswers()">
                 Review Answers
             </button>
-            <button class="btn btn-primary" onclick="closeFullScreenTestAndRefresh()">
+            <button class="secondary-button" onclick="closeFullScreenTestAndRefresh()">
                 Close Test
             </button>
         `;
             }
 
             results.innerHTML = `
-        <div class="results-container">
+        <div id="fs-results-main" class="results-container fade-view active">
             <div class="score-circle">
                 <div class="score-number">${correct}/${total}</div>
                 <div class="score-label">${percentage}%</div>
@@ -5390,6 +5549,7 @@ ${userMessage}
                 ${actionButtons}
             </div>
         </div>
+        <div id="fs-review-main" class="results-container fade-view hidden" style="flex-direction: column; width: 100%;"></div>
     `;
 
             if (isFromAISession) {
@@ -5445,7 +5605,7 @@ ${userMessage}
                 }
             } else {
                 // Review current concept again
-                return `closeFullScreenTest(); loadConcept(${currentIndex});`;
+                return `closeFullScreenTest(); retryConcept(${currentIndex});`;
             }
         }
     </script>
