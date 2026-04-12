@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EpicScholar Dashboard | AI-Powered Study Platform</title>
-    <link rel="stylesheet" href="edubot.css" />
+    <link rel="stylesheet" href="self-study.css" />
     <style>
         /* =================================================================
  * CIRCULAR PROGRESS FIXES - COMPLETE REPLACEMENT
@@ -989,10 +989,9 @@
         // =================================================================
         // DATA STORE & GLOBAL CONFIG
         // =================================================================
-
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyBrneujBB8m2AT3MePm0Fs-od8IT29KKjY";
+        const GEMINI_API_KEY = "AIzaSyDkdtis7jOEEYjhdVxoKw2Bifgr0kSevco";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1631,6 +1630,9 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             // Update sidebar to show current concept
             renderConceptsSidebar();
+            
+            // ⭐ FIX: Update progress circle upon loading to ensure correct state visualization
+            updateProgress();
 
             // Hide quiz initially (unless resuming after quiz completion)
             const quizContainer = document.getElementById('ai-quiz-container');
@@ -3421,6 +3423,10 @@ ${userMessage}
          style="padding: 10px 20px; background: #f59e0b; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
     Skip Video and Go to Quiz
 </button>
+<button onclick="retryConcept(aiSessionState.currentConceptIndex)" 
+         style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+    Change Video
+</button>
                 <div id="video-status-msg" style="font-size: 0.9em; opacity: 0.8; white-space: nowrap;">
                     <i class="fa-solid fa-play" style="margin-right: 5px;"></i>Watching...
                 </div>
@@ -3778,13 +3784,17 @@ ${userMessage}
             fsCurrent = 0;
 
             try {
-                // Generate 5 questions for concept quiz
-                const questions = await generateAIQuiz(conceptTitle, subject, 5);
+                // Generate 5 questions for concept quiz, or 10 questions for final concept test
+                const isFinalConcept = aiSessionState.currentConceptIndex === aiSessionState.concepts.length - 1;
+                const questionCount = isFinalConcept ? 10 : 5;
+                const finalTopic = isFinalConcept ? aiSessionState.topic : conceptTitle;
+
+                const questions = await generateAIQuiz(finalTopic, subject, questionCount);
                 fsQuestions = questions;
 
                 loading.classList.add('hidden');
                 quizSection.classList.remove('hidden');
-                document.getElementById('fs-quiz-title').textContent = `Quiz: ${conceptTitle}`;
+                document.getElementById('fs-quiz-title').textContent = isFinalConcept ? `Test: ${finalTopic}` : `Quiz: ${conceptTitle}`;
 
                 renderFsQuestion();
                 renderFsNav();
