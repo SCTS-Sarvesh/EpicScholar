@@ -718,9 +718,20 @@
         <div class="glass-blob blob-3"></div>
     </div>
     <!-- Page Loader -->
-    <div id="page-loader">
-        <div class="loader-spinner"></div>
-        <div class="loader-text">Loading Self-study...</div>
+    <div id="page-loader" class="ai-loading-overlay" style="z-index: 999999;">
+        <div class="ai-loading-content">
+            <div class="ai-orb">
+                <div class="orb-core"></div>
+                <div class="orb-ring ring-1"></div>
+                <div class="orb-ring ring-2"></div>
+                <div class="orb-ring ring-3"></div>
+            </div>
+            <h2 class="ai-loading-title">Loading...</h2>
+            <p class="ai-loading-subtitle">Preparing your EpicScholar Space</p>
+            <div class="ai-loading-bar-container">
+                <div class="ai-loading-bar-fill" style="animation-duration: 2s;"></div>
+            </div>
+        </div>
     </div>
     <div id="sidebar-placeholder">
         <div class="sidebar glass-element fixed-top-layer">
@@ -1097,10 +1108,20 @@
 
         <div class="fs-container">
             <!-- Loading State -->
-            <div id="fs-loading" class="fs-card modern-loading-container" style="text-align: center;">
-                <div class="futuristic-spinner" style="margin: 0 auto;"></div>
-                <h2 class="gradient-text status-text" style="margin-top: 20px;">Preparing Session...</h2>
-                <p style="opacity: 0.7;">Analyzing topic and crafting questions</p>
+            <div id="fs-loading" class="ai-loading-overlay" style="position: absolute; background: transparent; backdrop-filter: none;">
+                <div class="ai-loading-content">
+                    <div class="ai-orb">
+                        <div class="orb-core"></div>
+                        <div class="orb-ring ring-1"></div>
+                        <div class="orb-ring ring-2"></div>
+                        <div class="orb-ring ring-3"></div>
+                    </div>
+                    <h2 class="ai-loading-title">Preparing Module...</h2>
+                    <p class="ai-loading-subtitle">Crafting the best evaluation questions</p>
+                    <div class="ai-loading-bar-container">
+                        <div class="ai-loading-bar-fill"></div>
+                    </div>
+                </div>
             </div>
 
             <!-- Quiz Content -->
@@ -1155,7 +1176,7 @@
         // =================================================================
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyDSkRXmD8tPHPBOokGGmc8kNCvk9O3nJAs";
+        const GEMINI_API_KEY = "AIzaSyAa5gvFwsg2bLPCw7fhOmW4cKjWkaKpDW0";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -5831,7 +5852,19 @@ ${userMessage}
                 }
             };
             
-            try { voiceActiveRecognition.start(); } catch(e) {}
+            voiceActiveRecognition.onerror = (e) => {
+                console.warn('Edubot Background Voice Recognition Error:', e.error);
+                if (e.error === 'not-allowed') {
+                    console.error('Microphone permission denied! Please allow access to use the voice feature.');
+                }
+            };
+            
+            try { 
+                voiceActiveRecognition.start(); 
+                console.log('🎤 Edubot background voice listener started.');
+            } catch(e) {
+                console.warn('Failed to start voice listener:', e);
+            }
         }
 
         function activateEdubotVoiceMode() {
