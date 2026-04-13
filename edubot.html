@@ -544,6 +544,7 @@
         .light-mode .error-help p {
             color: var(--subtext-light);
         }
+
         /* =================================================================
  * GEMINI LIVE MODE FOR EDUBOT
  * =================================================================
@@ -562,34 +563,40 @@
             box-shadow: 0 0 30px #0072ff !important;
             border: 3px solid transparent !important;
             background: linear-gradient(rgba(22, 22, 30, 0.9), rgba(22, 22, 30, 0.9)) padding-box,
-                        linear-gradient(45deg, #0072ff, #00c6ff, #0072ff) border-box !important;
+                linear-gradient(45deg, #0072ff, #00c6ff, #0072ff) border-box !important;
             animation: geminiVoicePulse 2s ease-in-out infinite !important;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
         }
 
         .light-mode #chatbot-container.gemini-live-mode {
             background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)) padding-box,
-                        linear-gradient(45deg, #0072ff, #00c6ff, #0072ff) border-box !important;
+                linear-gradient(45deg, #0072ff, #00c6ff, #0072ff) border-box !important;
         }
 
         @keyframes geminiVoicePulse {
             0% {
                 box-shadow: 0 0 20px rgba(0, 114, 255, 0.4), inset 0 0 10px rgba(0, 114, 255, 0.2);
             }
+
             50% {
                 box-shadow: 0 0 50px rgba(0, 114, 255, 0.8), inset 0 0 20px rgba(0, 114, 255, 0.4);
             }
+
             100% {
                 box-shadow: 0 0 20px rgba(0, 114, 255, 0.4), inset 0 0 10px rgba(0, 114, 255, 0.2);
             }
         }
+
         /* =================================================================
  * ENHANCED AI GENERATION LOADING ANIMATION
  * =================================================================
  */
         .ai-loading-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             z-index: 10000;
             background: rgba(10, 10, 15, 0.9);
             backdrop-filter: blur(25px);
@@ -636,9 +643,28 @@
             animation: spinRing linear infinite;
         }
 
-        .ring-1 { width: 100%; height: 100%; animation-duration: 2s; border-width: 3px; }
-        .ring-2 { width: 80%; height: 80%; animation-duration: 3s; animation-direction: reverse; border-top-color: #ff416c; border-bottom-color: #00c6ff; }
-        .ring-3 { width: 60%; height: 60%; animation-duration: 1.5s; border-width: 1px; }
+        .ring-1 {
+            width: 100%;
+            height: 100%;
+            animation-duration: 2s;
+            border-width: 3px;
+        }
+
+        .ring-2 {
+            width: 80%;
+            height: 80%;
+            animation-duration: 3s;
+            animation-direction: reverse;
+            border-top-color: #ff416c;
+            border-bottom-color: #00c6ff;
+        }
+
+        .ring-3 {
+            width: 60%;
+            height: 60%;
+            animation-duration: 1.5s;
+            border-width: 1px;
+        }
 
         .ai-loading-title {
             font-size: 2rem;
@@ -688,26 +714,81 @@
             animation: stepAppear 1s forwards;
         }
 
-        .step-text:nth-child(1) { animation-delay: 0.5s; }
-        .step-text:nth-child(2) { animation-delay: 2s; }
-        .step-text:nth-child(3) { animation-delay: 3.5s; }
+        .step-text:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        .step-text:nth-child(2) {
+            animation-delay: 2s;
+        }
+
+        .step-text:nth-child(3) {
+            animation-delay: 3.5s;
+        }
 
         .step-text.active {
             color: white;
-            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
             transform: scale(1.05);
         }
 
         @keyframes orbCorePulse {
-            from { transform: scale(0.9); box-shadow: 0 0 20px #00c6ff; }
-            to { transform: scale(1.1); box-shadow: 0 0 40px #00c6ff, 0 0 60px #0072ff; }
-        }
-        @keyframes spinRing { 100% { transform: rotate(360deg); } }
-        @keyframes titleShimmer { to { background-position: 200% center; } }
-        @keyframes fillBar { 0% { width: 0%; } 50% { width: 70%; } 100% { width: 95%; } }
-        @keyframes fadeInOverlay { from { opacity: 0; backdrop-filter: blur(0px); } to { opacity: 1; backdrop-filter: blur(25px); } }
-        @keyframes stepAppear { to { opacity: 1; transform: translateY(0); color: rgba(255,255,255,0.8); } }
+            from {
+                transform: scale(0.9);
+                box-shadow: 0 0 20px #00c6ff;
+            }
 
+            to {
+                transform: scale(1.1);
+                box-shadow: 0 0 40px #00c6ff, 0 0 60px #0072ff;
+            }
+        }
+
+        @keyframes spinRing {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes titleShimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes fillBar {
+            0% {
+                width: 0%;
+            }
+
+            50% {
+                width: 70%;
+            }
+
+            100% {
+                width: 95%;
+            }
+        }
+
+        @keyframes fadeInOverlay {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+
+            to {
+                opacity: 1;
+                backdrop-filter: blur(25px);
+            }
+        }
+
+        @keyframes stepAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                color: rgba(255, 255, 255, 0.8);
+            }
+        }
     </style>
 </head>
 
@@ -1108,7 +1189,8 @@
 
         <div class="fs-container">
             <!-- Loading State -->
-            <div id="fs-loading" class="ai-loading-overlay" style="position: absolute; background: transparent; backdrop-filter: none;">
+            <div id="fs-loading" class="ai-loading-overlay"
+                style="position: absolute; background: transparent; backdrop-filter: none;">
                 <div class="ai-loading-content">
                     <div class="ai-orb">
                         <div class="orb-core"></div>
@@ -1176,7 +1258,7 @@
         // =================================================================
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyB82R0FTuUh7xLTjm5ZtdABWkHJBdR7XrU";
+        const GEMINI_API_KEY = "AIzaSyAa5gvFwsg2bLPCw7fhOmW4cKjWkaKpDW0";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1691,7 +1773,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 </div>
             `;
             document.body.appendChild(loadingMsg);
-            
+
             // Cycle active step highlighting for effect
             const steps = document.querySelectorAll('.step-text');
             let currentStep = 0;
@@ -2731,8 +2813,25 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             pdfIcon.classList.add("visible");
         });
 
+        // REMOVE the old chatCloseBtn listener block near initVoiceActivation
+        // and replace with this single consolidated one:
+
         chatCloseBtn.addEventListener("click", () => {
             chatbotContainer.classList.remove("visible");
+            chatbotContainer.classList.remove("gemini-live-mode");
+
+            // Stop conversational voice session
+            if (voiceSessionRecognition) {
+                try { voiceSessionRecognition.stop(); } catch (e) { }
+                voiceSessionRecognition = null;
+            }
+
+            // Restart background listener
+            if (voiceActiveRecognition) {
+                try { voiceActiveRecognition.start(); } catch (e) { }
+            }
+
+            // Restore icons if in live session
             if (liveSessionPage.classList.contains('open')) {
                 chatbotIcon.classList.add("visible");
                 pdfIcon.classList.add("visible");
@@ -5824,60 +5923,83 @@ ${userMessage}
         // ============================================
         let voiceActiveRecognition = null;
         let voiceSessionRecognition = null;
-        
+
         function initVoiceActivation() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) return;
-            
+            if (!SpeechRecognition) {
+                console.warn('Speech Recognition not supported in this browser.');
+                return;
+            }
+
             voiceActiveRecognition = new SpeechRecognition();
             voiceActiveRecognition.continuous = true;
             voiceActiveRecognition.interimResults = false;
             voiceActiveRecognition.lang = 'en-US';
-            
+
             voiceActiveRecognition.onresult = (event) => {
                 const lastIdx = event.results.length - 1;
-                const transcript = event.results[lastIdx][0].transcript.toLowerCase();
-                
-                // Only trigger the voice assistant if we're in an active AI Session
-                const isSessionActive = typeof aiSessionState !== 'undefined' && aiSessionState && aiSessionState.active;
-                
-                if ((transcript.includes('edubot') || transcript.includes('edu bot')) && isSessionActive) {
+                const transcript = event.results[lastIdx][0].transcript.toLowerCase().trim();
+                console.log('🎤 Voice heard:', transcript);
+
+                const isGeminiModeAlreadyActive = chatbotContainer.classList.contains('gemini-live-mode');
+                const isLiveSessionOpen = liveSessionPage.classList.contains('open');
+
+                // Trigger on "edubot" keyword — works in any live session, not just AI ones
+                if (
+                    !isGeminiModeAlreadyActive &&
+                    isLiveSessionOpen &&
+                    (transcript.includes('edubot') || transcript.includes('hey bot') || transcript.includes('edu bot'))
+                ) {
+                    console.log('🚀 Edubot wake word detected!');
                     activateEdubotVoiceMode();
                 }
             };
-            
+
             voiceActiveRecognition.onend = () => {
-                if (chatbotContainer && !chatbotContainer.classList.contains('gemini-live-mode')) {
-                    try { voiceActiveRecognition.start(); } catch(e) {}
+                // Only restart if Gemini Live mode is NOT active
+                const isGeminiModeActive = chatbotContainer.classList.contains('gemini-live-mode');
+                if (!isGeminiModeActive) {
+                    setTimeout(() => {
+                        try { voiceActiveRecognition.start(); } catch (e) { }
+                    }, 500);
                 }
             };
-            
-            voiceActiveRecognition.onerror = (e) => {
-                console.warn('Edubot Background Voice Recognition Error:', e.error);
-                if (e.error === 'not-allowed') {
-                    console.error('Microphone permission denied! Please allow access to use the voice feature.');
+
+            voiceActiveRecognition.onerror = (event) => {
+                if (event.error === 'not-allowed') {
+                    console.error('❌ Microphone permission denied. Voice activation disabled.');
+                    return; // Don't retry if permission denied
+                }
+                if (event.error !== 'aborted') {
+                    // Retry on other errors after a short delay
+                    setTimeout(() => {
+                        try { voiceActiveRecognition.start(); } catch (e) { }
+                    }, 1000);
                 }
             };
-            
-            try { 
-                voiceActiveRecognition.start(); 
-                console.log('🎤 Edubot background voice listener started.');
-            } catch(e) {
-                console.warn('Failed to start voice listener:', e);
+
+            try {
+                voiceActiveRecognition.start();
+                console.log('✅ Edubot background voice listener started. Say "Edubot" during a session!');
+            } catch (e) {
+                console.warn('Could not start voice listener:', e);
             }
         }
 
         function activateEdubotVoiceMode() {
-            // Pause video safely
-            const yIframe = document.getElementById('youtube-iframe');
+            // Pause AI YouTube player correctly
+            if (window.aiPlayer && typeof aiPlayer.pauseVideo === 'function') {
+                try { aiPlayer.pauseVideo(); } catch (e) { }
+            }
+            // Also try pausing any iframe fallback
+            const yIframe = document.querySelector('.ai-video-wrapper iframe');
             if (yIframe && yIframe.contentWindow) {
-                yIframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+                yIframe.contentWindow.postMessage(
+                    '{"event":"command","func":"pauseVideo","args":""}', '*'
+                );
             }
-            if (window.player && window.player.pauseVideo) {
-                window.player.pauseVideo();
-            }
-            
-            // UI Changes
+
+            // Show chatbot in Gemini Live mode
             if (pdfContainer) pdfContainer.classList.remove("visible");
             if (chatbotContainer) {
                 chatbotContainer.classList.add("visible");
@@ -5885,47 +6007,100 @@ ${userMessage}
             }
             if (chatbotIcon) chatbotIcon.classList.remove("visible");
             if (pdfIcon) pdfIcon.classList.add("visible");
-            
-            // Stop background listener
-            if (voiceActiveRecognition) voiceActiveRecognition.stop();
-            
-            // Start conversational voice input
+
+            // Announce activation in chat
+            appendChatMessage("bot", "🎤 **Edubot Voice Mode Active!** I'm listening — ask me anything about your session.");
+
+            // Stop background listener to avoid conflict
+            if (voiceActiveRecognition) {
+                try { voiceActiveRecognition.stop(); } catch (e) { }
+            }
+
+            // Start conversational voice
             startConversationalVoice();
         }
-        
+
         function startConversationalVoice() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
-            
+
+            if (voiceSessionRecognition) {
+                try { voiceSessionRecognition.stop(); } catch (e) { }
+            }
+
             voiceSessionRecognition = new SpeechRecognition();
             voiceSessionRecognition.continuous = false;
             voiceSessionRecognition.interimResults = false;
             voiceSessionRecognition.lang = 'en-US';
-            
+
+            voiceSessionRecognition.onstart = () => {
+                console.log('🎙️ Conversational voice listening...');
+                // Visual indicator in chat header
+                const header = document.getElementById('chatbot-header');
+                if (header) {
+                    let indicator = header.querySelector('.voice-indicator');
+                    if (!indicator) {
+                        indicator = document.createElement('span');
+                        indicator.className = 'voice-indicator';
+                        indicator.style.cssText = `
+                    width: 10px; height: 10px; border-radius: 50%;
+                    background: #ff416c; display: inline-block;
+                    animation: pulse 1s infinite; margin-left: 8px;
+                `;
+                        header.querySelector('span').appendChild(indicator);
+                    }
+                }
+            };
+
             voiceSessionRecognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript;
-                if (transcript.trim().length > 0) {
-                    if (typeof appendChatMessage === 'function') appendChatMessage("user", transcript);
-                    if (typeof getBotResponse === 'function') getBotResponse(transcript);
+                const transcript = event.results[0][0].transcript.trim();
+                console.log('🗣️ User said:', transcript);
+
+                if (transcript.length > 0) {
+                    appendChatMessage("user", transcript);
+                    getBotResponse(transcript);
                 }
             };
-            
+
+            voiceSessionRecognition.onerror = (event) => {
+                console.warn('Voice session error:', event.error);
+                if (event.error === 'no-speech') {
+                    // Restart listening if still in voice mode
+                    if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                        setTimeout(() => {
+                            try { voiceSessionRecognition.start(); } catch (e) { }
+                        }, 500);
+                    }
+                }
+            };
+
             voiceSessionRecognition.onend = () => {
-                if (chatbotContainer && chatbotContainer.classList.contains('gemini-live-mode')) {
-                    try { voiceSessionRecognition.start(); } catch(e) {}
+                // Remove visual indicator
+                const indicator = document.querySelector('.voice-indicator');
+                if (indicator) indicator.remove();
+
+                // Keep listening if still in Gemini Live mode
+                if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                    setTimeout(() => {
+                        try { voiceSessionRecognition.start(); } catch (e) { }
+                    }, 300);
                 }
             };
-            
-            try { voiceSessionRecognition.start(); } catch(e) {}
+
+            try {
+                voiceSessionRecognition.start();
+            } catch (e) {
+                console.error('Failed to start conversational voice:', e);
+            }
         }
-        
+
         // Listen for close to stop conversational mode
         if (chatCloseBtn) {
             chatCloseBtn.addEventListener("click", () => {
                 if (chatbotContainer) chatbotContainer.classList.remove("gemini-live-mode");
                 if (voiceSessionRecognition) voiceSessionRecognition.stop();
                 if (voiceActiveRecognition) {
-                    try { voiceActiveRecognition.start(); } catch(e) {}
+                    try { voiceActiveRecognition.start(); } catch (e) { }
                 }
             });
         }
