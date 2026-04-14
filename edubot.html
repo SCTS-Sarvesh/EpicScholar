@@ -3453,9 +3453,12 @@ ${userMessage}
                 const formatted = formatMarkdownToHtml(currentText);
                 textContainer.innerHTML = formatted + `<span class="cursor"></span>`;
 
-                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                // 🚀 SMOOTH AUTO-SCROLL DURING GENERATION
+                requestAnimationFrame(() => {
+                    chatbotMessages.scrollTo({ top: chatbotMessages.scrollHeight, behavior: 'auto' });
+                });
 
-                const delay = 35;
+                const delay = 60; // Slightly slower for better readability
                 await new Promise(r => setTimeout(r, delay));
                 pump();
             };
@@ -4303,6 +4306,9 @@ ${userMessage}
             void liveSessionPage.offsetWidth;
             liveSessionPage.classList.add('open');
             mainContent.classList.add('hiding');
+            
+            // 🌈 ACTIVATE GLOBAL BORDER ANIMATION
+            document.body.classList.add('live-active-border');
 
             // Check localStorage for paused data
             let storedPausedData = null;
@@ -4386,6 +4392,9 @@ ${userMessage}
             liveSessionPage.classList.remove('open');
             liveSessionPage.classList.add('hiding');
             mainContent.classList.remove('hiding');
+
+            // 🛑 DEACTIVATE GLOBAL BORDER ANIMATION
+            document.body.classList.remove('live-active-border');
 
             // Don't clear timer if session is paused (it's already cleared)
             if (!sessionPaused && sessionTimerInterval) {
