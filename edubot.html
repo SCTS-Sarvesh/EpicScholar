@@ -3720,7 +3720,8 @@ ${userMessage}
                 });
             } else {
                 console.error("YouTube API not loaded");
-                wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
+                const origin = window.location.origin;
+                wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${origin}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
             }
 
             // Update controls
@@ -5948,9 +5949,9 @@ ${userMessage}
                 if (
                     !isGeminiModeAlreadyActive &&
                     isLiveSessionOpen &&
-                    (transcript.includes('edubot') || transcript.includes('hey bot') || transcript.includes('edu bot'))
+                    (transcript.includes('edubot') || transcript.includes('hey bot') || transcript.includes('edu bot') || transcript.includes('edward') || transcript.includes('edge bot'))
                 ) {
-                    console.log('🚀 Edubot wake word detected!');
+                    console.log('🚀 Edubot wake word detected! (Found match in: ' + transcript + ')');
                     activateEdubotVoiceMode();
                 }
             };
@@ -5994,8 +5995,9 @@ ${userMessage}
             // Also try pausing any iframe fallback
             const yIframe = document.querySelector('.ai-video-wrapper iframe');
             if (yIframe && yIframe.contentWindow) {
+                const origin = "https://www.youtube.com";
                 yIframe.contentWindow.postMessage(
-                    '{"event":"command","func":"pauseVideo","args":""}', '*'
+                    '{"event":"command","func":"pauseVideo","args":""}', origin
                 );
             }
 
