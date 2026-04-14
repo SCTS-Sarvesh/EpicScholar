@@ -6071,14 +6071,13 @@ ${userMessage}
             }
 
             voiceSessionRecognition = new SpeechRecognition();
-            voiceSessionRecognition.continuous = false;
-            voiceSessionRecognition.interimResults = false;
+            voiceSessionRecognition.continuous = true; // Stay on for better interruption detection
+            voiceSessionRecognition.interimResults = true; // 🔥 Essential for Gemini Live style
             voiceSessionRecognition.lang = 'en-US';
 
             voiceSessionRecognition.onstart = () => {
                 console.log('🎙️ Conversational voice listening...');
-                // 🛑 Stop bot from speaking when user starts talking
-                stopSpeaking();
+                // 🛑 REMOVED: Don't stop onstart, wait for actual words below
 
                 // Visual indicator in chat header
                 const header = document.getElementById('chatbot-header');
@@ -6098,10 +6097,38 @@ ${userMessage}
             };
 
             voiceSessionRecognition.onresult = (event) => {
-                const transcript = event.results[0][0].transcript.trim();
-                console.log('🗣️ User said:', transcript);
+                let interimTranscript = '';
+                let finalTranscript = '';
 
-                if (transcript.length > 0) {
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscript += event.results[i][0].transcript;
+                    } else {
+                        interimTranscript += event.results[i][0].transcript;
+                    }
+                }
+
+                // 🚀 GEMINI LIVE INTERRUPTION LOGIC
+                if (interimTranscript.length > 0) {
+                    const words = interimTranscript.trim().split(/\s+/);
+                    
+                    // Only stop bot if we hear at least 3 distinct words (filters out noise)
+                    if (synth.speaking && words.length >= 3) {
+                        console.log('🛑 Word-aware interruption detected. Stopping Edubot.');
+                        stopSpeaking();
+                        
+                        // Visual feedback: briefly turn indicator orange/gold
+                        const indicator = document.querySelector('.voice-indicator');
+                        if (indicator) {
+                            indicator.style.background = '#ffc107';
+                            indicator.style.transform = 'scale(1.5)';
+                        }
+                    }
+                }
+
+                if (finalTranscript.length > 0) {
+                    const transcript = finalTranscript.trim();
+                    console.log('🗣️ User finalized:', transcript);
                     appendChatMessage("user", transcript);
                     getBotResponse(transcript);
                 }
