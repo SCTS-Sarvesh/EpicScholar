@@ -2179,6 +2179,8 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                     console.log('✅ Recovered temporary AI session from pause data:', paused.id);
                 }
             }
+            // Populate the global variable
+            pausedSessionData = paused;
         }
 
         // =================================================================
@@ -2831,6 +2833,9 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                 try { voiceActiveRecognition.start(); } catch (e) { }
             }
 
+            // Stop all audio
+            stopSpeaking();
+
             // Restore icons if in live session
             if (liveSessionPage.classList.contains('open')) {
                 chatbotIcon.classList.add("visible");
@@ -2890,8 +2895,8 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             const preferred = voices.find(v => v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Neural')) || voices[0];
             if (preferred) utterance.voice = preferred;
 
-            utterance.pitch = 1.05; // Slightly higher for friendly vibe
-            utterance.rate = 1.0;
+            utterance.pitch = 1.1; // Slightly more energetic
+            utterance.rate = 1.15; // Faster but still clear
             utterance.volume = 1;
 
             synth.speak(utterance);
@@ -3274,6 +3279,9 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         let isStreamingChat = false;
 
         async function getBotResponse(userMessage) {
+            // 🛑 STOP SPEAKING ON NEW INPUT
+            stopSpeaking();
+
             if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
                 appendChatMessage("bot", "Error: Gemini API Key is missing. Please set your key in the script.");
                 return;
@@ -4834,7 +4842,7 @@ ${userMessage}
 
             if (action === 'resume-session') {
                 const card = target.closest('.session-card');
-                const sessionId = parseInt(card.getAttribute('data-id'));
+                const sessionId = Number(card.getAttribute('data-id'));
                 const session = sessions.find(s => Number(s.id) === sessionId);
 
                 if (session) {
@@ -6069,6 +6077,9 @@ ${userMessage}
 
             voiceSessionRecognition.onstart = () => {
                 console.log('🎙️ Conversational voice listening...');
+                // 🛑 Stop bot from speaking when user starts talking
+                stopSpeaking();
+
                 // Visual indicator in chat header
                 const header = document.getElementById('chatbot-header');
                 if (header) {
