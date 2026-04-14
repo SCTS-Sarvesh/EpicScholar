@@ -1826,6 +1826,20 @@ button:active {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* 🚀 MASTER OVERLAY: Edubot on top of everything in Live Mode */
+.gemini-live-mode {
+    z-index: 1000000 !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    width: 600px !important;
+    height: 700px !important;
+    max-width: 90vw;
+    max-height: 85vh;
+}
+
+
 .light-mode .floating-window {
     border: var(--border-light);
     box-shadow: var(--shadow-light);
@@ -3319,7 +3333,6 @@ code {
 }
 
 @keyframes typing-bounce {
-
     0%,
     60%,
     100% {
@@ -3330,6 +3343,59 @@ code {
         transform: translateY(-10px);
     }
 }
+
+/* 🌟 NEW: Message Entry Animation */
+@keyframes message-pop-in {
+    0% { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.95);
+        filter: blur(5px);
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+.message {
+    animation: message-pop-in 0.4s var(--animation-timing) forwards;
+    transform-origin: left bottom;
+}
+
+.message.user {
+    transform-origin: right bottom;
+}
+
+/* 🌈 NEW: Live Session Border Animation */
+body.live-active-border::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20000;
+    border: 4px solid transparent;
+    border-image: linear-gradient(var(--angle, 0deg), #0072ff, #ff416c, #00c6ff, #0072ff) 1;
+    animation: borderRotate 4s linear infinite, borderGlow 2s ease-in-out infinite alternate;
+    box-shadow: inset 0 0 20px rgba(0, 114, 255, 0.2);
+}
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes borderRotate {
+    to { --angle: 360deg; }
+}
+
+@keyframes borderGlow {
+    from { opacity: 0.6; box-shadow: inset 0 0 10px rgba(0, 114, 255, 0.2); }
+    to { opacity: 1; box-shadow: inset 0 0 40px rgba(255, 65, 108, 0.3); }
+}
+
+
 
 .typing-container span {
     color: var(--subtext-dark);
