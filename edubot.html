@@ -1258,7 +1258,7 @@
         // =================================================================
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyDmSwGkRJo_DgTOYX1CAqHSJOavbvbP6CY";
+        const GEMINI_API_KEY = "AIzaSyDqcub6xeGLjJXB_sQv8WiQ-ZZGDIUhJzg";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -2880,16 +2880,16 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
         function speakResponse(text) {
             stopSpeaking();
-            
+
             // Clean markdown/HTML for better speech
             const cleanText = text.replace(/[*#`_]/g, '').replace(/<[^>]*>/g, '');
             const utterance = new SpeechSynthesisUtterance(cleanText);
-            
+
             // 🎙️ Select Premium-sounding voice if available
             const voices = synth.getVoices();
             const preferred = voices.find(v => v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Neural')) || voices[0];
             if (preferred) utterance.voice = preferred;
-            
+
             utterance.pitch = 1.05; // Slightly higher for friendly vibe
             utterance.rate = 1.0;
             utterance.volume = 1;
@@ -3392,7 +3392,7 @@ ${userMessage}
             }
 
             chatbotMessages.appendChild(messageElement);
-            
+
             // 🚀 SMOOTH AUTO-SCROLL
             requestAnimationFrame(() => {
                 chatbotMessages.scrollTo({ top: chatbotMessages.scrollHeight, behavior: 'smooth' });
@@ -3466,7 +3466,7 @@ ${userMessage}
         `;
 
                 isStreamingChat = false;
-                
+
                 // 🗣️ AUTO-SPEAK ONCE STREAM FINISHES
                 if (chatbotContainer.classList.contains('gemini-live-mode')) {
                     speakResponse(currentText);
@@ -5976,14 +5976,14 @@ ${userMessage}
                 // Trigger on "edubot" keyword — works in any live session, not just AI ones
                 // 🚀 TRIGGER ENGINE: HIGH ACCURACY
                 const triggerRegex = /\b(edubot|edu bot|hey bot|any bot|edward|echo bot|edge bot|edgebot)\b/i;
-                
+
                 if (!isGeminiModeAlreadyActive && isLiveSessionOpen && triggerRegex.test(transcript)) {
                     console.log('🚀 Edubot wake word detected! (Matched in: "' + transcript + '")');
-                    
+
                     // Subtle haptic-like visual cue
                     chatbotIcon.style.animation = 'none';
                     setTimeout(() => chatbotIcon.style.animation = 'orbCorePulse 0.5s 2', 10);
-                    
+
                     activateEdubotVoiceMode();
                 }
             };
