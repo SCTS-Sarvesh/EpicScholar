@@ -1258,7 +1258,7 @@
         // =================================================================
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyDqcub6xeGLjJXB_sQv8WiQ-ZZGDIUhJzg";
+        const GEMINI_API_KEY = "AIzaSyARr9UE6jxi_KXA5eldFIUiTk7FO5RyiZo";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -4306,7 +4306,7 @@ ${userMessage}
             void liveSessionPage.offsetWidth;
             liveSessionPage.classList.add('open');
             mainContent.classList.add('hiding');
-            
+
             // 🌈 ACTIVATE GLOBAL BORDER ANIMATION
             document.body.classList.add('live-active-border');
 
@@ -6120,12 +6120,12 @@ ${userMessage}
                 // 🚀 GEMINI LIVE INTERRUPTION LOGIC
                 if (interimTranscript.length > 0) {
                     const words = interimTranscript.trim().split(/\s+/);
-                    
+
                     // Only stop bot if we hear at least 3 distinct words (filters out noise)
                     if (synth.speaking && words.length >= 3) {
                         console.log('🛑 Word-aware interruption detected. Stopping Edubot.');
                         stopSpeaking();
-                        
+
                         // Visual feedback: briefly turn indicator orange/gold
                         const indicator = document.querySelector('.voice-indicator');
                         if (indicator) {
