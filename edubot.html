@@ -2867,13 +2867,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             }
         }
 
-        function appendChatMessage(sender, message) {
-            const messageElement = document.createElement("div");
-            messageElement.classList.add("message", sender);
-            messageElement.textContent = message;
-            chatbotMessages.appendChild(messageElement);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
+        // Basic chat interactions handled by enhanced version below
         // =================================================================
         // ENHANCED CHATBOT WITH MARKDOWN, TTS, AND STREAMING
         // =================================================================
@@ -2883,6 +2877,25 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         let currentUtterance = null;
         let currentReadBtn = null;
         let currentHighlightSpan = null;
+
+        function speakResponse(text) {
+            stopSpeaking();
+            
+            // Clean markdown/HTML for better speech
+            const cleanText = text.replace(/[*#`_]/g, '').replace(/<[^>]*>/g, '');
+            const utterance = new SpeechSynthesisUtterance(cleanText);
+            
+            // 🎙️ Select Premium-sounding voice if available
+            const voices = synth.getVoices();
+            const preferred = voices.find(v => v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Neural')) || voices[0];
+            if (preferred) utterance.voice = preferred;
+            
+            utterance.pitch = 1.05; // Slightly higher for friendly vibe
+            utterance.rate = 1.0;
+            utterance.volume = 1;
+
+            synth.speak(utterance);
+        }
 
         function resetReadButton() {
             if (currentReadBtn) {
@@ -3293,17 +3306,17 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
                 const systemContext = `
 [SYSTEM CONTEXT]
-You are an AI Tutor guiding the user through a session on "${aiSessionState.topic}" (${aiSessionState.subject}).
+You are Edubot, a friendly and highly intelligent AI tutor. You are currently guiding the user through a study session on "${aiSessionState.topic}".
 
-The current session plan is:
-${planList}
+CURRENT STATUS:
+- Subject: ${aiSessionState.subject}
+- Progress: Step ${aiSessionState.currentConceptIndex + 1} of ${aiSessionState.concepts.length}
+- Current Focus: "${currentConcept ? currentConcept.title : 'Overview'}"
 
-The user is currently studying Step ${aiSessionState.currentConceptIndex + 1}: "${currentConcept ? currentConcept.title : 'Overview'}".
-
-INSTRUCTIONS:
-- Answer the user's question specifically in the context of this topic and concept.
-- If they ask "what is this", refer to the current concept ("${currentConcept ? currentConcept.title : 'Current Topic'}").
-- Keep answers concise, encouraging, and educational.
+TONE & PERSONALITY:
+- Be encouraging, concise, and clear.
+- Use a natural, conversational human tone (avoid being overly robotic).
+- If the user is in "Voice Mode", keep your answers shorter so they are easier to listen to.
 - Do not mention "[SYSTEM CONTEXT]" in your response.
 
 [USER QUESTION]
@@ -3379,7 +3392,16 @@ ${userMessage}
             }
 
             chatbotMessages.appendChild(messageElement);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            
+            // 🚀 SMOOTH AUTO-SCROLL
+            requestAnimationFrame(() => {
+                chatbotMessages.scrollTo({ top: chatbotMessages.scrollHeight, behavior: 'smooth' });
+            });
+
+            // 🗣️ AUTO-SPEAK BOT MESSAGES (In Voice Mode)
+            if (sender === "bot" && chatbotContainer.classList.contains('gemini-live-mode')) {
+                setTimeout(() => speakResponse(message), 100);
+            }
         }
 
         function appendBotMessageStream(text) {
@@ -3444,7 +3466,13 @@ ${userMessage}
         `;
 
                 isStreamingChat = false;
-                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+                
+                // 🗣️ AUTO-SPEAK ONCE STREAM FINISHES
+                if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                    speakResponse(currentText);
+                }
+
+                chatbotMessages.scrollTo({ top: chatbotMessages.scrollHeight, behavior: 'smooth' });
             };
 
             pump();
@@ -5946,12 +5974,16 @@ ${userMessage}
                 const isLiveSessionOpen = liveSessionPage.classList.contains('open');
 
                 // Trigger on "edubot" keyword — works in any live session, not just AI ones
-                if (
-                    !isGeminiModeAlreadyActive &&
-                    isLiveSessionOpen &&
-                    (transcript.includes('edubot') || transcript.includes('hey bot') || transcript.includes('edu bot') || transcript.includes('edward') || transcript.includes('edge bot'))
-                ) {
-                    console.log('🚀 Edubot wake word detected! (Found match in: ' + transcript + ')');
+                // 🚀 TRIGGER ENGINE: HIGH ACCURACY
+                const triggerRegex = /\b(edubot|edu bot|hey bot|any bot|edward|echo bot|edge bot|edgebot)\b/i;
+                
+                if (!isGeminiModeAlreadyActive && isLiveSessionOpen && triggerRegex.test(transcript)) {
+                    console.log('🚀 Edubot wake word detected! (Matched in: "' + transcript + '")');
+                    
+                    // Subtle haptic-like visual cue
+                    chatbotIcon.style.animation = 'none';
+                    setTimeout(() => chatbotIcon.style.animation = 'orbCorePulse 0.5s 2', 10);
+                    
                     activateEdubotVoiceMode();
                 }
             };
