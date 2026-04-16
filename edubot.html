@@ -1258,7 +1258,7 @@
         // =================================================================
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyARr9UE6jxi_KXA5eldFIUiTk7FO5RyiZo";
+        const GEMINI_API_KEY = "AQ.Ab8RN6KPhP7j2QdEbVb_BXMEu3DPRje4l0Y_AgXgBVLgCP3lVA";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -5970,12 +5970,12 @@ ${userMessage}
         function initVoiceActivation() {
             // Force optimal microphone tuning for better voice pickings & separate noise
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                navigator.mediaDevices.getUserMedia({ 
-                    audio: { 
-                        echoCancellation: true, 
-                        noiseSuppression: true, 
-                        autoGainControl: false 
-                    } 
+                navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: true,
+                        autoGainControl: false
+                    }
                 }).then(stream => {
                     window.tunedAudioStream = stream; // Keep stream alive to enforce constraints
                 }).catch(err => console.warn('Could not explicitly tune microphone:', err));
