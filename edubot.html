@@ -1258,7 +1258,7 @@
         // =================================================================
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyCQsOgV90sBaOTv4OOGSCB_xv6fBELNdWE";
+        const GEMINI_API_KEY = "AIzaSyARr9UE6jxi_KXA5eldFIUiTk7FO5RyiZo";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -2811,6 +2811,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         chatbotIcon.addEventListener("click", () => {
             pdfContainer.classList.remove("visible");
             chatbotContainer.classList.add("visible");
+            document.body.classList.add('live-active-border');
             chatbotIcon.classList.remove("visible");
             pdfIcon.classList.add("visible");
         });
@@ -2821,6 +2822,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         chatCloseBtn.addEventListener("click", () => {
             chatbotContainer.classList.remove("visible");
             chatbotContainer.classList.remove("gemini-live-mode");
+            document.body.classList.remove('live-active-border');
 
             // Stop conversational voice session
             if (voiceSessionRecognition) {
@@ -4307,9 +4309,6 @@ ${userMessage}
             liveSessionPage.classList.add('open');
             mainContent.classList.add('hiding');
 
-            // 🌈 ACTIVATE GLOBAL BORDER ANIMATION
-            document.body.classList.add('live-active-border');
-
             // Check localStorage for paused data
             let storedPausedData = null;
             try {
@@ -4393,8 +4392,6 @@ ${userMessage}
             liveSessionPage.classList.add('hiding');
             mainContent.classList.remove('hiding');
 
-            // 🛑 DEACTIVATE GLOBAL BORDER ANIMATION
-            document.body.classList.remove('live-active-border');
 
             // Don't clear timer if session is paused (it's already cleared)
             if (!sessionPaused && sessionTimerInterval) {
@@ -5971,6 +5968,19 @@ ${userMessage}
         let voiceSessionRecognition = null;
 
         function initVoiceActivation() {
+            // Force optimal microphone tuning for better voice pickings & separate noise
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ 
+                    audio: { 
+                        echoCancellation: true, 
+                        noiseSuppression: true, 
+                        autoGainControl: false 
+                    } 
+                }).then(stream => {
+                    window.tunedAudioStream = stream; // Keep stream alive to enforce constraints
+                }).catch(err => console.warn('Could not explicitly tune microphone:', err));
+            }
+
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) {
                 console.warn('Speech Recognition not supported in this browser.');
@@ -6055,6 +6065,7 @@ ${userMessage}
             if (chatbotContainer) {
                 chatbotContainer.classList.add("visible");
                 chatbotContainer.classList.add("gemini-live-mode");
+                document.body.classList.add('live-active-border');
             }
             if (chatbotIcon) chatbotIcon.classList.remove("visible");
             if (pdfIcon) pdfIcon.classList.add("visible");
@@ -6179,6 +6190,7 @@ ${userMessage}
         if (chatCloseBtn) {
             chatCloseBtn.addEventListener("click", () => {
                 if (chatbotContainer) chatbotContainer.classList.remove("gemini-live-mode");
+                document.body.classList.remove('live-active-border');
                 if (voiceSessionRecognition) voiceSessionRecognition.stop();
                 if (voiceActiveRecognition) {
                     try { voiceActiveRecognition.start(); } catch (e) { }
