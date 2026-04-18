@@ -3787,38 +3787,66 @@ INSTRUCTIONS:
             }
         }
 
+        /**
+         * Robustly gets the origin for the YouTube IFrame API, 
+         * handling GitHub Pages subdirectories correctly.
+         */
+        function getYouTubeOrigin() {
+            // Simply use location.origin, but ensure no trailing slash
+            // YouTube API is very picky about the origin matching exactly
+            return window.location.origin;
+        }
+
         // Replace the existing playAIVideo function with this enhanced version
         let aiPlayer = null;
         let videoCompleted = false;
 
         function playAIVideo(videoId) {
+            console.log(`🎬 Loading AI Video: ${videoId}`);
             videoCompleted = false;
+
+            // 🛠️ Lifecycle Management: Destroy previous player instances
+            if (aiPlayer) {
+                try {
+                    console.log("♻️ Destroying previous player instance");
+                    if (typeof aiPlayer.destroy === 'function') aiPlayer.destroy();
+                } catch (e) { console.warn("Player destruction failed:", e); }
+                aiPlayer = null;
+            }
+
             const wrapper = document.querySelector('.ai-video-wrapper');
             wrapper.innerHTML = '<div id="ai-youtube-player"></div>';
 
+            // Use nocookie host for better privacy and compatibility
+            const ytHost = "https://www.youtube-nocookie.com";
+            const currentOrigin = getYouTubeOrigin();
+
             // Initialize YouTube Player with IFrame API
-            if (window.YT && window.YT.Player) {
-                aiPlayer = new YT.Player('ai-youtube-player', {
-                    height: '100%',
-                    width: '100%',
-                    videoId: videoId,
-                    playerVars: {
-                        'playsinline': 1,
-                        'enablejsapi': 1,
-                        'rel': 0,
-                        'modestbranding': 1,
-                        'origin': window.location.origin
-                    },
+            requestAnimationFrame(() => {
+                if (window.YT && window.YT.Player) {
+                    aiPlayer = new YT.Player('ai-youtube-player', {
+                        height: '100%',
+                        width: '100%',
+                        videoId: videoId,
+                        host: ytHost, // 🚀 Use nocookie host
+                        playerVars: {
+                            'playsinline': 1,
+                            'enablejsapi': 1,
+                            'rel': 0,
+                            'modestbranding': 1,
+                            'origin': currentOrigin,
+                            'widget_referrer': currentOrigin
+                        },
                     events: {
                         'onReady': onPlayerReady,
                         'onStateChange': onPlayerStateChange
                     }
-                });
-            } else {
-                console.error("YouTube API not loaded");
-                const origin = window.location.origin;
-                wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1&origin=${origin}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
-            }
+                    });
+                } else {
+                    console.warn("YouTube API not loaded, using fallback iframe");
+                    wrapper.innerHTML = `<iframe id="ai-youtube-player-fallback" src="${ytHost}/embed/${videoId}?enablejsapi=1&origin=${currentOrigin}&rel=0&modestbranding=1" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
+                }
+            });
 
             // Update controls
             const controls = document.getElementById('ai-video-controls');
