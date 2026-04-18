@@ -1258,7 +1258,7 @@
         // =================================================================
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AQ.Ab8RN6LPHgGtAA7cQC3hebC_QYrcBfv5Ay1wipUIVuc0pBF4xw";
+        const GROQ_API_KEY = "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";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1451,7 +1451,7 @@
         // GEMINI API CONFIGURATION
         // =================================================================
 
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
         async function generateAIQuiz(topic, subject, numQuestions = 5) {
             const prompt = `Generate ${numQuestions} multiple-choice quiz questions about "${topic}" in ${subject} for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
@@ -1482,17 +1482,19 @@ Respond ONLY with valid JSON (no markdown, no backticks):
             try {
                 console.log(`🤖 AI Generating ${numQuestions} quiz questions for: ${topic}`);
 
-                const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+                const API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
                 const response = await fetch(API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 16384,
-                        }
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.7,
+                        max_tokens: 4096
                     })
                 });
 
@@ -1504,11 +1506,11 @@ Respond ONLY with valid JSON (no markdown, no backticks):
                     let errorMessage = 'Failed to generate quiz';
 
                     if (response.status === 403) {
-                        errorMessage = 'Invalid API Key - Please check your Gemini API key';
+                        errorMessage = 'Invalid API Key - Please check your Groq API key';
                     } else if (response.status === 429) {
                         errorMessage = 'API Rate Limit Exceeded - Please wait a moment and try again';
                     } else if (response.status === 500) {
-                        errorMessage = 'Gemini API Server Error - Please try again later';
+                        errorMessage = 'Groq API Server Error - Please try again later';
                     } else if (errorData.error?.message) {
                         errorMessage = errorData.error.message;
                     }
@@ -1518,11 +1520,11 @@ Respond ONLY with valid JSON (no markdown, no backticks):
 
                 const data = await response.json();
 
-                if (!data.candidates || !data.candidates[0]) {
-                    throw new Error('Invalid API response - No candidates returned');
+                if (!data.choices || !data.choices[0]) {
+                    throw new Error('Invalid API response - No choices returned');
                 }
 
-                let text = data.candidates[0].content.parts[0].text;
+                let text = data.choices[0].message.content;
                 console.log('📝 Raw AI Quiz Response:', text);
 
                 // Clean response
@@ -1551,64 +1553,69 @@ Respond ONLY with valid JSON (no markdown, no backticks):
             }
         }
         async function generateTopicBreakdown(topic, subject) {
-            const prompt = `Generate a structured learning plan for the topic: "${topic}" in the subject: "${subject}" for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
+            // SINGLE API CALL: returns concepts + all per-concept quizzes in one request
+            const prompt = `You are a curriculum designer. Generate a complete study session plan for the topic: "${topic}" in the subject: "${subject}" for ${DEFAULT_GRADE} students (${DEFAULT_CURRICULUM} curriculum).
 
-Break it down into 3-5 key concepts that should be learned in sequence, from basic to advanced.
-For each concept, provide:
-1. A clear concept name (2-5 words)
-2. A YouTube search query to find relevant educational videos. Make sure the search query is highly specific and distinct for each concept to avoid duplicate video results.
+Break the topic into 3-4 key sub-concepts learned in sequence (basic to advanced).
+For each concept:
+1. A short concept name (2-5 words)
+2. A specific, unique YouTube search query for an educational video
+3. Exactly 5 multiple-choice quiz questions to test understanding of THAT concept
 
-Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
+For each quiz question provide:
+- question text
+- options: array of 4 distinct strings
+- correctIndex: integer 0-3
+- explanation: 1-2 sentence explanation
+
+Respond ONLY with valid JSON, no markdown, no backticks:
 [
   {
     "name": "Concept Name",
-    "videoQuery": "search query for YouTube educational video"
+    "videoQuery": "specific youtube search query",
+    "quiz": [
+      {
+        "question": "Question text?",
+        "options": ["Option A", "Option B", "Option C", "Option D"],
+        "correctIndex": 0,
+        "explanation": "Brief explanation."
+      }
+    ]
   }
 ]`;
 
             try {
-                console.log(`🤖 AI GENERATING TOPIC BREAKDOWN: ${topic} in ${subject}`);
+                console.log(`🤖 AI GENERATING FULL SESSION PLAN (concepts + quizzes): ${topic} in ${subject}`);
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-                const response = await fetch(apiUrl, {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 2048,
-                        }
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.7,
+                        max_tokens: 4096
                     })
                 });
 
                 if (!response.ok) {
                     const errorData = await response.json();
-                    console.error('❌ Topic API Error:', errorData);
-
-                    // ⭐ NEW: Detailed error
-                    let errorMessage = 'Failed to generate topic breakdown';
-
-                    if (response.status === 403) {
-                        errorMessage = 'Invalid API Key';
-                    } else if (response.status === 429) {
-                        errorMessage = 'API Rate Limit Exceeded';
-                    } else if (errorData.error?.message) {
-                        errorMessage = errorData.error.message;
-                    }
-
+                    console.error('❌ Session Plan API Error:', errorData);
+                    let errorMessage = 'Failed to generate session plan';
+                    if (response.status === 403) errorMessage = 'Invalid API Key';
+                    else if (response.status === 429) errorMessage = 'API Rate Limit Exceeded - please wait a moment';
+                    else if (errorData.error?.message) errorMessage = errorData.error.message;
                     throw new Error(errorMessage);
                 }
 
                 const data = await response.json();
+                if (!data.choices || !data.choices[0]) throw new Error('Invalid response from API');
 
-                if (!data.candidates || !data.candidates[0]) {
-                    throw new Error('Invalid response from API');
-                }
-
-                let generatedText = data.candidates[0].content.parts[0].text;
-                console.log('📝 Raw Topic Breakdown:', generatedText);
+                let generatedText = data.choices[0].message.content;
+                console.log('📝 Raw Session Plan:', generatedText);
 
                 generatedText = generatedText.trim()
                     .replace(/```json\n?/g, '')
@@ -1619,25 +1626,20 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
                 if (!jsonMatch) throw new Error('Invalid JSON response from AI');
 
                 const concepts = JSON.parse(jsonMatch[0]);
-
-                if (!Array.isArray(concepts) || concepts.length === 0) {
-                    throw new Error('Invalid concepts array');
-                }
+                if (!Array.isArray(concepts) || concepts.length === 0) throw new Error('Invalid concepts array');
 
                 const formattedConcepts = concepts.map((concept, index) => ({
                     id: index + 1,
                     title: concept.name,
                     videoQuery: concept.videoQuery,
-                    quiz: null
+                    quiz: Array.isArray(concept.quiz) && concept.quiz.length > 0 ? concept.quiz : null
                 }));
 
-                console.log('✅ Topic Breakdown Generated:', formattedConcepts);
+                console.log('✅ Full Session Plan Generated:', formattedConcepts.length, 'concepts with quizzes');
                 return formattedConcepts;
 
             } catch (error) {
                 console.error('❌ Topic Breakdown Error:', error);
-
-                // ⭐ NEW: Re-throw error instead of fallback
                 throw error;
             }
         }
@@ -1661,21 +1663,20 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             try {
                 console.log(`🤖 AI GENERATING QUIZ: ${conceptTitle} in ${subject}`);
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+                const apiUrl = "https://api.groq.com/openai/v1/chat/completions";
 
                 const response = await fetch(apiUrl, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: prompt }]
-                        }],
-                        generationConfig: {
-                            temperature: 0.8,
-                            maxOutputTokens: 1024,
-                            topP: 0.95,
-                            topK: 40
-                        }
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.8,
+                        max_tokens: 1024,
+                        top_p: 0.95
                     })
                 });
 
@@ -1699,11 +1700,11 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
                 const data = await response.json();
 
-                if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                    throw new Error('Invalid response structure from Gemini API');
+                if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                    throw new Error('Invalid response structure from API');
                 }
 
-                let generatedText = data.candidates[0].content.parts[0].text;
+                let generatedText = data.choices[0].message.content;
                 console.log('📝 Raw AI Response:', generatedText);
 
                 generatedText = generatedText.trim()
@@ -1760,7 +1761,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
                             <div class="orb-ring ring-3"></div>
                         </div>
                         <h2 class="ai-loading-title">Generating Plan...</h2>
-                        <p class="ai-loading-subtitle">Analyzing "${topic}" via Gemini AI</p>
+                        <p class="ai-loading-subtitle">Analyzing "${topic}" via Groq AI</p>
                         <div class="ai-loading-bar-container">
                             <div class="ai-loading-bar-fill"></div>
                         </div>
@@ -3284,12 +3285,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             // 🛑 STOP SPEAKING ON NEW INPUT
             stopSpeaking();
 
-            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
-                appendChatMessage("bot", "Error: Gemini API Key is missing. Please set your key in the script.");
+            if (GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE" || !GROQ_API_KEY) {
+                appendChatMessage("bot", "Error: Groq API Key is missing. Please set your key in the script.");
                 return;
             }
 
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            const API_URL = "https://api.groq.com/openai/v1/chat/completions";
             sendBtn.disabled = true;
             chatInput.disabled = true;
 
@@ -3339,9 +3340,13 @@ ${userMessage}
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${GROQ_API_KEY}`
+                    },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: finalPrompt }] }],
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: finalPrompt }],
                     }),
                 });
 
@@ -3350,15 +3355,15 @@ ${userMessage}
                 if (!response.ok) {
                     throw new Error(data.error?.message || "Unknown API error");
                 }
-                if (!data.candidates || !data.candidates.length) {
+                if (!data.choices || !data.choices.length) {
                     if (data.promptFeedback) {
                         console.warn("Prompt blocked:", data.promptFeedback);
                         throw new Error("Prompt was blocked. Please try a different question.");
                     }
-                    throw new Error("No response from Gemini API");
+                    throw new Error("No response from API");
                 }
 
-                const botMessage = data.candidates[0].content.parts[0].text;
+                const botMessage = data.choices[0].message.content;
 
                 // Remove typing indicator
                 typingDiv.remove();
@@ -4135,17 +4140,29 @@ ${userMessage}
             fsCurrent = 0;
 
             try {
-                // Generate 5 questions for concept quiz, or 10 questions for final concept test
                 const isFinalConcept = aiSessionState.currentConceptIndex === aiSessionState.concepts.length - 1;
-                const questionCount = isFinalConcept ? 10 : 5;
-                const finalTopic = isFinalConcept ? aiSessionState.topic : conceptTitle;
+                const currentConcept = aiSessionState.concepts[aiSessionState.currentConceptIndex];
 
-                const questions = await generateAIQuiz(finalTopic, subject, questionCount);
+                let questions;
+
+                if (!isFinalConcept && currentConcept && Array.isArray(currentConcept.quiz) && currentConcept.quiz.length > 0) {
+                    // Use pre-generated quiz from the single-call session plan (no extra API call!)
+                    console.log(`\u2705 Using cached quiz for concept: ${conceptTitle}`);
+                    questions = currentConcept.quiz;
+                } else {
+                    // Final comprehensive test OR quiz wasn't pre-cached - call API now
+                    const finalTopic = isFinalConcept ? aiSessionState.topic : conceptTitle;
+                    const questionCount = isFinalConcept ? 10 : 5;
+                    console.log(`\ud83e\udd16 Generating ${isFinalConcept ? 'final comprehensive' : 'fallback'} quiz for: ${finalTopic}`);
+                    questions = await generateAIQuiz(finalTopic, subject, questionCount);
+                    if (currentConcept) currentConcept.quiz = questions;
+                }
+
                 fsQuestions = questions;
 
                 loading.classList.add('hidden');
                 quizSection.classList.remove('hidden');
-                document.getElementById('fs-quiz-title').textContent = isFinalConcept ? `Test: ${finalTopic}` : `Quiz: ${conceptTitle}`;
+                document.getElementById('fs-quiz-title').textContent = isFinalConcept ? `Final Test: ${aiSessionState.topic}` : `Quiz: ${conceptTitle}`;
 
                 renderFsQuestion();
                 renderFsNav();
@@ -4373,11 +4390,24 @@ ${userMessage}
             const activeData = {
                 id: currentSessionId,
                 sessionTitle: session.title,
+                sessionSubject: session.subject || '',
+                sessionType: session.type || 'Session',
                 totalDuration: sessionTotalDuration,
                 elapsedSeconds: sessionElapsedSeconds,
-                startedAt: sessionStartTime, // Reference for timer
-                actualStartTime: sessionActualStartTime, // For display
-                originalSessionId: session.originalSessionId || null
+                startedAt: sessionStartTime,
+                actualStartTime: sessionActualStartTime,
+                originalSessionId: session.originalSessionId || null,
+                isAISession: aiSessionState.active,
+                aiSessionData: aiSessionState.active ? {
+                    topic: aiSessionState.topic,
+                    subject: aiSessionState.subject,
+                    concepts: aiSessionState.concepts,
+                    currentConceptIndex: aiSessionState.currentConceptIndex,
+                    videoWatched: aiSessionState.videoWatched,
+                    quizAnswered: aiSessionState.quizAnswered,
+                    scores: aiSessionState.scores,
+                    overallProgress: aiSessionState.overallProgress
+                } : null
             };
             localStorage.setItem('epicScholarActiveSession', JSON.stringify(activeData));
 
@@ -4852,27 +4882,44 @@ ${userMessage}
                 const session = sessions.find(s => Number(s.id) === sessionId);
 
                 if (session) {
-                    // ⭐ FAILSAFE: Load from LocalStorage if variable is missing
+                    // Load pausedSessionData from localStorage if not in memory
                     if (!pausedSessionData) {
                         const stored = localStorage.getItem('epicScholarPausedSession');
                         if (stored) {
-                            try {
-                                pausedSessionData = JSON.parse(stored);
-                                console.log('✅ Recovered paused session data from storage');
-                            } catch (e) {
-                                console.error('Failed to parse paused session data', e);
-                            }
+                            try { pausedSessionData = JSON.parse(stored); }
+                            catch (e) { console.error('Failed to parse paused session data', e); }
                         }
                     }
 
+                    // Also check activeSession as fallback (for sessions that were active but not paused)
+                    let resumeData = null;
                     if (pausedSessionData && Number(pausedSessionData.id) === sessionId) {
+                        resumeData = pausedSessionData;
+                    } else {
+                        const activeStored = localStorage.getItem('epicScholarActiveSession');
+                        if (activeStored) {
+                            try {
+                                const active = JSON.parse(activeStored);
+                                if (Number(active.id) === sessionId) resumeData = active;
+                            } catch (e) { }
+                        }
+                    }
+
+                    if (resumeData) {
                         console.log(`✅ Resuming session: ${session.title}`);
 
-                        // ⭐ CRITICAL FIX: Restore AI session state BEFORE opening live session
+                        // Convert activeSession format to pausedSession format if needed
+                        if (!pausedSessionData || Number(pausedSessionData.id) !== sessionId) {
+                            pausedSessionData = {
+                                ...resumeData,
+                                chatHistory: resumeData.chatHistory || null,
+                                videoSearchQuery: resumeData.videoSearchQuery || null,
+                            };
+                        }
+
                         const isAISession = pausedSessionData.isAISession && pausedSessionData.aiSessionData;
 
                         if (isAISession) {
-                            // Restore the FULL AI session state
                             aiSessionState.active = true;
                             aiSessionState.topic = pausedSessionData.aiSessionData.topic;
                             aiSessionState.subject = pausedSessionData.aiSessionData.subject;
@@ -4886,34 +4933,26 @@ ${userMessage}
                             console.log('✅ Restored AI session state:', {
                                 currentConcept: aiSessionState.currentConceptIndex,
                                 totalConcepts: aiSessionState.concepts.length,
-                                scores: aiSessionState.scores,
-                                progress: aiSessionState.overallProgress
+                                scores: aiSessionState.scores
                             });
                         }
 
                         // Open live session (timer restoration happens here)
                         openLiveSession(session, true);
 
-                        // ⭐ CRITICAL FIX: Restore AI UI AFTER live session opens
                         if (isAISession) {
                             setTimeout(() => {
-                                // Render AI layout
                                 renderAISessionLayout();
-
-                                // Update progress circle FIRST
                                 updateProgress();
-
-                                // Then load the CORRECT concept (not 0)
                                 const conceptIndex = aiSessionState.currentConceptIndex;
                                 console.log(`🔄 Loading concept ${conceptIndex + 1}/${aiSessionState.concepts.length}`);
                                 loadConcept(conceptIndex);
-
-                                showToast(`Resumed at Concept ${conceptIndex + 1}: ${aiSessionState.concepts[conceptIndex].title}`);
-                            }, 800); // Increased delay to ensure DOM is ready
+                                showToast(`▶️ Resumed at: ${aiSessionState.concepts[conceptIndex]?.title || 'Concept ' + (conceptIndex + 1)}`);
+                            }, 800);
                         }
                     } else {
-                        console.error('❌ Could not find matching paused session data');
-                        showToast('Error: Paused session data not found', 'fa-circle-xmark');
+                        console.error('❌ Could not find matching session data to resume');
+                        showToast('Error: Session data not found', 'fa-circle-xmark');
                         localStorage.removeItem('epicScholarPausedSession');
                         pausedSessionData = null;
                         renderSessions();
@@ -5183,7 +5222,7 @@ ${userMessage}
         let quizCurrentQuestion = 0;
         let quizShowResults = false;
         const QUIZ_API_KEY = "AIzaSyAVmuy_bEGikeYncyr4Y0gPA_hv3DiCP5U"; // Your quiz API key
-        const QUIZ_MODEL_NAME = "gemini-2.5-flash";
+        const QUIZ_MODEL_NAME = "llama-3.3-70b-versatile";
         const QUIZ_NUM_QUESTIONS = 10;
         const QUIZ_DIFFICULTY = "medium";
         function renderTimetable() {
@@ -5631,15 +5670,7 @@ ${userMessage}
         // Function to generate quiz for current session
         async function generateSessionQuiz(sessionIndex, sessionData) {
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: `Generate 5 multiple choice questions based on this content: "${sessionData.topic}". 
+                const promptText = `Generate 5 multiple choice questions based on this content: "${sessionData.topic}". 
                         
                         Return ONLY a valid JSON array with this exact structure, no markdown, no backticks:
                         [
@@ -5650,14 +5681,22 @@ ${userMessage}
                           }
                         ]
                         
-                        Make sure correctAnswer is the index (0-3) of the correct option.`
-                            }]
-                        }]
+                        Make sure correctAnswer is the index (0-3) of the correct option.`;
+
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: promptText }]
                     })
                 });
 
                 const data = await response.json();
-                let quizText = data.candidates[0].content.parts[0].text.trim();
+                let quizText = data.choices[0].message.content.trim();
 
                 // Clean up the response
                 quizText = quizText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
