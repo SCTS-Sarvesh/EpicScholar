@@ -1444,7 +1444,8 @@
             quizAnswered: false,
             scores: {},
             overallProgress: 0,
-            playedVideoIds: []
+            playedVideoIds: [],
+            liveChatHistory: [] // Added for multi-turn conversational memory
         };
 
         // =================================================================
@@ -3308,34 +3309,37 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             chatbotMessages.appendChild(typingDiv);
             chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
-            // ⭐ CONTEXT AWARENESS LOGIC
-            let finalPrompt = userMessage;
-
-            if (aiSessionState.active) {
-                const currentConcept = aiSessionState.concepts[aiSessionState.currentConceptIndex];
-                const planList = aiSessionState.concepts.map((c, i) => `${i + 1}. ${c.title}`).join('\n');
-
-                const systemContext = `
-[SYSTEM CONTEXT]
-You are Edubot, a friendly and highly intelligent AI tutor. You are currently guiding the user through a study session on "${aiSessionState.topic}".
-
-CURRENT STATUS:
-- Subject: ${aiSessionState.subject}
-- Progress: Step ${aiSessionState.currentConceptIndex + 1} of ${aiSessionState.concepts.length}
-- Current Focus: "${currentConcept ? currentConcept.title : 'Overview'}"
-
-TONE & PERSONALITY:
-- Be encouraging, concise, and clear.
-- Use a natural, conversational human tone (avoid being overly robotic).
-- If the user is in "Voice Mode", keep your answers shorter so they are easier to listen to.
-- Do not mention "[SYSTEM CONTEXT]" in your response.
-
-[USER QUESTION]
-${userMessage}
-`;
-                finalPrompt = systemContext;
-                console.log("🧠 Context-Aware Prompt Sent");
+            // ⭐ CONTEXT AWARENESS & HISTORY LOGIC
+            const currentConcept = aiSessionState.active ? aiSessionState.concepts[aiSessionState.currentConceptIndex] : null;
+            
+            // Keep history limited to last 10 messages for speed, but summarize older ones
+            if (aiSessionState.liveChatHistory.length > 10) {
+                await summarizeHistory();
             }
+
+            const systemContent = `
+You are Edubot, a friendly and highly intelligent AI tutor.
+Topic: "${aiSessionState.topic}" | Subject: "${aiSessionState.subject}"
+Current Focus: "${currentConcept ? currentConcept.title : 'Overview'}"
+
+INSTRUCTIONS:
+- Give SHORT, SWEET, and human-like answers.
+- Since the user is likely listening to you via TTS, avoid long lists or complex punctuation.
+- Use a natural tutoring tone. Encourage the user.
+- If the user asks a question, answer it concisely.
+- Be extremely brief (max 2-3 sentences) to save tokens and time.
+`;
+
+            const messages = [
+                { role: "system", content: systemContent },
+                ...aiSessionState.liveChatHistory,
+                { role: "user", content: userMessage }
+            ];
+
+            // Update local history
+            aiSessionState.liveChatHistory.push({ role: "user", content: userMessage });
+            
+            console.log("🧠 Context-Aware Request with History Sent");
 
             try {
                 const response = await fetch(API_URL, {
@@ -3346,7 +3350,9 @@ ${userMessage}
                     },
                     body: JSON.stringify({
                         model: "llama-3.3-70b-versatile",
-                        messages: [{ role: "user", content: finalPrompt }],
+                        messages: messages,
+                        temperature: 0.6,
+                        max_tokens: 250 // Strictly limited for speed and token savings
                     }),
                 });
 
@@ -3364,6 +3370,9 @@ ${userMessage}
                 }
 
                 const botMessage = data.choices[0].message.content;
+                
+                // Add to history
+                aiSessionState.liveChatHistory.push({ role: "assistant", content: botMessage });
 
                 // Remove typing indicator
                 typingDiv.remove();
@@ -3378,6 +3387,46 @@ ${userMessage}
             } finally {
                 sendBtn.disabled = false;
                 chatInput.disabled = false;
+            }
+        }
+
+        /**
+         * Summarizes the chat history to keep token usage low
+         */
+        async function summarizeHistory() {
+            console.log("♻️ Summarizing chat history to save tokens...");
+            const historyToSummarize = aiSessionState.liveChatHistory.slice(0, -4); // Keep last 4 messages as raw
+            const currentRecent = aiSessionState.liveChatHistory.slice(-4);
+            
+            const prompt = `Summarize the key points of this conversation in 2 concise sentences for an AI tutor context:\n\n${JSON.stringify(historyToSummarize)}`;
+            
+            try {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${GROQ_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }],
+                        max_tokens: 100
+                    }),
+                });
+                
+                const data = await response.json();
+                const summary = data.choices[0].message.content;
+                
+                // Reset history with the summary as a single system notification or user context
+                aiSessionState.liveChatHistory = [
+                    { role: "system", content: `PREVIOUS CONTEXT SUMMARY: ${summary}` },
+                    ...currentRecent
+                ];
+                console.log("✅ History summarized successfully");
+            } catch (e) {
+                console.error("Summarization failed:", e);
+                // Fallback: just truncate
+                aiSessionState.liveChatHistory = aiSessionState.liveChatHistory.slice(-6);
             }
         }
 
@@ -3757,7 +3806,8 @@ ${userMessage}
                         'playsinline': 1,
                         'enablejsapi': 1,
                         'rel': 0,
-                        'modestbranding': 1
+                        'modestbranding': 1,
+                        'origin': window.location.origin
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -6006,6 +6056,11 @@ ${userMessage}
         let voiceActiveRecognition = null;
         let voiceSessionRecognition = null;
 
+        let audioContext = null;
+        let audioAnalyser = null;
+        let microphoneSource = null;
+        const VOLUME_INTERRUPT_THRESHOLD = 0.08; // Adjust based on sensitivity needs
+
         function initVoiceActivation() {
             // Force optimal microphone tuning for better voice pickings & separate noise
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -6013,10 +6068,23 @@ ${userMessage}
                     audio: {
                         echoCancellation: true,
                         noiseSuppression: true,
-                        autoGainControl: false
+                        autoGainControl: true
                     }
                 }).then(stream => {
-                    window.tunedAudioStream = stream; // Keep stream alive to enforce constraints
+                    window.tunedAudioStream = stream; // Keep stream alive
+
+                    // Initialize AudioContext for volume mapping (Interruption System)
+                    try {
+                        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                        audioAnalyser = audioContext.createAnalyser();
+                        microphoneSource = audioContext.createMediaStreamSource(stream);
+                        microphoneSource.connect(audioAnalyser);
+                        audioAnalyser.fftSize = 256;
+                        
+                        // Start the volume monitoring loop
+                        monitorMicrophoneVolume();
+                    } catch (e) { console.warn("AudioContext init failed:", e); }
+
                 }).catch(err => console.warn('Could not explicitly tune microphone:', err));
             }
 
@@ -6077,26 +6145,79 @@ ${userMessage}
                 }
             };
 
-            try {
-                voiceActiveRecognition.start();
-                console.log('✅ Edubot background voice listener started. Say "Edubot" during a session!');
-            } catch (e) {
-                console.warn('Could not start voice listener:', e);
-            }
+        function monitorMicrophoneVolume() {
+            if (!audioAnalyser) return;
+            
+            const bufferLength = audioAnalyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+            
+            const checkVolume = () => {
+                if (!chatbotContainer.classList.contains('gemini-live-mode')) {
+                    requestAnimationFrame(checkVolume);
+                    return;
+                }
+
+                audioAnalyser.getByteTimeDomainData(dataArray);
+                
+                // Calculate RMS volume
+                let sum = 0;
+                for (let i = 0; i < bufferLength; i++) {
+                    const val = (dataArray[i] - 128) / 128;
+                    sum += val * val;
+                }
+                const rms = Math.sqrt(sum / bufferLength);
+
+                // 🛑 INSTANT INTERRUPTION LOGIC
+                if (synth.speaking && rms > VOLUME_INTERRUPT_THRESHOLD) {
+                    console.log(`🎙️ Volume-based interruption detected (RMS: ${rms.toFixed(3)})`);
+                    stopSpeaking();
+                    
+                    // Visual feedback
+                    const indicator = document.querySelector('.voice-indicator');
+                    if (indicator) {
+                        indicator.style.background = '#ffc107';
+                        indicator.style.transform = 'scale(1.8)';
+                        setTimeout(() => {
+                            if (indicator) {
+                                indicator.style.background = '#ff416c';
+                                indicator.style.transform = 'scale(1)';
+                            }
+                        }, 500);
+                    }
+                }
+
+                requestAnimationFrame(checkVolume);
+            };
+            
+            checkVolume();
         }
+
+        try {
+            voiceActiveRecognition.start();
+            console.log('✅ Edubot background voice listener started.');
+        } catch (e) {
+            console.warn('Could not start voice listener:', e);
+        }
+    }
 
         function activateEdubotVoiceMode() {
             // Pause AI YouTube player correctly
             if (window.aiPlayer && typeof aiPlayer.pauseVideo === 'function') {
-                try { aiPlayer.pauseVideo(); } catch (e) { }
+                try { 
+                    console.log("⏸️ Pausing YouTube player via API");
+                    aiPlayer.pauseVideo(); 
+                } catch (e) { console.warn("AI player pause failed:", e); }
             }
-            // Also try pausing any iframe fallback
+            // Also try pausing any iframe fallback securely
             const yIframe = document.querySelector('.ai-video-wrapper iframe');
             if (yIframe && yIframe.contentWindow) {
-                const origin = "https://www.youtube.com";
-                yIframe.contentWindow.postMessage(
-                    '{"event":"command","func":"pauseVideo","args":""}', origin
-                );
+                try {
+                    // Use target origin of the iframe or '*' if unknown, 
+                    // but prefer '*' to avoid origin mismatch error when iframe hasn't finished loading securely
+                    yIframe.contentWindow.postMessage(
+                        '{"event":"command","func":"pauseVideo","args":""}', '*'
+                    );
+                } catch (e) { }
             }
 
             // Show chatbot in Gemini Live mode
