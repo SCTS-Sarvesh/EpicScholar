@@ -404,7 +404,7 @@
 </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://www.youtube.com/iframe_api"></script> <!-- Added YouTube IFrame API -->
+<script src="https://www.youtube-nocookie.com/iframe_api"></script> <!-- Added YouTube IFrame API -->
 <script>
         /* ============================================
         * ADD TO EXISTING <script> SECTION
@@ -1110,7 +1110,17 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
             // Load video
             try {
-                await searchAndPlayVideo(concept.videoQuery, concept.title);
+                if (isResuming && aiSessionState.videoId) {
+                    console.log(`Resuming video ${aiSessionState.videoId} at ${aiSessionState.videoTime}s`);
+                    playAIVideo(aiSessionState.videoId, aiSessionState.videoTime || 0);
+                    const videoContainer = document.getElementById('ai-video-container');
+                    if (videoContainer) {
+                        const titleElement = videoContainer.querySelector('h3');
+                        if (titleElement) titleElement.textContent = `Current Topic: ${concept.title}`;
+                    }
+                } else {
+                    await searchAndPlayVideo(concept.videoQuery, concept.title);
+                }
             } catch (error) {
                 console.error('Error loading video:', error);
                 const videoContainer = document.getElementById('ai-video-container');
@@ -2949,6 +2959,10 @@ INSTRUCTIONS:
                         aiSessionState.playedVideoIds.push(selectedVideoId);
                     }
 
+                    // Track active video state for pausing
+                    aiSessionState.videoId = selectedVideoId;
+                    aiSessionState.videoTime = 0;
+
                     playAIVideo(selectedVideoId);
                 } else {
                     const controls = document.getElementById('ai-video-controls');
@@ -2981,7 +2995,7 @@ INSTRUCTIONS:
         let aiPlayer = null;
         let videoCompleted = false;
 
-        function playAIVideo(videoId) {
+        function playAIVideo(videoId, startTime = 0) {
             console.log(`🎬 Loading AI Video: ${videoId}`);
             videoCompleted = false;
 
@@ -3010,6 +3024,7 @@ INSTRUCTIONS:
                         videoId: videoId,
                         host: ytHost, // 🚀 Use nocookie host
                         playerVars: {
+                            'start': startTime,
                             'playsinline': 1,
                             'enablejsapi': 1,
                             'rel': 0,
@@ -3665,7 +3680,9 @@ INSTRUCTIONS:
                     videoWatched: aiSessionState.videoWatched,
                     quizAnswered: aiSessionState.quizAnswered,
                     scores: aiSessionState.scores,
-                    overallProgress: aiSessionState.overallProgress
+                    overallProgress: aiSessionState.overallProgress,
+                    videoId: window.aiPlayer && typeof window.aiPlayer.getVideoData === 'function' ? window.aiPlayer.getVideoData().video_id : (aiSessionState.videoId || null),
+                    videoTime: window.aiPlayer && typeof window.aiPlayer.getCurrentTime === 'function' ? Math.floor(window.aiPlayer.getCurrentTime()) : (aiSessionState.videoTime || 0)
                 } : null
             };
             localStorage.setItem('epicScholarActiveSession', JSON.stringify(activeData));
@@ -3854,7 +3871,9 @@ INSTRUCTIONS:
                     videoWatched: aiSessionState.videoWatched,
                     quizAnswered: aiSessionState.quizAnswered,
                     scores: aiSessionState.scores,
-                    overallProgress: aiSessionState.overallProgress
+                    overallProgress: aiSessionState.overallProgress,
+                    videoId: window.aiPlayer && typeof window.aiPlayer.getVideoData === 'function' ? window.aiPlayer.getVideoData().video_id : (aiSessionState.videoId || null),
+                    videoTime: window.aiPlayer && typeof window.aiPlayer.getCurrentTime === 'function' ? Math.floor(window.aiPlayer.getCurrentTime()) : (aiSessionState.videoTime || 0)
                 } : null
             };
 
@@ -4214,6 +4233,8 @@ INSTRUCTIONS:
                             aiSessionState.quizAnswered = pausedSessionData.aiSessionData.quizAnswered || false;
                             aiSessionState.scores = pausedSessionData.aiSessionData.scores || {};
                             aiSessionState.overallProgress = pausedSessionData.aiSessionData.overallProgress || 0;
+                            aiSessionState.videoId = pausedSessionData.aiSessionData.videoId || null;
+                            aiSessionState.videoTime = pausedSessionData.aiSessionData.videoTime || 0;
 
                             console.log('✅ Restored AI session state:', {
                                 currentConcept: aiSessionState.currentConceptIndex,
@@ -5332,6 +5353,12 @@ INSTRUCTIONS:
         }
 
         function startBackgroundListener() {
+            // Guard: don't start if already listening
+            if (isBackgroundListening) {
+                console.log('⚠️ Background already listening, skipping');
+                return;
+            }
+
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
 
@@ -5445,6 +5472,12 @@ INSTRUCTIONS:
         }
 
         function startConversationalVoice() {
+            // Guard: don't start if already listening
+            if (isSessionListening) {
+                console.log('⚠️ Already listening, skipping startConversationalVoice');
+                return;
+            }
+
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
 
@@ -5516,14 +5549,16 @@ INSTRUCTIONS:
                 const indicator = document.querySelector('.voice-indicator');
                 if (indicator) indicator.remove();
 
-                // Keep listening loop active while in voice mode
+                // Restart only if still in voice mode — use a slightly longer delay
+                // to avoid race condition with onerror firing right before onend
                 const isStillActive = chatbotContainer.classList.contains('gemini-live-mode');
                 if (isStillActive) {
                     setTimeout(() => {
+                        // Double-check we're still in voice mode AND not already listening
                         if (chatbotContainer.classList.contains('gemini-live-mode') && !isSessionListening) {
                             startConversationalVoice();
                         }
-                    }, 400);
+                    }, 500);
                 }
             };
 
@@ -5531,16 +5566,20 @@ INSTRUCTIONS:
                 isSessionListening = false;
                 console.warn('🎙️ Voice session error:', event.error);
 
+                // 'aborted' is NOT a real error — it fires when we manually stop()
+                // or when Chrome internally resets. Just let onend handle the restart.
+                if (event.error === 'aborted') return;
+
                 const indicator = document.querySelector('.voice-indicator');
                 if (indicator) indicator.remove();
 
                 if (event.error === 'not-allowed') return;
 
-                // Retry if still in voice mode
+                // For real errors (network, audio-capture, etc.), retry after a delay
                 if (chatbotContainer.classList.contains('gemini-live-mode')) {
                     setTimeout(() => {
                         if (!isSessionListening) startConversationalVoice();
-                    }, 1000);
+                    }, 1200);
                 }
             };
 
