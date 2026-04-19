@@ -6189,10 +6189,51 @@ INSTRUCTIONS:
                 return;
             }
 
+            let isBackgroundListening = false;
+            let isSessionListening = false;
+
+            const safeStart = (rec, type) => {
+                if (type === 'bg' && isBackgroundListening) return;
+                if (type === 'session' && isSessionListening) return;
+                
+                try {
+                    rec.start();
+                    if (type === 'bg') isBackgroundListening = true;
+                    if (type === 'session') isSessionListening = true;
+                } catch (e) {
+                    console.warn(`SafeStart suppressed error for ${type}:`, e.message);
+                }
+            };
+
             voiceActiveRecognition = new SpeechRecognition();
             voiceActiveRecognition.continuous = true;
             voiceActiveRecognition.interimResults = true; // 🔥 FAST DETECTION
             voiceActiveRecognition.lang = 'en-US';
+
+            voiceActiveRecognition.onstart = () => { isBackgroundListening = true; };
+            voiceActiveRecognition.onend = () => {
+                isBackgroundListening = false;
+                // Only restart if Gemini Live mode is NOT active
+                const isGeminiModeActive = chatbotContainer.classList.contains('gemini-live-mode');
+                if (!isGeminiModeActive) {
+                    setTimeout(() => safeStart(voiceActiveRecognition, 'bg'), 500);
+                }
+            };
+
+            voiceActiveRecognition.onerror = (event) => {
+                isBackgroundListening = false;
+                console.warn('Background Rec error:', event.error);
+                if (event.error === 'not-allowed') {
+                    console.error('❌ Microphone permission denied. Voice activation disabled.');
+                    return; // Don't retry if permission denied
+                }
+                
+                // For 'aborted' or other errors, try a delayed restart
+                setTimeout(() => {
+                    const isGeminiStillOff = !chatbotContainer.classList.contains('gemini-live-mode');
+                    if (isGeminiStillOff) safeStart(voiceActiveRecognition, 'bg');
+                }, 1000);
+            };
 
             voiceActiveRecognition.onresult = (event) => {
                 let transcript = '';
@@ -6204,45 +6245,19 @@ INSTRUCTIONS:
                 console.log('🎤 Listening:', transcript);
 
                 // 🚀 TRIGGER ENGINE: EXTREME RELIABILITY
-                // Includes common phonetic misinterpretations and variations
                 const triggerRegex = /(edubot|edu bot|eddie bot|idlibot|hey bot|hey bought|hey boat|hey bod|hay bot|any bot|echo bot|edge bot|edgebot|hey box|hey but|hey bar|hey bat|activat)/i;
 
                 const isGeminiModeAlreadyActive = chatbotContainer.classList.contains('gemini-live-mode');
                 
-                // ⭐ GLOBAL ACTIVATION: Removed isLiveSessionOpen constraint to allow dashboard wake
                 if (!isGeminiModeAlreadyActive && triggerRegex.test(transcript)) {
-                    console.log('🚀 EduBot wake word detected! (Matched: "' + transcript + '")');
+                    console.log('🚀 EduBot wake word detected!');
                     
-                    // Visual confirmation
                     if (chatbotIcon) {
                         chatbotIcon.style.animation = 'orbCorePulse 0.4s 3';
                         setTimeout(() => chatbotIcon.style.animation = '', 1500);
                     }
 
                     activateEdubotVoiceMode();
-                }
-            };
-
-            voiceActiveRecognition.onend = () => {
-                // Only restart if Gemini Live mode is NOT active
-                const isGeminiModeActive = chatbotContainer.classList.contains('gemini-live-mode');
-                if (!isGeminiModeActive) {
-                    setTimeout(() => {
-                        try { voiceActiveRecognition.start(); } catch (e) { }
-                    }, 500);
-                }
-            };
-
-            voiceActiveRecognition.onerror = (event) => {
-                if (event.error === 'not-allowed') {
-                    console.error('❌ Microphone permission denied. Voice activation disabled.');
-                    return; // Don't retry if permission denied
-                }
-                if (event.error !== 'aborted') {
-                    // Retry on other errors after a short delay
-                    setTimeout(() => {
-                        try { voiceActiveRecognition.start(); } catch (e) { }
-                    }, 1000);
                 }
             };
 
@@ -6334,13 +6349,18 @@ INSTRUCTIONS:
             // Announce activation in chat
             appendChatMessage("bot", "🎤 **Edubot Voice Mode Active!** I'm listening — ask me anything about your session.");
 
-            // Stop background listener to avoid conflict
+            // 🛑 STOP BACKGROUND LISTENER FIRST
             if (voiceActiveRecognition) {
-                try { voiceActiveRecognition.stop(); } catch (e) { }
+                try { 
+                    voiceActiveRecognition.stop(); 
+                    console.log("🛑 Stopping background listener before interactive mode...");
+                } catch (e) { }
             }
 
-            // Start conversational voice
-            startConversationalVoice();
+            // Start conversational voice with a small delay to allow mic release
+            setTimeout(() => {
+                startConversationalVoice();
+            }, 350);
         }
 
         function startConversationalVoice() {
@@ -6357,6 +6377,7 @@ INSTRUCTIONS:
             voiceSessionRecognition.lang = 'en-US';
 
             voiceSessionRecognition.onstart = () => {
+                isSessionListening = true;
                 console.log('🎙️ Conversational voice listening...');
                 // 🛑 REMOVED: Don't stop onstart, wait for actual words below
 
@@ -6416,35 +6437,31 @@ INSTRUCTIONS:
             };
 
             voiceSessionRecognition.onerror = (event) => {
+                isSessionListening = false;
                 console.warn('Voice session error:', event.error);
-                if (event.error === 'no-speech') {
-                    // Restart listening if still in voice mode
-                    if (chatbotContainer.classList.contains('gemini-live-mode')) {
-                        setTimeout(() => {
-                            try { voiceSessionRecognition.start(); } catch (e) { }
-                        }, 500);
-                    }
+                
+                // RECOVERY: If aborted or no-speech, try to restart if still in live mode
+                if (chatbotContainer.classList.contains('gemini-live-mode') && event.error !== 'not-allowed') {
+                    setTimeout(() => {
+                        const stillActive = chatbotContainer.classList.contains('gemini-live-mode');
+                        if (stillActive) safeStart(voiceSessionRecognition, 'session');
+                    }, 800);
                 }
             };
 
             voiceSessionRecognition.onend = () => {
+                isSessionListening = false;
                 // Remove visual indicator
                 const indicator = document.querySelector('.voice-indicator');
                 if (indicator) indicator.remove();
 
                 // Keep listening if still in Gemini Live mode
                 if (chatbotContainer.classList.contains('gemini-live-mode')) {
-                    setTimeout(() => {
-                        try { voiceSessionRecognition.start(); } catch (e) { }
-                    }, 300);
+                    setTimeout(() => safeStart(voiceSessionRecognition, 'session'), 500);
                 }
             };
 
-            try {
-                voiceSessionRecognition.start();
-            } catch (e) {
-                console.error('Failed to start conversational voice:', e);
-            }
+            safeStart(voiceSessionRecognition, 'session');
         }
 
         // Global Live Mode Trigger Styles
