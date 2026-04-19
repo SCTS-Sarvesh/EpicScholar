@@ -587,6 +587,35 @@
             }
         }
 
+        #live-toggle-btn:hover {
+            opacity: 1 !important;
+            transform: scale(1.1);
+            color: #0072ff !important;
+        }
+
+        .gemini-live-mode #live-toggle-btn {
+            color: #FF416C !important;
+            animation: pulse 1s infinite;
+        }
+
+        /* Border animation for live mode */
+        body.live-active-border::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            border: 5px solid transparent;
+            border-image: linear-gradient(45deg, #0072ff, #ff416c, #0072ff) 1;
+            z-index: 99999;
+            pointer-events: none;
+            box-shadow: inset 0 0 50px rgba(0, 114, 255, 0.3);
+            animation: borderGlow 2s infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
         /* =================================================================
  * ENHANCED AI GENERATION LOADING ANIMATION
  * =================================================================
@@ -1113,9 +1142,14 @@
 
     <!-- Chatbot Container -->
     <div id="chatbot-container" class="floating-window">
-        <div id="chatbot-header">
-            <span>Edubot</span>
-            <button id="close-btn">&times;</button>
+        <div id="chatbot-header" style="justify-content: space-between;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span>Edubot</span>
+            </div>
+            <div style="display: flex; gap: 5px;">
+                <button id="live-toggle-btn" title="Toggle Voice Mode" style="background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2em; padding: 5px; opacity: 0.8; transition: opacity 0.3s;">🎤</button>
+                <button id="close-btn">&times;</button>
+            </div>
         </div>
         <div id="chatbot-body">
             <div id="chatbot-messages"></div>
@@ -2813,7 +2847,6 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         chatbotIcon.addEventListener("click", () => {
             pdfContainer.classList.remove("visible");
             chatbotContainer.classList.add("visible");
-            document.body.classList.add('live-active-border');
             chatbotIcon.classList.remove("visible");
             pdfIcon.classList.add("visible");
         });
@@ -3310,24 +3343,25 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
             // ⭐ CONTEXT AWARENESS & HISTORY LOGIC
+            const currentTopic = aiSessionState.active ? aiSessionState.topic : (pausedSessionData ? pausedSessionData.title : "General Study");
+            const currentSubject = aiSessionState.active ? aiSessionState.subject : "Learning";
             const currentConcept = aiSessionState.active ? aiSessionState.concepts[aiSessionState.currentConceptIndex] : null;
             
-            // Keep history limited to last 10 messages for speed, but summarize older ones
+            // Keep history limited
             if (aiSessionState.liveChatHistory.length > 10) {
                 await summarizeHistory();
             }
 
             const systemContent = `
 You are Edubot, a friendly and highly intelligent AI tutor.
-Topic: "${aiSessionState.topic}" | Subject: "${aiSessionState.subject}"
+Topic: "${currentTopic}" | Subject: "${currentSubject}"
 Current Focus: "${currentConcept ? currentConcept.title : 'Overview'}"
 
 INSTRUCTIONS:
 - Give SHORT, SWEET, and human-like answers.
-- Since the user is likely listening to you via TTS, avoid long lists or complex punctuation.
-- Use a natural tutoring tone. Encourage the user.
-- If the user asks a question, answer it concisely.
-- Be extremely brief (max 2-3 sentences) to save tokens and time.
+- Since the user is likely listening via TTS, avoid long lists or complex punctuation.
+- Use a natural tutoring tone.
+- Be extremely brief (max 2-3 sentences).
 `;
 
             const messages = [
@@ -3464,7 +3498,7 @@ INSTRUCTIONS:
 
             // 🗣️ AUTO-SPEAK BOT MESSAGES (In Voice Mode)
             if (sender === "bot" && chatbotContainer.classList.contains('gemini-live-mode')) {
-                setTimeout(() => speakResponse(message), 100);
+                speakResponse(message);
             }
         }
 
@@ -3792,9 +3826,15 @@ INSTRUCTIONS:
          * handling GitHub Pages subdirectories correctly.
          */
         function getYouTubeOrigin() {
-            // Simply use location.origin, but ensure no trailing slash
-            // YouTube API is very picky about the origin matching exactly
-            return window.location.origin;
+            try {
+                // YouTube API is very picky about the origin matching exactly.
+                // If origin is 'null' (running as local file://), we must use '*' 
+                // to allow communication, though a hosted environment is preferred.
+                const origin = window.location.origin;
+                return (origin === "null" || !origin) ? "*" : origin;
+            } catch (e) {
+                return "*";
+            }
         }
 
         // Replace the existing playAIVideo function with this enhanced version
@@ -4413,9 +4453,10 @@ INSTRUCTIONS:
 
             // DETERMINE IF RESUMING
             // We resume if forceResume is true AND we have matching data
+            // ⭐ FIX: Ensure robust ID comparison (convert both to Number)
             const isResuming = forceResume &&
                 storedPausedData &&
-                Number(storedPausedData.id) === currentSessionId;
+                Number(storedPausedData.id) === Number(currentSessionId);
 
             if (isResuming) {
                 // --- RESUME LOGIC ---
@@ -4582,11 +4623,37 @@ INSTRUCTIONS:
             const editId = sessionForm.dataset.editId;
 
             if (editId) {
-                const sessionIndex = sessions.findIndex(s => s.id === parseInt(editId));
+                const sessionIndex = sessions.findIndex(s => Number(s.id) === Number(editId));
                 if (sessionIndex !== -1) {
+                    const oldSession = sessions[sessionIndex];
+                    const newTitle = formData.get('title');
+                    
+                    // ⭐ REGENERATION LOGIC: If topic changed, clear pause state
+                    if (oldSession.title !== newTitle) {
+                        console.log('🔄 Topic changed! Clearing pause data and resetting timer.');
+                        const paused = JSON.parse(localStorage.getItem('epicScholarPausedSession') || 'null');
+                        const active = JSON.parse(localStorage.getItem('epicScholarActiveSession') || 'null');
+                        const sid = Number(editId);
+
+                        // Check if paused session belongs to this ID (either directly or via originalSessionId)
+                        if (paused && (Number(paused.id) === sid || Number(paused.originalSessionId) === sid)) {
+                            localStorage.removeItem('epicScholarPausedSession');
+                            if (pausedSessionData && (Number(pausedSessionData.id) === sid || Number(pausedSessionData.originalSessionId) === sid)) {
+                                pausedSessionData = null;
+                            }
+                        }
+                        
+                        // Also clear active session if it matches
+                        if (active && (Number(active.id) === sid || Number(active.originalSessionId) === sid)) {
+                            localStorage.removeItem('epicScholarActiveSession');
+                        }
+                        
+                        showToast('Topic changed. Session will start fresh.', 'fa-arrows-rotate');
+                    }
+
                     sessions[sessionIndex] = {
                         ...sessions[sessionIndex],
-                        title: formData.get('title'),
+                        title: newTitle,
                         subject: formData.get('subject'),
                         duration: parseInt(formData.get('duration')),
                         datetime: new Date(`${formData.get('date')}T${formData.get('time')}`).toISOString()
@@ -6124,27 +6191,33 @@ INSTRUCTIONS:
 
             voiceActiveRecognition = new SpeechRecognition();
             voiceActiveRecognition.continuous = true;
-            voiceActiveRecognition.interimResults = false;
+            voiceActiveRecognition.interimResults = true; // 🔥 FAST DETECTION
             voiceActiveRecognition.lang = 'en-US';
 
             voiceActiveRecognition.onresult = (event) => {
-                const lastIdx = event.results.length - 1;
-                const transcript = event.results[lastIdx][0].transcript.toLowerCase().trim();
-                console.log('🎤 Voice heard:', transcript);
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    transcript += event.results[i][0].transcript;
+                }
+                transcript = transcript.toLowerCase();
+                
+                console.log('🎤 Listening:', transcript);
+
+                // 🚀 TRIGGER ENGINE: EXTREME RELIABILITY
+                // Includes common phonetic misinterpretations and variations
+                const triggerRegex = /(edubot|edu bot|eddie bot|idlibot|hey bot|hey bought|hey boat|hey bod|hay bot|any bot|echo bot|edge bot|edgebot|hey box|hey but|hey bar|hey bat|activat)/i;
 
                 const isGeminiModeAlreadyActive = chatbotContainer.classList.contains('gemini-live-mode');
-                const isLiveSessionOpen = liveSessionPage.classList.contains('open');
-
-                // Trigger on "edubot" keyword — works in any live session, not just AI ones
-                // 🚀 TRIGGER ENGINE: HIGH ACCURACY
-                const triggerRegex = /\b(edubot|edu bot|hey bot|any bot|edward|echo bot|edge bot|edgebot)\b/i;
-
-                if (!isGeminiModeAlreadyActive && isLiveSessionOpen && triggerRegex.test(transcript)) {
-                    console.log('🚀 Edubot wake word detected! (Matched in: "' + transcript + '")');
-
-                    // Subtle haptic-like visual cue
-                    chatbotIcon.style.animation = 'none';
-                    setTimeout(() => chatbotIcon.style.animation = 'orbCorePulse 0.5s 2', 10);
+                
+                // ⭐ GLOBAL ACTIVATION: Removed isLiveSessionOpen constraint to allow dashboard wake
+                if (!isGeminiModeAlreadyActive && triggerRegex.test(transcript)) {
+                    console.log('🚀 EduBot wake word detected! (Matched: "' + transcript + '")');
+                    
+                    // Visual confirmation
+                    if (chatbotIcon) {
+                        chatbotIcon.style.animation = 'orbCorePulse 0.4s 3';
+                        setTimeout(() => chatbotIcon.style.animation = '', 1500);
+                    }
 
                     activateEdubotVoiceMode();
                 }
@@ -6372,6 +6445,49 @@ INSTRUCTIONS:
             } catch (e) {
                 console.error('Failed to start conversational voice:', e);
             }
+        }
+
+        // Global Live Mode Trigger Styles
+        const style = document.createElement('style');
+        style.textContent = `
+            #chatbot-icon.listening-active {
+                box-shadow: 0 0 20px rgba(0, 114, 255, 0.6), 0 0 40px rgba(0, 114, 255, 0.3);
+                animation: backgroundPulse 2s infinite alternate !important;
+            }
+            @keyframes backgroundPulse {
+                from { filter: brightness(1) drop-shadow(0 0 5px #0072ff); }
+                to { filter: brightness(1.3) drop-shadow(0 0 15px #0072ff); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Add visual state when recognition starts
+        if (voiceActiveRecognition) {
+            voiceActiveRecognition.addEventListener('start', () => {
+                if (chatbotIcon) chatbotIcon.classList.add('listening-active');
+            });
+            voiceActiveRecognition.addEventListener('end', () => {
+                if (chatbotIcon) chatbotIcon.classList.remove('listening-active');
+            });
+        }
+        const liveToggleBtn = document.getElementById('live-toggle-btn');
+        if (liveToggleBtn) {
+            liveToggleBtn.addEventListener('click', () => {
+                if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                    // Turn OFF
+                    chatbotContainer.classList.remove('gemini-live-mode');
+                    document.body.classList.remove('live-active-border');
+                    if (voiceSessionRecognition) voiceSessionRecognition.stop();
+                    // Restart background listener
+                    if (voiceActiveRecognition) {
+                        try { voiceActiveRecognition.start(); } catch (e) { }
+                    }
+                    showToast('Voice mode deactivated.', 'fa-microphone-slash');
+                } else {
+                    // Turn ON
+                    activateEdubotVoiceMode();
+                }
+            });
         }
 
         // Listen for close to stop conversational mode
