@@ -1826,6 +1826,20 @@ button:active {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* 🚀 MASTER OVERLAY: Edubot on top of everything in Live Mode */
+.gemini-live-mode {
+    z-index: 1000000 !important;
+    position: fixed !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(1) !important;
+    width: 600px !important;
+    height: 700px !important;
+    max-width: 90vw;
+    max-height: 85vh;
+}
+
+
 .light-mode .floating-window {
     border: var(--border-light);
     box-shadow: var(--shadow-light);
@@ -3319,7 +3333,6 @@ code {
 }
 
 @keyframes typing-bounce {
-
     0%,
     60%,
     100% {
@@ -3330,6 +3343,59 @@ code {
         transform: translateY(-10px);
     }
 }
+
+/* 🌟 NEW: Message Entry Animation */
+@keyframes message-pop-in {
+    0% { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.95);
+        filter: blur(5px);
+    }
+    100% { 
+        opacity: 1; 
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+.message {
+    animation: message-pop-in 0.4s var(--animation-timing) forwards;
+    transform-origin: left bottom;
+}
+
+.message.user {
+    transform-origin: right bottom;
+}
+
+/* 🌈 NEW: Live Session Border Animation */
+body.live-active-border::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 20000;
+    border: 4px solid transparent;
+    border-image: linear-gradient(var(--angle, 0deg), #0072ff, #ff416c, #00c6ff, #0072ff) 1;
+    animation: borderRotate 4s linear infinite, borderGlow 2s ease-in-out infinite alternate;
+    box-shadow: inset 0 0 20px rgba(0, 114, 255, 0.2);
+}
+
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes borderRotate {
+    to { --angle: 360deg; }
+}
+
+@keyframes borderGlow {
+    from { opacity: 0.6; box-shadow: inset 0 0 10px rgba(0, 114, 255, 0.2); }
+    to { opacity: 1; box-shadow: inset 0 0 40px rgba(255, 65, 108, 0.3); }
+}
+
+
 
 .typing-container span {
     color: var(--subtext-dark);
@@ -5073,4 +5139,920 @@ body.loaded #page-loader {
     visibility: visible;
     position: relative;
     z-index: 2;
+}
+/* --- Extracted Styles --- */
+
+        /* =================================================================
+ * CIRCULAR PROGRESS FIXES - COMPLETE REPLACEMENT
+ * =================================================================
+ */
+
+        /* Fix for Overall Performance Circle */
+        #overall-performance-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            position: relative;
+        }
+
+        #overall-performance-box .circular-progress-container {
+            position: relative;
+            width: 180px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+        }
+
+        #overall-performance-box .circular-progress {
+            width: 180px;
+            height: 180px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        #overall-performance-box .circular-progress svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            overflow: visible;
+        }
+
+        #overall-performance-box .progress-circle-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.1);
+            stroke-width: 12;
+            cx: 90;
+            cy: 90;
+            r: 80;
+            transform-box: fill-box;
+        }
+
+        .light-mode #overall-performance-box .progress-circle-bg {
+            stroke: rgba(0, 0, 0, 0.1);
+        }
+
+        #overall-performance-box .progress-circle {
+            fill: none;
+            stroke-width: 12;
+            stroke-linecap: round;
+            cx: 90;
+            cy: 90;
+            r: 80;
+            stroke-dasharray: 502.65;
+            stroke-dashoffset: 502.65;
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Live Gradient Fill for Progress Circles */
+        #overall-performance-box .progress-circle.excellent {
+            stroke: url(#gradient-excellent);
+            animation: progressGlow 2s ease-in-out infinite alternate;
+        }
+
+        #overall-performance-box .progress-circle.good {
+            stroke: url(#gradient-good);
+            animation: progressGlow 2s ease-in-out infinite alternate;
+        }
+
+        #overall-performance-box .progress-circle.average {
+            stroke: url(#gradient-average);
+            animation: progressGlow 2s ease-in-out infinite alternate;
+        }
+
+        #overall-performance-box .progress-circle.poor {
+            stroke: url(#gradient-poor);
+            animation: progressGlow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes progressGlow {
+            0% {
+                filter: drop-shadow(0 0 8px rgba(0, 114, 255, 0.5));
+            }
+
+            100% {
+                filter: drop-shadow(0 0 16px rgba(0, 114, 255, 0.8));
+            }
+        }
+
+        #overall-performance-box .progress-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        #overall-performance-box .progress-percentage {
+            font-size: 2.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            display: block;
+        }
+
+        #overall-performance-box .progress-label {
+            font-size: 0.85em;
+            color: var(--subtext-dark);
+            margin-top: 5px;
+            font-weight: 600;
+        }
+
+        .light-mode #overall-performance-box .progress-label {
+            color: var(--subtext-light);
+        }
+
+        /* Ensure the gradient is defined in the SVG */
+        .session-sidebar .circular-progress svg defs {
+            position: absolute;
+        }
+
+        /* Fix for Quiz Results Score Circle */
+        .quiz-score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            box-shadow:
+                0 20px 60px rgba(0, 114, 255, 0.4),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+            animation: scorePulse 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        .score-circle {
+            width: 220px;
+            height: 220px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            box-shadow:
+                0 20px 60px rgba(0, 114, 255, 0.4),
+                inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+            animation: scorePulse 2s ease-in-out infinite;
+            position: relative;
+        }
+
+        @keyframes scorePulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow:
+                    0 20px 60px rgba(0, 114, 255, 0.4),
+                    inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow:
+                    0 25px 70px rgba(0, 114, 255, 0.6),
+                    inset 0 -5px 20px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        .score-circle::before,
+        .quiz-score-circle::before {
+            content: '';
+            position: absolute;
+            inset: -10px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+            opacity: 0.3;
+            filter: blur(20px);
+            z-index: -1;
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                opacity: 0.3;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(1.1);
+            }
+        }
+
+        .score-number,
+        .quiz-score-number {
+            font-size: 4.5rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            line-height: 1;
+        }
+
+        .score-label,
+        .quiz-score-label {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            color: white;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        /* Enhanced SVG Gradients with Animation */
+        svg defs linearGradient stop {
+            transition: stop-color 0.5s ease;
+        }
+
+        /* Ensure proper SVG rendering */
+        .circular-progress svg,
+        svg {
+            overflow: visible;
+        }
+
+        circle {
+            vector-effect: non-scaling-stroke;
+        }
+
+        /* Additional polish for all progress circles */
+        .progress-circle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* Smooth transitions for all progress elements */
+        .progress-circle,
+        #ai-progress-circle {
+            transition: stroke-dashoffset 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+
+            #overall-performance-box .circular-progress-container,
+            #overall-performance-box .circular-progress {
+                width: 150px;
+                height: 150px;
+            }
+
+            #overall-performance-box .progress-circle-bg,
+            #overall-performance-box .progress-circle {
+                cx: 75;
+                cy: 75;
+                r: 65;
+            }
+
+            #overall-performance-box .progress-percentage {
+                font-size: 2em;
+            }
+
+            .score-circle,
+            .quiz-score-circle {
+                width: 180px;
+                height: 180px;
+            }
+
+            .score-number,
+            .quiz-score-number {
+                font-size: 3.5rem;
+            }
+        }
+
+        /* =================================================================
+ * SESSION SIDEBAR PROGRESS CIRCLE FIX - Straight from top
+ * =================================================================
+ */
+
+
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .session-sidebar .progress-circle-container {
+                width: 100px;
+                height: 100px;
+            }
+
+            .session-sidebar .circular-progress {
+                width: 100px;
+                height: 100px;
+            }
+
+            .session-sidebar .progress-text #ai-progress-percentage {
+                font-size: 1.5em;
+            }
+        }
+
+        /* Add to your <style> section */
+
+        /* Disabled button styling */
+        #quiz-prev-btn:disabled,
+        #fs-prev-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        /* Button hover states */
+        #quiz-prev-btn:not(:disabled):hover,
+        #quiz-next-btn:hover,
+        #fs-prev-btn:not(:disabled):hover,
+        #fs-next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 114, 255, 0.3);
+        }
+
+        /* Submit button emphasis */
+        #quiz-submit-btn,
+        #fs-submit-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        #quiz-submit-btn:hover,
+        #fs-submit-btn:hover {
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.6);
+            transform: translateY(-3px) scale(1.02);
+        }
+
+        /* Add to your <style> section */
+
+        /* Test completion card removal animation */
+        @keyframes cardFadeOutScale {
+            0% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+
+            50% {
+                opacity: 0.5;
+                transform: scale(0.95) translateY(-10px);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(0.8) translateY(-30px);
+                max-height: 0;
+                margin: 0;
+                padding: 0;
+            }
+        }
+
+        .session-card.test-completed {
+            animation: cardFadeOutScale 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+            pointer-events: none;
+        }
+
+        /* Success toast styling */
+        .toast.test-complete {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.95) 0%, rgba(5, 150, 105, 0.95) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .toast.test-complete i {
+            color: white;
+        }
+
+        .toast.test-complete span {
+            color: white;
+        }
+
+        /* Add to your <style> section */
+
+        /* =================================================================
+ * ERROR DISPLAY STYLING
+ * =================================================================
+ */
+
+        .error-display-container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            text-align: center;
+            animation: errorSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes errorSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .error-icon {
+            margin: 0 auto 2rem;
+            animation: errorPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes errorPulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        .error-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin: 0 0 1.5rem 0;
+            font-weight: 700;
+        }
+
+        .error-message {
+            background: rgba(255, 65, 108, 0.1);
+            border: 2px solid rgba(255, 65, 108, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        .light-mode .error-message {
+            background: rgba(255, 65, 108, 0.05);
+        }
+
+        .error-message p {
+            margin: 0;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .light-mode .error-message p {
+            color: var(--text-light);
+        }
+
+        .error-suggestions {
+            text-align: left;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .light-mode .error-suggestions {
+            background: rgba(0, 0, 0, 0.02);
+        }
+
+        .error-suggestions h4 {
+            margin: 0 0 1rem 0;
+            color: var(--primary-color);
+            font-size: 1.1rem;
+        }
+
+        .error-suggestions ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .error-suggestions li {
+            margin: 0.8rem 0;
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        .light-mode .error-suggestions li {
+            color: var(--text-light);
+        }
+
+        .error-suggestions strong {
+            color: var(--primary-color);
+        }
+
+        .error-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .error-actions button {
+            min-width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .error-help {
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .light-mode .error-help {
+            border-top-color: rgba(0, 0, 0, 0.1);
+        }
+
+        .error-help p {
+            color: var(--subtext-dark);
+        }
+
+        .light-mode .error-help p {
+            color: var(--subtext-light);
+        }
+
+        /* =================================================================
+ * GEMINI LIVE MODE FOR EDUBOT
+ * =================================================================
+ */
+        #chatbot-container.gemini-live-mode {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 450px !important;
+            height: 650px !important;
+            max-width: 90vw;
+            max-height: 90vh;
+            z-index: 100000 !important;
+            border-radius: 20px !important;
+            box-shadow: 0 0 30px #0072ff !important;
+            border: 3px solid transparent !important;
+            background: linear-gradient(rgba(22, 22, 30, 0.9), rgba(22, 22, 30, 0.9)) padding-box,
+                linear-gradient(45deg, #0072ff, #00c6ff, #0072ff) border-box !important;
+            animation: geminiVoicePulse 2s ease-in-out infinite !important;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+        }
+
+        .light-mode #chatbot-container.gemini-live-mode {
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)) padding-box,
+                linear-gradient(45deg, #0072ff, #00c6ff, #0072ff) border-box !important;
+        }
+
+        @keyframes geminiVoicePulse {
+            0% {
+                box-shadow: 0 0 20px rgba(0, 114, 255, 0.4), inset 0 0 10px rgba(0, 114, 255, 0.2);
+            }
+
+            50% {
+                box-shadow: 0 0 50px rgba(0, 114, 255, 0.8), inset 0 0 20px rgba(0, 114, 255, 0.4);
+            }
+
+            100% {
+                box-shadow: 0 0 20px rgba(0, 114, 255, 0.4), inset 0 0 10px rgba(0, 114, 255, 0.2);
+            }
+        }
+
+        #live-toggle-btn:hover {
+            opacity: 1 !important;
+            transform: scale(1.1);
+            color: #0072ff !important;
+        }
+
+        .gemini-live-mode #live-toggle-btn {
+            color: #FF416C !important;
+            animation: pulse 1s infinite;
+        }
+
+        /* Border animation for live mode */
+        body.live-active-border::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            border: 5px solid transparent;
+            border-image: linear-gradient(45deg, #0072ff, #ff416c, #0072ff) 1;
+            z-index: 99999;
+            pointer-events: none;
+            box-shadow: inset 0 0 50px rgba(0, 114, 255, 0.3);
+            animation: borderGlow 2s infinite alternate;
+        }
+
+        @keyframes borderGlow {
+            from { opacity: 0.5; }
+            to { opacity: 1; }
+        }
+
+        /* =================================================================
+ * ENHANCED AI GENERATION LOADING ANIMATION
+ * =================================================================
+ */
+        .ai-loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(25px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            animation: fadeInOverlay 0.5s ease-out;
+        }
+
+        .ai-loading-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .ai-orb {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .orb-core {
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #00c6ff 0%, #0072ff 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px #00c6ff, inset 0 0 10px white;
+            animation: orbCorePulse 1.5s ease-in-out infinite alternate;
+        }
+
+        .orb-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            border-top-color: #0072ff;
+            border-bottom-color: #ff416c;
+            animation: spinRing linear infinite;
+        }
+
+        .ring-1 {
+            width: 100%;
+            height: 100%;
+            animation-duration: 2s;
+            border-width: 3px;
+        }
+
+        .ring-2 {
+            width: 80%;
+            height: 80%;
+            animation-duration: 3s;
+            animation-direction: reverse;
+            border-top-color: #ff416c;
+            border-bottom-color: #00c6ff;
+        }
+
+        .ring-3 {
+            width: 60%;
+            height: 60%;
+            animation-duration: 1.5s;
+            border-width: 1px;
+        }
+
+        .ai-loading-title {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #00c6ff, #0072ff, #ff416c);
+            -webkit-background-clip: text;
+            color: transparent;
+            animation: titleShimmer 3s infinite linear;
+            background-size: 200% auto;
+        }
+
+        .ai-loading-subtitle {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 30px;
+        }
+
+        .ai-loading-bar-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .ai-loading-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, #0072ff, #00c6ff, #ff416c);
+            animation: fillBar 4s ease-in-out forwards;
+        }
+
+        .ai-loading-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .step-text {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.5s;
+            transform: translateY(10px);
+            opacity: 0;
+            animation: stepAppear 1s forwards;
+        }
+
+        .step-text:nth-child(1) {
+            animation-delay: 0.5s;
+        }
+
+        .step-text:nth-child(2) {
+            animation-delay: 2s;
+        }
+
+        .step-text:nth-child(3) {
+            animation-delay: 3.5s;
+        }
+
+        .step-text.active {
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
+
+        @keyframes orbCorePulse {
+            from {
+                transform: scale(0.9);
+                box-shadow: 0 0 20px #00c6ff;
+            }
+
+            to {
+                transform: scale(1.1);
+                box-shadow: 0 0 40px #00c6ff, 0 0 60px #0072ff;
+            }
+        }
+
+        @keyframes spinRing {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes titleShimmer {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes fillBar {
+            0% {
+                width: 0%;
+            }
+
+            50% {
+                width: 70%;
+            }
+
+            100% {
+                width: 95%;
+            }
+        }
+
+        @keyframes fadeInOverlay {
+            from {
+                opacity: 0;
+                backdrop-filter: blur(0px);
+            }
+
+            to {
+                opacity: 1;
+                backdrop-filter: blur(25px);
+            }
+        }
+
+        @keyframes stepAppear {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                color: rgba(255, 255, 255, 0.8);
+            }
+        }
+    
+.extracted-style-1 {
+    z-index: 999999;
+}
+.extracted-style-2 {
+    animation-duration: 2s;
+}
+.extracted-style-3 {
+    stop-color:#4CAF50;stop-opacity:1;
+}
+.extracted-style-4 {
+    stop-color:#8BC34A;stop-opacity:1;
+}
+.extracted-style-5 {
+    stop-color:#0072ff;stop-opacity:1;
+}
+.extracted-style-6 {
+    stop-color:#00d4ff;stop-opacity:1;
+}
+.extracted-style-7 {
+    stop-color:#FFC107;stop-opacity:1;
+}
+.extracted-style-8 {
+    stop-color:#FF9800;stop-opacity:1;
+}
+.extracted-style-9 {
+    stop-color:#ff416c;stop-opacity:1;
+}
+.extracted-style-10 {
+    stop-color:#FF5252;stop-opacity:1;
+}
+.extracted-style-11 {
+    font-size: 2.5em; font-weight: 700;
+}
+.extracted-style-12 {
+    font-size: 0.9em; color: var(--info-color);
+}
+.extracted-style-13 {
+    border-color: rgba(255,255,255,0.1);
+}
+.extracted-style-14 {
+    z-index: 99999;
+}
+.extracted-style-15 {
+    justify-content: space-between;
+}
+.extracted-style-16 {
+    display: flex; align-items: center; gap: 10px;
+}
+.extracted-style-17 {
+    display: flex; gap: 5px;
+}
+.extracted-style-18 {
+    background: transparent; border: none; color: white; cursor: pointer; font-size: 1.2em; padding: 5px; opacity: 0.8; transition: opacity 0.3s;
+}
+.extracted-style-19 {
+    width: 90%; max-width: 900px; max-height: 75vh; overflow-y: auto; display: flex; flex-direction: column;
+}
+.extracted-style-20 {
+    text-align: center; padding: 3rem;
+}
+.extracted-style-21 {
+    margin: 0 auto;
+}
+.extracted-style-22 {
+    margin-top: 1.5rem;
+}
+.extracted-style-23 {
+    color: var(--subtext-dark);
+}
+.extracted-style-24 {
+    position: relative; margin-bottom: 2rem;
+}
+.extracted-style-25 {
+    font-size: 1.8rem;
+}
+.extracted-style-26 {
+    display: flex; justify-content: center; gap: 0.5rem; margin-bottom: 2rem; flex-wrap: wrap;
+}
+.extracted-style-27 {
+    position: relative; min-height: 300px; flex: 1; overflow-y: auto;
+}
+.extracted-style-28 {
+    display: flex; gap: 1rem; margin-top: 2rem; flex-shrink: 0;
+}
+.extracted-style-29 {
+    display: none;
+}
+.extracted-style-30 {
+    position: absolute; background: transparent; backdrop-filter: none;
+}
+.extracted-style-31 {
+    width: 100%; max-width: 900px;
+}
+.extracted-style-32 {
+    color: white; background: transparent; border: none; font-size: 1.5em; cursor: pointer;
+}
+.extracted-style-33 {
+    display: none; padding: 1rem;
+}
+.extracted-style-34 {
+    text-align: center;
 }
