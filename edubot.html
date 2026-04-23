@@ -2547,6 +2547,9 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
 
         chatCloseBtn.addEventListener("click", () => {
             chatbotContainer.classList.remove("visible");
+            if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                deactivateVoiceMode();
+            }
             if (liveSessionPage.classList.contains('open')) {
                 chatbotIcon.classList.add("visible");
                 pdfIcon.classList.add("visible");
@@ -3096,17 +3099,19 @@ Make sure:
                 const planList = aiSessionState.concepts.map((c, i) => `${i + 1}. ${c.title}`).join('\\n');
 
                 const systemContext = `
-You are an AI Tutor guiding the user through a session on "${aiSessionState.topic}" (${aiSessionState.subject}).
+You are an expert, encouraging AI Tutor guiding a student through a session on "${aiSessionState.topic}" (${aiSessionState.subject}).
 
 The current session plan is:
 ${planList}
 
-The user is currently studying Step ${aiSessionState.currentConceptIndex + 1}: "${currentConcept ? currentConcept.title : 'Overview'}".
+The student is currently at Step ${aiSessionState.currentConceptIndex + 1}: "${currentConcept ? currentConcept.title : 'Overview'}".
 
-INSTRUCTIONS:
-- Answer the user's question specifically in the context of this topic and concept.
-- If they ask "what is this", refer to the current concept ("${currentConcept ? currentConcept.title : 'Current Topic'}").
-- Keep answers concise, encouraging, and educational.
+TEACHING STYLE:
+1. Socratic Method: Instead of just giving answers, ask guided questions to help the student reach the conclusion themselves.
+2. Emotional Support: Use encouraging phrases like "Great question!", "You're getting closer!", or "Let's look at it this way."
+3. Clarity: Use simple analogies to explain complex concepts.
+4. Voice Optimization: Keep responses concise (2-3 sentences) so the conversation flows naturally in voice mode. Avoid long lists.
+5. Focus: Stay strictly on the current concept unless the student asks to move on.
 `;
                 messages = [
                     { role: "system", content: systemContext },
@@ -5974,9 +5979,21 @@ INSTRUCTIONS:
                         }
                     }
 
-                    // If user starts talking, stop AI from speaking (Interruption)
-                    if (interimTranscript.length > 5 && synth.speaking) {
+                    const lowerInterim = interimTranscript.toLowerCase();
+                    const lowerFinal = finalTranscript.toLowerCase();
+
+                    // 🛑 Command: "OK Go Away" or "Stop"
+                    if (lowerInterim.includes('go away') || lowerInterim.includes('stop listening') || lowerInterim.includes('goodbye bot')) {
+                        deactivateVoiceMode();
+                        return;
+                    }
+
+                    // ✋ Interruption Logic: If user speaks while bot is talking
+                    if (interimTranscript.trim().length > 2 && synth.speaking) {
+                        console.log('🛑 User interrupted bot');
                         stopSpeaking();
+                        // Reset finalTranscript to only catch the NEW input after interruption
+                        finalTranscript = interimTranscript; 
                     }
 
                     // Reset silence timer on any result
@@ -5985,7 +6002,7 @@ INSTRUCTIONS:
                         if (finalTranscript.trim().length > 0) {
                             voiceSessionRecognition.stop(); // This will trigger onend
                         }
-                    }, SILENCE_TIMEOUT);
+                    }, 1800); // Tighter 1.8s timeout for snappier responses
                 };
 
                 voiceSessionRecognition.onend = () => {
@@ -6034,8 +6051,9 @@ INSTRUCTIONS:
                 utterance.pitch = 1.0;
 
                 utterance.onstart = () => {
-                    // Stop listening while AI is talking to prevent feedback
-                    if (voiceSessionRecognition) try { voiceSessionRecognition.stop(); } catch (e) { }
+                    // 🎙️ Keep microphone active during speech to detect interruptions
+                    // but we will ignore the acoustic feedback via logic in onresult
+                    console.log('🔊 Bot started speaking...');
                 };
 
                 utterance.onend = () => {
@@ -6048,18 +6066,24 @@ INSTRUCTIONS:
                 synth.speak(utterance);
             }
 
+            function deactivateVoiceMode() {
+                chatbotContainer.classList.remove('gemini-live-mode');
+                document.body.classList.remove('live-active-border');
+                stopSpeaking();
+                if (voiceSessionRecognition) {
+                    try { voiceSessionRecognition.onend = null; voiceSessionRecognition.stop(); } catch (e) { }
+                    voiceSessionRecognition = null;
+                }
+                showToast('Voice mode deactivated.', 'fa-microphone-slash');
+
+                // Restart background listener
+                setTimeout(() => initializeBackgroundRecognition(), 1000);
+            }
+
             // Logic to toggle voice mode manually
             voiceBtn.addEventListener('click', () => {
                 if (chatbotContainer.classList.contains('gemini-live-mode')) {
-                    // Turn off
-                    chatbotContainer.classList.remove('gemini-live-mode');
-                    document.body.classList.remove('live-active-border');
-                    stopSpeaking();
-                    if (voiceSessionRecognition) try { voiceSessionRecognition.stop(); } catch (e) { }
-                    showToast('Voice mode deactivated.', 'fa-microphone-slash');
-
-                    // Restart background listener
-                    setTimeout(() => initializeBackgroundRecognition(), 1000);
+                    deactivateVoiceMode();
                 } else {
                     activateEdubotVoiceMode();
                 }
