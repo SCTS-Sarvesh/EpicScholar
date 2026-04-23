@@ -5202,6 +5202,40 @@ body.loaded #page-loader {
     display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 400px;
 }
 .epic-hex-loader { margin-bottom: 2rem; position: relative; width: 60px; height: 60px; }
-.epic-loader-title { font-weight: 300; font-size: 1.8rem; margin-bottom: 1rem; }
-.epic-commentary-text { color: #aaa; transition: opacity 0.3s; font-size: 1rem; }
+.epic-loader-title { font-weight: 800; font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
+.epic-commentary-box {
+    background: rgba(255,255,255,0.05);
+    padding: 12px 20px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-bottom: 24px;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.epic-commentary-text { color: #b0b0b0; font-size: 0.95rem; font-style: italic; margin: 0; }
+.epic-progress-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+}
+.epic-progress-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 30%;
+    background: var(--gradient);
+    border-radius: 10px;
+    animation: moveProgress 3s ease-in-out infinite;
+}
+@keyframes moveProgress {
+    0% { transform: translateX(-100%); }
+    50% { transform: translateX(100%); }
+    100% { transform: translateX(300%); }
+}
 
