@@ -1839,6 +1839,27 @@ button:active {
     max-height: 85vh;
 }
 
+/* 🎤 AI LIVE ACTIVE BORDER ANIMATION */
+.live-active-border::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 999999;
+    pointer-events: none;
+    border: 5px solid transparent;
+    border-image: linear-gradient(45deg, #00c6ff, #0072ff, #00c6ff) 1;
+    animation: borderGlowPulse 2s infinite alternate;
+}
+
+@keyframes borderGlowPulse {
+    from { opacity: 0.3; filter: blur(5px); }
+    to { opacity: 0.8; filter: blur(8px); }
+}
+
+
 
 .light-mode .floating-window {
     border: var(--border-light);
@@ -2937,11 +2958,17 @@ button:active {
 /* Quiz Results */
 .quiz-results-container {
     text-align: center;
-    animation: scaleIn 0.6s ease-out;
+    animation: scaleIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: var(--card-glass-bg);
+    border: 1px solid var(--card-glass-border);
+    backdrop-filter: blur(25px);
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
 }
 
 @keyframes scaleIn {
@@ -2965,19 +2992,21 @@ button:active {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
-    animation: pulse 2s ease-in-out infinite;
+    background: rgba(20, 20, 20, 0.5);
+    backdrop-filter: blur(15px);
+    border: 3px solid #0072ff;
+    box-shadow: 0 0 30px rgba(0, 114, 255, 0.5), inset 0 0 20px rgba(0, 114, 255, 0.5);
+    animation: pulse-neon 2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-
-    0%,
-    100% {
+@keyframes pulse-neon {
+    0%, 100% {
         transform: scale(1);
+        box-shadow: 0 0 30px rgba(0, 114, 255, 0.5), inset 0 0 20px rgba(0, 114, 255, 0.5);
     }
-
     50% {
         transform: scale(1.05);
+        box-shadow: 0 0 50px rgba(0, 114, 255, 0.8), inset 0 0 30px rgba(0, 114, 255, 0.8);
     }
 }
 
@@ -3333,6 +3362,7 @@ code {
 }
 
 @keyframes typing-bounce {
+
     0%,
     60%,
     100% {
@@ -3346,13 +3376,14 @@ code {
 
 /* 🌟 NEW: Message Entry Animation */
 @keyframes message-pop-in {
-    0% { 
-        opacity: 0; 
+    0% {
+        opacity: 0;
         transform: translateY(20px) scale(0.95);
         filter: blur(5px);
     }
-    100% { 
-        opacity: 1; 
+
+    100% {
+        opacity: 1;
         transform: translateY(0) scale(1);
         filter: blur(0);
     }
@@ -3387,12 +3418,21 @@ body.live-active-border::after {
 }
 
 @keyframes borderRotate {
-    to { --angle: 360deg; }
+    to {
+        --angle: 360deg;
+    }
 }
 
 @keyframes borderGlow {
-    from { opacity: 0.6; box-shadow: inset 0 0 10px rgba(0, 114, 255, 0.2); }
-    to { opacity: 1; box-shadow: inset 0 0 40px rgba(255, 65, 108, 0.3); }
+    from {
+        opacity: 0.6;
+        box-shadow: inset 0 0 10px rgba(0, 114, 255, 0.2);
+    }
+
+    to {
+        opacity: 1;
+        box-shadow: inset 0 0 40px rgba(255, 65, 108, 0.3);
+    }
 }
 
 
@@ -5113,13 +5153,25 @@ body.loaded #page-loader {
 }
 
 @keyframes futuristicSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 @keyframes glowPulse {
-    0%, 100% { filter: drop-shadow(0 0 5px var(--primary-color)); }
-    50% { filter: drop-shadow(0 0 15px var(--primary-color)); }
+
+    0%,
+    100% {
+        filter: drop-shadow(0 0 5px var(--primary-color));
+    }
+
+    50% {
+        filter: drop-shadow(0 0 15px var(--primary-color));
+    }
 }
 
 /* Mature Fade View Transition */
@@ -5140,3 +5192,16 @@ body.loaded #page-loader {
     position: relative;
     z-index: 2;
 }
+.epicscholar-loading-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+    display: flex; justify-content: center; align-items: center; color: white;
+    transition: opacity 0.5s ease;
+}
+.epicscholar-loader-content {
+    display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 400px;
+}
+.epic-hex-loader { margin-bottom: 2rem; position: relative; width: 60px; height: 60px; }
+.epic-loader-title { font-weight: 300; font-size: 1.8rem; margin-bottom: 1rem; }
+.epic-commentary-text { color: #aaa; transition: opacity 0.3s; font-size: 1rem; }
+
