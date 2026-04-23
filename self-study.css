@@ -1907,13 +1907,19 @@ button:active {
 
 #chatbot-body {
     flex-grow: 1;
+    display: flex;
+    flex-direction: column;
     padding: 10px;
-    overflow-y: auto;
+    overflow: hidden; /* Scroll is handled by #chatbot-messages */
 }
 
 #chatbot-messages {
+    flex-grow: 1;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
+    padding-right: 5px;
+    scroll-behavior: smooth;
 }
 
 .message {
@@ -5198,11 +5204,13 @@ body.loaded #page-loader {
     display: flex; justify-content: center; align-items: center; color: white;
     transition: opacity 0.5s ease;
 }
+
 .epicscholar-loader-content {
     display: flex; flex-direction: column; align-items: center; text-align: center; max-width: 400px;
 }
-.epic-hex-loader { margin-bottom: 2rem; position: relative; width: 60px; height: 60px; }
+
 .epic-loader-title { font-weight: 800; font-size: 2.2rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
+
 .epic-commentary-box {
     background: rgba(255,255,255,0.05);
     padding: 12px 20px;
@@ -5214,7 +5222,9 @@ body.loaded #page-loader {
     align-items: center;
     justify-content: center;
 }
-.epic-commentary-text { color: #b0b0b0; font-size: 0.95rem; font-style: italic; margin: 0; }
+
+.epic-commentary-text { color: #b0b0b0; font-size: 0.95rem; font-style: italic; margin: 0; transition: opacity 0.3s; }
+
 .epic-progress-bar {
     width: 100%;
     height: 6px;
@@ -5222,7 +5232,9 @@ body.loaded #page-loader {
     border-radius: 10px;
     overflow: hidden;
     position: relative;
+    margin-top: 10px;
 }
+
 .epic-progress-fill {
     position: absolute;
     top: 0;
@@ -5233,9 +5245,28 @@ body.loaded #page-loader {
     border-radius: 10px;
     animation: moveProgress 3s ease-in-out infinite;
 }
+
 @keyframes moveProgress {
     0% { transform: translateX(-100%); }
     50% { transform: translateX(100%); }
     100% { transform: translateX(300%); }
+}
+
+/* 🌟 Global Active Border Animation */
+.live-active-border::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    border: 4px solid #0072ff;
+    border-radius: 0;
+    z-index: 9999;
+    box-shadow: inset 0 0 20px rgba(0,114,255,0.4), 0 0 20px rgba(0,114,255,0.4);
+    animation: borderGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes borderGlow {
+    from { opacity: 0.5; border-color: #0072ff; }
+    to { opacity: 1; border-color: #ff416c; }
 }
 
