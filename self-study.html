@@ -7,6 +7,140 @@
     <title>EpicScholar Dashboard | AI-Powered Study Platform</title>
     <link rel="stylesheet" href="self-study.css" />
     <style>
+        /* ================================================================= 
+         * ORBITAL LOADER ANIMATION
+         * =================================================================
+         */
+        .orbital-loader {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .orbital-core {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0072ff, #00c6ff);
+            box-shadow: 0 0 18px rgba(0, 114, 255, 0.8), 0 0 40px rgba(0, 198, 255, 0.4);
+            position: absolute;
+            animation: corePulse 1.8s ease-in-out infinite;
+        }
+
+        @keyframes corePulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 18px rgba(0, 114, 255, 0.8), 0 0 40px rgba(0, 198, 255, 0.4);
+            }
+
+            50% {
+                transform: scale(1.2);
+                box-shadow: 0 0 28px rgba(0, 114, 255, 1), 0 0 60px rgba(0, 198, 255, 0.6);
+            }
+        }
+
+        .orbital-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .orbital-ring.ring-1 {
+            width: 54px;
+            height: 54px;
+            animation: orbit1 1.4s linear infinite;
+        }
+
+        .orbital-ring.ring-2 {
+            width: 84px;
+            height: 84px;
+            animation: orbit2 2.2s linear infinite;
+        }
+
+        .orbital-ring.ring-3 {
+            width: 116px;
+            height: 116px;
+            animation: orbit3 3.0s linear infinite;
+        }
+
+        .orbital-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            margin-top: -4.5px;
+        }
+
+        .ring-1 .orbital-dot {
+            background: #00c6ff;
+            box-shadow: 0 0 10px #00c6ff, 0 0 20px rgba(0, 198, 255, 0.5);
+        }
+
+        .ring-2 .orbital-dot {
+            background: #0072ff;
+            box-shadow: 0 0 10px #0072ff, 0 0 20px rgba(0, 114, 255, 0.5);
+        }
+
+        .ring-3 .orbital-dot {
+            background: #ff416c;
+            box-shadow: 0 0 10px #ff416c, 0 0 20px rgba(255, 65, 108, 0.5);
+        }
+
+        @keyframes orbit1 {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes orbit2 {
+            from {
+                transform: rotate(120deg);
+            }
+
+            to {
+                transform: rotate(480deg);
+            }
+        }
+
+        @keyframes orbit3 {
+            from {
+                transform: rotate(240deg);
+            }
+
+            to {
+                transform: rotate(-120deg);
+            }
+        }
+
+        .loading-subtext {
+            font-size: 0.95em;
+            color: var(--subtext-dark);
+            animation: textFade 2s ease-in-out infinite;
+        }
+
+        @keyframes textFade {
+
+            0%,
+            100% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
         /* =================================================================
  * CIRCULAR PROGRESS FIXES - COMPLETE REPLACEMENT
  * =================================================================
@@ -865,6 +999,10 @@
             <div id="chatbot-messages"></div>
         </div>
         <div id="chatbot-input-container">
+            <button id="voiceBtn" class="icon-btn" title="Voice Search"
+                style="background: none; border: none; color: var(--edubot-color); font-size: 1.2em; cursor: pointer; padding-right: 10px;">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
             <input type="text" id="chatbot-input" placeholder="Type a message..." />
             <button id="send-btn">Send</button>
         </div>
@@ -934,9 +1072,20 @@
         <div class="fs-container">
             <!-- Loading State -->
             <div id="fs-loading" class="fs-card modern-loading-container" style="text-align: center;">
-                <div class="futuristic-spinner" style="margin: 0 auto;"></div>
-                <h2 class="gradient-text status-text" style="margin-top: 20px;">Preparing Session...</h2>
-                <p style="opacity: 0.7;">Analyzing topic and crafting questions</p>
+                <div class="orbital-loader" style="margin: 0 auto;">
+                    <div class="orbital-core"></div>
+                    <div class="orbital-ring ring-1">
+                        <div class="orbital-dot"></div>
+                    </div>
+                    <div class="orbital-ring ring-2">
+                        <div class="orbital-dot"></div>
+                    </div>
+                    <div class="orbital-ring ring-3">
+                        <div class="orbital-dot"></div>
+                    </div>
+                </div>
+                <h2 class="gradient-text status-text" style="margin-top: 28px;">Crafting Your Quiz...</h2>
+                <p class="loading-subtext" style="opacity: 0.7;">AI is generating personalized questions</p>
             </div>
 
             <!-- Quiz Content -->
@@ -991,7 +1140,7 @@
         // =================================================================
         // ⚠️ IMPORTANT: Replace these with your actual keys
         const YOUTUBE_API_KEY = "AIzaSyB60v4uvMzU0uHNE3lYCEdFxkWJPzkdafA";
-        const GEMINI_API_KEY = "AIzaSyDt--TrHLB6AwE9vw5lttEqm479V4haYfA";
+        const GROQ_API_KEY = "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";
 
         const DEFAULT_GRADE = "Grade 9";
         const DEFAULT_CURRICULUM = "NCERT";
@@ -1181,138 +1330,56 @@
         };
 
         // =================================================================
-        // GEMINI API CONFIGURATION
+        // GROQ API CONFIGURATION
         // =================================================================
 
-        const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+        const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
-        async function generateAIQuiz(topic, subject, numQuestions = 5) {
-            const prompt = `Generate ${numQuestions} multiple-choice quiz questions about "${topic}" in ${subject} for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
-
-For each question, provide:
-1. Clear question text that tests understanding
-2. Four distinct answer options (A, B, C, D)
-3. The correct answer letter
-4. Brief explanation (2-3 sentences)
-
-Respond ONLY with valid JSON (no markdown, no backticks):
-{
-  "questions": [
-    {
-      "question": "Question text?",
-      "options": {
-        "A": "First option",
-        "B": "Second option",
-        "C": "Third option",
-        "D": "Fourth option"
-      },
-      "correct": "A",
-      "explanation": "Explanation text"
-    }
-  ]
-}`;
-
-            try {
-                console.log(`🤖 AI Generating ${numQuestions} quiz questions for: ${topic}`);
-
-                const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 16384,
-                        }
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error('❌ AI Quiz API Error:', errorData);
-
-                    // ⭐ NEW: Throw detailed error instead of fallback
-                    let errorMessage = 'Failed to generate quiz';
-
-                    if (response.status === 403) {
-                        errorMessage = 'Invalid API Key - Please check your Gemini API key';
-                    } else if (response.status === 429) {
-                        errorMessage = 'API Rate Limit Exceeded - Please wait a moment and try again';
-                    } else if (response.status === 500) {
-                        errorMessage = 'Gemini API Server Error - Please try again later';
-                    } else if (errorData.error?.message) {
-                        errorMessage = errorData.error.message;
-                    }
-
-                    throw new Error(errorMessage);
-                }
-
-                const data = await response.json();
-
-                if (!data.candidates || !data.candidates[0]) {
-                    throw new Error('Invalid API response - No candidates returned');
-                }
-
-                let text = data.candidates[0].content.parts[0].text;
-                console.log('📝 Raw AI Quiz Response:', text);
-
-                // Clean response
-                text = text.trim()
-                    .replace(/```json\n?/g, '')
-                    .replace(/```\n?/g, '')
-                    .trim();
-
-                const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) throw new Error('Could not parse JSON from AI response');
-
-                const quizData = JSON.parse(jsonMatch[0]);
-
-                if (!quizData.questions || !Array.isArray(quizData.questions)) {
-                    throw new Error('Invalid quiz data structure from AI');
-                }
-
-                console.log('✅ AI Quiz Generated:', quizData.questions.length, 'questions');
-                return quizData.questions;
-
-            } catch (error) {
-                console.error('❌ AI Quiz Generation Error:', error);
-
-                // ⭐ NEW: Re-throw the error instead of using fallback
-                throw error; // This will propagate to the calling function
-            }
-        }
         async function generateTopicBreakdown(topic, subject) {
-            const prompt = `Generate a structured learning plan for the topic: "${topic}" in the subject: "${subject}" for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
+            const prompt = `You are an expert curriculum designer. Generate a structured learning plan for the topic: "${topic}" in the subject: "${subject}" for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
 
 Break it down into 3-5 key concepts that should be learned in sequence, from basic to advanced.
 For each concept, provide:
 1. A clear concept name (2-5 words)
 2. A YouTube search query to find relevant educational videos. Make sure the search query is highly specific and distinct for each concept to avoid duplicate video results.
+3. Exactly 5 multiple-choice quiz questions to test understanding of THAT concept.
+
+For each quiz question provide:
+- question text
+- options: array of 4 distinct strings
+- correctIndex: integer 0-3 (representing the correct option inside the options array)
+- explanation: 2-3 sentence explanation about why the answer is correct
 
 Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
 [
   {
     "name": "Concept Name",
-    "videoQuery": "search query for YouTube educational video"
+    "videoQuery": "search query for YouTube educational video",
+    "quiz": [
+      {
+        "question": "Question text?",
+        "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+        "correctIndex": 0,
+        "explanation": "Clear explanation text"
+      }
+    ]
   }
 ]`;
 
             try {
-                console.log(`🤖 AI GENERATING TOPIC BREAKDOWN: ${topic} in ${subject}`);
+                console.log(`🤖 AI GENERATING TOPIC BREAKDOWN & QUIZZES: ${topic} in ${subject}`);
 
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-                const response = await fetch(apiUrl, {
+                const response = await fetch(GROQ_API_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
+                    },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 2048,
-                        }
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{ role: "user", content: prompt }],
+                        temperature: 0.7,
+                        max_tokens: 4096
                     })
                 });
 
@@ -1320,10 +1387,9 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
                     const errorData = await response.json();
                     console.error('❌ Topic API Error:', errorData);
 
-                    // ⭐ NEW: Detailed error
                     let errorMessage = 'Failed to generate topic breakdown';
 
-                    if (response.status === 403) {
+                    if (response.status === 403 || response.status === 401) {
                         errorMessage = 'Invalid API Key';
                     } else if (response.status === 429) {
                         errorMessage = 'API Rate Limit Exceeded';
@@ -1336,12 +1402,12 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
 
                 const data = await response.json();
 
-                if (!data.candidates || !data.candidates[0]) {
+                if (!data.choices || !data.choices[0]) {
                     throw new Error('Invalid response from API');
                 }
 
-                let generatedText = data.candidates[0].content.parts[0].text;
-                console.log('📝 Raw Topic Breakdown:', generatedText);
+                let generatedText = data.choices[0].message.content;
+                console.log('📝 Raw Topic Breakdown & Quizzes:', generatedText);
 
                 generatedText = generatedText.trim()
                     .replace(/```json\n?/g, '')
@@ -1357,116 +1423,31 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
                     throw new Error('Invalid concepts array');
                 }
 
-                const formattedConcepts = concepts.map((concept, index) => ({
-                    id: index + 1,
-                    title: concept.name,
-                    videoQuery: concept.videoQuery,
-                    quiz: null
-                }));
+                const formattedConcepts = concepts.map((concept, index) => {
+                    const quizQuestions = Array.isArray(concept.quiz) ? concept.quiz.map(q => ({
+                        question: q.question,
+                        options: {
+                            "A": q.options[0],
+                            "B": q.options[1],
+                            "C": q.options[2],
+                            "D": q.options[3]
+                        },
+                        correct: ["A", "B", "C", "D"][q.correctIndex],
+                        explanation: q.explanation
+                    })) : null;
+                    return {
+                        id: index + 1,
+                        title: concept.name,
+                        videoQuery: concept.videoQuery,
+                        quiz: quizQuestions
+                    };
+                });
 
-                console.log('✅ Topic Breakdown Generated:', formattedConcepts);
+                console.log('✅ Topic Breakdown & Quizzes Generated:', formattedConcepts);
                 return formattedConcepts;
 
             } catch (error) {
                 console.error('❌ Topic Breakdown Error:', error);
-
-                // ⭐ NEW: Re-throw error instead of fallback
-                throw error;
-            }
-        }
-        async function generateQuizQuestion(conceptTitle, subject) {
-            const prompt = `Create ONE multiple-choice quiz question to test understanding of: "${conceptTitle}" in ${subject} for ${DEFAULT_GRADE} students following ${DEFAULT_CURRICULUM} curriculum.
-
-Requirements:
-- 1 clear, specific question that tests understanding (not just memorization)
-- 4 distinct and plausible answer options
-- Indicate which option index (0-3) is correct
-- Include a helpful explanation (2-3 sentences) that teaches the concept
-
-Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no extra text):
-{
-  "question": "Question text?",
-  "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
-  "correctIndex": 0,
-  "explanation": "Clear explanation text"
-}`;
-
-            try {
-                console.log(`🤖 AI GENERATING QUIZ: ${conceptTitle} in ${subject}`);
-
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: prompt }]
-                        }],
-                        generationConfig: {
-                            temperature: 0.8,
-                            maxOutputTokens: 1024,
-                            topP: 0.95,
-                            topK: 40
-                        }
-                    })
-                });
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    console.error('❌ API Error:', errorData);
-
-                    // ⭐ NEW: Detailed error messages
-                    let errorMessage = 'Failed to generate quiz question';
-
-                    if (response.status === 403) {
-                        errorMessage = 'Invalid API Key';
-                    } else if (response.status === 429) {
-                        errorMessage = 'API Rate Limit Exceeded';
-                    } else if (errorData.error?.message) {
-                        errorMessage = errorData.error.message;
-                    }
-
-                    throw new Error(errorMessage);
-                }
-
-                const data = await response.json();
-
-                if (!data.candidates || !data.candidates[0] || !data.candidates[0].content) {
-                    throw new Error('Invalid response structure from Gemini API');
-                }
-
-                let generatedText = data.candidates[0].content.parts[0].text;
-                console.log('📝 Raw AI Response:', generatedText);
-
-                generatedText = generatedText.trim()
-                    .replace(/```json\n?/g, '')
-                    .replace(/```\n?/g, '')
-                    .replace(/^json\n?/gi, '')
-                    .trim();
-
-                const jsonMatch = generatedText.match(/\{[\s\S]*\}/);
-                if (!jsonMatch) {
-                    throw new Error('Could not parse JSON from AI response');
-                }
-
-                const quizData = JSON.parse(jsonMatch[0]);
-
-                if (!quizData.question || !Array.isArray(quizData.options) ||
-                    quizData.options.length !== 4 ||
-                    typeof quizData.correctIndex !== 'number' ||
-                    quizData.correctIndex < 0 || quizData.correctIndex > 3 ||
-                    !quizData.explanation) {
-                    throw new Error('Quiz data structure is invalid');
-                }
-
-                console.log('✅ AI Quiz Generated Successfully:', quizData);
-                return quizData;
-
-            } catch (error) {
-                console.error('❌ Quiz Generation Error:', error);
-
-                // ⭐ NEW: Re-throw error instead of fallback
                 throw error;
             }
         }
@@ -1480,23 +1461,66 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
         // Replaces old breakdownTopicIntoConcepts
         async function breakdownTopicIntoConcepts(topic, subject) {
-            // Show loading indicator
+            // Show new EpicScholar loading indicator
             const loadingMsg = document.createElement('div');
             loadingMsg.id = 'ai-loading-indicator';
+
+            // New Live Commentary array
+            const loadingPhrases = [
+                "Initializing EpicScholar Engine...",
+                `Analyzing "${topic}" syllabus...`,
+                "Curating personalized video resources...",
+                "Drafting intelligent quiz questions...",
+                "Finalizing optimized curriculum...",
+                "Almost there..."
+            ];
+
             loadingMsg.innerHTML = `
-                <div style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 10000; background: rgba(0,0,0,0.8); display: flex; justify-content: center; align-items: center; color: white; flex-direction: column;">
-                    <div class="theme-loader" style="width: 50px; height: 50px; border-width: 4px;"></div>
-                    <h2 style="margin-top: 20px; font-weight: 300;">Generating AI Session Plan...</h2>
-                    <p style="opacity: 0.7; margin-top: 10px;">Analyzing ${topic} using Gemini AI</p>
+                <div class="epicscholar-loading-overlay">
+                    <div class="epicscholar-loader-content">
+                        <!-- Orbital Loader (unified with quiz loader) -->
+                        <div class="orbital-loader" style="margin: 0 auto 28px;">
+                            <div class="orbital-core"></div>
+                            <div class="orbital-ring ring-1"><div class="orbital-dot"></div></div>
+                            <div class="orbital-ring ring-2"><div class="orbital-dot"></div></div>
+                            <div class="orbital-ring ring-3"><div class="orbital-dot"></div></div>
+                        </div>
+                        <h2 class="epic-loader-title gradient-text">EpicScholar AI</h2>
+                        <div class="epic-commentary-box">
+                            <p id="epic-commentary-text" class="epic-commentary-text">${loadingPhrases[0]}</p>
+                        </div>
+                        <div class="epic-progress-bar">
+                            <div class="epic-progress-fill"></div>
+                        </div>
+                    </div>
                 </div>
             `;
             document.body.appendChild(loadingMsg);
 
+            // Change commentary every 2.5 seconds
+            const commentaryElement = document.getElementById('epic-commentary-text');
+            let phraseIndex = 0;
+            const phraseInterval = setInterval(() => {
+                phraseIndex = Math.min(phraseIndex + 1, loadingPhrases.length - 1);
+                if (commentaryElement) {
+                    // Quick fade out
+                    commentaryElement.style.opacity = 0;
+                    setTimeout(() => {
+                        commentaryElement.textContent = loadingPhrases[phraseIndex];
+                        commentaryElement.style.opacity = 1;
+                    }, 300);
+                }
+            }, 2500);
+
             try {
                 return await generateTopicBreakdown(topic, subject);
             } finally {
+                clearInterval(phraseInterval);
                 const indicator = document.getElementById('ai-loading-indicator');
-                if (indicator) indicator.remove();
+                if (indicator) {
+                    indicator.style.opacity = 0;
+                    setTimeout(() => indicator.remove(), 500); // Wait for fade out
+                }
             }
         }
         // ============================================
@@ -2558,13 +2582,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             }
         }
 
-        function appendChatMessage(sender, message) {
-            const messageElement = document.createElement("div");
-            messageElement.classList.add("message", sender);
-            messageElement.textContent = message;
-            chatbotMessages.appendChild(messageElement);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
+
         // =================================================================
         // ENHANCED CHATBOT WITH MARKDOWN, TTS, AND STREAMING
         // =================================================================
@@ -2802,16 +2820,13 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
         // Call this in browser console when debugging: debugAISessionState()
         /* ---------- Markdown Formatter ---------- */
         function escapeHtml(unsafe) {
+            if (!unsafe) return '';
             return unsafe
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
         }
 
         function formatMarkdownToHtml(rawText) {
@@ -2951,13 +2966,111 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
 
         let isStreamingChat = false;
 
+        // =================================================================
+        // GENERATE AI QUIZ VIA GROQ API
+        // =================================================================
+        /**
+         * Calls Groq to generate MCQ quiz questions for a concept.
+         * Returns an array of { question, options: {A,B,C,D}, correct, explanation }
+         */
+        async function generateAIQuiz(topic, subject, count = 5) {
+            if (!GROQ_API_KEY || GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE") {
+                throw new Error("Groq API key is missing. Please set GROQ_API_KEY.");
+            }
+
+            const prompt = `You are an expert educator. Generate exactly ${count} multiple-choice quiz questions about the topic: "${topic}" in the subject: "${subject}".
+
+IMPORTANT: Respond ONLY with valid JSON. No markdown. No backticks. No extra text.
+Use this exact format:
+[
+  {
+    "question": "Question text here?",
+    "options": {
+      "A": "First option",
+      "B": "Second option",
+      "C": "Third option",
+      "D": "Fourth option"
+    },
+    "correct": "A",
+    "explanation": "Brief explanation of why the answer is correct."
+  }
+]
+
+Make sure:
+- "correct" is one of: "A", "B", "C", "D"
+- Questions are specific to "${topic}"
+- All ${count} questions are unique and educational`;
+
+            console.log(`🤖 Generating ${count} quiz questions for: ${topic} (${subject})`);
+
+            const response = await fetch(GROQ_API_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${GROQ_API_KEY}`
+                },
+                body: JSON.stringify({
+                    model: "llama-3.3-70b-versatile",
+                    messages: [{ role: "user", content: prompt }],
+                    temperature: 0.65,
+                    max_tokens: 3000
+                })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                const msg = errData.error?.message || `API error ${response.status}`;
+                if (response.status === 429) throw new Error("Rate limit exceeded. Please wait a moment and try again.");
+                if (response.status === 401 || response.status === 403) throw new Error("Invalid Groq API key.");
+                throw new Error(msg);
+            }
+
+            const data = await response.json();
+            if (!data.choices || !data.choices[0]) throw new Error("Empty response from Groq API.");
+
+            let raw = data.choices[0].message.content.trim();
+            // Strip markdown code fences if present
+            raw = raw.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
+
+            // Extract the JSON array
+            const match = raw.match(/\[[\s\S]*\]/);
+            if (!match) throw new Error("AI returned malformed JSON. Please try again.");
+
+            const questions = JSON.parse(match[0]);
+
+            if (!Array.isArray(questions) || questions.length === 0) {
+                throw new Error("AI returned no quiz questions.");
+            }
+
+            // Validate & normalise each question
+            const valid = ['A', 'B', 'C', 'D'];
+            return questions.slice(0, count).map((q, i) => {
+                if (!q.question || !q.options || !q.correct) {
+                    throw new Error(`Question ${i + 1} is missing required fields.`);
+                }
+                const correct = q.correct.toUpperCase();
+                if (!valid.includes(correct)) throw new Error(`Question ${i + 1} has invalid 'correct' value: "${q.correct}"`);
+                return {
+                    question: q.question,
+                    options: {
+                        A: q.options.A || q.options[0] || "",
+                        B: q.options.B || q.options[1] || "",
+                        C: q.options.C || q.options[2] || "",
+                        D: q.options.D || q.options[3] || ""
+                    },
+                    correct: correct,
+                    explanation: q.explanation || "No explanation provided."
+                };
+            });
+        }
+
         async function getBotResponse(userMessage) {
-            if (GEMINI_API_KEY === "YOUR_GEMINI_API_KEY_HERE" || !GEMINI_API_KEY) {
-                appendChatMessage("bot", "Error: Gemini API Key is missing. Please set your key in the script.");
+            if (GROQ_API_KEY === "YOUR_GROQ_API_KEY_HERE" || !GROQ_API_KEY) {
+                appendChatMessage("bot", "Error: Groq API Key is missing. Please set your key in the script.");
                 return;
             }
 
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+            const API_URL = "https://api.groq.com/openai/v1/chat/completions";
             sendBtn.disabled = true;
             chatInput.disabled = true;
 
@@ -2976,14 +3089,13 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks, no
             chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
 
             // ⭐ CONTEXT AWARENESS LOGIC
-            let finalPrompt = userMessage;
+            let messages = [{ role: "user", content: userMessage }];
 
             if (aiSessionState.active) {
                 const currentConcept = aiSessionState.concepts[aiSessionState.currentConceptIndex];
-                const planList = aiSessionState.concepts.map((c, i) => `${i + 1}. ${c.title}`).join('\n');
+                const planList = aiSessionState.concepts.map((c, i) => `${i + 1}. ${c.title}`).join('\\n');
 
                 const systemContext = `
-[SYSTEM CONTEXT]
 You are an AI Tutor guiding the user through a session on "${aiSessionState.topic}" (${aiSessionState.subject}).
 
 The current session plan is:
@@ -2995,21 +3107,26 @@ INSTRUCTIONS:
 - Answer the user's question specifically in the context of this topic and concept.
 - If they ask "what is this", refer to the current concept ("${currentConcept ? currentConcept.title : 'Current Topic'}").
 - Keep answers concise, encouraging, and educational.
-- Do not mention "[SYSTEM CONTEXT]" in your response.
-
-[USER QUESTION]
-${userMessage}
 `;
-                finalPrompt = systemContext;
+                messages = [
+                    { role: "system", content: systemContext },
+                    { role: "user", content: userMessage }
+                ];
                 console.log("🧠 Context-Aware Prompt Sent");
             }
 
             try {
                 const response = await fetch(API_URL, {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${GROQ_API_KEY}`
+                    },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: finalPrompt }] }],
+                        model: "llama-3.3-70b-versatile",
+                        messages: messages,
+                        temperature: 0.6,
+                        max_tokens: 500
                     }),
                 });
 
@@ -3018,15 +3135,12 @@ ${userMessage}
                 if (!response.ok) {
                     throw new Error(data.error?.message || "Unknown API error");
                 }
-                if (!data.candidates || !data.candidates.length) {
-                    if (data.promptFeedback) {
-                        console.warn("Prompt blocked:", data.promptFeedback);
-                        throw new Error("Prompt was blocked. Please try a different question.");
-                    }
-                    throw new Error("No response from Gemini API");
+
+                if (!data.choices || !data.choices.length) {
+                    throw new Error("No response from Groq API");
                 }
 
-                const botMessage = data.candidates[0].content.parts[0].text;
+                const botMessage = data.choices[0].message.content;
 
                 // Remove typing indicator
                 typingDiv.remove();
@@ -3136,6 +3250,11 @@ ${userMessage}
 
                 isStreamingChat = false;
                 chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+                // ⭐ NEW: Auto-speak in Live Mode
+                if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                    speakResponse(currentText);
+                }
             };
 
             pump();
@@ -3398,11 +3517,15 @@ ${userMessage}
                     height: '100%',
                     width: '100%',
                     videoId: videoId,
+                    host: 'https://www.youtube-nocookie.com',
                     playerVars: {
                         'playsinline': 1,
                         'enablejsapi': 1,
                         'rel': 0,
-                        'modestbranding': 1
+                        'modestbranding': 1,
+                        'fs': 0,
+                        'origin': window.location.origin,
+                        'widget_referrer': window.location.origin
                     },
                     events: {
                         'onReady': onPlayerReady,
@@ -3411,7 +3534,7 @@ ${userMessage}
                 });
             } else {
                 console.error("YouTube API not loaded");
-                wrapper.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
+                wrapper.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${videoId}?enablejsapi=1&origin=${encodeURIComponent(window.location.origin)}" style="width:100%;height:100%;border:none;" allowfullscreen></iframe>`;
             }
 
             // Update controls
@@ -3426,6 +3549,10 @@ ${userMessage}
 <button onclick="retryConcept(aiSessionState.currentConceptIndex)" 
          style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
     Change Video
+</button>
+<button onclick="toggleAIVideoFullscreen()"
+         style="padding: 10px 20px; background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer; font-weight: 600;">
+    <i class="fa-solid fa-expand"></i> Full Screen
 </button>
                 <div id="video-status-msg" style="font-size: 0.9em; opacity: 0.8; white-space: nowrap;">
                     <i class="fa-solid fa-play" style="margin-right: 5px;"></i>Watching...
@@ -3471,6 +3598,52 @@ ${userMessage}
                 }, 2000);
             }
         }
+
+        // Custom Fullscreen Handler
+        function toggleAIVideoFullscreen() {
+            const wrapper = document.querySelector('.ai-video-wrapper');
+            const chatbot = document.getElementById('chatbot-container');
+            const pdfIcon = document.getElementById('pdf-icon');
+            const chatbotIcon = document.getElementById('chatbot-icon');
+
+            if (!document.fullscreenElement) {
+                if (wrapper.requestFullscreen) {
+                    wrapper.requestFullscreen().then(() => {
+                        // Move EduBot to wrapper
+                        if (chatbot) {
+                            wrapper.appendChild(chatbot);
+                            chatbot.style.position = 'absolute';
+                            chatbot.style.zIndex = '99999';
+                        }
+                        if (pdfIcon) wrapper.appendChild(pdfIcon);
+                        if (chatbotIcon) wrapper.appendChild(chatbotIcon);
+                    }).catch(err => {
+                        console.error('Error attempting to enable fullscreen:', err);
+                    });
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // Listen for ESC key or exit fullscreen
+        document.addEventListener('fullscreenchange', () => {
+            const wrapper = document.querySelector('.ai-video-wrapper');
+            const chatbot = document.getElementById('chatbot-container');
+            const pdfIcon = document.getElementById('pdf-icon');
+            const chatbotIcon = document.getElementById('chatbot-icon');
+
+            if (!document.fullscreenElement) {
+                if (chatbot) {
+                    document.body.appendChild(chatbot);
+                    chatbot.style.position = 'fixed';
+                }
+                if (pdfIcon) document.body.appendChild(pdfIcon);
+                if (chatbotIcon) document.body.appendChild(chatbotIcon);
+            }
+        });
 
         // Helper function to check if video was watched sufficiently
         function checkVideoProgress() {
@@ -3759,60 +3932,8 @@ ${userMessage}
 
             console.log(`✅ Sidebar updated - Current: ${currentIndex + 1}/${aiSessionState.concepts.length}`);
         }
-        /**
-         * Launch full-screen quiz for a specific concept (used in AI sessions)
-         */
-        async function launchConceptQuiz(conceptTitle, subject) {
-            // ⭐ FIX: Ensure AI session state is TRUE for concept quizzes
-            // (It should already be true, but let's be explicit)
-            // aiSessionState.active is already set in initAISession, so no need to change it here
-
-            const modal = document.getElementById('full-screen-test-modal');
-            const loading = document.getElementById('fs-loading');
-            const quizSection = document.getElementById('fs-quiz-section');
-            const results = document.getElementById('fs-results-container');
-
-            document.body.classList.add('quiz-active');
-
-            modal.classList.remove('hidden');
-            loading.classList.remove('hidden');
-            quizSection.classList.add('hidden');
-            results.classList.add('hidden');
-
-            fsQuestions = [];
-            fsSelected = {};
-            fsCurrent = 0;
-
-            try {
-                // Generate 5 questions for concept quiz, or 10 questions for final concept test
-                const isFinalConcept = aiSessionState.currentConceptIndex === aiSessionState.concepts.length - 1;
-                const questionCount = isFinalConcept ? 10 : 5;
-                const finalTopic = isFinalConcept ? aiSessionState.topic : conceptTitle;
-
-                const questions = await generateAIQuiz(finalTopic, subject, questionCount);
-                fsQuestions = questions;
-
-                loading.classList.add('hidden');
-                quizSection.classList.remove('hidden');
-                document.getElementById('fs-quiz-title').textContent = isFinalConcept ? `Test: ${finalTopic}` : `Quiz: ${conceptTitle}`;
-
-                renderFsQuestion();
-                renderFsNav();
-
-            } catch (e) {
-                console.error('❌ Concept Quiz Error:', e);
-                loading.innerHTML = `
-            <div class="error-box" style="text-align: center; padding: 2rem; color: var(--secondary-color);">
-                <i class="fa-solid fa-exclamation-triangle" style="font-size: 3em; margin-bottom: 20px;"></i>
-                <h3>Failed to generate quiz</h3>
-                <p>${e.message}</p>
-            </div>
-            <button class="gradient-button" onclick="closeFullScreenTest()" style="margin-top: 1rem;">
-                Close
-            </button>
-        `;
-            }
-        }
+        // NOTE: launchConceptQuiz is defined above at line ~2061 (the canonical version with showQuizError).
+        // The duplicate below has been removed to prevent ReferenceError conflicts.
 
         function updateProgress() {
             // Count only passed concepts (score >= 60)
@@ -3847,53 +3968,99 @@ ${userMessage}
             const liveSessionContent = document.querySelector('.live-session-content-area');
             if (!liveSessionContent) return;
 
-            const correctAnswers = Object.values(aiSessionState.scores).filter(s => s === 100).length;
-            const totalQuestions = aiSessionState.concepts.length;
-            const percentage = Math.round((correctAnswers / totalQuestions) * 100);
+            // ✅ FIX: Count concepts where score >= 60 as "passed"
+            const scores = aiSessionState.scores;
+            const concepts = aiSessionState.concepts;
+            const totalConcepts = concepts.length;
+            const passedConcepts = Object.values(scores).filter(s => s >= 60).length;
+            const totalAnswered = Object.keys(scores).length;
+            // Average percentage across all attempted quizzes
+            const avgPercentage = totalAnswered > 0
+                ? Math.round(Object.values(scores).reduce((a, b) => a + b, 0) / totalAnswered)
+                : 0;
 
-            let message, emoji;
-            if (percentage === 100) {
-                emoji = '🎉';
-                message = 'Perfect Score! You\'ve mastered this topic!';
-            } else if (percentage >= 70) {
-                emoji = '⭐';
-                message = 'Excellent work! You have a strong understanding!';
-            } else if (percentage >= 50) {
-                emoji = '👍';
-                message = 'Good job! Keep practicing to improve further!';
-            } else {
-                emoji = '📚';
-                message = 'Keep learning! Review the concepts and try again.';
+            let message, emoji, gradientColor;
+            if (avgPercentage >= 90) { emoji = '🎉'; message = 'Outstanding! You\'ve mastered this topic!'; gradientColor = 'linear-gradient(135deg,#10b981,#06b6d4)'; }
+            else if (avgPercentage >= 70) { emoji = '⭐'; message = 'Excellent work! Strong understanding shown!'; gradientColor = 'linear-gradient(135deg,#0072ff,#00c6ff)'; }
+            else if (avgPercentage >= 50) { emoji = '👍'; message = 'Good effort! Keep practicing to improve!'; gradientColor = 'linear-gradient(135deg,#f59e0b,#ef4444)'; }
+            else { emoji = '📚'; message = 'Keep going! Review the concepts and retry.'; gradientColor = 'linear-gradient(135deg,#6366f1,#a855f7)'; }
+
+            // Build per-concept breakdown rows
+            const conceptRows = concepts.map((c, i) => {
+                const score = scores[i];
+                const haScore = score !== undefined;
+                const passed = haScore && score >= 60;
+                const badge = !haScore
+                    ? `<span style="background:rgba(255,255,255,0.1);color:var(--subtext-dark);padding:3px 10px;border-radius:20px;font-size:0.8em;">Skipped</span>`
+                    : passed
+                        ? `<span style="background:rgba(16,185,129,0.2);color:#10b981;padding:3px 10px;border-radius:20px;font-size:0.8em;">${score}% ✓</span>`
+                        : `<span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 10px;border-radius:20px;font-size:0.8em;">${score}% ✗</span>`;
+                return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-radius:10px;background:rgba(255,255,255,0.04);margin-bottom:6px;">
+                    <span style="font-size:0.88em;color:var(--text-dark);flex:1;text-align:left;">${i + 1}. ${c.title}</span>
+                    ${badge}
+                </div>`;
+            }).join('');
+
+            // ✅ Remove temp session + original session from dashboard on completion
+            const _sid = Number(currentSessionId);
+            const _ti = sessions.findIndex(s => Number(s.id) === _sid);
+            if (_ti !== -1) {
+                const _s = sessions[_ti];
+                if (_s.originalSessionId) {
+                    const _oi = sessions.findIndex(s => Number(s.id) === Number(_s.originalSessionId));
+                    if (_oi !== -1) sessions.splice(_oi, 1);
+                }
+                const _fi = sessions.findIndex(s => Number(s.id) === _sid);
+                if (_fi !== -1) sessions.splice(_fi, 1);
+                saveDataToLocalStorage();
             }
 
             liveSessionContent.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px;">
-                    <div style="font-size: 6em; margin-bottom: 20px;">${emoji}</div>
-                    <h1 class="gradient-text" style="font-size: 2.5em; margin-bottom: 15px;">Session Complete!</h1>
-                    <p style="font-size: 1.3em; color: var(--subtext-dark); margin-bottom: 30px;">${message}</p>
-                    
-                    <div style="display: inline-block; background: var(--card-dark); padding: 30px 50px; border-radius: 20px; margin-bottom: 40px;">
-                        <div class="quiz-score-circle" style="width: 180px; height: 180px; margin: 0 auto;">
-                            <div class="quiz-score-number">${correctAnswers}/${totalQuestions}</div>
-                            <div class="quiz-score-label">${percentage}% Correct</div>
+                <div style="height:100%;display:flex;flex-direction:column;padding:18px 24px;box-sizing:border-box;gap:14px;overflow:hidden;">
+
+                    <!-- Top row: emoji+title left, 3 stat cards right -->
+                    <div style="display:flex;align-items:center;gap:18px;flex-shrink:0;">
+                        <div style="text-align:center;min-width:110px;">
+                            <div style="font-size:3em;line-height:1;">${emoji}</div>
+                            <h2 class="gradient-text" style="font-size:1.3em;margin:6px 0 2px;">Session Complete!</h2>
+                            <p style="color:var(--subtext-dark);font-size:0.78em;margin:0;line-height:1.4;">${message}</p>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;flex:1;">
+                            <div style="background:var(--card-dark);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:12px;text-align:center;">
+                                <div style="font-size:1.7em;font-weight:800;background:${gradientColor};-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${avgPercentage}%</div>
+                                <div style="font-size:0.68em;color:var(--subtext-dark);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Avg Score</div>
+                            </div>
+                            <div style="background:var(--card-dark);border:1px solid rgba(16,185,129,0.3);border-radius:12px;padding:12px;text-align:center;">
+                                <div style="font-size:1.7em;font-weight:800;color:#10b981;">${passedConcepts}<span style="font-size:0.55em;opacity:0.7;">/${totalConcepts}</span></div>
+                                <div style="font-size:0.68em;color:var(--subtext-dark);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Concepts Passed</div>
+                            </div>
+                            <div style="background:rgba(0,114,255,0.08);border:1px solid rgba(0,114,255,0.25);border-radius:12px;padding:12px;text-align:center;">
+                                <div style="font-size:0.85em;color:var(--text-dark);font-weight:700;">${aiSessionState.topic}</div>
+                                <div style="font-size:0.7em;color:var(--subtext-dark);margin-top:3px;">${aiSessionState.subject}</div>
+                            </div>
                         </div>
                     </div>
 
-                    <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap;">
-                        <button onclick="restartAISession()" class="gradient-button">
-                            ↺ Restart Session
-                        </button>
-                        <button onclick="endSessionBtn.click()" class="secondary-button">
-                            ← Back to Dashboard
-                        </button>
+                    <!-- Bottom 2-column: breakdown left, status+button right -->
+                    <div style="display:grid;grid-template-columns:1fr 195px;gap:14px;flex:1;min-height:0;">
+
+                        <div style="background:var(--card-dark);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:14px;overflow-y:auto;">
+                            <h3 style="margin:0 0 10px;font-size:0.75em;text-transform:uppercase;letter-spacing:1px;color:var(--subtext-dark);">&#128203; Concept Breakdown</h3>
+                            ${conceptRows}
+                        </div>
+
+                        <div style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
+                            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);border-radius:14px;padding:18px;text-align:center;">
+                                <div style="font-size:2em;">&#9989;</div>
+                                <div style="font-size:0.9em;font-weight:700;color:#10b981;margin-top:8px;">Completed!</div>
+                                <div style="font-size:0.73em;color:var(--subtext-dark);margin-top:4px;">Session finished &amp; removed from dashboard</div>
+                            </div>
+                            <button onclick="endSessionBtn.click()" class="gradient-button" style="width:100%;padding:13px;font-size:0.95em;">
+                                &#8592; Back to Dashboard
+                            </button>
+                        </div>
                     </div>
 
-                    <div style="margin-top: 40px; padding: 20px; background: rgba(0, 114, 255, 0.1); border-radius: 12px; border: 1px solid var(--primary-color);">
-                        <h3 style="margin-top: 0;">📊 Summary</h3>
-                        <p>Topic: <strong>${aiSessionState.topic}</strong></p>
-                        <p>Concepts Covered: <strong>${totalQuestions}</strong></p>
-                        <p>Correct Answers: <strong>${correctAnswers}</strong></p>
-                    </div>
                 </div>
             `;
 
@@ -3942,6 +4109,104 @@ ${userMessage}
 
         function restartAISession() {
             initAISession(aiSessionState.topic, aiSessionState.subject);
+        }
+
+        // ============================================
+        // VOICE ACTIVATION (EDUBOT GEMINI LIVE)
+        // ============================================
+        let voiceActiveRecognition = null; // Background wake-word listener
+        let voiceSessionRecognition = null; // Conversational mode listener
+
+        let isBackgroundListening = false;
+        let isSessionListening = false;
+
+        function startLiveBackgroundListener() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) return;
+
+            // Request mic permission explicitly first to unblock browser throttling
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    console.log('✅ Microphone permission granted for background listener');
+                    stream.getTracks().forEach(track => track.stop()); // Release stream immediately
+                    initializeBackgroundRecognition();
+                })
+                .catch(err => {
+                    console.error('❌ Microphone permission denied:', err);
+                    showToast('Voice activation requires microphone access.', 'fa-microphone-slash');
+                });
+        }
+
+        function initializeBackgroundRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (voiceActiveRecognition) {
+                try { voiceActiveRecognition.stop(); } catch (e) { }
+            }
+
+            voiceActiveRecognition = new SpeechRecognition();
+            voiceActiveRecognition.continuous = false; // False is more reliable for repeating background tasks
+            voiceActiveRecognition.interimResults = true;
+            voiceActiveRecognition.lang = 'en-US';
+
+            voiceActiveRecognition.onstart = () => {
+                isBackgroundListening = true;
+                console.log('🎤 Background listener active...');
+            };
+
+            voiceActiveRecognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    transcript += event.results[i][0].transcript;
+                }
+                transcript = transcript.toLowerCase().trim();
+
+                const wakeWords = ['hey bot', 'hey bought', 'edubot', 'edward', 'hey eddy', 'hi bot'];
+                const triggered = wakeWords.some(word => transcript.includes(word));
+
+                if (triggered && !chatbotContainer.classList.contains('gemini-live-mode')) {
+                    console.log('🚀 Wake word detected:', transcript);
+                    activateEdubotVoiceMode();
+                }
+            };
+
+            voiceActiveRecognition.onend = () => {
+                isBackgroundListening = false;
+                // Restart if not in active conversation
+                if (!chatbotContainer.classList.contains('gemini-live-mode') && !sessionPaused && liveSessionPage.classList.contains('open')) {
+                    setTimeout(() => initializeBackgroundRecognition(), 800);
+                }
+            };
+
+            voiceActiveRecognition.onerror = (event) => {
+                isBackgroundListening = false;
+                console.warn('Background listener error:', event.error);
+                if (event.error !== 'not-allowed') {
+                    setTimeout(() => initializeBackgroundRecognition(), 2000);
+                }
+            };
+
+            try {
+                voiceActiveRecognition.start();
+            } catch (e) {
+                console.error('Failed to start background listener:', e);
+            }
+        }
+
+        function stopLiveBackgroundListener() {
+            isBackgroundListening = false;
+            if (voiceActiveRecognition) {
+                try { voiceActiveRecognition.stop(); } catch (e) { }
+                voiceActiveRecognition = null;
+            }
+        }
+
+        function stopLiveBackgroundListener() {
+            isLiveBgListening = false;
+            if (liveBgRecognition) {
+                try {
+                    liveBgRecognition.abort();
+                } catch (e) { }
+            }
         }
 
         // ============================================
@@ -4033,6 +4298,9 @@ ${userMessage}
             // ⭐ NEW: Show floating icons
             pdfIcon.classList.add('visible');
             chatbotIcon.classList.add('visible');
+
+            // Start listening in background
+            startLiveBackgroundListener();
         };
 
         // CLOSE LIVE SESSION - Don't clear paused session data
@@ -4060,6 +4328,9 @@ ${userMessage}
             chatbotIcon.classList.remove('visible');
             chatbotContainer.classList.remove('visible');
             pdfContainer.classList.remove('visible');
+
+            // Stop listening in background
+            stopLiveBackgroundListener();
 
             // Reset chat input
             chatInput.disabled = false;
@@ -4530,6 +4801,11 @@ ${userMessage}
                             aiSessionState.quizAnswered = pausedSessionData.aiSessionData.quizAnswered || false;
                             aiSessionState.scores = pausedSessionData.aiSessionData.scores || {};
                             aiSessionState.overallProgress = pausedSessionData.aiSessionData.overallProgress || 0;
+                            aiSessionState.playedVideoIds = pausedSessionData.aiSessionData.playedVideoIds || [];
+
+                            // ✅ FIX: Clear pausedSessionData AFTER restoring so loadConcept
+                            // does not skip resetting video/quiz state (isResuming check)
+                            pausedSessionData = null;
 
                             console.log('✅ Restored AI session state:', {
                                 currentConcept: aiSessionState.currentConceptIndex,
@@ -5279,15 +5555,17 @@ ${userMessage}
         // Function to generate quiz for current session
         async function generateSessionQuiz(sessionIndex, sessionData) {
             try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-latest:generateContent?key=${GEMINI_API_KEY}`, {
+                const response = await fetch("https://api.groq.com/openai/v1/chat/completions", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${GROQ_API_KEY}`
                     },
                     body: JSON.stringify({
-                        contents: [{
-                            parts: [{
-                                text: `Generate 5 multiple choice questions based on this content: "${sessionData.topic}". 
+                        model: "llama-3.3-70b-versatile",
+                        messages: [{
+                            role: "user",
+                            content: `Generate 5 multiple choice questions based on this content: "${sessionData.topic}". 
                         
                         Return ONLY a valid JSON array with this exact structure, no markdown, no backticks:
                         [
@@ -5299,13 +5577,14 @@ ${userMessage}
                         ]
                         
                         Make sure correctAnswer is the index (0-3) of the correct option.`
-                            }]
-                        }]
+                        }],
+                        temperature: 0.7,
+                        max_tokens: 1024
                     })
                 });
 
                 const data = await response.json();
-                let quizText = data.candidates[0].content.parts[0].text.trim();
+                let quizText = data.choices[0].message.content.trim();
 
                 // Clean up the response
                 quizText = quizText.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
@@ -5495,61 +5774,86 @@ ${userMessage}
             quizSection.classList.add('hidden');
             results.classList.remove('hidden');
 
-            let commentary, emoji;
+            let commentary, emoji, scoreColor, scoreBg;
             if (percentage === 100) {
-                emoji = '🎉';
-                commentary = 'Perfect Score!';
+                emoji = '🎉'; commentary = 'Perfect Score!'; scoreColor = '#10b981'; scoreBg = 'rgba(16,185,129,0.15)';
             } else if (percentage >= 80) {
-                emoji = '⭐';
-                commentary = 'Excellent Work!';
+                emoji = '⭐'; commentary = 'Excellent Work!'; scoreColor = '#0072ff'; scoreBg = 'rgba(0,114,255,0.15)';
             } else if (percentage >= 60) {
-                emoji = '👍';
-                commentary = 'Good Job!';
+                emoji = '👍'; commentary = 'Good Job!'; scoreColor = '#f59e0b'; scoreBg = 'rgba(245,158,11,0.15)';
             } else if (percentage >= 40) {
-                emoji = '📚';
-                commentary = 'Keep Learning!';
+                emoji = '📚'; commentary = 'Keep Learning!'; scoreColor = '#f97316'; scoreBg = 'rgba(249,115,22,0.15)';
             } else {
-                emoji = '💪';
-                commentary = "Don't Give Up!";
+                emoji = '💪'; commentary = "Don't Give Up!"; scoreColor = '#ef4444'; scoreBg = 'rgba(239,68,68,0.15)';
             }
 
             let actionButtons = '';
-
             if (isFromAISession) {
+                // AI session: only show the contextual navigation, no Review/Close
                 const nextAction = determineNextConceptAction(percentage >= 60);
                 actionButtons = `
-            <button class="gradient-button" onclick="reviewFsAnswers()">
-                Review Answers
-            </button>
-            <button class="${percentage >= 60 ? 'gradient-button' : 'secondary-button'}" onclick="${nextAction}">
-                ${percentage >= 60 ? '→ Continue to Next Concept' : '↺ Retry This Concept'}
-            </button>
-        `;
+                    <button class="${percentage >= 60 ? 'gradient-button' : 'secondary-button'}" onclick="${nextAction}" style="min-width:200px;padding:14px 24px;font-size:1em;">
+                        ${percentage >= 60 ? '→ Continue to Next Concept' : '↺ Retry This Concept'}
+                    </button>`;
             } else {
+                // Standalone test: only Back to Dashboard, no Review/Close Test
                 actionButtons = `
-            <button class="gradient-button" onclick="reviewFsAnswers()">
-                Review Answers
-            </button>
-            <button class="secondary-button" onclick="closeFullScreenTestAndRefresh()">
-                Close Test
-            </button>
-        `;
+                    <button class="gradient-button" onclick="closeFullScreenTestAndRefresh()" style="min-width:200px;padding:14px 24px;font-size:1em;">
+                        ← Back to Dashboard
+                    </button>`;
             }
 
+            // Build answer breakdown pills
+            const pills = fsQuestions.map((q, i) => {
+                const sel = fsSelected[i];
+                const pass = sel === q.correct;
+                const color = sel === undefined ? '#6b7280' : pass ? '#10b981' : '#ef4444';
+                return `<div title="Q${i + 1}" style="width:32px;height:32px;border-radius:50%;background:${color}22;border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:0.75em;font-weight:700;color:${color};">${pass ? '✓' : '✗'}</div>`;
+            }).join('');
+
             results.innerHTML = `
-        <div id="fs-results-main" class="results-container fade-view active">
-            <div class="score-circle">
-                <div class="score-number">${correct}/${total}</div>
-                <div class="score-label">${percentage}%</div>
+        <div id="fs-results-main" class="results-container fade-view active" style="padding:32px 24px;">
+
+            <!-- Score Hero -->
+            <div style="text-align:center;margin-bottom:28px;">
+                <div style="display:inline-flex;align-items:center;justify-content:center;width:130px;height:130px;border-radius:50%;background:${scoreBg};border:3px solid ${scoreColor};box-shadow: 0 0 20px ${scoreColor}, inset 0 0 10px ${scoreColor};margin-bottom:16px;position:relative;animation: pulse-neon 2s ease-in-out infinite;">
+                    <div>
+                        <div style="font-size:2.2em;font-weight:900;color:${scoreColor};line-height:1;">${percentage}%</div>
+                        <div style="font-size:0.78em;color:var(--subtext-dark);margin-top:2px;">${correct}/${total}</div>
+                    </div>
+                </div>
+                <div style="font-size:2em;">${emoji}</div>
+                <h2 class="gradient-text" style="margin:8px 0 4px;font-size:1.6em;">${commentary}</h2>
+                <p style="color:var(--subtext-dark);font-size:0.92em;">You answered <strong style="color:${scoreColor};">${correct}</strong> of <strong>${total}</strong> questions correctly</p>
             </div>
-            <div class="commentary gradient-text">${emoji} ${commentary}</div>
-            <div class="commentary-detail">You got ${correct} out of ${total} questions correct</div>
-            
-            <div class="button-group">
+
+            <!-- Answer Pills -->
+            <div style="display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:24px;padding:16px;background:rgba(255,255,255,0.04);border-radius:12px;border:1px solid rgba(255,255,255,0.06);">
+                ${pills}
+            </div>
+
+            <!-- Stats Row -->
+            <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px;">
+                <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:12px;padding:14px;text-align:center;">
+                    <div style="font-size:1.6em;font-weight:800;color:#10b981;">${correct}</div>
+                    <div style="font-size:0.75em;color:var(--subtext-dark);margin-top:2px;">Correct</div>
+                </div>
+                <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:12px;padding:14px;text-align:center;">
+                    <div style="font-size:1.6em;font-weight:800;color:#ef4444;">${total - correct}</div>
+                    <div style="font-size:0.75em;color:var(--subtext-dark);margin-top:2px;">Incorrect</div>
+                </div>
+                <div style="background:rgba(0,114,255,0.1);border:1px solid rgba(0,114,255,0.25);border-radius:12px;padding:14px;text-align:center;">
+                    <div style="font-size:1.6em;font-weight:800;color:#0072ff;">${total}</div>
+                    <div style="font-size:0.75em;color:var(--subtext-dark);margin-top:2px;">Total</div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
                 ${actionButtons}
             </div>
         </div>
-        <div id="fs-review-main" class="results-container fade-view hidden" style="flex-direction: column; width: 100%;"></div>
+        <div id="fs-review-main" class="results-container fade-view hidden" style="flex-direction:column;width:100%;"></div>
     `;
 
             if (isFromAISession) {
@@ -5608,6 +5912,144 @@ ${userMessage}
                 return `closeFullScreenTest(); retryConcept(${currentIndex});`;
             }
         }
+
+            // ============================================
+            // LIVE CONVERSATIONAL MODULE (STT & TTS)
+            // ============================================
+
+            function activateEdubotVoiceMode() {
+                console.log('🎤 Activating Edubot voice mode...');
+
+                // Step 1: Stop background listener
+                stopLiveBackgroundListener();
+
+                // Step 2: UI Transitions
+                chatbotContainer.classList.add('visible', 'gemini-live-mode');
+                document.body.classList.add('live-active-border');
+                chatbotIcon.classList.remove('visible');
+
+                // Step 3: Pause background video if playing
+                if (window.aiPlayer && aiPlayer.pauseVideo) aiPlayer.pauseVideo();
+
+                appendChatMessage("bot", "🎤 **Live Mode Active!** I'm listening — how can I help you with this session?");
+
+                // Step 4: Small delay for cleaner audio transition
+                setTimeout(() => startConversationalVoice(), 600);
+            }
+
+            function startConversationalVoice() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition || !chatbotContainer.classList.contains('gemini-live-mode')) return;
+
+                if (voiceSessionRecognition) {
+                    try { voiceSessionRecognition.stop(); } catch (e) { }
+                }
+
+                voiceSessionRecognition = new SpeechRecognition();
+                voiceSessionRecognition.continuous = false;
+                voiceSessionRecognition.interimResults = true;
+                voiceSessionRecognition.lang = 'en-US';
+
+                let finalTranscript = '';
+
+                voiceSessionRecognition.onstart = () => {
+                    isSessionListening = true;
+                    voiceBtn.classList.add('recording');
+                    console.log('🎙️ Conversational STT started');
+                };
+
+                voiceSessionRecognition.onresult = (event) => {
+                    let interimTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+
+                    // If user starts talking, stop AI from speaking (Interruption)
+                    if (interimTranscript.length > 5 && synth.speaking) {
+                        stopSpeaking();
+                    }
+                };
+
+                voiceSessionRecognition.onend = () => {
+                    isSessionListening = false;
+                    voiceBtn.classList.remove('recording');
+
+                    if (finalTranscript.trim().length > 0) {
+                        const msg = finalTranscript.trim();
+                        appendChatMessage("user", msg);
+                        getBotResponse(msg);
+                    } else if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                        // Re-loop if no input but still in live mode
+                        setTimeout(() => {
+                            if (!isSessionListening && !synth.speaking && chatbotContainer.classList.contains('gemini-live-mode')) {
+                                startConversationalVoice();
+                            }
+                        }, 1000);
+                    }
+                };
+
+                voiceSessionRecognition.onerror = (event) => {
+                    isSessionListening = false;
+                    voiceBtn.classList.remove('recording');
+                    console.warn('STT Error:', event.error);
+                    if (event.error !== 'not-allowed' && chatbotContainer.classList.contains('gemini-live-mode')) {
+                        setTimeout(() => startConversationalVoice(), 1000);
+                    }
+                };
+
+                try {
+                    voiceSessionRecognition.start();
+                } catch (e) { }
+            }
+
+
+
+            function speakResponse(text) {
+                stopSpeaking();
+
+                // Clean markdown for cleaner speech
+                const cleanText = text.replace(/[*#`_]|\[.*?\]/g, '').trim();
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+
+                // Human-like tuning
+                utterance.rate = 1.05;
+                utterance.pitch = 1.0;
+
+                utterance.onstart = () => {
+                    // Stop listening while AI is talking to prevent feedback
+                    if (voiceSessionRecognition) try { voiceSessionRecognition.stop(); } catch (e) { }
+                };
+
+                utterance.onend = () => {
+                    // Resume listening after AI finishes
+                    if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                        setTimeout(() => startConversationalVoice(), 500);
+                    }
+                };
+
+                synth.speak(utterance);
+            }
+
+            // Logic to toggle voice mode manually
+            voiceBtn.addEventListener('click', () => {
+                if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                    // Turn off
+                    chatbotContainer.classList.remove('gemini-live-mode');
+                    document.body.classList.remove('live-active-border');
+                    stopSpeaking();
+                    if (voiceSessionRecognition) try { voiceSessionRecognition.stop(); } catch (e) { }
+                    showToast('Voice mode deactivated.', 'fa-microphone-slash');
+
+                    // Restart background listener
+                    setTimeout(() => initializeBackgroundRecognition(), 1000);
+                } else {
+                    activateEdubotVoiceMode();
+                }
+            });
     </script>
 </body>
 
