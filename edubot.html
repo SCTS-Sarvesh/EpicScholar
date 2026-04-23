@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EpicScholar Dashboard | AI-Powered Study Platform</title>
-    <link rel="stylesheet" href="edubot.css" />
+    <link rel="stylesheet" href="self-study.css" />
     <style>
         /* ================================================================= 
          * ORBITAL LOADER ANIMATION
@@ -999,6 +999,10 @@
             <div id="chatbot-messages"></div>
         </div>
         <div id="chatbot-input-container">
+            <button id="voiceBtn" class="icon-btn" title="Voice Search"
+                style="background: none; border: none; color: var(--edubot-color); font-size: 1.2em; cursor: pointer; padding-right: 10px;">
+                <i class="fa-solid fa-microphone"></i>
+            </button>
             <input type="text" id="chatbot-input" placeholder="Type a message..." />
             <button id="send-btn">Send</button>
         </div>
@@ -2578,13 +2582,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
             }
         }
 
-        function appendChatMessage(sender, message) {
-            const messageElement = document.createElement("div");
-            messageElement.classList.add("message", sender);
-            messageElement.textContent = message;
-            chatbotMessages.appendChild(messageElement);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
+
         // =================================================================
         // ENHANCED CHATBOT WITH MARKDOWN, TTS, AND STREAMING
         // =================================================================
@@ -2822,16 +2820,13 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
         // Call this in browser console when debugging: debugAISessionState()
         /* ---------- Markdown Formatter ---------- */
         function escapeHtml(unsafe) {
+            if (!unsafe) return '';
             return unsafe
                 .replace(/&/g, "&amp;")
                 .replace(/</g, "&lt;")
                 .replace(/>/g, "&gt;")
                 .replace(/"/g, "&quot;")
                 .replace(/'/g, "&#039;");
-            if (!text) return '';
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
         }
 
         function formatMarkdownToHtml(rawText) {
@@ -3255,6 +3250,11 @@ INSTRUCTIONS:
 
                 isStreamingChat = false;
                 chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+                // ⭐ NEW: Auto-speak in Live Mode
+                if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                    speakResponse(currentText);
+                }
             };
 
             pump();
@@ -3605,7 +3605,7 @@ INSTRUCTIONS:
             const chatbot = document.getElementById('chatbot-container');
             const pdfIcon = document.getElementById('pdf-icon');
             const chatbotIcon = document.getElementById('chatbot-icon');
-            
+
             if (!document.fullscreenElement) {
                 if (wrapper.requestFullscreen) {
                     wrapper.requestFullscreen().then(() => {
@@ -3996,7 +3996,7 @@ INSTRUCTIONS:
                         ? `<span style="background:rgba(16,185,129,0.2);color:#10b981;padding:3px 10px;border-radius:20px;font-size:0.8em;">${score}% ✓</span>`
                         : `<span style="background:rgba(239,68,68,0.2);color:#ef4444;padding:3px 10px;border-radius:20px;font-size:0.8em;">${score}% ✗</span>`;
                 return `<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 14px;border-radius:10px;background:rgba(255,255,255,0.04);margin-bottom:6px;">
-                    <span style="font-size:0.88em;color:var(--text-dark);flex:1;text-align:left;">${i+1}. ${c.title}</span>
+                    <span style="font-size:0.88em;color:var(--text-dark);flex:1;text-align:left;">${i + 1}. ${c.title}</span>
                     ${badge}
                 </div>`;
             }).join('');
@@ -4111,68 +4111,93 @@ INSTRUCTIONS:
             initAISession(aiSessionState.topic, aiSessionState.subject);
         }
 
-// ============================================
-        // GEMINI LIVE BACKGROUND LISTENER
         // ============================================
-        let liveBgRecognition = null;
-        let isLiveBgListening = false;
+        // VOICE ACTIVATION (EDUBOT GEMINI LIVE)
+        // ============================================
+        let voiceActiveRecognition = null; // Background wake-word listener
+        let voiceSessionRecognition = null; // Conversational mode listener
+
+        let isBackgroundListening = false;
+        let isSessionListening = false;
 
         function startLiveBackgroundListener() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRecognition) return;
 
-            if (liveBgRecognition) {
-                stopLiveBackgroundListener();
+            // Request mic permission explicitly first to unblock browser throttling
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    console.log('✅ Microphone permission granted for background listener');
+                    stream.getTracks().forEach(track => track.stop()); // Release stream immediately
+                    initializeBackgroundRecognition();
+                })
+                .catch(err => {
+                    console.error('❌ Microphone permission denied:', err);
+                    showToast('Voice activation requires microphone access.', 'fa-microphone-slash');
+                });
+        }
+
+        function initializeBackgroundRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (voiceActiveRecognition) {
+                try { voiceActiveRecognition.stop(); } catch (e) { }
             }
 
-            liveBgRecognition = new SpeechRecognition();
-            liveBgRecognition.continuous = true;
-            liveBgRecognition.interimResults = false;
-            liveBgRecognition.lang = 'en-US';
+            voiceActiveRecognition = new SpeechRecognition();
+            voiceActiveRecognition.continuous = false; // False is more reliable for repeating background tasks
+            voiceActiveRecognition.interimResults = true;
+            voiceActiveRecognition.lang = 'en-US';
 
-            liveBgRecognition.onresult = (event) => {
-                const lastResultIndex = event.results.length - 1;
-                const transcript = event.results[lastResultIndex][0].transcript.toLowerCase().trim();
-                
-                const wakeWords = ['hey bot', 'hey bought', 'edubot', 'edward'];
+            voiceActiveRecognition.onstart = () => {
+                isBackgroundListening = true;
+                console.log('🎤 Background listener active...');
+            };
+
+            voiceActiveRecognition.onresult = (event) => {
+                let transcript = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    transcript += event.results[i][0].transcript;
+                }
+                transcript = transcript.toLowerCase().trim();
+
+                const wakeWords = ['hey bot', 'hey bought', 'edubot', 'edward', 'hey eddy', 'hi bot'];
                 const triggered = wakeWords.some(word => transcript.includes(word));
-                
-                if (triggered && !chatbotContainer.classList.contains('visible')) {
-                    console.log('Background wake word detected:', transcript);
-                    showToast('EduBot Live Mode activated via voice!', 'fa-microphone');
-                    chatbotIcon.click(); // Opens EduBot UI
-                    
-                    // Automatically trigger voice search inside EduBot if it exists
-                    setTimeout(() => {
-                        const edubotVoiceBtn = document.getElementById('voiceBtn');
-                        if (edubotVoiceBtn) edubotVoiceBtn.click();
-                    }, 500);
+
+                if (triggered && !chatbotContainer.classList.contains('gemini-live-mode')) {
+                    console.log('🚀 Wake word detected:', transcript);
+                    activateEdubotVoiceMode();
                 }
             };
 
-            liveBgRecognition.onend = () => {
-                // Auto-restart if we are still in a live session and not explicitly paused
-                if (isLiveBgListening && !sessionPaused) {
-                    try {
-                        liveBgRecognition.start();
-                    } catch (e) {
-                        console.error('Failed to restart background listener', e);
-                    }
+            voiceActiveRecognition.onend = () => {
+                isBackgroundListening = false;
+                // Restart if not in active conversation
+                if (!chatbotContainer.classList.contains('gemini-live-mode') && !sessionPaused && liveSessionPage.classList.contains('open')) {
+                    setTimeout(() => initializeBackgroundRecognition(), 800);
                 }
             };
 
-            liveBgRecognition.onerror = (event) => {
-                console.error('Live Bg Recognition error', event.error);
-                if (event.error === 'not-allowed') {
-                    isLiveBgListening = false;
+            voiceActiveRecognition.onerror = (event) => {
+                isBackgroundListening = false;
+                console.warn('Background listener error:', event.error);
+                if (event.error !== 'not-allowed') {
+                    setTimeout(() => initializeBackgroundRecognition(), 2000);
                 }
             };
 
             try {
-                liveBgRecognition.start();
-                isLiveBgListening = true;
-                console.log('Background Live listener started');
-            } catch (e) {}
+                voiceActiveRecognition.start();
+            } catch (e) {
+                console.error('Failed to start background listener:', e);
+            }
+        }
+
+        function stopLiveBackgroundListener() {
+            isBackgroundListening = false;
+            if (voiceActiveRecognition) {
+                try { voiceActiveRecognition.stop(); } catch (e) { }
+                voiceActiveRecognition = null;
+            }
         }
 
         function stopLiveBackgroundListener() {
@@ -4180,7 +4205,7 @@ INSTRUCTIONS:
             if (liveBgRecognition) {
                 try {
                     liveBgRecognition.abort();
-                } catch(e) {}
+                } catch (e) { }
             }
         }
 
@@ -4273,7 +4298,7 @@ INSTRUCTIONS:
             // ⭐ NEW: Show floating icons
             pdfIcon.classList.add('visible');
             chatbotIcon.classList.add('visible');
-            
+
             // Start listening in background
             startLiveBackgroundListener();
         };
@@ -4303,7 +4328,7 @@ INSTRUCTIONS:
             chatbotIcon.classList.remove('visible');
             chatbotContainer.classList.remove('visible');
             pdfContainer.classList.remove('visible');
-            
+
             // Stop listening in background
             stopLiveBackgroundListener();
 
@@ -5783,7 +5808,7 @@ INSTRUCTIONS:
                 const sel = fsSelected[i];
                 const pass = sel === q.correct;
                 const color = sel === undefined ? '#6b7280' : pass ? '#10b981' : '#ef4444';
-                return `<div title="Q${i+1}" style="width:32px;height:32px;border-radius:50%;background:${color}22;border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:0.75em;font-weight:700;color:${color};">${pass?'✓':'✗'}</div>`;
+                return `<div title="Q${i + 1}" style="width:32px;height:32px;border-radius:50%;background:${color}22;border:2px solid ${color};display:flex;align-items:center;justify-content:center;font-size:0.75em;font-weight:700;color:${color};">${pass ? '✓' : '✗'}</div>`;
             }).join('');
 
             results.innerHTML = `
@@ -5887,6 +5912,144 @@ INSTRUCTIONS:
                 return `closeFullScreenTest(); retryConcept(${currentIndex});`;
             }
         }
+
+            // ============================================
+            // LIVE CONVERSATIONAL MODULE (STT & TTS)
+            // ============================================
+
+            function activateEdubotVoiceMode() {
+                console.log('🎤 Activating Edubot voice mode...');
+
+                // Step 1: Stop background listener
+                stopLiveBackgroundListener();
+
+                // Step 2: UI Transitions
+                chatbotContainer.classList.add('visible', 'gemini-live-mode');
+                document.body.classList.add('live-active-border');
+                chatbotIcon.classList.remove('visible');
+
+                // Step 3: Pause background video if playing
+                if (window.aiPlayer && aiPlayer.pauseVideo) aiPlayer.pauseVideo();
+
+                appendChatMessage("bot", "🎤 **Live Mode Active!** I'm listening — how can I help you with this session?");
+
+                // Step 4: Small delay for cleaner audio transition
+                setTimeout(() => startConversationalVoice(), 600);
+            }
+
+            function startConversationalVoice() {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                if (!SpeechRecognition || !chatbotContainer.classList.contains('gemini-live-mode')) return;
+
+                if (voiceSessionRecognition) {
+                    try { voiceSessionRecognition.stop(); } catch (e) { }
+                }
+
+                voiceSessionRecognition = new SpeechRecognition();
+                voiceSessionRecognition.continuous = false;
+                voiceSessionRecognition.interimResults = true;
+                voiceSessionRecognition.lang = 'en-US';
+
+                let finalTranscript = '';
+
+                voiceSessionRecognition.onstart = () => {
+                    isSessionListening = true;
+                    voiceBtn.classList.add('recording');
+                    console.log('🎙️ Conversational STT started');
+                };
+
+                voiceSessionRecognition.onresult = (event) => {
+                    let interimTranscript = '';
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        if (event.results[i].isFinal) {
+                            finalTranscript += event.results[i][0].transcript;
+                        } else {
+                            interimTranscript += event.results[i][0].transcript;
+                        }
+                    }
+
+                    // If user starts talking, stop AI from speaking (Interruption)
+                    if (interimTranscript.length > 5 && synth.speaking) {
+                        stopSpeaking();
+                    }
+                };
+
+                voiceSessionRecognition.onend = () => {
+                    isSessionListening = false;
+                    voiceBtn.classList.remove('recording');
+
+                    if (finalTranscript.trim().length > 0) {
+                        const msg = finalTranscript.trim();
+                        appendChatMessage("user", msg);
+                        getBotResponse(msg);
+                    } else if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                        // Re-loop if no input but still in live mode
+                        setTimeout(() => {
+                            if (!isSessionListening && !synth.speaking && chatbotContainer.classList.contains('gemini-live-mode')) {
+                                startConversationalVoice();
+                            }
+                        }, 1000);
+                    }
+                };
+
+                voiceSessionRecognition.onerror = (event) => {
+                    isSessionListening = false;
+                    voiceBtn.classList.remove('recording');
+                    console.warn('STT Error:', event.error);
+                    if (event.error !== 'not-allowed' && chatbotContainer.classList.contains('gemini-live-mode')) {
+                        setTimeout(() => startConversationalVoice(), 1000);
+                    }
+                };
+
+                try {
+                    voiceSessionRecognition.start();
+                } catch (e) { }
+            }
+
+
+
+            function speakResponse(text) {
+                stopSpeaking();
+
+                // Clean markdown for cleaner speech
+                const cleanText = text.replace(/[*#`_]|\[.*?\]/g, '').trim();
+                const utterance = new SpeechSynthesisUtterance(cleanText);
+
+                // Human-like tuning
+                utterance.rate = 1.05;
+                utterance.pitch = 1.0;
+
+                utterance.onstart = () => {
+                    // Stop listening while AI is talking to prevent feedback
+                    if (voiceSessionRecognition) try { voiceSessionRecognition.stop(); } catch (e) { }
+                };
+
+                utterance.onend = () => {
+                    // Resume listening after AI finishes
+                    if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                        setTimeout(() => startConversationalVoice(), 500);
+                    }
+                };
+
+                synth.speak(utterance);
+            }
+
+            // Logic to toggle voice mode manually
+            voiceBtn.addEventListener('click', () => {
+                if (chatbotContainer.classList.contains('gemini-live-mode')) {
+                    // Turn off
+                    chatbotContainer.classList.remove('gemini-live-mode');
+                    document.body.classList.remove('live-active-border');
+                    stopSpeaking();
+                    if (voiceSessionRecognition) try { voiceSessionRecognition.stop(); } catch (e) { }
+                    showToast('Voice mode deactivated.', 'fa-microphone-slash');
+
+                    // Restart background listener
+                    setTimeout(() => initializeBackgroundRecognition(), 1000);
+                } else {
+                    activateEdubotVoiceMode();
+                }
+            });
     </script>
 </body>
 
