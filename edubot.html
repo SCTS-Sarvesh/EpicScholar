@@ -4220,8 +4220,17 @@ INSTRUCTIONS:
             let storedPausedData = null;
             try {
                 const stored = localStorage.getItem('epicScholarPausedSession');
-                if (stored) storedPausedData = JSON.parse(stored);
-            } catch (e) { }
+                if (stored) {
+                    storedPausedData = JSON.parse(stored);
+                    console.log('📦 Found stored session data:', {
+                        storedId: storedPausedData.id,
+                        targetId: currentSessionId,
+                        match: Number(storedPausedData.id) === currentSessionId
+                    });
+                }
+            } catch (e) {
+                console.error('Failed to parse stored session data', e);
+            }
 
             // DETERMINE IF RESUMING
             // We resume if forceResume is true AND we have matching data
@@ -4324,6 +4333,7 @@ INSTRUCTIONS:
 
             // Stop listening in background
             stopLiveBackgroundListener();
+            document.body.classList.remove('live-active-border');
 
             // Reset chat input
             chatInput.disabled = false;
@@ -5939,9 +5949,12 @@ INSTRUCTIONS:
                 }
 
                 voiceSessionRecognition = new SpeechRecognition();
-                voiceSessionRecognition.continuous = false;
+                voiceSessionRecognition.continuous = true; // Hear for a longer time
                 voiceSessionRecognition.interimResults = true;
                 voiceSessionRecognition.lang = 'en-US';
+
+                let silenceTimer = null;
+                const SILENCE_TIMEOUT = 2500; // Wait 2.5s of silence before submitting
 
                 let finalTranscript = '';
 
@@ -5965,6 +5978,14 @@ INSTRUCTIONS:
                     if (interimTranscript.length > 5 && synth.speaking) {
                         stopSpeaking();
                     }
+
+                    // Reset silence timer on any result
+                    clearTimeout(silenceTimer);
+                    silenceTimer = setTimeout(() => {
+                        if (finalTranscript.trim().length > 0) {
+                            voiceSessionRecognition.stop(); // This will trigger onend
+                        }
+                    }, SILENCE_TIMEOUT);
                 };
 
                 voiceSessionRecognition.onend = () => {
