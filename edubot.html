@@ -4200,14 +4200,7 @@ INSTRUCTIONS:
             }
         }
 
-        function stopLiveBackgroundListener() {
-            isLiveBgListening = false;
-            if (liveBgRecognition) {
-                try {
-                    liveBgRecognition.abort();
-                } catch (e) { }
-            }
-        }
+
 
         // ============================================
         // 3. UPDATED OPEN LIVE SESSION FUNCTION
