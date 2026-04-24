@@ -1,4 +1,14 @@
 <style>
+    :root {
+        --theme-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+        --theme-blue: #0072ff;
+        --theme-pink: #ff416c;
+        --theme-glow: rgba(0, 114, 255, 0.42);
+        --theme-glow-soft: rgba(255, 65, 108, 0.32);
+        --theme-panel: rgba(10, 14, 26, 0.72);
+        --theme-panel-strong: rgba(12, 15, 28, 0.9);
+    }
+
     * {
         margin: 0;
         padding: 0;
@@ -8,13 +18,26 @@
     #app {
         width: 100vw;
         height: 100vh;
-        background: #000;
+        background:
+            radial-gradient(circle at 20% 20%, rgba(0, 114, 255, 0.24), transparent 30%),
+            radial-gradient(circle at 80% 15%, rgba(255, 65, 108, 0.22), transparent 28%),
+            linear-gradient(160deg, #04070f 0%, #090b14 45%, #120815 100%);
         position: relative;
         overflow: hidden;
         display: flex;
         align-items: flex-start;
         justify-content: center;
         font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif;
+    }
+
+    #app::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(135deg, rgba(0, 114, 255, 0.12) 0%, rgba(255, 65, 108, 0.1) 100%),
+            radial-gradient(circle at center, transparent 0 45%, rgba(255, 255, 255, 0.02) 100%);
+        pointer-events: none;
     }
 
     /* ── Island ── */
@@ -39,7 +62,7 @@
     }
 
     #island {
-        background: rgba(28, 28, 30, 0.8);
+        background: var(--theme-panel);
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         border-radius: 30px;
@@ -68,14 +91,14 @@
     .i-icon {
         width: 32px;
         height: 32px;
-        background: linear-gradient(135deg, #7f5af0, #2cb67d);
+        background: var(--theme-gradient);
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 16px;
         flex-shrink: 0;
-        box-shadow: 0 4px 12px rgba(127, 90, 240, 0.3);
+        box-shadow: 0 8px 22px var(--theme-glow);
     }
 
     .i-text {
@@ -141,7 +164,7 @@
 
     /* Topic pills */
     .topic-pill {
-        background: rgba(28, 28, 30, 0.6);
+        background: rgba(12, 16, 28, 0.66);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
         border-radius: 24px;
@@ -171,10 +194,10 @@
     }
 
     .topic-pill:hover {
-        background: rgba(40, 40, 44, 0.8);
+        background: rgba(19, 24, 38, 0.84);
         border-color: rgba(255, 255, 255, 0.2);
         transform: scale(1.02) translateY(-2px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 16px 32px rgba(0, 0, 0, 0.34);
     }
 
     .topic-pill:active {
@@ -204,19 +227,19 @@
     }
 
     .pill-icon.purple {
-        background: rgba(127, 90, 240, 0.25);
+        background: rgba(0, 114, 255, 0.22);
     }
 
     .pill-icon.teal {
-        background: rgba(44, 182, 125, 0.25);
+        background: rgba(255, 65, 108, 0.2);
     }
 
     .pill-icon.amber {
-        background: rgba(226, 183, 20, 0.25);
+        background: rgba(0, 114, 255, 0.2);
     }
 
     .pill-icon.coral {
-        background: rgba(224, 92, 92, 0.25);
+        background: rgba(255, 65, 108, 0.24);
     }
 
     .pill-text {
@@ -246,23 +269,23 @@
     }
 
     .pill-dot.purple {
-        background: #7f5af0;
-        box-shadow: 0 0 10px #7f5af0;
+        background: var(--theme-blue);
+        box-shadow: 0 0 10px var(--theme-blue);
     }
 
     .pill-dot.teal {
-        background: #2cb67d;
-        box-shadow: 0 0 10px #2cb67d;
+        background: var(--theme-pink);
+        box-shadow: 0 0 10px var(--theme-pink);
     }
 
     .pill-dot.amber {
-        background: #e2b714;
-        box-shadow: 0 0 10px #e2b714;
+        background: #52a8ff;
+        box-shadow: 0 0 10px #52a8ff;
     }
 
     .pill-dot.coral {
-        background: #e05c5c;
-        box-shadow: 0 0 10px #e05c5c;
+        background: #ff7294;
+        box-shadow: 0 0 10px #ff7294;
     }
 
     @keyframes pulse {
@@ -283,7 +306,10 @@
     #video-stage {
         position: absolute;
         inset: 0;
-        background: #000;
+        background:
+            radial-gradient(circle at top left, rgba(0, 114, 255, 0.24), transparent 35%),
+            radial-gradient(circle at bottom right, rgba(255, 65, 108, 0.2), transparent 30%),
+            #04060d;
         display: flex;
         flex-direction: column;
         opacity: 0;
@@ -305,7 +331,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: rgba(0, 0, 0, 0.8);
+        background: rgba(5, 8, 18, 0.82);
         backdrop-filter: blur(10px);
         border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         z-index: 10;
@@ -354,21 +380,41 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #000;
+        background:
+            radial-gradient(circle at center, rgba(255, 255, 255, 0.05), transparent 45%),
+            linear-gradient(135deg, rgba(0, 114, 255, 0.18) 0%, rgba(255, 65, 108, 0.18) 100%),
+            #02040a;
+        overflow: hidden;
     }
 
-    #yt-frame {
+    #video-container::before {
+        content: '';
+        position: absolute;
+        inset: 5%;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 28px;
+        box-shadow: inset 0 0 80px rgba(255, 255, 255, 0.03);
+        pointer-events: none;
+    }
+
+    #yt-frame,
+    #topic-video {
         width: 100%;
         height: 100%;
         border: none;
         min-height: 270px;
     }
 
+    #topic-video {
+        object-fit: cover;
+        display: none;
+    }
+
     .quiz-trigger {
         position: absolute;
         bottom: 24px;
         right: 24px;
-        background: #7f5af0;
+        background: var(--theme-gradient);
         color: #fff;
         border: none;
         border-radius: 28px;
@@ -380,7 +426,7 @@
         letter-spacing: -0.3px;
         opacity: 0;
         transform: scale(0.6) translateY(20px);
-        box-shadow: 0 10px 25px rgba(127, 90, 240, 0.4);
+        box-shadow: 0 14px 28px rgba(0, 114, 255, 0.28), 0 18px 34px rgba(255, 65, 108, 0.2);
         z-index: 100;
     }
 
@@ -443,7 +489,7 @@
     }
 
     .q-label {
-        color: #7f5af0;
+        color: #8dc2ff;
         font-size: 11px;
         text-transform: uppercase;
         letter-spacing: 1.5px;
@@ -497,28 +543,28 @@
     }
 
     .q-opt.selected {
-        background: rgba(127, 90, 240, 0.15);
-        border-color: #7f5af0;
+        background: rgba(0, 114, 255, 0.15);
+        border-color: var(--theme-blue);
         color: #fff;
         transform: scale(1.02);
-        box-shadow: 0 4px 15px rgba(127, 90, 240, 0.2);
+        box-shadow: 0 4px 15px rgba(0, 114, 255, 0.22);
     }
 
     .q-opt.correct {
-        background: rgba(44, 182, 125, 0.2) !important;
-        border-color: #2cb67d !important;
-        color: #2cb67d !important;
+        background: rgba(255, 65, 108, 0.18) !important;
+        border-color: var(--theme-pink) !important;
+        color: #ffc0d0 !important;
     }
 
     .q-opt.wrong {
-        background: rgba(224, 92, 92, 0.2) !important;
-        border-color: #e05c5c !important;
-        color: #e05c5c !important;
+        background: rgba(255, 122, 152, 0.16) !important;
+        border-color: #ff7a98 !important;
+        color: #ff9cb5 !important;
     }
 
     #quiz-submit {
         width: 100%;
-        background: #7f5af0;
+        background: var(--theme-gradient);
         color: #fff;
         border: none;
         border-radius: 20px;
@@ -530,7 +576,7 @@
         letter-spacing: -0.2px;
         opacity: 0;
         transform: scale(0.9);
-        box-shadow: 0 10px 25px rgba(127, 90, 240, 0.3);
+        box-shadow: 0 16px 34px rgba(0, 114, 255, 0.25), 0 14px 26px rgba(255, 65, 108, 0.18);
     }
 
     #quiz-submit.pop {
@@ -539,7 +585,7 @@
     }
 
     #quiz-submit:not(:disabled):hover {
-        background: #6b46e0;
+        background: linear-gradient(135deg, #1f8bff 0%, #ff4f80 100%);
         transform: scale(1.04);
         box-shadow: 0 15px 30px rgba(127, 90, 240, 0.4);
     }
@@ -553,7 +599,10 @@
     #dashboard-stage {
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at top right, #1a1a1e, #050506);
+        background:
+            radial-gradient(circle at top left, rgba(0, 114, 255, 0.28), transparent 35%),
+            radial-gradient(circle at bottom right, rgba(255, 65, 108, 0.24), transparent 38%),
+            linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
         display: flex;
         flex-direction: column;
         opacity: 0;
@@ -629,30 +678,84 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        background: rgba(255, 255, 255, 0.03);
+        background: rgba(5, 10, 24, 0.34);
         backdrop-filter: blur(25px);
         -webkit-backdrop-filter: blur(25px);
         border: 1px solid rgba(255, 255, 255, 0.08);
-        border-radius: 40px;
-        padding: 50px 40px;
+        border-radius: 46px;
+        padding: 42px 34px 34px;
         opacity: 0;
         transform: scale(0.9);
         transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
-        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 32px 70px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.08);
         position: relative;
         left: 0;
+        overflow: hidden;
     }
 
     .prog-wrap.pop {
         opacity: 1;
         transform: scale(1);
+        animation: progFloat 3.8s ease-in-out infinite;
+    }
+
+    .prog-wrap::before {
+        content: '';
+        position: absolute;
+        inset: -20%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.18) 0%, transparent 58%);
+        opacity: 0.25;
+        animation: progHalo 5.5s linear infinite;
+        pointer-events: none;
+    }
+
+    .prog-ring {
+        position: relative;
+        width: 220px;
+        height: 220px;
+        display: grid;
+        place-items: center;
+    }
+
+    .prog-ring::before,
+    .prog-ring::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .prog-ring::before {
+        inset: 16px;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.12), transparent 68%);
+        filter: blur(10px);
+        animation: ringPulse 2.8s ease-in-out infinite;
+    }
+
+    .prog-ring::after {
+        inset: -6px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        animation: ringSpin 10s linear infinite;
     }
 
     .prog-note {
-        margin-top: 20px;
+        margin-top: 16px;
         font-size: 16px;
         color: rgba(255, 255, 255, 0.9);
         font-weight: 600;
+        letter-spacing: 0.04em;
+    }
+
+    .prog-svg {
+        overflow: visible;
+        filter: drop-shadow(0 0 28px rgba(0, 114, 255, 0.28));
+    }
+
+    .prog-orbit {
+        fill: rgba(255, 255, 255, 0.95);
+        filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.55));
+        transform-origin: 110px 110px;
+        animation: orbitSpin 4.6s linear infinite;
     }
 
     .stats-container {
@@ -717,11 +820,11 @@
     }
 
     .s-val.purple {
-        color: #a78bfa;
+        color: #8dc2ff;
     }
 
     .s-val.teal {
-        color: #34d399;
+        color: #ff9cb5;
     }
 
     .s-val.amber {
@@ -743,7 +846,7 @@
         display: block;
         width: 100%;
         background: #fff;
-        color: #000;
+        color: #08111d;
         border: none;
         border-radius: 24px;
         padding: 20px;
@@ -766,6 +869,55 @@
         background: #f0f0f0;
         transform: scale(1.02) translateY(-3px);
         box-shadow: 0 25px 50px rgba(255, 255, 255, 0.15);
+    }
+
+    @keyframes progFloat {
+        0%,
+        100% {
+            transform: translateY(0) scale(1);
+        }
+        50% {
+            transform: translateY(-8px) scale(1.01);
+        }
+    }
+
+    @keyframes progHalo {
+        from {
+            transform: rotate(0deg) scale(0.95);
+        }
+        to {
+            transform: rotate(360deg) scale(1.08);
+        }
+    }
+
+    @keyframes ringSpin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes ringPulse {
+        0%,
+        100% {
+            opacity: 0.45;
+            transform: scale(0.96);
+        }
+        50% {
+            opacity: 0.82;
+            transform: scale(1.03);
+        }
+    }
+
+    @keyframes orbitSpin {
+        from {
+            transform: rotate(0deg);
+        }
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>
 
@@ -831,6 +983,7 @@
         </div>
         <div id="video-container">
             <iframe id="yt-frame" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+            <video id="topic-video" playsinline controls></video>
             <button class="quiz-trigger" id="quiz-btn" onclick="showQuiz()">Take Quiz →</button>
         </div>
     </div>
@@ -857,17 +1010,27 @@
         </div>
         <div class="dash-body">
             <div class="prog-wrap" id="prog-wrap">
-                <svg width="150" height="150" viewBox="0 0 150 150">
-                    <circle cx="75" cy="75" r="60" fill="none" stroke="#ebebef" stroke-width="11" />
-                    <circle id="prog-arc" cx="75" cy="75" r="60" fill="none" stroke="#7f5af0" stroke-width="11"
-                        stroke-linecap="round" stroke-dasharray="377" stroke-dashoffset="377"
-                        transform="rotate(-90 75 75)"
-                        style="transition: stroke-dashoffset 1.3s cubic-bezier(0.4,0,0.2,1), stroke 0.6s ease" />
-                    <text x="75" y="70" text-anchor="middle" font-size="26" font-weight="700" fill="#fff"
-                        font-family="-apple-system,sans-serif" id="prog-pct">0%</text>
-                    <text x="75" y="87" text-anchor="middle" font-size="11" fill="rgba(255,255,255,0.5)"
-                        font-family="-apple-system,sans-serif">score</text>
-                </svg>
+                <div class="prog-ring">
+                    <svg class="prog-svg" width="220" height="220" viewBox="0 0 220 220">
+                        <defs>
+                            <linearGradient id="progGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#0072ff" />
+                                <stop offset="100%" stop-color="#ff416c" />
+                            </linearGradient>
+                        </defs>
+                        <circle cx="110" cy="110" r="82" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="16" />
+                        <circle cx="110" cy="110" r="96" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1.5" stroke-dasharray="2 10" />
+                        <circle id="prog-arc" cx="110" cy="110" r="82" fill="none" stroke="url(#progGradient)" stroke-width="16"
+                            stroke-linecap="round" stroke-dasharray="515.22" stroke-dashoffset="515.22"
+                            transform="rotate(-90 110 110)"
+                            style="transition: stroke-dashoffset 1.35s cubic-bezier(0.34,1.56,0.64,1), stroke 0.6s ease" />
+                        <circle class="prog-orbit" cx="110" cy="14" r="5"></circle>
+                        <text x="110" y="102" text-anchor="middle" font-size="40" font-weight="800" fill="#fff"
+                            font-family="-apple-system,sans-serif" id="prog-pct">0%</text>
+                        <text x="110" y="128" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.66)"
+                            font-family="-apple-system,sans-serif" style="letter-spacing: 0.18em; text-transform: uppercase;">score</text>
+                    </svg>
+                </div>
                 <div class="prog-note" id="prog-note">Calculating...</div>
             </div>
             <div class="stats-container" id="stats-container">
@@ -882,28 +1045,52 @@
 <script>
     const topics = [
         {
-            name: "Rise of the Party", videoId: "nq4WfBXijBg",
+            name: "Rise of the Party", source: "local", videoSrc: "1.mp4",
             quiz: { q: "In what year did Adolf Hitler become Chancellor of Germany?", opts: ["1929", "1933", "1936", "1939"], correct: 1 }
         },
         {
-            name: "Ideology & Propaganda", videoId: "OHch6oiMVjA",
+            name: "Ideology & Propaganda", source: "youtube", videoId: "OHch6oiMVjA",
             quiz: { q: "What ministry did Joseph Goebbels head to control Nazi messaging?", opts: ["Ministry of War", "Ministry of Propaganda", "Ministry of Foreign Affairs", "Ministry of Education"], correct: 1 }
         },
         {
-            name: "World War II", videoId: "fo2Rb9h788s",
+            name: "World War II", source: "youtube", videoId: "fo2Rb9h788s",
             quiz: { q: "What was Germany's devastating 1939 military strategy called?", opts: ["Operation Barbarossa", "Blitzkrieg", "The Final Solution", "Operation Sea Lion"], correct: 1 }
         },
         {
-            name: "The Holocaust", videoId: "4mxkqhsz-Ag",
+            name: "The Holocaust", source: "youtube", videoId: "4mxkqhsz-Ag",
             quiz: { q: "Approximately how many Jewish people were killed during the Holocaust?", opts: ["1 million", "3 million", "6 million", "10 million"], correct: 2 }
         }
     ];
 
     let currentTopic = 0, selectedOpt = null, quizPassed = false;
     let sessionStart = Date.now();
+    const PROG_CIRCUMFERENCE = 515.22;
 
     function pop(el, delay = 0) {
         setTimeout(() => el.classList.add('pop'), delay);
+    }
+
+    function loadTopicMedia(topic) {
+        const frame = document.getElementById('yt-frame');
+        const video = document.getElementById('topic-video');
+
+        frame.style.display = 'none';
+        frame.src = '';
+        video.style.display = 'none';
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+
+        if (topic.source === 'local') {
+            video.src = topic.videoSrc;
+            video.style.display = 'block';
+            video.currentTime = 0;
+            video.play().catch(() => { });
+            return;
+        }
+
+        frame.style.display = 'block';
+        frame.src = `https://www.youtube.com/embed/${topic.videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
     }
 
     function showTopics() {
@@ -939,7 +1126,7 @@
 
             setTimeout(() => {
                 document.getElementById('video-topic-name').textContent = t.name;
-                document.getElementById('yt-frame').src = `https://www.youtube.com/embed/${t.videoId}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
+                loadTopicMedia(t);
                 document.getElementById('video-stage').classList.add('active');
 
                 // Show quiz button after video "settles"
@@ -950,6 +1137,11 @@
 
     function goBack() {
         document.getElementById('yt-frame').src = '';
+        const localVideo = document.getElementById('topic-video');
+        localVideo.pause();
+        localVideo.removeAttribute('src');
+        localVideo.style.display = 'none';
+        localVideo.load();
         document.getElementById('video-stage').classList.remove('active');
         document.getElementById('quiz-btn').classList.remove('pop');
 
@@ -1021,6 +1213,11 @@
         document.getElementById('quiz-overlay').classList.remove('active');
         document.getElementById('video-stage').classList.remove('active');
         document.getElementById('yt-frame').src = '';
+        const localVideo = document.getElementById('topic-video');
+        localVideo.pause();
+        localVideo.removeAttribute('src');
+        localVideo.style.display = 'none';
+        localVideo.load();
 
         setTimeout(() => {
             document.getElementById('dashboard-stage').classList.add('active');
@@ -1041,8 +1238,8 @@
         setTimeout(() => {
             const arc = document.getElementById('prog-arc');
             const pctEl = document.getElementById('prog-pct');
-            arc.style.stroke = score >= 70 ? '#2cb67d' : score >= 50 ? '#e2b714' : '#e05c5c';
-            arc.style.strokeDashoffset = 377 - (score / 100) * 377;
+            arc.style.stroke = score >= 70 ? '#7fd6ff' : score >= 50 ? '#ffd166' : '#ff7a98';
+            arc.style.strokeDashoffset = PROG_CIRCUMFERENCE - (score / 100) * PROG_CIRCUMFERENCE;
 
             let cur = 0;
             const step = score / 50;
@@ -1087,7 +1284,7 @@
         document.querySelector('.dash-body').classList.remove('split-mode');
 
         document.getElementById('stats-grid').innerHTML = '';
-        document.getElementById('prog-arc').style.strokeDashoffset = '377';
+        document.getElementById('prog-arc').style.strokeDashoffset = String(PROG_CIRCUMFERENCE);
         document.getElementById('prog-pct').textContent = '0%';
         document.getElementById('prog-note').textContent = 'Calculating...';
 
