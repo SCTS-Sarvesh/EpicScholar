@@ -550,10 +550,12 @@
         box-shadow: 0 4px 15px rgba(0, 114, 255, 0.22);
     }
 
+    /* CHANGED: Green Color for Correct Option */
     .q-opt.correct {
-        background: rgba(255, 65, 108, 0.18) !important;
-        border-color: var(--theme-pink) !important;
-        color: #ffc0d0 !important;
+        background: rgba(34, 197, 94, 0.15) !important;
+        border-color: #22c55e !important;
+        color: #4ade80 !important;
+        box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
     }
 
     .q-opt.wrong {
@@ -923,7 +925,6 @@
 
 <div id="app">
 
-    <!-- Island -->
     <div id="island-wrap">
         <div id="island" onclick="showTopics()">
             <div class="i-icon">📚</div>
@@ -935,7 +936,6 @@
         </div>
     </div>
 
-    <!-- Topics stage -->
     <div id="topics-stage">
         <div class="topics-label" id="topics-label">Choose a topic</div>
         <div class="topic-pill" data-idx="0" onclick="playVideo(0)">
@@ -972,7 +972,6 @@
         </div>
     </div>
 
-    <!-- Video stage -->
     <div id="video-stage">
         <div id="video-header">
             <div class="vh-left">
@@ -988,7 +987,6 @@
         </div>
     </div>
 
-    <!-- Quiz overlay -->
     <div id="quiz-overlay">
         <div id="quiz-sheet">
             <div class="q-drag"></div>
@@ -999,7 +997,6 @@
         </div>
     </div>
 
-    <!-- Dashboard -->
     <div id="dashboard-stage">
         <div class="dash-header">
             <div>
