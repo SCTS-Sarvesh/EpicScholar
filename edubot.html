@@ -454,21 +454,10 @@
             curriculum: "NCERT"
         };
 
-        // Default Data - Using timestamp-based IDs for consistency
-        const defaultSessions = [
-            { id: Date.now() - 10000, title: "Quick Geometry Recap", type: "Session", subject: "Math", duration: 45, datetime: new Date(new Date().getTime() - 3600000).toISOString() },
-            { id: Date.now() - 5000, title: "The French Revolution", type: "Test", subject: "History", duration: 60, datetime: new Date(new Date().getTime() + 120000).toISOString() },
-            { id: Date.now(), title: "Laws of Motion (Revision)", type: "Session", subject: "Physics", duration: 90, datetime: new Date(new Date().getTime() + 86400000).toISOString() }
-        ];
-        const defaultTimetable = [
-            { title: "Midterm Exam", subject: "Calculus", date: "2026-01-10", time: "09:00 AM", status: "Upcoming" },
-            { title: "Final Project Due", subject: "Computer Science", date: "2026-01-25", time: "11:59 PM", status: "Drafting" }
-        ];
-        const defaultResources = [
-            { type: "pdf", title: "Thermodynamics Chapter 5 Notes", subject: "Physics" },
-            { type: "video", title: "Calculus Integration Tutorial", subject: "Math" },
-            { type: "photo", title: "WWI Key Dates Infographic", subject: "History" }
-        ];
+        // Default Data - No default sessions (user creates their own)
+        const defaultSessions = [];
+        const defaultTimetable = [];
+        const defaultResources = [];
 
         // ✨ NEW: Placeholder data for previous marks/test history
         const defaultMarksData = {};
@@ -1173,22 +1162,25 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
             const savedProfile = localStorage.getItem('epicScholarProfile');
             const savedStudyTime = localStorage.getItem('epicScholarTotalStudyTime');
 
-            // ⭐ FIX: Migrate old session IDs to timestamp format
-            let loadedSessions = savedSessions ? JSON.parse(savedSessions) : defaultSessions;
-
-            // Check if sessions have old-style IDs (small numbers like 1, 2, 3)
-            const hasOldIds = loadedSessions.some(s => s.id < 1000000000000); // Timestamps are 13 digits
-
-            if (hasOldIds) {
-                console.log('⚙️ Migrating old session IDs to timestamp format...');
-                loadedSessions = loadedSessions.map((session, index) => ({
-                    ...session,
-                    id: Date.now() + index // Convert to timestamp
-                }));
-                // Save migrated sessions
-                localStorage.setItem('epicScholarSessions', JSON.stringify(loadedSessions));
-                console.log('✅ Session IDs migrated successfully');
+            // ⭐ One-time migration: Remove old default sessions (Quick Geometry, French Revolution, Laws of Motion)
+            if (!localStorage.getItem('epicScholarDefaultsCleared')) {
+                const DEFAULT_TITLES = ["Quick Geometry Recap", "The French Revolution", "Laws of Motion (Revision)"];
+                if (savedSessions) {
+                    try {
+                        const existing = JSON.parse(savedSessions);
+                        const cleaned = existing.filter(s => !DEFAULT_TITLES.includes(s.title));
+                        if (cleaned.length !== existing.length) {
+                            localStorage.setItem('epicScholarSessions', JSON.stringify(cleaned));
+                            console.log('🧹 Cleared default sessions from localStorage');
+                        }
+                    } catch (e) {}
+                }
+                localStorage.setItem('epicScholarDefaultsCleared', '1');
             }
+
+            // Load sessions from storage only (no defaults)
+            let loadedSessions = localStorage.getItem('epicScholarSessions');
+            loadedSessions = loadedSessions ? JSON.parse(loadedSessions) : [];
 
             sessions = loadedSessions;
             previousMarksData = savedMarks ? JSON.parse(savedMarks) : defaultMarksData;
@@ -4162,7 +4154,34 @@ INSTRUCTIONS:
                 marksContent.innerHTML = '';
 
                 if (marks.length > 0) {
+                    // Group concept quiz entries by parent session topic
+                    const grouped = {};
+                    const standalone = [];
                     marks.forEach(mark => {
+                        const aiMatch = mark.name.match(/^AI Session: (.+)/);
+                        const quizMatch = mark.name.match(/^(?:Quiz|Partial Test): (.+)/);
+                        if (aiMatch) {
+                            const topic = aiMatch[1];
+                            if (!grouped[topic]) grouped[topic] = [];
+                            grouped[topic].push(parseInt(mark.score) || 0);
+                        } else if (quizMatch) {
+                            standalone.push(mark);
+                        } else {
+                            standalone.push(mark);
+                        }
+                    });
+                    // Render grouped AI sessions (show only the session name + avg score)
+                    for (const [topic, scores] of Object.entries(grouped)) {
+                        const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
+                        marksContent.innerHTML += `
+                    <div class="mark-item">
+                        <span class="mark-name">📚 ${topic}</span>
+                        <span class="mark-score">${avg}%</span>
+                    </div>
+                `;
+                    }
+                    // Render standalone test entries normally
+                    standalone.forEach(mark => {
                         marksContent.innerHTML += `
                     <div class="mark-item">
                         <span class="mark-name">${mark.name}</span>
@@ -4659,7 +4678,11 @@ INSTRUCTIONS:
             );
 
             if (dayActivities.length === 0) {
-                activitiesList.innerHTML = '<p style="opacity: 0.5; text-align: center; margin-top: 30px; font-size:0.9em;">No activities for this day</p>';
+                activitiesList.innerHTML = `
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px 10px;gap:12px;">
+                        <img src="no-sessions.png" alt="No activities" style="width:90px;height:90px;object-fit:contain;opacity:0.7;" />
+                        <p style="opacity:0.55;text-align:center;font-size:0.88em;margin:0;">No activities for this day</p>
+                    </div>`;
             } else {
                 dayActivities.forEach(act => {
                     const item = document.createElement('div');
@@ -5411,9 +5434,12 @@ INSTRUCTIONS:
                         ${percentage >= 60 ? '→ Continue to Next Concept' : '↺ Retry This Concept'}
                     </button>`;
             } else {
-                // Standalone test: only Back to Dashboard, no Review/Close Test
+                // Standalone test: Review Answers + Back to Dashboard
                 actionButtons = `
-                    <button class="gradient-button" onclick="closeFullScreenTestAndRefresh()" style="min-width:200px;padding:14px 24px;font-size:1em;">
+                    <button class="secondary-button" onclick="reviewFsAnswers()" style="min-width:180px;padding:14px 24px;font-size:1em;">
+                        📋 Review Answers
+                    </button>
+                    <button class="gradient-button" onclick="closeFullScreenTestAndRefresh()" style="min-width:180px;padding:14px 24px;font-size:1em;">
                         ← Back to Dashboard
                     </button>`;
             }
@@ -5508,6 +5534,8 @@ INSTRUCTIONS:
                 }
             }, 400);
         }
+
+        // reviewFsAnswers() is defined above (line ~1814)
         /**
  * Determine next action after concept quiz based on score
  */
