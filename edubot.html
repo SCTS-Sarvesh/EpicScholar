@@ -3507,8 +3507,17 @@ INSTRUCTIONS:
                 }
                 const _fi = sessions.findIndex(s => Number(s.id) === _sid);
                 if (_fi !== -1) sessions.splice(_fi, 1);
-                saveDataToLocalStorage();
             }
+
+            // ⭐ NEW: Add session-level score to marks history
+            const subject = aiSessionState.subject || "General";
+            if (!previousMarksData[subject]) previousMarksData[subject] = [];
+            previousMarksData[subject].push({
+                name: aiSessionState.topic,
+                score: `${avgPercentage}%`
+            });
+            saveDataToLocalStorage();
+            updateDashboardPercentages();
 
             liveSessionContent.innerHTML = `
                 <div style="height:100%;display:flex;flex-direction:column;padding:18px 24px;box-sizing:border-box;gap:14px;overflow:hidden;">
@@ -4154,41 +4163,27 @@ INSTRUCTIONS:
                 marksContent.innerHTML = '';
 
                 if (marks.length > 0) {
-                    // Group concept quiz entries by parent session topic
+                    // Group all entries by topic name (stripping prefixes like "Quiz: ", "AI Session: ", etc.)
                     const grouped = {};
-                    const standalone = [];
+                    
                     marks.forEach(mark => {
-                        const aiMatch = mark.name.match(/^AI Session: (.+)/);
-                        const quizMatch = mark.name.match(/^(?:Quiz|Partial Test): (.+)/);
-                        if (aiMatch) {
-                            const topic = aiMatch[1];
-                            if (!grouped[topic]) grouped[topic] = [];
-                            grouped[topic].push(parseInt(mark.score) || 0);
-                        } else if (quizMatch) {
-                            standalone.push(mark);
-                        } else {
-                            standalone.push(mark);
-                        }
+                        // Strip prefixes to get the base topic name
+                        let baseName = mark.name.replace(/^(?:Quiz|AI Session|Partial Test|Test):\s+/i, '').trim();
+                        
+                        if (!grouped[baseName]) grouped[baseName] = [];
+                        grouped[baseName].push(parseInt(mark.score) || 0);
                     });
-                    // Render grouped AI sessions (show only the session name + avg score)
+
+                    // Render grouped results
                     for (const [topic, scores] of Object.entries(grouped)) {
                         const avg = Math.round(scores.reduce((a, b) => a + b, 0) / scores.length);
                         marksContent.innerHTML += `
-                    <div class="mark-item">
-                        <span class="mark-name">📚 ${topic}</span>
-                        <span class="mark-score">${avg}%</span>
-                    </div>
-                `;
+                            <div class="mark-item">
+                                <span class="mark-name">📚 ${topic}</span>
+                                <span class="mark-score">${avg}%</span>
+                            </div>
+                        `;
                     }
-                    // Render standalone test entries normally
-                    standalone.forEach(mark => {
-                        marksContent.innerHTML += `
-                    <div class="mark-item">
-                        <span class="mark-name">${mark.name}</span>
-                        <span class="mark-score">${mark.score}</span>
-                    </div>
-                `;
-                    });
                 } else {
                     marksContent.innerHTML = `<p style="padding: 12px; text-align: center; color: var(--subtext-dark);">No test history found for ${subject}.</p>`;
                 }
@@ -5283,23 +5278,6 @@ INSTRUCTIONS:
             // Update progress
             updateProgress();
 
-            // ⭐ NEW: Immediate update to marks history for partial session tracking
-            const subject = aiSessionState.subject || "General";
-            if (!previousMarksData[subject]) previousMarksData[subject] = [];
-
-            // Check if we already have an entry for this concept to avoid duplicates
-            const conceptTitle = concept.title;
-            const existingIndex = previousMarksData[subject].findIndex(m => m.name === `Quiz: ${conceptTitle}`);
-
-            if (existingIndex !== -1) {
-                previousMarksData[subject][existingIndex].score = `${score}%`;
-            } else {
-                previousMarksData[subject].push({
-                    name: `Quiz: ${conceptTitle}`,
-                    score: `${score}%`
-                });
-            }
-
             saveDataToLocalStorage();
             updateDashboardPercentages();
         }
@@ -5344,13 +5322,6 @@ INSTRUCTIONS:
                 aiSessionState.scores[currentIndex] = percentage;
                 aiSessionState.quizAnswered = true;
 
-                // ⭐ NEW: Add to marks history
-                const subject = aiSessionState.subject || "General";
-                if (!previousMarksData[subject]) previousMarksData[subject] = [];
-                previousMarksData[subject].push({
-                    name: `AI Session: ${aiSessionState.concepts[currentIndex].title}`,
-                    score: `${percentage}%`
-                });
                 saveDataToLocalStorage();
                 updateDashboardPercentages();
 
