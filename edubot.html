@@ -1173,7 +1173,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no backticks):
                             localStorage.setItem('epicScholarSessions', JSON.stringify(cleaned));
                             console.log('🧹 Cleared default sessions from localStorage');
                         }
-                    } catch (e) {}
+                    } catch (e) { }
                 }
                 localStorage.setItem('epicScholarDefaultsCleared', '1');
             }
@@ -4165,11 +4165,11 @@ INSTRUCTIONS:
                 if (marks.length > 0) {
                     // Group all entries by topic name (stripping prefixes like "Quiz: ", "AI Session: ", etc.)
                     const grouped = {};
-                    
+
                     marks.forEach(mark => {
                         // Strip prefixes to get the base topic name
                         let baseName = mark.name.replace(/^(?:Quiz|AI Session|Partial Test|Test):\s+/i, '').trim();
-                        
+
                         if (!grouped[baseName]) grouped[baseName] = [];
                         grouped[baseName].push(parseInt(mark.score) || 0);
                     });
