@@ -1200,6 +1200,7 @@ button:active {
     -webkit-backdrop-filter: var(--glass-blur);
     backdrop-filter: var(--glass-blur);
     border: 1.5px solid var(--card-glass-border);
+    border-top: 2px solid transparent;
     border-radius: var(--border-radius-xl);
     padding: 25px;
     display: flex;
@@ -1210,8 +1211,9 @@ button:active {
     overflow-y: auto;
     position: sticky;
     top: 100px;
-    box-shadow: var(--shadow-deep);
+    box-shadow: var(--shadow-deep), 0 -2px 0 0 rgba(0, 114, 255, 0.4) inset;
     animation: liquid-appearance 0.8s var(--ios-spring);
+    background-image: linear-gradient(to bottom, rgba(0, 114, 255, 0.05), transparent 40%);
 }
 
 /* Sidebar Progress Circle Extra Polish */
@@ -1323,10 +1325,11 @@ button:active {
 }
 
 .concept-item.active {
-    background: var(--primary-gradient);
+    background: var(--gradient);
     border-color: var(--primary-color);
     color: white;
     font-weight: 600;
+    box-shadow: 0 4px 15px rgba(0, 114, 255, 0.35);
 }
 
 .concept-item.completed {
@@ -1448,6 +1451,18 @@ button:active {
     padding: 30px;
     margin-top: 20px;
     animation: slideInUp 0.5s ease-out;
+    position: relative;
+}
+
+.ai-quiz-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient);
+    border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
 }
 
 .light-mode .ai-quiz-container {
@@ -1548,9 +1563,22 @@ button:active {
     background: var(--card-dark);
     backdrop-filter: blur(var(--blur-level));
     border: var(--border-dark);
+    border-top: 2px solid transparent;
     border-radius: var(--border-radius-xl);
     padding: 20px;
     overflow: hidden;
+    position: relative;
+}
+
+.ai-video-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient);
+    border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
 }
 
 .light-mode .ai-video-container {
@@ -1625,7 +1653,22 @@ button:active {
     justify-content: space-between;
     align-items: center;
     border: var(--border-dark);
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    border-bottom: 2px solid transparent;
+    background-clip: padding-box;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4), 0 2px 0 0 rgba(0, 114, 255, 0.3);
+    position: relative;
+}
+
+.live-session-header-bar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 5%;
+    width: 90%;
+    height: 2px;
+    background: var(--gradient);
+    border-radius: 0 0 2px 2px;
+    opacity: 0.6;
 }
 
 .light-mode .live-session-header-bar {
@@ -1641,14 +1684,17 @@ button:active {
 
 #live-session-timer {
     font-size: 1.2em;
-    font-weight: 600;
-    color: var(--text-dark);
-    background: rgba(0, 0, 0, 0.2);
-    padding: 8px 15px;
+    font-weight: 700;
+    background: linear-gradient(135deg, #0072ff, #ff416c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    padding: 8px 18px;
     border-radius: 10px;
-    border: var(--border-dark);
-    min-width: 50px;
+    border: 1px solid rgba(0, 114, 255, 0.35);
+    min-width: 60px;
     text-align: center;
+    box-shadow: 0 0 12px rgba(0, 114, 255, 0.15), inset 0 0 0 10rem rgba(0, 114, 255, 0.06);
 }
 
 .light-mode #live-session-timer {
@@ -5873,3 +5919,83 @@ body.loaded .session-card,
     background: rgba(0, 0, 0, 0.06);
     color: var(--text-light);
 }
+/*
+ * =================================================================
+ * 11. MARKS MODAL STYLING (New Section)
+ * =================================================================
+ */
+
+#marks-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+#marks-modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+#marks-modal-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.mark-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    transition: all 0.3s var(--ios-spring);
+    animation: slideInRight 0.4s var(--ios-spring) backwards;
+}
+
+.mark-item:nth-child(even) {
+    animation-name: slideInLeft;
+}
+
+.mark-item:hover {
+    transform: translateX(8px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.mark-name {
+    font-weight: 600;
+    font-size: 1em;
+    color: var(--text-dark);
+    flex: 1;
+    text-align: left;
+}
+
+.mark-score {
+    font-weight: 800;
+    color: var(--primary-color);
+    font-size: 1.1em;
+    background: rgba(0, 114, 255, 0.15);
+    padding: 6px 14px;
+    border-radius: 12px;
+    min-width: 60px;
+    text-align: center;
+}
+
+.light-mode .mark-item {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: rgba(0, 0, 0, 0.08);
+}
+
+.light-mode .mark-name {
+    color: var(--text-light);
+}
+
+.light-mode .mark-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
