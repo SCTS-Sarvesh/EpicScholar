@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rock Paper Scissors - Ultimate Edition</title>
-  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700;800&family=Material+Icons&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700;800&family=Material+Icons&display=swap"
+    rel="stylesheet">
   <style>
     /*
      * ----------------------------------------------------
@@ -16,18 +19,19 @@
       --primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
       --primary-color: #0072ff;
       --accent-color: #ff416c;
-      
+
       /* Theme Variables (Light/Dark Switch) */
       --bg-color-light: #f5f5f5;
-      --bg-color-dark: #000; /* Requested Black Background */
+      --bg-color-dark: #000;
+      /* Requested Black Background */
       --text-light: #222;
       --text-dark: #eee;
       --container-light: rgba(255, 255, 255, 0.9);
       --container-dark: rgba(25, 25, 25, 0.9);
-      
+
       /* Glassmorphism/iOS Polish */
       --blur: blur(25px);
-      --card-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      --card-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
       --pop-transform: translateY(-4px) scale(1.02);
       /* Custom cubic-bezier for snappy, bouncy feel */
       --transition-fast: all 0.2s cubic-bezier(0.4, 0.8, 0.6, 1.2);
@@ -59,24 +63,54 @@
       background-color: var(--bg-color-dark);
       color: var(--text-dark);
     }
-    
+
     /* Blob Animation Keyframes */
     @keyframes moveBlob1 {
-      0%, 100% { transform: translate(0, 0) scale(1.1); }
-      30% { transform: translate(-5vw, 15vh) scale(0.9); }
-      60% { transform: translate(5vw, -10vh) scale(1.2); }
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1.1);
+      }
+
+      30% {
+        transform: translate(-5vw, 15vh) scale(0.9);
+      }
+
+      60% {
+        transform: translate(5vw, -10vh) scale(1.2);
+      }
     }
-    
+
     @keyframes moveBlob2 {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      40% { transform: translate(10vw, -10vh) scale(1.1); }
-      70% { transform: translate(-10vw, 10vh) scale(0.9); }
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      40% {
+        transform: translate(10vw, -10vh) scale(1.1);
+      }
+
+      70% {
+        transform: translate(-10vw, 10vh) scale(0.9);
+      }
     }
 
     @keyframes moveBlob3 {
-      0%, 100% { transform: translate(0, 0) scale(1.2); }
-      25% { transform: translate(5vw, 5vh) scale(1); }
-      80% { transform: translate(-15vw, -5vh) scale(1.1); }
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1.2);
+      }
+
+      25% {
+        transform: translate(5vw, 5vh) scale(1);
+      }
+
+      80% {
+        transform: translate(-15vw, -5vh) scale(1.1);
+      }
     }
 
     /* The Glass Blobs Containers */
@@ -102,7 +136,7 @@
       width: 400px;
       height: 400px;
       border-radius: 50%;
-      background: var(--primary-gradient); 
+      background: var(--primary-gradient);
       filter: blur(150px);
       transition: opacity 0.5s ease;
     }
@@ -124,16 +158,16 @@
       left: 30%;
       animation: moveBlob3 18s infinite alternate;
     }
-    
+
     /* ----------------------------------------------------
      * 3. UI CONTROLS & UTILITY
      * ----------------------------------------------------
      */
-    
+
     .ui-controls-top {
       position: fixed;
       top: 20px;
-      left: 20px; 
+      left: 20px;
       right: auto;
       display: flex;
       gap: 12px;
@@ -141,12 +175,12 @@
     }
 
     .ui-controls-right {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        display: flex;
-        gap: 12px;
-        z-index: 100;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 12px;
+      z-index: 100;
     }
 
     .icon-btn {
@@ -156,7 +190,7 @@
       width: 48px;
       height: 48px;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -169,31 +203,32 @@
     .dark-mode .icon-btn {
       background: var(--container-dark);
       color: var(--text-dark);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     .icon-btn:hover {
       transform: scale(1.1) rotate(10deg);
       box-shadow: 0 8px 20px rgba(0, 114, 255, 0.4);
     }
-    
+
     /* Hidden utility class with smooth transition */
     .hidden-fade {
-        opacity: 0;
-        max-height: 0;
-        padding: 0;
-        margin: 0;
-        overflow: hidden;
-        pointer-events: none;
-        transition: opacity 0.5s ease, max-height 0.5s ease;
+      opacity: 0;
+      max-height: 0;
+      padding: 0;
+      margin: 0;
+      overflow: hidden;
+      pointer-events: none;
+      transition: opacity 0.5s ease, max-height 0.5s ease;
     }
-    
+
     .visible-fade {
-        opacity: 1;
-        max-height: 1000px; /* Sufficient height to show content */
-        transition: opacity 0.8s ease 0.3s, max-height 0.5s ease;
+      opacity: 1;
+      max-height: 1000px;
+      /* Sufficient height to show content */
+      transition: opacity 0.8s ease 0.3s, max-height 0.5s ease;
     }
-    
+
     .game-container {
       background: var(--container-light);
       padding: 2.5rem;
@@ -206,7 +241,7 @@
       -webkit-backdrop-filter: var(--blur);
       display: flex;
       flex-direction: column;
-      align-items: center; 
+      align-items: center;
       transition: var(--transition-smooth), box-shadow 0.5s;
       z-index: 10;
       animation: fadeIn 0.8s var(--transition-smooth);
@@ -214,7 +249,7 @@
 
     .dark-mode .game-container {
       background: var(--container-dark);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
     }
 
     .game-title {
@@ -260,7 +295,7 @@
 
     .secondary-btn {
       background: transparent;
-      border: 2px solid var(--accent-color); 
+      border: 2px solid var(--accent-color);
       color: var(--accent-color);
       margin-top: 10px;
       transition: var(--transition-fast);
@@ -277,7 +312,7 @@
       width: 100%;
       padding: 18px;
       border-radius: 16px;
-      border: 3px solid rgba(0, 114, 255, 0.1); 
+      border: 3px solid rgba(0, 114, 255, 0.1);
       background: #ffffff;
       font-family: 'Google Sans', sans-serif;
       font-size: 1.4rem;
@@ -286,7 +321,7 @@
       color: var(--primary-color);
       transition: var(--transition-fast);
       box-sizing: border-box;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
     }
 
     .dark-mode .pop-input {
@@ -294,14 +329,15 @@
       border-color: rgba(255, 255, 255, 0.1);
       color: var(--text-dark);
     }
-    
+
     .pop-input::placeholder {
-        color: rgba(0, 114, 255, 0.4); 
+      color: rgba(0, 114, 255, 0.4);
     }
+
     .dark-mode .pop-input::placeholder {
-        color: rgba(255, 255, 255, 0.6); 
+      color: rgba(255, 255, 255, 0.6);
     }
-    
+
     /* Difficulty Selector */
     .difficulty-selector {
       display: flex;
@@ -333,59 +369,60 @@
       transform: translateY(-2px);
       box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
     }
-    
+
     .diff-btn:hover:not(.selected) {
-        transform: translateY(-4px) scale(1.02);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      transform: translateY(-4px) scale(1.02);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     }
-    
+
     /* ----------------------------------------------------
      * 4. GAME PLAY SECTION
      * ----------------------------------------------------
      */
-    
+
     #game-area {
-        width: 100%; 
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 0 10px; 
-        box-sizing: border-box;
-        transition: var(--transition-smooth);
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0 10px;
+      box-sizing: border-box;
+      transition: var(--transition-smooth);
     }
 
     /* Scoreboard */
     .scoreboard {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
-        width: 100%; 
-        max-width: 400px; 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      width: 100%;
+      max-width: 400px;
     }
-    
+
     .score-box {
-        background: rgba(255,255,255,0.1);
-        padding: 1rem;
-        border-radius: 1rem;
-        min-width: 90px;
-        transition: var(--transition-smooth);
-        animation: scorePop 0.3s ease-out; /* Score update animation */
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 1rem;
+      min-width: 90px;
+      transition: var(--transition-smooth);
+      animation: scorePop 0.3s ease-out;
+      /* Score update animation */
     }
-    
+
     .dark-mode .score-box {
-        background: rgba(255,255,255,0.05); 
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .score-box p {
       font-weight: 600;
       margin: 0;
-      color: var(--text-light); 
+      color: var(--text-light);
       transition: color 0.5s;
     }
 
     .dark-mode .score-box p {
-      color: var(--text-dark); 
+      color: var(--text-dark);
     }
 
     .score-number {
@@ -396,11 +433,19 @@
       -webkit-text-fill-color: transparent;
       transition: var(--transition-smooth);
     }
-    
+
     @keyframes scorePop {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.1); }
-        100% { transform: scale(1); }
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
     }
 
     /* Hands Animation Stage */
@@ -419,63 +464,115 @@
       font-size: 5rem;
       display: block;
       transition: transform 0.2s;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.1));
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
     }
 
-    #playerHand { transform: rotate(90deg); }
-    #computerHand { transform: rotate(-90deg) scaleX(-1); }
+    #playerHand {
+      transform: rotate(90deg);
+    }
+
+    #computerHand {
+      transform: rotate(-90deg) scaleX(-1);
+    }
 
     /* Shake Animation - Smoother 1s shake */
-    .shake-player { animation: shakePlayer 1s ease-in-out; }
-    .shake-computer { animation: shakeComputer 1s ease-in-out; }
+    .shake-player {
+      animation: shakePlayer 1s ease-in-out;
+    }
 
-/* Shake Animation - Adjusted to 3 distinct back-and-forth movements (6 steps) */
-.shake-player { animation: shakePlayer 1s ease-in-out; }
-.shake-computer { animation: shakeComputer 1s ease-in-out; }
+    .shake-computer {
+      animation: shakeComputer 1s ease-in-out;
+    }
 
-@keyframes shakePlayer {
-  /* 0: Start */
-  0% { transform: rotate(90deg) translateY(0); }
-  /* 1st shake out */
-  20% { transform: rotate(90deg) translateY(-20px) scale(1.05); } 
-  /* 1st shake in */
-  40% { transform: rotate(90deg) translateY(0) scale(1); }
-  /* 2nd shake out */
-  60% { transform: rotate(90deg) translateY(-20px) scale(1.05); }
-  /* 2nd shake in */
-  80% { transform: rotate(90deg) translateY(0) scale(1); }
-  /* 3rd shake out (final position, ready for result) */
-  100% { transform: rotate(90deg) translateY(-20px) scale(1.05); } 
-}
+    /* Shake Animation - Adjusted to 3 distinct back-and-forth movements (6 steps) */
+    .shake-player {
+      animation: shakePlayer 1s ease-in-out;
+    }
 
-@keyframes shakeComputer {
-  /* 0: Start */
-  0% { transform: rotate(-90deg) scaleX(-1) translateY(0); }
-  /* 1st shake out */
-  20% { transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05); }
-  /* 1st shake in */
-  40% { transform: rotate(-90deg) scaleX(-1) translateY(0) scale(1); }
-  /* 2nd shake out */
-  60% { transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05); }
-  /* 2nd shake in */
-  80% { transform: rotate(-90deg) scaleX(-1) translateY(0) scale(1); }
-  /* 3rd shake out (final position, ready for result) */
-  100% { transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05); }
-}
+    .shake-computer {
+      animation: shakeComputer 1s ease-in-out;
+    }
+
+    @keyframes shakePlayer {
+
+      /* 0: Start */
+      0% {
+        transform: rotate(90deg) translateY(0);
+      }
+
+      /* 1st shake out */
+      20% {
+        transform: rotate(90deg) translateY(-20px) scale(1.05);
+      }
+
+      /* 1st shake in */
+      40% {
+        transform: rotate(90deg) translateY(0) scale(1);
+      }
+
+      /* 2nd shake out */
+      60% {
+        transform: rotate(90deg) translateY(-20px) scale(1.05);
+      }
+
+      /* 2nd shake in */
+      80% {
+        transform: rotate(90deg) translateY(0) scale(1);
+      }
+
+      /* 3rd shake out (final position, ready for result) */
+      100% {
+        transform: rotate(90deg) translateY(-20px) scale(1.05);
+      }
+    }
+
+    @keyframes shakeComputer {
+
+      /* 0: Start */
+      0% {
+        transform: rotate(-90deg) scaleX(-1) translateY(0);
+      }
+
+      /* 1st shake out */
+      20% {
+        transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05);
+      }
+
+      /* 1st shake in */
+      40% {
+        transform: rotate(-90deg) scaleX(-1) translateY(0) scale(1);
+      }
+
+      /* 2nd shake out */
+      60% {
+        transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05);
+      }
+
+      /* 2nd shake in */
+      80% {
+        transform: rotate(-90deg) scaleX(-1) translateY(0) scale(1);
+      }
+
+      /* 3rd shake out (final position, ready for result) */
+      100% {
+        transform: rotate(-90deg) scaleX(-1) translateY(-20px) scale(1.05);
+      }
+    }
 
     /* Round Status */
     #round-status {
-        font-size: 1.5rem; 
-        color: var(--text-light);
-        transition: color 0.5s, transform 0.3s;
-        min-height: 40px; /* Prevent layout shift */
-        line-height: 1.2;
+      font-size: 1.5rem;
+      color: var(--text-light);
+      transition: color 0.5s, transform 0.3s;
+      min-height: 40px;
+      /* Prevent layout shift */
+      line-height: 1.2;
     }
 
     .dark-mode #round-status {
-        color: var(--text-dark);
+      color: var(--text-dark);
     }
-    
+
     /* Choice Buttons */
     .choices {
       display: flex;
@@ -486,7 +583,7 @@
       max-width: 400px;
       transition: var(--transition-smooth);
     }
-    
+
     .choice-btn {
       background: var(--container-light);
       border: 2px solid transparent;
@@ -498,22 +595,22 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     }
-    
+
     .dark-mode .choice-btn {
-      background: rgba(255,255,255,0.05);
+      background: rgba(255, 255, 255, 0.05);
     }
-    
+
     .choice-btn span {
-        font-weight: 700;
-        color: #555;
-        font-size: 0.9rem;
-        transition: color 0.5s;
+      font-weight: 700;
+      color: #555;
+      font-size: 0.9rem;
+      transition: color 0.5s;
     }
 
     .dark-mode .choice-btn span {
-        color: var(--text-dark);
+      color: var(--text-dark);
     }
 
     .choice-btn:hover {
@@ -521,35 +618,38 @@
       box-shadow: 0 15px 30px rgba(0, 114, 255, 0.15);
       border-color: var(--primary-color);
     }
-    
+
     .choice-btn.disabled {
-        pointer-events: none;
-        opacity: 0.5;
-        transform: none !important;
-        box-shadow: none !important;
+      pointer-events: none;
+      opacity: 0.5;
+      transform: none !important;
+      box-shadow: none !important;
     }
 
     /* --- Timer Styles --- */
     .timer-display {
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      font-weight: 800; 
-      color: var(--accent-color); 
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      font-weight: 800;
+      color: var(--accent-color);
       font-size: 1.1rem;
       transition: var(--transition-smooth);
     }
-    
+
     /* ----------------------------------------------------
      * 5. MODALS & OVERLAYS
      * ----------------------------------------------------
      */
-    
-    .modal-overlay, .overlay-result {
+
+    .modal-overlay,
+    .overlay-result {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.7);
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
       backdrop-filter: blur(10px);
       display: flex;
       justify-content: center;
@@ -560,198 +660,602 @@
       transition: opacity 0.4s ease, visibility 0s 0.4s;
     }
 
-    .modal-overlay.active, .overlay-result:not(.hidden) {
+    .modal-overlay.active,
+    .overlay-result:not(.hidden) {
       opacity: 1;
       visibility: visible;
       transition: opacity 0.4s ease;
     }
 
-    .modal-card, .result-card {
+    .modal-card,
+    .result-card {
       background: var(--container-light);
       padding: 2.5rem;
       border-radius: 2rem;
       width: 90%;
       max-width: 450px;
-      box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
       transform: translateY(20px) scale(0.95);
       transition: var(--transition-bouncy);
       text-align: left;
       color: var(--text-light);
     }
 
-    .dark-mode .modal-card, .dark-mode .result-card {
-        background: var(--container-dark);
-        color: var(--text-dark);
+    .dark-mode .modal-card,
+    .dark-mode .result-card {
+      background: var(--container-dark);
+      color: var(--text-dark);
     }
-    
-    .modal-overlay.active .modal-card, .overlay-result:not(.hidden) .result-card {
+
+    .modal-overlay.active .modal-card,
+    .overlay-result:not(.hidden) .result-card {
       transform: translateY(0) scale(1);
     }
 
     /* Guide Steps Styling */
     .guide-steps .step {
-        display: flex;
-        align-items: flex-start;
-        gap: 15px;
-        margin-bottom: 20px;
-        background: rgba(0, 114, 255, 0.05);
-        padding: 12px;
-        border-radius: 12px;
-        transition: background 0.5s;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      margin-bottom: 20px;
+      background: rgba(0, 114, 255, 0.05);
+      padding: 12px;
+      border-radius: 12px;
+      transition: background 0.5s;
     }
 
     .dark-mode .guide-steps .step {
-        background: rgba(255, 255, 255, 0.05);
+      background: rgba(255, 255, 255, 0.05);
     }
 
     .guide-steps .step p {
-        margin: 0;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        color: var(--text-light);
-        transition: color 0.5s;
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: var(--text-light);
+      transition: color 0.5s;
     }
 
     .dark-mode .guide-steps .step p {
-        color: var(--text-dark);
+      color: var(--text-dark);
     }
 
     .final-message {
-        background: var(--primary-gradient); 
-        -webkit-background-clip: text; 
-        -webkit-text-fill-color: transparent; 
-        font-size: 2.5rem; 
-        margin: 10px 0;
-        animation: pulseGradient 4s infinite;
+      background: var(--primary-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-size: 2.5rem;
+      margin: 10px 0;
+      animation: pulseGradient 4s infinite;
     }
 
     @keyframes pulseGradient {
-        0% { filter: hue-rotate(0deg); }
-        50% { filter: hue-rotate(45deg); }
-        100% { filter: hue-rotate(0deg); }
+      0% {
+        filter: hue-rotate(0deg);
+      }
+
+      50% {
+        filter: hue-rotate(45deg);
+      }
+
+      100% {
+        filter: hue-rotate(0deg);
+      }
     }
-    
-    .hidden { display: none !important; }
-    
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-/* --- TIMER MODE TOGGLE SWITCH STYLING --- */
 
-/* The switch container setup */
-.setting-group .switch {
-  position: relative;
-  display: inline-block;
-  width: 60px; /* Width of the switch track */
-  height: 34px; /* Height of the switch track */
-}
+    .hidden {
+      display: none !important;
+    }
 
-/* Hide the default HTML checkbox */
-.setting-group .switch input { 
-  opacity: 0; 
-  width: 0; 
-  height: 0; 
-}
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
 
-/* The slider/track */
-.setting-group .slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0; left: 0; right: 0; bottom: 0;
-  /* Default (OFF) state background color */
-  background-color: #ccc; 
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Smooth slide transition */
-  border-radius: 34px; /* Rounded pill shape */
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); /* Inner shadow for depth */
-}
+      to {
+        opacity: 1;
+      }
+    }
 
-/* Dark Mode OFF State */
-.dark-mode .setting-group .slider {
-    background-color: #555; /* Darker off state in dark mode */
-}
+    /* --- TIMER MODE TOGGLE SWITCH STYLING --- */
 
-/* The circular thumb/handle */
-.setting-group .slider:before {
-  position: absolute;
-  content: "";
-  height: 26px; /* Size of the handle */
-  width: 26px;
-  left: 4px; 
-  bottom: 4px;
-  background-color: white; /* White handle */
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  border-radius: 50%; /* Perfect circle */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Shadow on the handle */
-}
+    /* The switch container setup */
+    .setting-group .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      /* Width of the switch track */
+      height: 34px;
+      /* Height of the switch track */
+    }
 
-/* ON State: When the checkbox is checked */
-input#timerToggle:checked + .slider { 
-  background: var(--primary-gradient); /* Use the theme gradient when ON */
-  box-shadow: 0 0 10px rgba(0, 114, 255, 0.5); /* Outer glow when ON */
-}
+    /* Hide the default HTML checkbox */
+    .setting-group .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
 
-/* Move the handle to the right for the ON state */
-input#timerToggle:checked + .slider:before { 
-  transform: translateX(26px); 
-}
+    /* The slider/track */
+    .setting-group .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      /* Default (OFF) state background color */
+      background-color: #ccc;
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      /* Smooth slide transition */
+      border-radius: 34px;
+      /* Rounded pill shape */
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      /* Inner shadow for depth */
+    }
 
-/* Optional: Bouncy feedback on hover for the whole track/slider */
-.setting-group .slider:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-/* --- SECONDARY BUTTON STYLING (.secondary-btn) --- */
+    /* Dark Mode OFF State */
+    .dark-mode .setting-group .slider {
+      background-color: #555;
+      /* Darker off state in dark mode */
+    }
 
-.secondary-btn {
-  height: 20px;
-  padding: 18px;
-  border-radius: 18px;
-  font-size: 1.1rem;
-  font-weight: 800;
-  cursor: pointer;
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-decoration: none;
-  box-sizing: border-box;
-  letter-spacing: 0.5px;
-  background: transparent;
-  border: 2px solid var(--accent-color); /* Light mode: Uses accent-color border (e.g., #ff416c) */
-  color: var(--accent-color);
-  margin-top: 10px; /* Default spacing */
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
-}
+    /* The circular thumb/handle */
+    .setting-group .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      /* Size of the handle */
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      /* White handle */
+      transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      border-radius: 50%;
+      /* Perfect circle */
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+      /* Shadow on the handle */
+    }
 
-/* Dark Mode Adaptation */
-.dark-mode .secondary-btn {
-    /* In dark mode, border and text should be subtle white/light gray */
-    border-color: rgba(255, 255, 255, 0.2); 
-    color: var(--text-dark); /* Match the main body text color */
-}
+    /* ON State: When the checkbox is checked */
+    input#timerToggle:checked+.slider {
+      background: var(--primary-gradient);
+      /* Use the theme gradient when ON */
+      box-shadow: 0 0 10px rgba(0, 114, 255, 0.5);
+      /* Outer glow when ON */
+    }
 
-/* Hover/Focus States: The Bouncy Effect */
-.secondary-btn:hover {
-  background: var(--accent-color); /* Fills with accent color */
-  color: white; /* Text turns white on hover */
-  transform: translateY(-5px) scale(1.02); /* Bouncy lift */
-  /* Consistent shadow effect */
-  box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
-}
+    /* Move the handle to the right for the ON state */
+    input#timerToggle:checked+.slider:before {
+      transform: translateX(26px);
+    }
 
-/* Active State: The Press Down Effect */
-.secondary-btn:active {
-    transform: translateY(-2px) scale(0.98); /* Press down effect */
-    box-shadow: none;
-}
+    /* Optional: Bouncy feedback on hover for the whole track/slider */
+    .setting-group .slider:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    /* --- SECONDARY BUTTON STYLING (.secondary-btn) --- */
+
+    .secondary-btn {
+      height: 20px;
+      padding: 18px;
+      border-radius: 18px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      cursor: pointer;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-decoration: none;
+      box-sizing: border-box;
+      letter-spacing: 0.5px;
+      background: transparent;
+      border: 2px solid var(--accent-color);
+      /* Light mode: Uses accent-color border (e.g., #ff416c) */
+      color: var(--accent-color);
+      margin-top: 10px;
+      /* Default spacing */
+      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+    }
+
+    /* Dark Mode Adaptation */
+    .dark-mode .secondary-btn {
+      /* In dark mode, border and text should be subtle white/light gray */
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-dark);
+      /* Match the main body text color */
+    }
+
+    /* Hover/Focus States: The Bouncy Effect */
+    .secondary-btn:hover {
+      background: var(--accent-color);
+      /* Fills with accent color */
+      color: white;
+      /* Text turns white on hover */
+      transform: translateY(-5px) scale(1.02);
+      /* Bouncy lift */
+      /* Consistent shadow effect */
+      box-shadow: 0 10px 20px rgba(255, 65, 108, 0.3);
+    }
+
+    /* Active State: The Press Down Effect */
+    .secondary-btn:active {
+      transform: translateY(-2px) scale(0.98);
+      /* Press down effect */
+      box-shadow: none;
+    }
+
+    /* =============================================
+   MOBILE & TABLET RESPONSIVE STYLES
+   ============================================= */
+
+    /* --- Touch Ripple Effect --- */
+    .ripple {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.4);
+      transform: scale(0);
+      animation: rippleEffect 0.55s linear;
+      pointer-events: none;
+    }
+
+    @keyframes rippleEffect {
+      to {
+        transform: scale(4);
+        opacity: 0;
+      }
+    }
+
+    /* All tappable elements need overflow hidden for ripple containment */
+    .btn,
+    .choice-btn,
+    .diff-btn,
+    .icon-btn,
+    .secondary-btn {
+      overflow: hidden;
+      position: relative;
+      -webkit-tap-highlight-color: transparent;
+      /* Remove native blue flash on iOS */
+      touch-action: manipulation;
+      /* Prevent double-tap zoom delay */
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* --- Active/Press States for Touch --- */
+    .btn:active,
+    .primary-btn:active {
+      transform: translateY(2px) scale(0.97) !important;
+      box-shadow: 0 2px 8px rgba(0, 114, 255, 0.2) !important;
+      filter: brightness(0.92);
+      transition: all 0.08s ease !important;
+    }
+
+    .secondary-btn:active {
+      transform: translateY(2px) scale(0.97) !important;
+      background: var(--accent-color) !important;
+      color: white !important;
+      box-shadow: none !important;
+      filter: brightness(0.9);
+      transition: all 0.08s ease !important;
+    }
+
+    .choice-btn:active {
+      transform: translateY(-4px) scale(0.95) !important;
+      box-shadow: 0 6px 16px rgba(0, 114, 255, 0.25) !important;
+      border-color: var(--primary-color) !important;
+      background: rgba(0, 114, 255, 0.08) !important;
+      transition: all 0.08s ease !important;
+    }
+
+    .dark-mode .choice-btn:active {
+      background: rgba(255, 255, 255, 0.12) !important;
+    }
+
+    .diff-btn:active {
+      transform: translateY(1px) scale(0.96) !important;
+      filter: brightness(0.88);
+      transition: all 0.08s ease !important;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.88) !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15) !important;
+      filter: brightness(0.88);
+      transition: all 0.08s ease !important;
+    }
+
+    /* ============================================
+   TABLET (max-width: 768px)
+   ============================================ */
+    @media (max-width: 768px) {
+      .game-container {
+        padding: 2rem 1.75rem;
+        border-radius: 1.75rem;
+        max-width: 480px;
+        width: 92%;
+      }
+
+      .game-title {
+        font-size: 2rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .hands-stage {
+        height: 130px;
+        margin: 1.5rem 0;
+      }
+
+      .hand {
+        font-size: 4.5rem;
+      }
+
+      .choices {
+        gap: 1.25rem;
+      }
+
+      .choice-btn {
+        width: 100px;
+        padding: 14px;
+      }
+
+      .scoreboard {
+        margin-bottom: 1.5rem;
+      }
+
+      .score-number {
+        font-size: 2.6rem;
+      }
+    }
+
+    /* ============================================
+   MOBILE (max-width: 480px)
+   ============================================ */
+    @media (max-width: 480px) {
+
+      body {
+        align-items: flex-start;
+        padding-top: env(safe-area-inset-top, 0px);
+        /* iPhone notch support */
+      }
+
+      .game-container {
+        padding: 1.5rem 1.25rem;
+        border-radius: 1.5rem;
+        width: 94%;
+        margin: 70px auto 20px;
+        /* Clear the fixed top controls */
+        box-sizing: border-box;
+      }
+
+      .game-title {
+        font-size: 1.7rem;
+        margin-bottom: 1rem;
+        letter-spacing: -0.5px;
+      }
+
+      /* --- Settings Panel on Mobile --- */
+      .setting-group label {
+        font-size: 0.9rem;
+      }
+
+      .pop-input {
+        padding: 14px;
+        font-size: 1.2rem;
+        border-radius: 14px;
+      }
+
+      .difficulty-selector {
+        gap: 8px;
+      }
+
+      .diff-btn {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+        border-radius: 14px;
+      }
+
+      #startGame {
+        padding: 16px;
+        font-size: 1rem;
+        margin-top: 1.5rem;
+        border-radius: 16px;
+        min-height: 54px;
+        /* Minimum touch target */
+      }
+
+      .secondary-btn {
+        padding: 14px;
+        font-size: 0.95rem;
+        height: auto;
+        min-height: 50px;
+        margin-top: 8px;
+        border-radius: 16px;
+      }
+
+      /* --- Scoreboard on Mobile --- */
+      .scoreboard {
+        margin-bottom: 1.25rem;
+        gap: 8px;
+      }
+
+      .score-box {
+        padding: 0.75rem 0.6rem;
+        min-width: 75px;
+        border-radius: 14px;
+      }
+
+      .score-number {
+        font-size: 2.2rem;
+      }
+
+      .score-box p {
+        font-size: 0.82rem;
+      }
+
+      /* --- Hands Stage on Mobile --- */
+      .hands-stage {
+        height: 110px;
+        margin: 1rem 0;
+      }
+
+      .hand {
+        font-size: 3.8rem;
+      }
+
+      /* --- Round Status --- */
+      #round-status {
+        font-size: 1.15rem;
+        min-height: 34px;
+      }
+
+      /* --- Choice Buttons on Mobile --- */
+      .choices {
+        gap: 0.75rem;
+        margin-top: 1.25rem;
+      }
+
+      .choice-btn {
+        width: auto;
+        flex: 1;
+        /* Equal width, fill row */
+        padding: 12px 8px;
+        border-radius: 18px;
+        min-height: 72px;
+        /* Comfortable tap target */
+      }
+
+      .choice-btn .emoji {
+        font-size: 1.8rem;
+        line-height: 1;
+      }
+
+      .choice-btn span {
+        font-size: 0.78rem;
+        margin-top: 4px;
+      }
+
+      /* --- Timer on Mobile --- */
+      .timer-display {
+        font-size: 0.95rem;
+        gap: 2px;
+      }
+
+      /* --- Return to Settings Button on Mobile --- */
+      #game-area .secondary-btn {
+        max-width: 100% !important;
+        margin-top: 14px;
+      }
+
+      /* --- Top Controls on Mobile --- */
+      .ui-controls-right {
+        top: 12px;
+        right: 12px;
+        gap: 8px;
+      }
+
+      .icon-btn {
+        width: 42px;
+        height: 42px;
+        font-size: 1.3rem;
+      }
+
+      /* --- Modals on Mobile --- */
+      .modal-card,
+      .result-card {
+        padding: 1.75rem 1.5rem;
+        border-radius: 1.5rem;
+        width: 92%;
+      }
+
+      .modal-card h2 {
+        font-size: 1.6rem !important;
+      }
+
+      .guide-steps .step {
+        gap: 10px;
+        padding: 10px;
+      }
+
+      .guide-steps .step p {
+        font-size: 0.88rem;
+      }
+
+      .final-message {
+        font-size: 1.9rem;
+      }
+
+      #result-emoji {
+        font-size: 3rem !important;
+      }
+
+      #final-score {
+        font-size: 1.2rem !important;
+      }
+
+      .result-card .btn {
+        min-height: 52px;
+        font-size: 1rem;
+      }
+
+      /* --- Toggle Switch on Mobile (larger tap area) --- */
+      .setting-group .switch {
+        width: 54px;
+        height: 30px;
+      }
+
+      .setting-group .slider:before {
+        height: 22px;
+        width: 22px;
+        left: 4px;
+        bottom: 4px;
+      }
+
+      input#timerToggle:checked+.slider:before {
+        transform: translateX(24px);
+      }
+    }
+
+    /* ============================================
+   VERY SMALL PHONES (max-width: 360px)
+   ============================================ */
+    @media (max-width: 360px) {
+      .game-title {
+        font-size: 1.5rem;
+      }
+
+      .choice-btn {
+        padding: 10px 6px;
+        min-height: 64px;
+      }
+
+      .choice-btn .emoji {
+        font-size: 1.6rem;
+      }
+
+      .score-number {
+        font-size: 1.9rem;
+      }
+
+      .hand {
+        font-size: 3.2rem;
+      }
+    }
   </style>
 </head>
-<body>
-  
+
+<body class="dark-mode">
+
   <div class="blob-container">
     <div class="blob" id="blob1"></div>
     <div class="blob" id="blob2"></div>
     <div class="blob" id="blob3"></div>
   </div>
-  
+
   <div class="ui-controls-right">
     <button class="icon-btn" onclick="toggleMusic()" id="music-btn" title="Toggle Music">
       <span class="material-icons">music_note</span>
@@ -759,21 +1263,19 @@ input#timerToggle:checked + .slider:before {
     <button class="icon-btn" onclick="showGuide()" title="How to Play">
       <span class="material-icons">help_outline</span>
     </button>
-    <button class="mode-toggle icon-btn" onclick="toggleMode()" title="Switch Theme">
-      <span class="material-icons">brightness_6</span>
-    </button>
+
   </div>
 
 
   <div class="game-container">
     <h1 class="game-title">Rock Paper Scissors</h1>
-    
+
     <div class="settings visible-fade" id="settings-panel">
       <div class="setting-group">
         <label>Target Score (Max 10)</label>
-        <input type="number" id="targetPoints" min="1" max="10" value="5" class="pop-input" placeholder="e.g. 5"/>
+        <input type="number" id="targetPoints" min="1" max="10" value="5" class="pop-input" placeholder="e.g. 5" />
       </div>
-      
+
       <div class="setting-group" style="margin-top: 1.5rem;">
         <label>Difficulty</label>
         <div class="difficulty-selector">
@@ -783,7 +1285,8 @@ input#timerToggle:checked + .slider:before {
         </div>
       </div>
 
-      <div class="setting-group" style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+      <div class="setting-group"
+        style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
         <label style="margin-bottom: 0;">Timer Mode (10s Limit)</label>
         <label class="switch">
           <input type="checkbox" id="timerToggle" checked>
@@ -796,20 +1299,22 @@ input#timerToggle:checked + .slider:before {
     </div>
 
     <div id="game-area" class="hidden-fade">
-      
+
       <div class="scoreboard">
         <div class="score-box player">
           <p style="margin-bottom: 5px;">You</p>
           <div class="score-number" id="playerScore">0</div>
         </div>
-        
+
         <div class="timer-display hidden" id="timer-display">
           <span class="material-icons">timer</span>
           <span id="time-left">10</span>s
         </div>
 
         <div class="score-box computer">
-          <p style="margin-bottom: 5px;">Bot <span class="badge" id="bot-badge" style="font-size: 0.7rem; background: var(--primary-gradient); color: white; padding: 3px 8px; border-radius: 6px; vertical-align: middle; font-weight: bold;">Easy</span></p>
+          <p style="margin-bottom: 5px;">Bot <span class="badge" id="bot-badge"
+              style="font-size: 0.7rem; background: var(--primary-gradient); color: white; padding: 3px 8px; border-radius: 6px; vertical-align: middle; font-weight: bold;">Easy</span>
+          </p>
           <div class="score-number" id="computerScore">0</div>
         </div>
       </div>
@@ -841,7 +1346,8 @@ input#timerToggle:checked + .slider:before {
           <span>Scissors</span>
         </button>
       </div>
-      <button onclick="returnToSettings()" class="secondary-btn" style="margin-top: 20px; max-width: 400px;">Return to Settings</button>
+      <button onclick="returnToSettings()" class="secondary-btn" style="margin-top: 20px; max-width: 400px;">Return to
+        Settings</button>
     </div>
   </div>
 
@@ -856,7 +1362,9 @@ input#timerToggle:checked + .slider:before {
 
   <div class="modal-overlay" id="guide-modal">
     <div class="modal-card">
-      <h2 style="text-align: center; font-size: 2rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">📖 How to Play</h2>
+      <h2
+        style="text-align: center; font-size: 2rem; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        📖 How to Play</h2>
       <div class="guide-steps">
         <div class="step">
           <span class="step-icon" style="font-size: 1.8rem;">🎯</span>
@@ -864,7 +1372,8 @@ input#timerToggle:checked + .slider:before {
         </div>
         <div class="step">
           <span class="step-icon" style="font-size: 1.8rem;">🧠</span>
-          <p><strong>Difficulty - Hard:</strong> The bot analyzes your move history to **predict your next choice** and counter it!</p>
+          <p><strong>Difficulty - Hard:</strong> The bot analyzes your move history to **predict your next choice** and
+            counter it!</p>
         </div>
         <div class="step">
           <span class="step-icon" style="font-size: 1.8rem;">⚔️</span>
@@ -879,7 +1388,8 @@ input#timerToggle:checked + .slider:before {
     </div>
   </div>
 
-  <canvas id="fireworks" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 150;"></canvas>
+  <canvas id="fireworks"
+    style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 150;"></canvas>
 
   <audio id="bgm" src="sounds/bgm.mp3" loop></audio>
   <audio id="winSound" src="sounds/win.mp3"></audio>
@@ -889,7 +1399,7 @@ input#timerToggle:checked + .slider:before {
   <audio id="timerSound" src="sounds/timer.mp3"></audio>
 
   <script>
-    
+
     /*
      * ----------------------------------------------------
      * JAVASCRIPT LOGIC - STATE & ELEMENTS
@@ -936,42 +1446,38 @@ input#timerToggle:checked + .slider:before {
       timer: document.getElementById('timerSound'),
       bgm: document.getElementById('bgm')
     };
-    
+
     // Utility for smooth transitions on visibility change
     function togglePanelVisibility(showPanel, hidePanel) {
-        hidePanel.classList.remove('visible-fade');
-        hidePanel.classList.add('hidden-fade');
-        
-        // Wait for fade-out to finish before making the panel display: none
-        setTimeout(() => {
-            hidePanel.classList.add('hidden');
-            
-            showPanel.classList.remove('hidden');
-            // Small delay before fade-in starts
-            setTimeout(() => {
-                showPanel.classList.remove('hidden-fade');
-                showPanel.classList.add('visible-fade');
-            }, 50); 
+      hidePanel.classList.remove('visible-fade');
+      hidePanel.classList.add('hidden-fade');
 
-        }, 500); // Must match CSS transition duration of hidden-fade
+      // Wait for fade-out to finish before making the panel display: none
+      setTimeout(() => {
+        hidePanel.classList.add('hidden');
+
+        showPanel.classList.remove('hidden');
+        // Small delay before fade-in starts
+        setTimeout(() => {
+          showPanel.classList.remove('hidden-fade');
+          showPanel.classList.add('visible-fade');
+        }, 50);
+
+      }, 500); // Must match CSS transition duration of hidden-fade
     }
 
     /* --- Initialization --- */
     document.addEventListener('DOMContentLoaded', () => {
-      // Apply saved theme
-      if(localStorage.getItem('rps-theme') === 'dark') {
-        document.body.classList.add('dark-mode');
-      }
-      
+
       choiceButtons.forEach(btn => {
         btn.addEventListener('click', () => makeMove(btn.dataset.choice));
       });
-      
+
       startBtn.addEventListener('click', startGame);
-      
-      if(sounds.bgm) sounds.bgm.volume = 0.3;
+
+      if (sounds.bgm) sounds.bgm.volume = 0.3;
       document.getElementById('bot-badge').innerText = 'Easy';
-      
+
       // Initial state setup to ensure animations work correctly
       gameArea.classList.add('hidden', 'hidden-fade');
       settingsPanel.classList.remove('hidden', 'hidden-fade');
@@ -980,16 +1486,13 @@ input#timerToggle:checked + .slider:before {
 
     /* --- UI Functions --- */
 
-    function toggleMode() {
-      document.body.classList.toggle('dark-mode');
-      localStorage.setItem('rps-theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-    }
+
 
     function toggleMusic() {
       state.musicEnabled = !state.musicEnabled;
       const btn = document.getElementById('music-btn');
       btn.innerHTML = `<span class="material-icons">${state.musicEnabled ? 'music_note' : 'music_off'}</span>`;
-      
+
       if (state.musicEnabled) {
         sounds.bgm.play().catch(e => console.warn("Audio blocked:", e));
       } else {
@@ -1013,31 +1516,31 @@ input#timerToggle:checked + .slider:before {
       });
       document.getElementById('bot-badge').innerText = level.charAt(0).toUpperCase() + level.slice(1);
     }
-    
+
     function playSound(name) {
       const sound = sounds[name];
       if (sound) {
         sound.currentTime = 0;
-        sound.play().catch(()=>{});
+        sound.play().catch(() => { });
       }
     }
-    
+
     function returnToSettings() {
-        if(state.timerInterval) clearInterval(state.timerInterval);
-        state.isPlaying = false;
-        playSound('click');
-        togglePanelVisibility(settingsPanel, gameArea);
+      if (state.timerInterval) clearInterval(state.timerInterval);
+      state.isPlaying = false;
+      playSound('click');
+      togglePanelVisibility(settingsPanel, gameArea);
     }
 
     /* --- Core Game Logic --- */
 
     function startGame() {
       playSound('click');
-      
+
       let inputVal = parseInt(document.getElementById('targetPoints').value);
       if (inputVal > 10) inputVal = 10;
       if (inputVal < 1 || isNaN(inputVal)) inputVal = 1;
-      
+
       document.getElementById('targetPoints').value = inputVal;
       state.targetPoints = inputVal;
 
@@ -1046,19 +1549,19 @@ input#timerToggle:checked + .slider:before {
       state.computerScore = 0;
       state.playerHistory = [];
       state.isPlaying = true;
-      
+
       updateScoreboard();
-      
+
       togglePanelVisibility(gameArea, settingsPanel);
       overlay.classList.add('hidden');
-      
-      if(state.timerEnabled) {
+
+      if (state.timerEnabled) {
         timerDisplay.classList.remove('hidden');
         startTimer();
       } else {
         timerDisplay.classList.add('hidden');
       }
-      
+
       roundStatus.innerText = "Choose your weapon!";
       roundStatus.style.color = '';
       enableChoiceButtons(true);
@@ -1071,21 +1574,21 @@ input#timerToggle:checked + .slider:before {
       timeLeftEl.innerText = state.timeLeft;
       timeLeftEl.style.color = 'inherit';
       clearInterval(state.timerInterval);
-      
+
       state.timerInterval = setInterval(() => {
         state.timeLeft--;
         timeLeftEl.innerText = state.timeLeft;
-        
-        if(state.timeLeft <= 3 && state.timeLeft > 0) {
+
+        if (state.timeLeft <= 3 && state.timeLeft > 0) {
           playSound('timer');
-          timeLeftEl.style.color = '#ff416c'; 
+          timeLeftEl.style.color = '#ff416c';
           timerDisplay.classList.add('score-pop'); // Animated pulse on timer
         } else {
           timeLeftEl.style.color = 'inherit';
           timerDisplay.classList.remove('score-pop');
         }
-        
-        if(state.timeLeft <= 0) {
+
+        if (state.timeLeft <= 0) {
           clearInterval(state.timerInterval);
           handleTimeout();
         }
@@ -1097,41 +1600,41 @@ input#timerToggle:checked + .slider:before {
       const randomMove = choices[Math.floor(Math.random() * choices.length)];
       makeMove(randomMove);
     }
-    
+
     function enableChoiceButtons(enable) {
-        choiceButtons.forEach(btn => {
-            btn.classList.toggle('disabled', !enable);
-        });
+      choiceButtons.forEach(btn => {
+        btn.classList.toggle('disabled', !enable);
+      });
     }
 
     function makeMove(playerChoice) {
-      if(!state.isPlaying) return;
-      
+      if (!state.isPlaying) return;
+
       clearInterval(state.timerInterval);
-      state.isPlaying = false; 
-      enableChoiceButtons(false); 
+      state.isPlaying = false;
+      enableChoiceButtons(false);
 
       playSound('click');
       playerHand.innerText = '✊';
       computerHand.innerText = '✊';
-      
+
       // Start the animated shake immediately
       playerHand.classList.add('shake-player');
       computerHand.classList.add('shake-computer');
-      
+
       // Delay the result reveal by 1 second (matches shake animation duration)
-      setTimeout(() => { 
+      setTimeout(() => {
         const computerChoice = getComputerMove(playerChoice);
         resolveRound(playerChoice, computerChoice);
-        
+
         // Remove shake classes after the animation is complete
         playerHand.classList.remove('shake-player');
         computerHand.classList.remove('shake-computer');
-        
+
         state.playerHistory.push(playerChoice);
-      }, 1000); 
+      }, 1000);
     }
-    
+
     /* ----------------------------------------------------
      * BOT LOGIC (MEDIUM & HARD IMPLEMENTATION)
      * ----------------------------------------------------
@@ -1146,7 +1649,7 @@ input#timerToggle:checked + .slider:before {
     function getPredictedMove() {
       if (state.playerHistory.length < 2) return null;
 
-      const lastMove = state.playerHistory[state.playerHistory.length - 1]; 
+      const lastMove = state.playerHistory[state.playerHistory.length - 1];
       const historyPairs = {};
 
       for (let i = 0; i < state.playerHistory.length - 1; i++) {
@@ -1171,31 +1674,31 @@ input#timerToggle:checked + .slider:before {
 
     function getComputerMove(playerMove) {
       const r = Math.random();
-      const previousPlayerMove = state.playerHistory[state.playerHistory.length - 1]; 
+      const previousPlayerMove = state.playerHistory[state.playerHistory.length - 1];
 
       if (state.difficulty === 'easy') {
         return choices[Math.floor(Math.random() * choices.length)];
-      } 
+      }
       else if (state.difficulty === 'medium') {
         // 40% chance to counter the player's PREVIOUS move
-        if (previousPlayerMove && r > 0.6) { 
+        if (previousPlayerMove && r > 0.6) {
           return getCounterMove(previousPlayerMove);
         }
         return choices[Math.floor(Math.random() * choices.length)];
-      } 
+      }
       else { // Hard
         const predictedMove = getPredictedMove();
-        
+
         // 70% chance to counter the predicted pattern move
-        if (predictedMove && r > 0.3) { 
+        if (predictedMove && r > 0.3) {
           return getCounterMove(predictedMove);
         }
-        
+
         // 20% chance to counter the CURRENT player move 
-        if (r > 0.8) { 
-            return getCounterMove(playerMove);
+        if (r > 0.8) {
+          return getCounterMove(playerMove);
         }
-        
+
         return choices[Math.floor(Math.random() * choices.length)];
       }
     }
@@ -1208,10 +1711,10 @@ input#timerToggle:checked + .slider:before {
     function resolveRound(pChoice, cChoice) {
       playerHand.innerText = emojis[pChoice];
       computerHand.innerText = emojis[cChoice];
-      
+
       let result = '';
       let resultColor = '';
-      
+
       if (pChoice === cChoice) {
         result = 'draw';
         roundStatus.innerText = `It's a Draw! (${emojis[pChoice]})`;
@@ -1235,10 +1738,10 @@ input#timerToggle:checked + .slider:before {
         playSound('lose');
         computerScoreEl.parentElement.classList.add('score-pop');
       }
-      
+
       roundStatus.style.color = resultColor;
       updateScoreboard();
-      
+
       if (state.playerScore >= state.targetPoints || state.computerScore >= state.targetPoints) {
         endGame();
       } else {
@@ -1252,7 +1755,7 @@ input#timerToggle:checked + .slider:before {
           roundStatus.style.color = 'inherit';
           playerScoreEl.parentElement.classList.remove('score-pop');
           computerScoreEl.parentElement.classList.remove('score-pop');
-          if(state.timerEnabled) startTimer();
+          if (state.timerEnabled) startTimer();
         }, 1500);
       }
     }
@@ -1265,13 +1768,13 @@ input#timerToggle:checked + .slider:before {
     function endGame() {
       const won = state.playerScore > state.computerScore;
       playSound('gameover');
-      
+
       document.getElementById('result-emoji').innerText = won ? '🏆' : '🤖';
       document.getElementById('finalMessage').innerText = won ? 'VICTORY ACHIEVED!' : 'DEFEAT... BOT WINS';
       document.getElementById('final-score').innerText = `Final Score: ${state.playerScore} - ${state.computerScore}`;
-      
+
       overlay.classList.remove('hidden');
-      
+
       if (won) {
         startFireworks();
       }
@@ -1324,31 +1827,31 @@ input#timerToggle:checked + .slider:before {
     function startFireworks() {
       if (animationId) cancelAnimationFrame(animationId);
       fireworks = [];
-      
+
       const animate = () => {
         // Stop animation if overlay is hidden
-        if(overlay.classList.contains('hidden')) {
-             if (animationId) cancelAnimationFrame(animationId);
-             ctx.clearRect(0, 0, canvas.width, canvas.height);
-             return;
+        if (overlay.classList.contains('hidden')) {
+          if (animationId) cancelAnimationFrame(animationId);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          return;
         }
-        
+
         animationId = requestAnimationFrame(animate);
-        
+
         // Trail effect
         ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
+
         if (Math.random() < 0.08) {
           const x = Math.random() * canvas.width;
-          const y = Math.random() * canvas.height * 0.4 + (canvas.height * 0.1); 
+          const y = Math.random() * canvas.height * 0.4 + (canvas.height * 0.1);
           const color = `hsl(${Math.random() * 360}, 70%, 60%)`;
-          
+
           for (let i = 0; i < 60; i++) {
             fireworks.push(new Particle(x, y, color));
           }
         }
-        
+
         fireworks.forEach((p, index) => {
           if (p.alpha > 0) {
             p.update();
@@ -1358,9 +1861,54 @@ input#timerToggle:checked + .slider:before {
           }
         });
       };
-      
+
       animate();
     }
+    /* =============================================
+   TOUCH RIPPLE EFFECT
+   ============================================= */
+
+    function createRipple(event) {
+      const button = event.currentTarget;
+      const circle = document.createElement('span');
+      const diameter = Math.max(button.clientWidth, button.clientHeight);
+      const radius = diameter / 2;
+
+      const rect = button.getBoundingClientRect();
+
+      // Use touch position if available, else mouse
+      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+
+      circle.style.width = circle.style.height = `${diameter}px`;
+      circle.style.left = `${clientX - rect.left - radius}px`;
+      circle.style.top = `${clientY - rect.top - radius}px`;
+      circle.classList.add('ripple');
+
+      // Remove previous ripple if any
+      const existing = button.querySelector('.ripple');
+      if (existing) existing.remove();
+
+      button.appendChild(circle);
+
+      // Clean up after animation
+      circle.addEventListener('animationend', () => circle.remove());
+    }
+
+    // Attach ripple to all interactive elements
+    function attachRipples() {
+      const targets = document.querySelectorAll(
+        '.btn, .choice-btn, .diff-btn, .icon-btn, .secondary-btn'
+      );
+      targets.forEach(el => {
+        el.addEventListener('touchstart', createRipple, { passive: true });
+        el.addEventListener('mousedown', createRipple);
+      });
+    }
+
+    // Call after DOM is ready (append after your existing DOMContentLoaded or call standalone)
+    document.addEventListener('DOMContentLoaded', attachRipples);
   </script>
 </body>
+
 </html>
