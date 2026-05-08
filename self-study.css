@@ -61,6 +61,25 @@
     --scroll-color: rgba(0, 0, 0, 0.1);
 }
 
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+}
+
+/* Optional: subtle custom press effect on interactive elements */
+button:active,
+a:active,
+.nav-item:active,
+.mobile-nav-icon:active,
+.session-card:active,
+.floating-card:active,
+.concept-item:active,
+.fs-option-btn:active,
+.quiz-option-btn:active,
+.calendar-day:active {
+    opacity: 0.85;
+    transition: opacity 0.1s;
+}
 
 /* Base Body Styling */
 /* Production Grade Liquid Scrollbars */
