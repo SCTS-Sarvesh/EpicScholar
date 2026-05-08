@@ -1,0 +1,2492 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EpicScholar | Profile</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+    <style>
+        /* Ensure padding doesn't break layout width */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            width: 100%;
+            overflow-x: hidden;
+            /* Prevents horizontal wobbling */
+            position: relative;
+        }
+
+        #profile-view {
+            height: 100%;
+        }
+
+        .profile-header {
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--card-glass-border);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 30px;
+            box-shadow: var(--shadow-deep);
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        .profile-top {
+            display: flex;
+            align-items: center;
+            /* vertically center avatar with text */
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-direction: row;
+            /* force row on desktop */
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            min-width: 120px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 8px 24px rgba(0, 114, 255, 0.4);
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .profile-name {
+            font-size: 32px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .profile-details {
+            display: flex;
+            gap: 15px;
+            color: var(--text-color);
+            opacity: 0.8;
+            font-size: 15px;
+            margin-bottom: 20px;
+        }
+
+        .profile-details span {
+            padding: 6px 12px;
+            background: var(--secondary-glass);
+            border-radius: 8px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 30px;
+            padding: 20px 0;
+            border-top: 1px solid var(--card-glass-border);
+            justify-content: flex-start;
+            /* align left like in Image 3 */
+        }
+
+        .stat-item {
+            text-align: center;
+            cursor: pointer;
+            transition: transform 0.2s;
+            padding: 10px 20px;
+            border-radius: 12px;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-3px);
+            background: var(--secondary-glass);
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.7;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .profile-actions {
+            display: flex;
+            flex-direction: row;
+            /* force horizontal */
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            white-space: nowrap;
+            /* prevent text wrapping inside button */
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--secondary-glass);
+            color: var(--text-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--card-glass-bg);
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 65, 108, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 65, 108, 0.4);
+        }
+
+        /* Tabs */
+        .profile-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: var(--card-glass-bg);
+            padding: 10px;
+            border-radius: 15px;
+            backdrop-filter: blur(25px);
+            border: 1px solid var(--card-glass-border);
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            background: transparent;
+            color: var(--text-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            opacity: 0.6;
+        }
+
+        .tab-btn:hover {
+            opacity: 0.8;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-gradient);
+            color: white;
+            opacity: 1;
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Posts Grid */
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .post-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s;
+            background: var(--card-glass-bg);
+        }
+
+        .post-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .post-item img,
+        .post-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            color: white;
+            font-weight: 600;
+        }
+
+        .post-item:hover .post-overlay {
+            opacity: 1;
+        }
+
+        .delete-post-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 65, 108, 0.9);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.3s;
+            z-index: 10;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .post-item:hover .delete-post-btn {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .delete-post-btn:hover {
+            background: rgba(255, 30, 80, 1);
+            transform: scale(1.1);
+        }
+
+        /* User List */
+        .user-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: var(--card-glass-bg);
+            border: 1px solid var(--card-glass-border);
+            border-radius: 15px;
+            backdrop-filter: blur(25px);
+            transition: all 0.3s;
+        }
+
+        .user-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 15px rgba(0, 114, 255, 0.2);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            min-width: 50px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 18px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+
+        .user-name:hover {
+            color: var(--primary-color);
+        }
+
+        .user-meta {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .follow-btn {
+            padding: 8px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .follow-btn.following {
+            background: var(--secondary-glass);
+            color: var(--text-color);
+        }
+
+        .follow-btn.not-following {
+            background: var(--primary-gradient);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 18px;
+            opacity: 0.7;
+            margin-bottom: 10px;
+        }
+
+        /* Modals shared */
+        .confirm-modal,
+        .edit-modal,
+        .change-pass-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--modal-bg);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 4000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .confirm-modal.show,
+        .edit-modal.show,
+        .change-pass-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .confirm-modal-content,
+        .edit-modal-content,
+        .change-pass-modal-content {
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--card-glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .confirm-modal.show .confirm-modal-content,
+        .edit-modal.show .edit-modal-content,
+        .change-pass-modal.show .change-pass-modal-content {
+            transform: scale(1);
+        }
+
+        .confirm-modal-content {
+            max-width: 400px;
+        }
+
+        .confirm-modal-icon {
+            font-size: 64px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .confirm-modal-text {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .confirm-modal-subtext {
+            text-align: center;
+            font-size: 14px;
+            opacity: 0.7;
+            margin-bottom: 30px;
+        }
+
+        .confirm-modal-actions,
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-actions {
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+
+        .confirm-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+        }
+
+        .confirm-btn-cancel {
+            background: var(--secondary-glass);
+            color: var(--text-color);
+        }
+
+        .confirm-btn-delete {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--primary-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 10px;
+            border: 1px solid var(--card-glass-border);
+            background: var(--bg-color);
+            color: var(--text-color);
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Password toggle in modal */
+        .pass-wrapper {
+            position: relative;
+        }
+
+        .pass-wrapper input {
+            padding-right: 40px;
+        }
+
+        .pass-eye {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .modal-status {
+            font-size: 13px;
+            margin-top: 10px;
+            min-height: 18px;
+            text-align: center;
+        }
+
+        /* Post Detail Modal */
+        .post-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            padding: 20px;
+        }
+
+        .post-detail-modal.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .post-detail-content {
+            background: var(--card-glass-bg);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--card-glass-border);
+            border-radius: 20px;
+            max-width: 1200px;
+            width: 100%;
+            max-height: 90vh;
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .post-detail-modal.show .post-detail-content {
+            transform: scale(1);
+        }
+
+        .post-detail-media {
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            min-height: 500px;
+        }
+
+        .post-detail-media img,
+        .post-detail-media video {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+
+        .post-detail-sidebar {
+            display: flex;
+            flex-direction: column;
+            max-height: 90vh;
+        }
+
+        .post-detail-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--card-glass-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .post-detail-user {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .post-detail-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 16px;
+        }
+
+        .post-detail-username {
+            font-weight: 600;
+            font-size: 16px;
+            color: var(--text-color);
+        }
+
+        .post-detail-close {
+            background: none;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            color: var(--text-color);
+            opacity: 0.7;
+            transition: all 0.2s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .post-detail-close:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(90deg);
+        }
+
+        .post-detail-caption {
+            padding: 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .post-detail-actions {
+            padding: 20px;
+            border-top: 1px solid var(--card-glass-border);
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .post-action-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-color);
+        }
+
+        .post-action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .post-detail-stats {
+            padding: 20px;
+            border-top: 1px solid var(--card-glass-border);
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 968px) {
+            .post-detail-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+            }
+
+            .post-detail-media {
+                max-height: 60vh;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .profile-top {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .profile-stats {
+                justify-content: center;
+            }
+
+            .profile-actions {
+                justify-content: center;
+            }
+        }
+
+        /* =====================================================================
+   profile-responsive.css
+   Responsive styles for profile.html
+   Breakpoints:
+     Mobile  : max-width 480px
+     Tablet  : 481px – 768px   (shared via max-width: 768px block)
+     Large   : min-width 1200px
+   Navbar on mobile & tablet mirrors teachers-profile.html exactly.
+   ===================================================================== */
+
+
+        /* ─────────────────────────────────────────────
+   1.  FONT AWESOME (needed for mobile bottom bar)
+   ───────────────────────────────────────────── */
+        @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+
+
+        /* ─────────────────────────────────────────────
+   2.  MOBILE BOTTOM BAR + MENU OVERLAY
+       (hidden on desktop; shown ≤768 px)
+   ───────────────────────────────────────────── */
+
+        /* Default hidden state — desktop */
+        .mobile-bottom-bar,
+        .mobile-menu-overlay {
+            display: none;
+        }
+
+        /* Theme-toggle switch (mirrors teachers-profile header toggle) */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 75px;
+            height: 40px;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(145deg, #1c1c1c, #0d0d0d);
+            transition: 0.4s;
+            border-radius: 20px;
+        }
+
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 30px;
+            width: 30px;
+            left: 5px;
+            bottom: 5px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 15px rgba(255, 255, 0, 0.8);
+        }
+
+        input:checked+.slider {
+            background: linear-gradient(145deg, #f0f2f5, #e6e9f0);
+        }
+
+        input:checked+.slider::before {
+            transform: translateX(30px);
+            background-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 114, 255, 0.8);
+        }
+
+        .label-dark,
+        .label-light {
+            position: absolute;
+            font-size: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+
+        .label-dark {
+            left: 45px;
+            opacity: 1;
+        }
+
+        .label-light {
+            right: 45px;
+            opacity: 0;
+        }
+
+        input:checked~.label-dark {
+            opacity: 0;
+        }
+
+        input:checked~.label-light {
+            opacity: 1;
+        }
+
+
+        /* ─────────────────────────────────────────────
+   3.  LARGE MONITOR  (≥ 1200 px)
+   ───────────────────────────────────────────── */
+        @media (min-width: 1200px) {
+
+            #profile-container {
+                max-width: 1100px;
+                padding: 30px 40px 120px;
+            }
+
+            .profile-header {
+                padding: 50px;
+                position: relative;
+                top: 40px;
+            }
+
+            .profile-avatar {
+                width: 140px;
+                height: 140px;
+                min-width: 140px;
+                font-size: 56px;
+            }
+
+            .profile-name {
+                font-size: 38px;
+            }
+
+            .profile-details {
+                font-size: 16px;
+                gap: 18px;
+            }
+
+            .profile-stats {
+                gap: 40px;
+            }
+
+            .stat-number {
+                font-size: 34px;
+            }
+
+            .stat-label {
+                font-size: 15px;
+            }
+
+            .action-btn {
+                padding: 14px 28px;
+                font-size: 16px;
+            }
+
+            .posts-grid {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 18px;
+            }
+
+            .profile-tabs {
+                gap: 14px;
+                padding: 12px;
+                position: relative;
+                top: 40px;
+            }
+
+            .tab-btn {
+                padding: 14px 24px;
+                font-size: 16px;
+            }
+
+            .user-item {
+                padding: 24px;
+            }
+
+            .post-detail-content {
+                grid-template-columns: 1fr 460px;
+                max-width: 1300px;
+            }
+        }
+
+
+        /* ─────────────────────────────────────────────
+   4.  TABLET + MOBILE  (≤ 768 px)
+       Shared base — further refined for mobile
+       at ≤ 480 px in section 5.
+   ───────────────────────────────────────────── */
+        @media (max-width: 1023px) {
+
+            /* ── 4a. Root layout ── */
+            html,
+            body {
+                overflow-x: hidden;
+                width: 100%;
+                position: relative;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            /* Hide the original desktop sidebar & header */
+            .sidebar,
+            .header {
+                display: none !important;
+            }
+
+            /* Push content down from top; make room for bottom bar */
+            #main-content-wrapper {
+                width: 100%;
+                max-width: 100vw;
+                margin-left: 0 !important;
+                padding: 0 !important;
+                overflow-x: hidden;
+            }
+
+            #profile-container {
+                padding: 15px;
+                padding-top: 40px;
+                padding-bottom: 120px;
+                width: 100%;
+            }
+
+            /* ── 4b. Profile header card ── */
+            .profile-header {
+                padding: 24px 20px;
+                border-radius: 16px;
+                margin-bottom: 20px;
+            }
+
+            .profile-top {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 18px;
+                margin-bottom: 20px;
+            }
+
+            .profile-avatar {
+                width: 100px;
+                height: 100px;
+                min-width: 100px;
+                font-size: 38px;
+            }
+
+            .profile-name {
+                font-size: 26px;
+                margin-bottom: 8px;
+            }
+
+            .profile-details {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+                font-size: 13px;
+            }
+
+            .profile-stats {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 5px;
+                padding: 15px 0;
+                width: 100%;
+            }
+
+            .stat-item {
+                padding: 10px 5px;
+            }
+
+            .stat-number {
+                font-size: 24px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+            }
+
+            .profile-actions {
+                display: flex;
+                flex-direction: column;
+                /* Changed from row to stack */
+                width: 100%;
+                gap: 10px;
+            }
+
+            .action-btn {
+                width: 100%;
+                /* Full width buttons for easier tapping */
+                text-align: center;
+                justify-content: center;
+            }
+
+            /* ── 4c. Tabs ── */
+            .profile-tabs {
+                width: 100%;
+                overflow-x: auto;
+                /* Allows swiping if tabs are too many */
+                white-space: nowrap;
+            }
+
+            .tab-btn {
+                padding: 10px 10px;
+                font-size: 13px;
+                border-radius: 8px;
+            }
+
+            /* ── 4d. Posts grid ── */
+            .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            /* ── 4e. Followers / Following user list ── */
+            .user-item {
+                padding: 14px;
+                gap: 12px;
+            }
+
+            .user-avatar {
+                width: 42px;
+                height: 42px;
+                min-width: 42px;
+                font-size: 15px;
+            }
+
+            .user-name {
+                font-size: 15px;
+            }
+
+            .user-meta {
+                font-size: 12px;
+            }
+
+            .follow-btn {
+                padding: 7px 14px;
+                font-size: 13px;
+            }
+
+            /* ── 4f. Post detail modal ── */
+            .post-detail-content {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto 1fr;
+                max-height: 95vh;
+                border-radius: 16px;
+            }
+
+            .post-detail-media {
+                max-height: 55vw;
+                min-height: unset;
+            }
+
+            .post-detail-sidebar {
+                max-height: 45vh;
+            }
+
+            /* ── 4g. Edit / password / confirm modals ── */
+            .confirm-modal-content,
+            .edit-modal-content,
+            .change-pass-modal-content {
+                padding: 22px;
+                border-radius: 16px;
+                width: 94%;
+            }
+
+            .modal-title {
+                font-size: 20px;
+            }
+
+            .form-group input,
+            .form-group select {
+                font-size: 14px;
+                padding: 11px 13px;
+            }
+
+            .modal-actions {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+
+            /* ── 4h. Empty state ── */
+            .empty-state {
+                padding: 40px 16px;
+            }
+
+            .empty-state-icon {
+                font-size: 48px;
+            }
+
+            .empty-state-text {
+                font-size: 16px;
+            }
+
+            #liquid-glass-container {
+                pointer-events: none;
+                z-index: -1;
+            }
+
+            /* ════════════════════════════════════════════
+       MOBILE NAVBAR — mirrors teachers-profile.html
+       ════════════════════════════════════════════ */
+
+            /* ── Floating Glass Bottom Bar ── */
+            .mobile-bottom-bar {
+                display: flex;
+                position: fixed;
+                bottom: 20px;
+                left: 15px;
+                right: 15px;
+                width: auto;
+                height: 70px;
+                z-index: 1000;
+                align-items: center;
+                justify-content: space-around;
+                padding: 0 10px;
+                background: rgba(20, 20, 20, 0.85);
+                backdrop-filter: blur(25px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 24px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+                pointer-events: auto;
+                transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+            }
+
+            .mobile-bottom-bar.hide-bar {
+                transform: translateY(120px);
+            }
+
+            [data-theme="light"] .mobile-bottom-bar {
+                background: rgba(255, 255, 255, 0.9);
+                border: 1px solid rgba(0, 0, 0, 0.08);
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Individual nav icon buttons */
+            .mobile-nav-icon {
+                position: relative;
+                /* ADD THIS — fixes floating ::after dot */
+                font-size: 22px;
+                color: #888;
+                text-decoration: none;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+            }
+
+            .mobile-nav-icon:active {
+                transform: scale(0.9);
+            }
+
+            .mobile-nav-icon.active {
+                color: #fff;
+                background: linear-gradient(135deg,
+                        rgba(255, 255, 255, 0.1),
+                        rgba(255, 255, 255, 0.05));
+                box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+            }
+
+            .mobile-nav-icon.active i {
+                background: var(--primary-gradient);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+                transform: scale(1.1);
+            }
+
+            /* Active dot indicator */
+            .mobile-nav-icon.active::after {
+                content: '';
+                position: absolute;
+                bottom: 8px;
+                width: 4px;
+                height: 4px;
+                background: var(--primary-color);
+                border-radius: 50%;
+                box-shadow: 0 0 5px var(--primary-color);
+            }
+
+            /* ── Mobile Menu Overlay ── */
+            .mobile-menu-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                height: 100vh;
+                background: rgba(0, 0, 0, 0);
+                z-index: 1100;
+                transition: background 0.6s ease;
+            }
+
+            .mobile-menu-overlay.show {
+                display: block;
+                background: rgba(0, 0, 0, 0.4);
+            }
+
+            /* ── Liquid-expand Drawer ── */
+            .mobile-menu-drawer {
+                position: absolute;
+                bottom: 30px;
+                left: 25px;
+                width: 56px;
+                height: 56px;
+                background: rgba(25, 25, 25, 0.95);
+                backdrop-filter: blur(50px) saturate(180%);
+                border-radius: 50%;
+                box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+                opacity: 0;
+                overflow: hidden;
+                transform-origin: bottom left;
+                will-change: width, height, border-radius;
+                transition:
+                    width 0.7s cubic-bezier(0.2, 0.8, 0.2, 1.1),
+                    height 0.7s cubic-bezier(0.2, 0.8, 0.2, 1.1) 0.1s,
+                    border-radius 0.7s ease,
+                    opacity 0.2s ease;
+            }
+
+            [data-theme="light"] .mobile-menu-drawer {
+                background: rgba(255, 255, 255, 0.95);
+            }
+
+            .mobile-menu-overlay.show .mobile-menu-drawer {
+                left: 15px;
+                bottom: 15px;
+                width: calc(100vw - 30px);
+                height: 460px;
+                border-radius: 35px;
+                opacity: 1;
+                box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+                border: 1px solid var(--card-glass-border);
+            }
+
+            /* Drawer inner header */
+            .mobile-menu-header {
+                padding: 30px 30px 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                opacity: 0;
+                transform: translateY(10px);
+                transition: all 0.4s ease 0.1s;
+            }
+
+            .mobile-menu-header h3 {
+                font-size: 24px;
+                font-weight: 800;
+                letter-spacing: -0.5px;
+                background: var(--primary-gradient);
+                -webkit-background-clip: text;
+                background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+            .close-menu-btn {
+                background: rgba(120, 120, 120, 0.1);
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                border: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                color: var(--text-secondary, rgba(255, 255, 255, 0.8));
+                cursor: pointer;
+            }
+
+            /* Nav items inside drawer */
+            .mobile-nav-items {
+                padding: 10px 20px 30px;
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .mobile-nav-item {
+                display: flex;
+                align-items: center;
+                padding: 18px 25px;
+                background: transparent;
+                border-radius: 20px;
+                color: var(--text-color);
+                text-decoration: none;
+                font-weight: 600;
+                font-size: 18px;
+                transition: all 0.2s ease;
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            .mobile-nav-item i,
+            .mobile-nav-item span:first-child {
+                margin-right: 18px;
+                font-size: 20px;
+                width: 25px;
+                text-align: center;
+                color: var(--text-tertiary, rgba(255, 255, 255, 0.5));
+                transition: color 0.2s;
+            }
+
+            .mobile-nav-item.active {
+                background: var(--card-inner-bg, rgba(255, 255, 255, 0.03));
+            }
+
+            .mobile-nav-item.active i,
+            .mobile-nav-item.active span:first-child,
+            .mobile-nav-item.active span:last-child {
+                color: var(--primary-color);
+            }
+
+            .mobile-nav-item:active {
+                background: rgba(120, 120, 120, 0.1);
+                transform: scale(0.98);
+            }
+
+            /* Staggered entry animation */
+            .mobile-menu-overlay.show .mobile-menu-header {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .mobile-menu-overlay.show .mobile-nav-item {
+                opacity: 1;
+                transform: translateY(0);
+                transition:
+                    opacity 0.4s ease,
+                    transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .mobile-menu-overlay.show .mobile-nav-item:nth-child(1) {
+                transition-delay: 0.10s;
+            }
+
+            .mobile-menu-overlay.show .mobile-nav-item:nth-child(2) {
+                transition-delay: 0.15s;
+            }
+
+            .mobile-menu-overlay.show .mobile-nav-item:nth-child(3) {
+                transition-delay: 0.20s;
+            }
+
+            .mobile-menu-overlay.show .mobile-nav-item:nth-child(4) {
+                transition-delay: 0.25s;
+            }
+
+            .mobile-menu-overlay.show .mobile-nav-item:nth-child(5) {
+                transition-delay: 0.30s;
+            }
+        }
+
+
+        /* ─────────────────────────────────────────────
+   5.  MOBILE ONLY  (≤ 480 px)
+       Extra tightening on top of section 4.
+   ───────────────────────────────────────────── */
+        @media (max-width: 480px) {
+
+            #profile-container {
+                padding: 12px;
+                padding-top: 16px;
+                padding-bottom: calc(100px + env(safe-area-inset-bottom));
+            }
+
+            .profile-header {
+                padding: 18px 14px;
+            }
+
+            .profile-avatar {
+                width: 84px;
+                height: 84px;
+                min-width: 84px;
+                font-size: 32px;
+            }
+
+            .profile-name {
+                font-size: 22px;
+            }
+
+            .profile-details {
+                font-size: 12px;
+                gap: 6px;
+            }
+
+            .profile-details span {
+                padding: 5px 10px;
+            }
+
+            .profile-stats {
+                gap: 6px;
+            }
+
+            .stat-item {
+                padding: 8px 10px;
+            }
+
+            .stat-number {
+                font-size: 20px;
+            }
+
+            .stat-label {
+                font-size: 11px;
+            }
+
+            .action-btn {
+                padding: 9px 14px;
+                font-size: 13px;
+            }
+
+            .profile-actions {
+                gap: 8px;
+            }
+
+            /* Single-column grid on very small screens */
+            .posts-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+
+            .tab-btn {
+                padding: 9px 6px;
+                font-size: 12px;
+            }
+
+            .profile-tabs {
+                gap: 4px;
+                padding: 6px;
+            }
+
+            .user-item {
+                padding: 12px;
+            }
+
+            .user-name {
+                font-size: 14px;
+            }
+
+            .follow-btn {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+
+            .mobile-bottom-bar {
+                bottom: 12px;
+                left: 10px;
+                right: 10px;
+                height: 64px;
+            }
+
+            .mobile-nav-icon {
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
+
+            .post-detail-media {
+                max-height: 45vw;
+                /* ADD — prevents image/video overflowing short screens */
+                min-height: unset;
+            }
+
+            .post-detail-sidebar {
+                max-height: 55vh;
+                overflow-y: auto;
+            }
+        }
+
+        #main-content-wrapper {
+            display: flex;
+            justify-content: center;
+        }
+
+        #profile-view {
+            width: 100%;
+        }
+
+        @media (min-width: 769px) {
+            .profile-top {
+                flex-direction: row !important;
+                text-align: left !important;
+                align-items: center;
+            }
+
+            .profile-actions {
+                justify-content: flex-start !important;
+            }
+
+            .profile-stats {
+                justify-content: flex-start !important;
+            }
+        }
+
+        /* --- Personal Info Section Fix --- */
+        .personal-info-grid {
+            display: grid;
+            /* Forces exactly 2 columns on desktop */
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .info-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 15px 20px;
+            border-radius: 12px;
+            border: 1px solid var(--card-glass-border);
+            transition: transform 0.2s ease;
+        }
+
+        .info-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .info-label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .info-value {
+            display: block;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: var(--text-main);
+        }
+
+        /* --- Mobile Responsiveness --- */
+        @media (max-width: 768px) {
+
+            .profile-header {
+                padding: 25px 20px;
+                text-align: center;
+            }
+
+            .personal-info-grid {
+                /* Switches to 1 column on mobile devices */
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .profile-stats {
+                justify-content: center;
+                gap: 20px;
+            }
+        }
+
+        .profile-main-info {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-main-info {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .profile-avatar-container {
+                margin: 0 auto;
+            }
+
+            .profile-info h1 {
+                font-size: 1.8rem;
+            }
+        }
+
+        /* Keep only this one, near the top — delete the duplicate at the bottom */
+        #profile-container {
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px 20px 120px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            /* add this here */
+        }
+
+        @media (min-width: 1024px) {
+            #main-content-wrapper {
+                margin-left: 240px;
+                /* match your sidebar width */
+                padding-top: 70px;
+                /* match your header height */
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .profile-tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                /* ADD — smooth momentum scroll on iOS */
+                scrollbar-width: none;
+                /* ADD — hides ugly scrollbar */
+            }
+
+            .profile-tabs::-webkit-scrollbar {
+                display: none;
+                /* ADD — hides scrollbar in WebKit */
+            }
+        }
+
+        @media (max-width: 480px) {}
+
+        @media (max-width: 1023px) {
+            #profile-container {
+                padding-bottom: calc(120px + env(safe-area-inset-bottom));
+                /* ADD */
+            }
+
+            .mobile-bottom-bar {
+                padding-bottom: env(safe-area-inset-bottom);
+                /* ADD — handles iPhone notch */
+            }
+        }
+
+        .confirm-btn {
+            flex: 1;
+            min-width: 0;
+            /* ADD — prevents overflow on ≤320px */
+            padding: 12px 20px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 15px;
+            word-break: break-word;
+            /* ADD */
+        }
+
+        @media (max-width: 768px) {
+            .personal-info-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+                /* REDUCE from 25px — better spacing on tablet */
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="liquid-glass-container">
+        <div class="glass-blob blob-1"></div>
+        <div class="glass-blob blob-2"></div>
+        <div class="glass-blob blob-3"></div>
+    </div>
+
+    <div class="header glass-element fixed-top-layer">
+        <h1>EpicScholar</h1>
+    </div>
+
+    <div class="sidebar glass-element fixed-top-layer">
+        <div class="nav-wrap">
+            <a class="nav-item" href="dashboard.html" data-icon="🏠">🏠 Home</a>
+            <a class="nav-item" href="messages.html" data-icon="✉️">✉️ Messages</a>
+            <a class="nav-item" href="self-study.html" data-icon="📖">📖 Self-Study</a>
+            <a class="nav-item" href="edubot.html" data-icon="🤖">🤖 EduBot</a>
+            <a class="nav-item" href="mini-games.html" data-icon="🎮">🎮 Mini-Games</a>
+        </div>
+        <div class="settings-wrap">
+            <a class="nav-item-active" href="profile.html" data-icon="👤">👤 Profile</a>
+        </div>
+    </div>
+
+    <div id="main-content-wrapper">
+        <div id="profile-view" class="view-section active">
+            <div id="profile-container">
+                <div class="profile-header">
+                    <div class="profile-top">
+                        <div class="profile-avatar" id="profileAvatar">ES</div>
+                        <div class="profile-info">
+                            <div class="profile-name" id="profileName">Loading...</div>
+                            <div class="profile-details">
+                                <span id="profileGrade">Grade -</span>
+                                <span id="profileSyllabus">-</span>
+                                <span id="profileAge">- years old</span>
+                            </div>
+                            <div class="profile-actions">
+                                <button class="action-btn btn-primary" id="editProfileBtn">✏️ Edit Profile</button>
+                                <button class="action-btn btn-secondary" id="changePasswordBtn">🔑 Change
+                                    Password</button>
+                                <button class="action-btn btn-secondary" id="logoutBtn">🚪 Logout</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="profile-stats">
+                        <div class="stat-item" id="postsStatBtn">
+                            <div class="stat-number" id="postsCount">0</div>
+                            <div class="stat-label">Posts</div>
+                        </div>
+                        <div class="stat-item" id="followersStatBtn">
+                            <div class="stat-number" id="followersCount">0</div>
+                            <div class="stat-label">Followers</div>
+                        </div>
+                        <div class="stat-item" id="followingStatBtn">
+                            <div class="stat-number" id="followingCount">0</div>
+                            <div class="stat-label">Following</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-tabs">
+                    <button class="tab-btn active" data-tab="posts">📸 Posts</button>
+                    <button class="tab-btn" data-tab="followers">👥 Followers</button>
+                    <button class="tab-btn" data-tab="following">➕ Following</button>
+                </div>
+
+                <div id="postsTab" class="tab-content active">
+                    <div class="posts-grid" id="postsGrid"></div>
+                </div>
+
+                <div id="followersTab" class="tab-content">
+                    <div class="user-list" id="followersList"></div>
+                </div>
+
+                <div id="followingTab" class="tab-content">
+                    <div class="user-list" id="followingList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="confirm-modal" id="confirmDeleteModal">
+        <div class="confirm-modal-content">
+            <div class="confirm-modal-icon">🗑️</div>
+            <div class="confirm-modal-text">Delete this post?</div>
+            <div class="confirm-modal-subtext">This action cannot be undone. The post and all its comments and reactions
+                will be permanently deleted.</div>
+            <div class="confirm-modal-actions">
+                <button class="confirm-btn confirm-btn-cancel" id="cancelDeleteBtn">Cancel</button>
+                <button class="confirm-btn confirm-btn-delete" id="confirmDeleteBtn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div class="edit-modal" id="editModal">
+        <div class="edit-modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Edit Profile</div>
+                <button class="modal-close" id="closeEditModal">×</button>
+            </div>
+            <form id="editForm">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+                <div class="form-group">
+                    <label>Date of Birth</label>
+                    <input type="date" id="editDob" required>
+                </div>
+                <div class="form-group">
+                    <label>Grade</label>
+                    <input type="number" id="editGrade" min="1" max="12" required>
+                </div>
+                <div class="form-group">
+                    <label>Syllabus</label>
+                    <select id="editSyllabus" required>
+                        <option value="CBSE">CBSE</option>
+                        <option value="ICSE">ICSE</option>
+                        <option value="Matriculation">Matriculation</option>
+                    </select>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="action-btn btn-secondary" id="cancelEditBtn">Cancel</button>
+                    <button type="submit" class="action-btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ══════════════ CHANGE PASSWORD MODAL ══════════════ -->
+    <div class="change-pass-modal" id="changePassModal">
+        <div class="change-pass-modal-content">
+            <div class="modal-header">
+                <div class="modal-title">🔑 Change Password</div>
+                <button class="modal-close" id="closeChangePassModal">×</button>
+            </div>
+
+            <div class="form-group">
+                <label>Current Password</label>
+                <div class="pass-wrapper">
+                    <input type="password" id="currentPassword" placeholder="Enter current password" />
+                    <span class="pass-eye" id="currentPassEye">🙈</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>New Password</label>
+                <div class="pass-wrapper">
+                    <input type="password" id="changeNewPassword" placeholder="New password (min 6 chars)" />
+                    <span class="pass-eye" id="newPassEye">🙈</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Confirm New Password</label>
+                <div class="pass-wrapper">
+                    <input type="password" id="changeConfirmPassword" placeholder="Confirm new password" />
+                    <span class="pass-eye" id="confirmPassEye">🙈</span>
+                </div>
+            </div>
+
+            <div class="modal-status" id="changePassStatus"></div>
+
+            <div class="modal-actions">
+                <button type="button" class="action-btn btn-secondary" id="cancelChangePassBtn">Cancel</button>
+                <button type="button" class="action-btn btn-primary" id="submitChangePassBtn">Update Password</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Detail Modal -->
+    <div class="post-detail-modal" id="postDetailModal">
+        <div class="post-detail-content">
+            <div class="post-detail-media" id="postDetailMedia"></div>
+            <div class="post-detail-sidebar">
+                <div class="post-detail-header">
+                    <div class="post-detail-user">
+                        <div class="post-detail-avatar" id="postDetailAvatar">ES</div>
+                        <div class="post-detail-username" id="postDetailUsername">Loading...</div>
+                    </div>
+                    <button class="post-detail-close" id="closePostDetail">×</button>
+                </div>
+                <div class="post-detail-caption" id="postDetailCaption">
+                    <p id="postCaptionText"></p>
+                </div>
+                <div class="post-detail-actions">
+                    <button class="post-action-btn" id="lovePostBtn">
+                        <span id="loveIcon">❤️</span>
+                        <span id="loveCount">0</span>
+                    </button>
+                    <button class="post-action-btn" id="commentPostBtn">
+                        💬 <span id="commentCount">0</span>
+                    </button>
+                </div>
+                <div class="post-detail-stats">
+                    <div id="postTimestamp"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- ── Mobile Bottom Bar (icons only, mirrors teachers-profile.html) ── -->
+    <div class="mobile-bottom-bar" id="mobileBottomBar">
+        <a href="dashboard.html" class="mobile-nav-icon">
+            <i class="fas fa-home"></i>
+        </a>
+        <a href="messages.html" class="mobile-nav-icon">
+            <i class="fas fa-envelope"></i>
+        </a>
+        <a href="self-study.html" class="mobile-nav-icon">
+            <i class="fas fa-book-open"></i>
+        </a>
+        <a href="edubot.html" class="mobile-nav-icon">
+            <i class="fas fa-robot"></i>
+        </a>
+        <a href="mini-games.html" class="mobile-nav-icon">
+            <i class="fas fa-gamepad"></i>
+        </a>
+        <!-- Hamburger to open full drawer -->
+        <button class="mobile-nav-icon active" id="openMobileMenu" aria-label="Open menu">
+            <i class="fas fa-user"></i>
+        </button>
+    </div>
+
+
+    <!-- ── Mobile Menu Drawer (liquid-expand, mirrors teachers-profile.html) ── -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay">
+        <div class="mobile-menu-drawer">
+            <div class="mobile-menu-header">
+                <h3>EpicScholar</h3>
+                <button class="close-menu-btn" id="closeMobileMenu">&times;</button>
+            </div>
+            <div class="mobile-nav-items">
+                <a class="mobile-nav-item" href="dashboard.html">
+                    <span>🏠</span> <span>Home</span>
+                </a>
+                <a class="mobile-nav-item" href="messages.html">
+                    <span>✉️</span> <span>Messages</span>
+                </a>
+                <a class="mobile-nav-item" href="self-study.html">
+                    <span>📖</span> <span>Self-Study</span>
+                </a>
+                <a class="mobile-nav-item" href="edubot.html">
+                    <span>🤖</span> <span>EduBot</span>
+                </a>
+                <a class="mobile-nav-item" href="mini-games.html">
+                    <span>🎮</span> <span>Mini-Games</span>
+                </a>
+                <a class="mobile-nav-item active" href="profile.html">
+                    <span>👤</span> <span>Profile</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="feedback-message"></div>
+
+    <script>
+const API_URL = 'https://epicscholar.cloud/api';
+const THEME_KEY = 'epicScholarTheme';
+        let currentUser = null;
+        let token = null;
+        let userStats = { posts: 0, followers: 0, following: 0 };
+        let currentTheme = localStorage.getItem(THEME_KEY) || 'dark';
+        let postToDelete = null;
+        let currentPostDetail = null;
+        // Instant auth guard — runs before page renders
+        (function () {
+            const token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            if (!token || !user) {
+                window.location.replace('/');
+            }
+        })();
+        // ── Auth ──
+        function checkAuth() {
+            token = localStorage.getItem('token');
+            const user = localStorage.getItem('user');
+            if (!token || !user) { window.location.href = '/'; return false; }
+            currentUser = JSON.parse(user);
+            return true;
+        }
+
+        // ── API Helper ──
+        async function apiCall(endpoint, options = {}) {
+            const defaultOptions = { headers: { 'Authorization': `Bearer ${token}`, ...options.headers } };
+            const response = await fetch(`${API_URL}${endpoint}`, { ...options, ...defaultOptions });
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+                return null;
+            }
+            return response.json();
+        }
+
+        // ── Feedback ──
+        function showFeedback(message) {
+            const feedback = document.getElementById('feedback-message');
+            feedback.textContent = message;
+            feedback.classList.add('show');
+            setTimeout(() => feedback.classList.remove('show'), 2600);
+        }
+
+        // ── Utility ──
+        function calculateAge(dob) {
+            const birthDate = new Date(dob);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) age--;
+            return age;
+        }
+
+        // ── Password toggle helper ──
+        function setupPassEye(eyeId, inputId) {
+            const eye = document.getElementById(eyeId);
+            const input = document.getElementById(inputId);
+            if (!eye || !input) return;
+            eye.onclick = () => {
+                if (input.type === 'password') { input.type = 'text'; eye.textContent = '🙉'; }
+                else { input.type = 'password'; eye.textContent = '🙈'; }
+            };
+        }
+
+        // ── Post Modal ──
+        function openPostDetail(post) {
+            currentPostDetail = post;
+            const modal = document.getElementById('postDetailModal');
+            const mediaContainer = document.getElementById('postDetailMedia');
+
+            if (post.type === 'video') {
+                mediaContainer.innerHTML = `<video src="${post.url}" controls autoplay loop></video>`;
+            } else {
+                mediaContainer.innerHTML = `<img src="${post.url}" alt="Post">`;
+            }
+
+            document.getElementById('postDetailAvatar').textContent = currentUser.full_name.substring(0, 2).toUpperCase();
+            document.getElementById('postDetailUsername').textContent = currentUser.full_name;
+            document.getElementById('postCaptionText').textContent = post.caption || 'No caption';
+            document.getElementById('loveCount').textContent = post.loves || 0;
+            document.getElementById('commentCount').textContent = post.comments_count || 0;
+
+            if (post.created_at) {
+                const postDate = new Date(post.created_at);
+                if (!isNaN(postDate.getTime())) {
+                    document.getElementById('postTimestamp').textContent = postDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                } else {
+                    document.getElementById('postTimestamp').textContent = 'Recently posted';
+                }
+            } else {
+                document.getElementById('postTimestamp').textContent = 'Recently posted';
+            }
+
+            modal.classList.add('show');
+        }
+
+        function closePostDetail() {
+            const modal = document.getElementById('postDetailModal');
+            modal.classList.remove('show');
+            const video = modal.querySelector('video');
+            if (video) video.pause();
+            currentPostDetail = null;
+        }
+
+        // ── Load Profile ──
+        async function loadProfile() {
+            try {
+                const data = await apiCall(`/user/${currentUser.id}`);
+                if (!data || !data.success) { showFeedback('Failed to load profile'); return; }
+
+                const user = data.user;
+                userStats = data.stats;
+
+                document.getElementById('profileAvatar').textContent = user.full_name.substring(0, 2).toUpperCase();
+                document.getElementById('profileName').textContent = user.full_name;
+                document.getElementById('profileGrade').textContent = `Grade ${user.grade}`;
+                document.getElementById('profileSyllabus').textContent = user.syllabus;
+                document.getElementById('profileAge').textContent = `${calculateAge(user.dob)} years old`;
+                document.getElementById('postsCount').textContent = userStats.posts;
+                document.getElementById('followersCount').textContent = userStats.followers;
+                document.getElementById('followingCount').textContent = userStats.following;
+
+                currentUser = { ...currentUser, ...user };
+                localStorage.setItem('user', JSON.stringify(currentUser));
+            } catch (error) {
+                console.error('Profile load error:', error);
+                showFeedback('Error loading profile');
+            }
+        }
+
+        // ── Load Posts ──
+        async function loadPosts() {
+            try {
+                const data = await apiCall(`/user/${currentUser.id}/posts`);
+                if (!data || !data.success) { showFeedback('Failed to load posts'); return; }
+
+                const postsGrid = document.getElementById('postsGrid');
+
+                if (data.posts.length === 0) {
+                    postsGrid.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1;">
+                    <div class="empty-state-icon">📸</div>
+                    <div class="empty-state-text">No posts yet</div>
+                    <div style="opacity: 0.6; font-size: 14px;">Share your first post on the home feed!</div>
+                </div>`;
+                    return;
+                }
+
+                postsGrid.innerHTML = data.posts.map(post => `
+            <div class="post-item" data-post-id="${post.id}" data-post='${JSON.stringify(post).replace(/'/g, "&apos;")}'>
+                <button class="delete-post-btn" onclick="confirmDeletePost(${post.id}); event.stopPropagation();" title="Delete post">🗑️</button>
+                ${post.type === 'video'
+                        ? `<video src="${post.url}" preload="metadata"></video>`
+                        : `<img src="${post.url}" alt="Post">`}
+                <div class="post-overlay"><span>❤️ ${post.loves || 0}</span></div>
+            </div>
+        `).join('');
+
+                postsGrid.querySelectorAll('.post-item').forEach(item => {
+                    item.addEventListener('click', (e) => {
+                        if (!e.target.classList.contains('delete-post-btn')) {
+                            const postData = JSON.parse(item.getAttribute('data-post'));
+                            openPostDetail(postData);
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error('Posts load error:', error);
+                showFeedback('Error loading posts');
+            }
+        }
+
+        // ── Delete Post ──
+        function confirmDeletePost(postId) {
+            postToDelete = postId;
+            document.getElementById('confirmDeleteModal').classList.add('show');
+        }
+
+        async function deletePost() {
+            if (!postToDelete) return;
+            const confirmBtn = document.getElementById('confirmDeleteBtn');
+            confirmBtn.textContent = 'Deleting...';
+            confirmBtn.disabled = true;
+
+            try {
+                const data = await apiCall(`/post/${postToDelete}`, { method: 'DELETE' });
+                if (data && data.success) {
+                    showFeedback('Post deleted successfully! 🗑️');
+                    document.getElementById('confirmDeleteModal').classList.remove('show');
+                    postToDelete = null;
+                    setTimeout(() => { loadProfile(); loadPosts(); }, 500);
+                } else {
+                    showFeedback(data?.message || 'Failed to delete post');
+                }
+            } catch (error) {
+                console.error('Delete error:', error);
+                showFeedback('Error deleting post');
+            } finally {
+                confirmBtn.textContent = 'Delete';
+                confirmBtn.disabled = false;
+            }
+        }
+
+        // ── Followers / Following ──
+        async function loadFollowers() {
+            try {
+                const response = await fetch(`${API_URL}/user/${currentUser.id}/followers`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await response.json();
+                const followersList = document.getElementById('followersList');
+
+                if (!data.success || data.followers.length === 0) {
+                    followersList.innerHTML = `<div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-text">No followers yet</div></div>`;
+                    return;
+                }
+
+                followersList.innerHTML = data.followers.map(user => `
+            <div class="user-item">
+                <div class="user-avatar">${user.full_name.substring(0, 2).toUpperCase()}</div>
+                <div class="user-info">
+                    <div class="user-name" onclick="window.location.href='/user.html?id=${user.id}'">${user.full_name}</div>
+                    <div class="user-meta">Grade ${user.grade} • ${user.syllabus}</div>
+                </div>
+            </div>`).join('');
+            } catch (error) {
+                document.getElementById('followersList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">👥</div><div class="empty-state-text">No followers yet</div></div>`;
+            }
+        }
+
+        async function loadFollowing() {
+            try {
+                const response = await fetch(`${API_URL}/user/${currentUser.id}/following`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const data = await response.json();
+                const followingList = document.getElementById('followingList');
+
+                if (!data.success || data.following.length === 0) {
+                    followingList.innerHTML = `<div class="empty-state"><div class="empty-state-icon">➕</div><div class="empty-state-text">Not following anyone yet</div></div>`;
+                    return;
+                }
+
+                followingList.innerHTML = data.following.map(user => `
+            <div class="user-item">
+                <div class="user-avatar">${user.full_name.substring(0, 2).toUpperCase()}</div>
+                <div class="user-info">
+                    <div class="user-name" onclick="window.location.href='/user.html?id=${user.id}'">${user.full_name}</div>
+                    <div class="user-meta">Grade ${user.grade} • ${user.syllabus}</div>
+                </div>
+                <button class="follow-btn following" onclick="unfollowUser(${user.id})">Following</button>
+            </div>`).join('');
+            } catch (error) {
+                document.getElementById('followingList').innerHTML = `<div class="empty-state"><div class="empty-state-icon">➕</div><div class="empty-state-text">Not following anyone yet</div></div>`;
+            }
+        }
+
+        async function unfollowUser(userId) {
+            try {
+                const data = await apiCall('/unfollow', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ userId }) });
+                if (data && data.success) { showFeedback('Unfollowed successfully'); loadProfile(); loadFollowing(); }
+            } catch (error) { console.error('Unfollow error:', error); }
+        }
+
+        // ── Tabs ──
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                btn.classList.add('active');
+                document.getElementById(`${tab}Tab`).classList.add('active');
+                if (tab === 'posts') loadPosts();
+                else if (tab === 'followers') loadFollowers();
+                else if (tab === 'following') loadFollowing();
+            });
+        });
+
+        document.getElementById('postsStatBtn')?.addEventListener('click', () => document.querySelector('[data-tab="posts"]').click());
+        document.getElementById('followersStatBtn')?.addEventListener('click', () => document.querySelector('[data-tab="followers"]').click());
+        document.getElementById('followingStatBtn')?.addEventListener('click', () => document.querySelector('[data-tab="following"]').click());
+
+        // ── Edit Profile Modal ──
+        const editModal = document.getElementById('editModal');
+
+        document.getElementById('editProfileBtn')?.addEventListener('click', () => {
+            document.getElementById('editName').value = currentUser.full_name;
+            document.getElementById('editDob').value = currentUser.dob;
+            document.getElementById('editGrade').value = currentUser.grade;
+            document.getElementById('editSyllabus').value = currentUser.syllabus;
+            editModal.classList.add('show');
+        });
+
+        document.getElementById('closeEditModal')?.addEventListener('click', () => editModal.classList.remove('show'));
+        document.getElementById('cancelEditBtn')?.addEventListener('click', () => editModal.classList.remove('show'));
+        editModal?.addEventListener('click', e => { if (e.target === editModal) editModal.classList.remove('show'); });
+
+        document.getElementById('editForm')?.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const updatedData = {
+                name: document.getElementById('editName').value.trim(),
+                dob: document.getElementById('editDob').value,
+                grade: parseInt(document.getElementById('editGrade').value),
+                syllabus: document.getElementById('editSyllabus').value
+            };
+
+            if (!updatedData.name || !updatedData.dob || !updatedData.grade || !updatedData.syllabus) {
+                showFeedback('All fields are required!'); return;
+            }
+
+            try {
+                const response = await fetch(`${API_URL}/user/update`, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify(updatedData)
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    showFeedback('Profile updated successfully! ✅');
+                    editModal.classList.remove('show');
+                    currentUser = { ...currentUser, ...data.user };
+                    localStorage.setItem('user', JSON.stringify(currentUser));
+                    loadProfile();
+                } else {
+                    showFeedback(data.message || 'Failed to update profile');
+                }
+            } catch (error) {
+                showFeedback('Error updating profile');
+            }
+        });
+
+        // ══════════════════════════════════════════
+        // CHANGE PASSWORD MODAL
+        // ══════════════════════════════════════════
+        const changePassModal = document.getElementById('changePassModal');
+
+        document.getElementById('changePasswordBtn')?.addEventListener('click', () => {
+            // Clear fields
+            document.getElementById('currentPassword').value = '';
+            document.getElementById('changeNewPassword').value = '';
+            document.getElementById('changeConfirmPassword').value = '';
+            document.getElementById('changePassStatus').textContent = '';
+            changePassModal.classList.add('show');
+            // Setup eye toggles
+            setupPassEye('currentPassEye', 'currentPassword');
+            setupPassEye('newPassEye', 'changeNewPassword');
+            setupPassEye('confirmPassEye', 'changeConfirmPassword');
+        });
+
+        document.getElementById('closeChangePassModal')?.addEventListener('click', () => changePassModal.classList.remove('show'));
+        document.getElementById('cancelChangePassBtn')?.addEventListener('click', () => changePassModal.classList.remove('show'));
+        changePassModal?.addEventListener('click', e => { if (e.target === changePassModal) changePassModal.classList.remove('show'); });
+
+        document.getElementById('submitChangePassBtn')?.addEventListener('click', async () => {
+            const currentPass = document.getElementById('currentPassword').value.trim();
+            const newPass = document.getElementById('changeNewPassword').value.trim();
+            const confirmPass = document.getElementById('changeConfirmPassword').value.trim();
+            const status = document.getElementById('changePassStatus');
+
+            status.textContent = '';
+
+            if (!currentPass) { status.textContent = 'Enter your current password.'; status.style.color = 'red'; return; }
+            if (!newPass || newPass.length < 6) { status.textContent = 'New password must be at least 6 characters.'; status.style.color = 'red'; return; }
+            if (newPass !== confirmPass) { status.textContent = 'Passwords do not match.'; status.style.color = 'red'; return; }
+            if (currentPass === newPass) { status.textContent = 'New password must be different from current password.'; status.style.color = 'red'; return; }
+
+            status.textContent = 'Updating password...';
+            status.style.color = '#66aaff';
+
+            try {
+                const response = await fetch(`${API_URL}/change-password`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ currentPassword: currentPass, newPassword: newPass })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    status.textContent = data.message;
+                    status.style.color = '#4ade80';
+                    showFeedback('Password changed successfully! 🔑');
+                    setTimeout(() => changePassModal.classList.remove('show'), 1500);
+                } else {
+                    status.textContent = data.message;
+                    status.style.color = 'red';
+                }
+            } catch (error) {
+                status.textContent = 'Network error. Please try again.';
+                status.style.color = 'red';
+            }
+        });
+
+        // ── Delete Modal ──
+        document.getElementById('cancelDeleteBtn')?.addEventListener('click', () => {
+            document.getElementById('confirmDeleteModal').classList.remove('show');
+            postToDelete = null;
+        });
+        document.getElementById('confirmDeleteBtn')?.addEventListener('click', deletePost);
+        document.getElementById('confirmDeleteModal')?.addEventListener('click', (e) => {
+            if (e.target.id === 'confirmDeleteModal') { e.target.classList.remove('show'); postToDelete = null; }
+        });
+
+        // ── Post Modal ──
+        document.getElementById('closePostDetail')?.addEventListener('click', closePostDetail);
+        document.getElementById('postDetailModal')?.addEventListener('click', (e) => { if (e.target.id === 'postDetailModal') closePostDetail(); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && currentPostDetail) closePostDetail(); });
+
+        // ── Logout ──
+        document.getElementById('logoutBtn')?.addEventListener('click', () => {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            }
+        });
+
+        // ── Init ──
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!checkAuth()) return;
+            loadProfile();
+            loadPosts();
+        });
+        /* ── Mobile menu open / close ── */
+        const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+        const openMobileMenu = document.getElementById('openMobileMenu');
+        const closeMobileMenu = document.getElementById('closeMobileMenu');
+
+        openMobileMenu?.addEventListener('click', () => {
+            mobileMenuOverlay.classList.add('show');
+        });
+
+        closeMobileMenu?.addEventListener('click', () => {
+            mobileMenuOverlay.classList.remove('show');
+        });
+
+        mobileMenuOverlay?.addEventListener('click', (e) => {
+            if (e.target === mobileMenuOverlay) {
+                mobileMenuOverlay.classList.remove('show');
+            }
+        });
+
+        /* ── Auto-hide bottom bar on scroll (same behaviour as teachers-profile) ── */
+        const mobileBottomBar = document.getElementById('mobileBottomBar');
+        let lastScrollY = 0;
+
+        window.addEventListener('scroll', () => {
+            const currentY = window.scrollY;
+            if (currentY > lastScrollY + 10) {
+                mobileBottomBar?.classList.add('hide-bar');
+            } else if (currentY < lastScrollY - 10) {
+                mobileBottomBar?.classList.remove('hide-bar');
+            }
+            lastScrollY = currentY;
+        }, { passive: true });
+
+        /* ── Theme toggle (mirrors teachers-profile.html) ── */
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        const savedTheme = localStorage.getItem('epicscholar-theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        if (themeToggle) themeToggle.checked = (savedTheme === 'light');
+
+        themeToggle?.addEventListener('change', () => {
+            const newTheme = themeToggle.checked ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('epicscholar-theme', newTheme);
+        });
+    </script>
+</body>
+
+</html>
