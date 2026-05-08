@@ -1,600 +1,2061 @@
 :root {
-/* Dark Theme */
---bg-color: #0d0d0d;
---text-color: #e9eef8;
---primary-color: #0072ff;
---secondary-color: #ff416c;
---primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
---card-glass-bg: rgba(28, 28, 28, 0.4); /* Frosted dark glass */
---card-glass-border: rgba(255, 255, 255, 0.15);
---secondary-glass: rgba(51, 51, 51, 0.6);
---shadow-light: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.05);
---shadow-deep: 0 10px 40px 0 rgba(0, 0, 0, 0.5); /* Deeper shadow for depth */
---modal-bg: rgba(0, 0, 0, 0.85);
---toast-bg: rgba(255, 255, 255, 0.15);
---scroll-color: rgba(255, 255, 255, 0.2);
+    /* Dark Theme */
+    --bg-color: #0d0d0d;
+    --text-color: #e9eef8;
+    --primary-color: #0072ff;
+    --secondary-color: #ff416c;
+    --primary-gradient: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+    --card-glass-bg: rgba(28, 28, 28, 0.4);
+    /* Frosted dark glass */
+    --card-glass-border: rgba(255, 255, 255, 0.15);
+    --secondary-glass: rgba(51, 51, 51, 0.6);
+    --shadow-light: 0 0 10px rgba(0, 0, 0, 0.3), inset 0 0 5px rgba(255, 255, 255, 0.05);
+    --shadow-deep: 0 10px 40px 0 rgba(0, 0, 0, 0.5);
+    /* Deeper shadow for depth */
+    --modal-bg: rgba(0, 0, 0, 0.85);
+    --toast-bg: rgba(255, 255, 255, 0.15);
+    --scroll-color: rgba(255, 255, 255, 0.2);
 }
 
-
-[data-theme="light"] {
-/* Light Theme */
---bg-color: #f0f2f5;
---text-color: #1c1e21;
---primary-color: #1877f2;
---secondary-color: #ff5e3a;
---primary-gradient: linear-gradient(135deg, #1877f2 0%, #ff5e3a 100%);
---card-glass-bg: rgba(255, 255, 255, 0.65); /* Frosted light glass */
---card-glass-border: rgba(0, 0, 0, 0.1);
---secondary-glass: rgba(200, 200, 200, 0.8);
---shadow-light: 0 0 10px rgba(0, 0, 0, 0.05), inset 0 0 5px rgba(255, 255, 255, 0.5);
---shadow-deep: 0 10px 40px 0 rgba(0, 0, 0, 0.15);
---modal-bg: rgba(255, 255, 255, 0.9);
---toast-bg: rgba(0, 0, 0, 0.15);
---scroll-color: rgba(0, 0, 0, 0.1);
+* {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-touch-callout: none;
 }
 
 ::-webkit-scrollbar {
-width: 8px;
-height: 8px;
+    width: 8px;
+    height: 8px;
 }
+
 ::-webkit-scrollbar-thumb {
-background: var(--scroll-color);
-border-radius: 10px;
-transition: background 0.3s;
+    background: var(--scroll-color);
+    border-radius: 10px;
+    transition: background 0.3s;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-background: var(--primary-color);
+    background: var(--primary-color);
 }
+
 ::-webkit-scrollbar-track {
-background: transparent;
+    background: transparent;
 }
 
 
 /* --- 2. Global Base and Typography --- */
 body {
-font-family: 'Inter', sans-serif;
-margin: 0;
-padding: 0;
-background-color: var(--bg-color);
-color: var(--text-color);
-transition: background-color 0.5s, color 0.5s;
-display: flex;
-height: 100vh;
-overflow: hidden; /* Only the designated section will scroll */
--webkit-font-smoothing: antialiased;
-}
-        
-        /* --- 3. Liquid Glass Background (Ambient Shimmer) --- */
-        #liquid-glass-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -10; overflow: hidden;
-        }
-
-        .glass-blob {
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: var(--primary-gradient);
-            border-radius: 50%;
-            opacity: 0.18; /* Increased opacity for more presence */
-            filter: blur(150px);
-            animation: moveBlob 30s infinite alternate;
-        }
-        .blob-1 { top: -20%; left: -20%; animation-duration: 34s; }
-        .blob-2 { bottom: -25%; right: -25%; background: var(--secondary-color); opacity: 0.12; filter: blur(120px); animation-duration: 28s; }
-        .blob-3 { top: 60%; left: 40%; width: 400px; height: 400px; opacity: 0.25; animation-duration: 32s; }
-
-        @keyframes moveBlob {
-            0% { transform: translate(0, 0) scale(1.0); filter: hue-rotate(0deg) blur(150px); }
-            50% { transform: translate(150px, -100px) scale(1.1); filter: hue-rotate(10deg) blur(180px); }
-            100% { transform: translate(-80px, 80px) scale(0.9); filter: hue-rotate(0deg) blur(150px); }
-        }
-
-        /* --- 4. Glass Element Base Style (Applied to Header, Sidebar, Cards, Modal) --- */
-        .glass-element {
-            background: var(--card-glass-bg);
-            border: 1px solid var(--card-glass-border);
-            backdrop-filter: blur(25px); /* Increased blur for stronger effect */
-            -webkit-backdrop-filter: blur(25px);
-            box-shadow: var(--shadow-deep);
-            border-radius: 18px; /* Slightly larger radius */
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        /* --- 5. Header & Fixed Elements --- */
-        .fixed-top-layer {
-            position: fixed;
-            top: 10px;
-            z-index: 1000;
-        }
-        .header {
-            height: 70px; 
-            left: 10px;
-            width: calc(100% - 20px);
-            padding: 0 30px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-        .header h1 {
-            font-size: 30px;
-            font-weight: 900;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 0;
-        }
-        #themeToggleContainer {
-            right: 25px;
-            top: 25px;
-        }
-
-        /* --- 6. Sidebar & Navigation (Glass) --- */
-        .sidebar {
-            width: 260px; /* Slightly wider */
-            top: 90px;
-            left: 10px;
-            height: calc(100% - 100px);
-            padding: 20px 0;
-            z-index: 500;
-        }
-
-        .nav-wrap {
-            padding: 10px 0;
-            position: relative;
-        }
-        
-        .nav-item {
-            padding: 15px 20px 15px 30px; 
-            margin: 8px 10px;
-            font-weight: 500;
-            color: var(--text-color);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            cursor: pointer;
-            border-radius: 12px;
-        }
-
-        .nav-item.active, .nav-item:hover {
-            background-color: var(--secondary-glass);
-            transform: scale(1.05); /* Aggressive lift animation */
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-        .nav-item.active {
-            color: var(--secondary-color);
-            font-weight: 700;
-        }
-
-        /* --- 7. Theme Toggle Styling (Premium Switch) --- */
-        .toggle-switch {
-            position: relative;
-            right: 50%;
-            display: inline-block;
-            width: 70px;
-            height: 40px;
-            border-radius: 20px;
-            cursor: pointer;
-            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
-            overflow: hidden;
-            width: 75px;
-        }
-
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(145deg, #1c1c1c, #0d0d0d);
-            transition: 0.4s;
-            border-radius: 20px;
-        }
-        
-        .slider::before {
-            position: absolute;
-            content: "";
-            height: 30px;
-            width: 30px;
-            left: 5px;
-            bottom: 5px;
-            background-color: white;
-            border-radius: 50%;
-            transition: 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 0 15px rgba(255, 255, 0, 0.8);
-        }
-
-        input:checked + .slider {
-            background: linear-gradient(145deg, #f0f2f5, #e6e9f0);
-        }
-
-        input:checked + .slider::before {
-            transform: translateX(30px);
-            background-color: var(--primary-color);
-            box-shadow: 0 0 15px rgba(0, 114, 255, 0.8);
-        }
-        
-        /* Icon labels */
-        .label-dark, .label-light {
-            position: absolute;
-            font-size: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            transition: opacity 0.4s;
-            pointer-events: none;
-        }
-
-        .label-dark { left: 45px; opacity: 1; }
-        .label-light { right: 45px; opacity: 0; }
-
-        input:checked ~ .label-dark { opacity: 0; }
-        input:checked ~ .label-light { opacity: 1; }
-
-
-        /* --- 8. Main Content Container & View Management --- */
-        #main-content-wrapper {
-            margin-left: 280px;
-            padding-top: 100px; 
-            width: calc(100% - 280px);
-            height: 100vh;
-            box-sizing: border-box;
-            overflow: hidden; /* Main wrapper should not scroll */
-            position: relative;
-            transition: margin-left 0.4s;
-        }
-
-        .view-section {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            padding: 20px;
-            box-sizing: border-box;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateX(100px); /* Slide in/out animation */
-            transition: opacity 0.5s ease-out, transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-        }
-
-        .view-section.active {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateX(0);
-            z-index: 5;
-        }
-        
-        /* Specific scrollable content area for Home Feed ONLY */
-        #feed-container {
-            max-width: 700px;
-            width: 100%;
-            height: calc(100% - 100px); /* Adjusted for padding */
-            overflow-y: auto; /* Scrollable area */
-            padding-right: 20px;
-            padding-bottom: 20px;
-            box-sizing: border-box;
-            position: relative;
-            top: 100px;
-        }
-        
-        /* Styles for other views (non-scrolling) */
-        .other-view-content {
-            max-width: 900px;
-            width: 100%;
-            height: 100%;
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            text-align: center;
-            border-radius: 20px;
-            color: var(--primary-color);
-            background: var(--card-glass-bg);
-            backdrop-filter: blur(25px);
-        }
-        .other-view-content h2 {
-            font-weight: 800;
-            margin-bottom: 20px;
-            background: var(--primary-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* --- 9. Post Card & Feed Styling --- */
-        .post {
-            margin-bottom: 30px;
-            padding: 25px;
-            background: var(--card-glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--card-glass-border);
-            border-radius: 20px;
-            box-shadow: var(--shadow-deep);
-            transform: translateY(0);
-            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
-            overflow: hidden;
-        }
-        .post:hover {
-            transform: translateY(-8px); /* Deeper lift */
-            box-shadow: var(--shadow-deep), 0 18px 60px rgba(0, 114, 255, 0.3); /* Stronger glow shadow */
-        }
-        /* (Avatar, Meta, Text, Media, Actions styles remain from previous version - included in JS for brevity) */
-        .actions .btn {
-            background: var(--secondary-glass);
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-size: 16px;
-        }
-        .actions .btn:hover {
-            transform: scale(1.08); /* Bounce on hover */
-            background: var(--primary-color);
-            color: white;
-        }
-        
-        /* --- 10. Fixed Right Panels (Moving Leftwards & Downwards) --- */
-        #right-panel-wrapper {
-            position: fixed;
-            right: 20px;
-            top: 100px; 
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            z-index: 100;
-           align-items: flex-end;
-        }
-        
-        .mini-card {
-            width: 65px;
-            height: 65px;
-            background: var(--card-glass-bg);
-            border: 1px solid var(--card-glass-border);
-            backdrop-filter: blur(20px);
-            box-shadow: var(--shadow-deep);
-            border-radius: 18px;
-            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1); /* Slower, smoother transition */
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            transform-origin: right top;
-            transform: translate(0, 0); /* Base position */
-        }
-        
-        .mini-card:hover {
-            box-shadow: var(--shadow-deep), 0 0 25px var(--secondary-color);
-        }
-        
-        .mini-card::before {
-            font-size: 32px;
-            transition: opacity 0.3s;
-        }
-
-        /* ACTIVE STATE: Move Leftwards and Downwards, and Expand */
-        .mini-card.active {
-            width: 320px; /* Expanded width */
-            min-height: 250px;
-            height: auto;
-            z-index: 150; 
-            padding: 0;
-            
-            /* **KEY ANIMATION: Move Left and Down** */
-            /* We translate based on the difference between expanded size (320px) and default size (65px) */
-            /* And move 15px down for a 'pop-out' feel */
-            transform: translate(-10px, 15px); /* -(320-65) and +15px vertical offset */
-            
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 40px var(--primary-color);
-        }
-        
-        .mini-card-content {
-            opacity: 0;
-            pointer-events: none;
-            width: 320px;
-            padding: 20px;
-            padding-right: 10px;
-            box-sizing: border-box;
-            position: absolute;
-            right: 0;
-            top: 0;
-            height: 100%;
-            transition: opacity 0.3s 0.2s; /* Delayed fade in */
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .mini-card.active .mini-card-content {
-            opacity: 1;
-            pointer-events: auto;
-            position: fixed;
-          overflow: auto;
-          overflow-x: hidden;
-        }
-        .mini-card.active::before {
-            opacity: 0;
-        }
-        
-        /* --- 11. Comment Modal (Social Media Slide-Up) --- */
-        .modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--modal-bg);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            align-items: flex-end; 
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s;
-            z-index: 2000;
-        }
-
-        .modal.show {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        .modal-content {
-            width: 100%;
-            max-width: 750px;
-            max-height: 85vh; /* Taller modal */
-            background: var(--card-glass-bg);
-            backdrop-filter: blur(30px); /* Max blur */
-            border-top-left-radius: 30px;
-            border-top-right-radius: 30px;
-            border: 1px solid var(--card-glass-border);
-            padding: 25px 40px;
-            box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.7);
-            
-            /* Slide-Up Animation */
-            transform: translateY(100%);
-            transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-        }
-        .modal.show .modal-content {
-            transform: translateY(0);
-        }
-        
-        .commentModalPostBtn {
-            box-shadow: 0 5px 15px var(--secondary-color), inset 0 0 5px white;
-        }
-        /* (Comment list and input styles remain similar) */
-
-
-        /* --- 12. Feedback Toast Message (Styled and High Z-Index) --- */
-        #feedback-message {
-            position: fixed;
-            top: 90px;
-            left: 50%;
-            transform: translate(-50%, -100%); /* Start above screen */
-            background: var(--toast-bg);
-            color: var(--text-color);
-            padding: 12px 25px;
-            border-radius: 12px;
-            border: 1px solid var(--card-glass-border);
-            backdrop-filter: blur(25px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
-            font-weight: 600;
-            opacity: 0;
-            visibility: hidden;
-            transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s, visibility 0.5s;
-            z-index: 3000; /* Highest possible z-index */
-        }
-
-        #feedback-message.show {
-            transform: translate(-50%, 0); /* Slide down */
-            opacity: 1;
-            visibility: visible;
-        }
-
-
-        /* --- 13. Media Queries (Responsiveness) --- */
-        @media (max-width: 1200px) {
-            #right-panel-wrapper {
-                opacity: 0; 
-                pointer-events: none;
-            }
-            #main-content-wrapper {
-                margin-left: 280px;
-            }
-        }
-        
-        @media (max-width: 768px) {
-            /* Collapsed Sidebar */
-            .sidebar { width: 70px; padding: 10px; overflow: hidden; }
-            .sidebar .nav-item { padding: 12px 10px; text-align: center; font-size: 0; }
-            .sidebar .nav-item::before { content: attr(data-icon); font-size: 24px; margin: 0; }
-            .nav-underline { display: none; }
-            #main-content-wrapper { margin-left: 90px; padding-top: 90px; width: calc(100% - 90px); }
-            .header { padding: 0 15px; }
-            .modal-content { max-width: 100%; border-radius: 0; padding: 15px; }
-            #feed-container { padding-right: 10px; }
-        }
-        /* --- 10. Fixed Right Panels --- */
-
-/* Add content: attr(data-icon) and opacity: 1 to this existing rule */
-.mini-card::before {
-    content: attr(data-icon); /* This displays the icon */
-    font-size: 32px;
-    opacity: 1; /* Make sure it's visible by default */
-    transition: opacity 0.3s;
-}
-
-/* This existing rule already correctly hides the icon when active (hovered) */
-.mini-card.active::before {
-    opacity: 0;
-}
-/* Find this existing rule */
-.mini-card.active {
-    width: 320px; 
-    min-height: 250px;
-    height: auto;
-    z-index: 150; 
+    font-family: 'Inter', sans-serif;
+    margin: 0;
     padding: 0;
-    
-    /* REMOVE or COMMENT OUT this line to stop the card from moving 
-      left and down when it expands.
-    */
-    /* transform: translate(-10px, 15px); */
-    
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 40px var(--primary-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.5s, color 0.5s;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    /* Only the designated section will scroll */
+    -webkit-font-smoothing: antialiased;
 }
-/* --- 9. Post Card & Feed Styling (Additions) --- */
 
-/* Style for the "pop-up" heart/thumb animation */
-.thumb-overlay.show,
-.heart-overlay.show {
-    transform: translate(-50%, -50%) scale(1); /* Scale up to 1 */
+/* --- 3. Liquid Glass Background (Ambient Shimmer) --- */
+#liquid-glass-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -10;
+    overflow: hidden;
+}
+
+.glass-blob {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    opacity: 0.18;
+    /* Increased opacity for more presence */
+    filter: blur(150px);
+    animation: moveBlob 30s infinite alternate;
+}
+
+.blob-1 {
+    top: -20%;
+    left: -20%;
+    animation-duration: 34s;
+}
+
+.blob-2 {
+    bottom: -25%;
+    right: -25%;
+    background: var(--secondary-color);
+    opacity: 0.12;
+    filter: blur(120px);
+    animation-duration: 28s;
+}
+
+.blob-3 {
+    top: 60%;
+    left: 40%;
+    width: 400px;
+    height: 400px;
+    opacity: 0.25;
+    animation-duration: 32s;
+}
+
+@keyframes moveBlob {
+    0% {
+        transform: translate(0, 0) scale(1.0);
+        filter: hue-rotate(0deg) blur(150px);
+    }
+
+    50% {
+        transform: translate(150px, -100px) scale(1.1);
+        filter: hue-rotate(10deg) blur(180px);
+    }
+
+    100% {
+        transform: translate(-80px, 80px) scale(0.9);
+        filter: hue-rotate(0deg) blur(150px);
+    }
+}
+
+/* --- 4. Glass Element Base Style (Applied to Header, Sidebar, Cards, Modal) --- */
+.glass-element {
+    background: var(--card-glass-bg);
+    border: 1px solid var(--card-glass-border);
+    backdrop-filter: blur(25px);
+    /* Increased blur for stronger effect */
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: var(--shadow-deep);
+    border-radius: 18px;
+    /* Slightly larger radius */
+    transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+/* --- 5. Header & Fixed Elements --- */
+.fixed-top-layer {
+    position: fixed;
+    top: 10px;
+    z-index: 1000;
+}
+
+.header {
+    height: 70px;
+    left: 10px;
+    width: calc(100% - 20px);
+    padding: 0 30px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    animation: slideInDown 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.header h1 {
+    font-size: 30px;
+    font-weight: 900;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0;
+}
+
+/* --- 6. Sidebar & Navigation (Glass) --- */
+.sidebar {
+    width: 260px;
+    /* Slightly wider */
+    top: 90px;
+    left: 10px;
+    height: calc(100% - 100px);
+    padding: 20px 0;
+    z-index: 500;
+}
+
+.nav-wrap {
+    padding: 10px 0;
+    position: relative;
+    bottom: 50px;
+}
+
+.settings-wrap {
+    position: absolute;
+    bottom: 100px;
+    width: 100%;
+    text-align: left;
+}
+
+.nav-item {
+    padding: 15px 20px 15px 30px;
+    margin: 8px 10px;
+    font-weight: 500;
+    color: var(--text-color);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    top: 50px;
+    cursor: pointer;
+    border-radius: 12px;
+    display: block;
+    text-decoration: none;
+}
+
+.nav-item:hover {
+    background-color: var(--secondary-glass);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item-active {
+    background-color: var(--secondary-glass);
+    color: #ff416c;
+    font-weight: 700;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    padding: 15px 20px 15px 30px;
+    margin: 8px 10px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+    top: 50px;
+    cursor: pointer;
+    border-radius: 12px;
+    display: block;
+    text-decoration: none;
+}
+
+/* --- 7. Theme Toggle Styling (Premium Switch) --- */
+
+
+/* --- 8. Main Content Container & View Management --- */
+#main-content-wrapper {
+    margin-left: 280px;
+    padding-top: 100px;
+    width: calc(100% - 280px);
+    height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden;
+    /* Main wrapper should not scroll */
+    position: relative;
+    transition: margin-left 0.4s;
+}
+
+.view-section {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(30px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+}
+
+.view-section.active {
     opacity: 1;
+    pointer-events: auto;
+    transform: translateX(0);
+    transition-delay: 0.2s;
+    z-index: 5;
 }
 
-/* Style for the toggled Like/Love buttons */
+.view-section.exit {
+    opacity: 0;
+    pointer-events: auto;
+    transform: translateX(-30px);
+    transition: opacity 0.3s ease-in, transform 0.3s ease-in;
+    z-index: 4;
+}
+
+/* Specific scrollable content area for Home Feed ONLY */
+#feed-container {
+    max-width: 700px;
+    width: 100%;
+    height: calc(100% - 100px);
+    /* Adjusted for padding */
+    overflow-y: auto;
+    /* Scrollable area */
+    padding-right: 20px;
+    padding-bottom: 20px;
+    box-sizing: border-box;
+    position: relative;
+    top: 100px;
+}
+
+/* Styles for other views (non-scrolling) */
+.other-view-content {
+    max-width: 900px;
+    width: 100%;
+    height: 100%;
+    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    text-align: center;
+    border-radius: 20px;
+    color: var(--primary-color);
+    background: var(--card-glass-bg);
+    backdrop-filter: blur(25px);
+}
+
+.other-view-content h2 {
+    font-weight: 800;
+    margin-bottom: 20px;
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* --- 9. Post Card & Feed Styling --- */
+.post {
+    margin-bottom: 30px;
+    padding: 25px;
+    background: var(--card-glass-bg);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--card-glass-border);
+    border-radius: 20px;
+    box-shadow: var(--shadow-deep);
+    transform: translateY(0);
+    transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.3s;
+    overflow: hidden;
+}
+
+.post:hover {
+    transform: translateY(-8px);
+    /* Deeper lift */
+    box-shadow: var(--shadow-deep), 0 18px 60px rgba(0, 114, 255, 0.3);
+    /* Stronger glow shadow */
+}
+
+.post.post-enter {
+    opacity: 0;
+    transform: scale(0.9) translateY(-20px);
+    max-height: 0;
+    overflow: hidden;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.post.post-enter-active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    max-height: 1000px;
+    margin-bottom: 30px;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    transition: opacity 0.4s ease,
+        transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+        max-height 0.6s ease-out,
+        margin-bottom 0.4s ease-out,
+        padding-top 0.4s ease-out,
+        padding-bottom 0.4s ease-out;
+}
+
+.actions .btn {
+    background: var(--secondary-glass);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    font-size: 16px;
+}
+
+.actions .btn:hover {
+    transform: scale(1.08);
+    /* Bounce on hover */
+    background: var(--primary-color);
+    color: white;
+}
+
 .btn.toggled {
-    background: var(--primary-color) !important; /* Force background */
-    color: white !important; /* Force text color */
+    background: var(--primary-color) !important;
+    color: white !important;
     box-shadow: 0 0 15px var(--primary-color);
 }
+
 .btn.loveBtn.toggled {
     background: var(--secondary-color) !important;
     box-shadow: 0 0 15px var(--secondary-color);
 }
-/* Find or add this rule for .share-menu */
-.share-menu {
+
+/* --- 10. Fixed Right Panels --- */
+#right-panel-wrapper {
+    position: fixed;
+    right: 20px;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 100;
+    align-items: flex-end;
+}
+
+.mini-card {
+    width: 65px;
+    height: 65px;
+    background: var(--card-glass-bg);
+    border: 1px solid var(--card-glass-border);
+    backdrop-filter: blur(20px);
+    box-shadow: var(--shadow-deep);
+    border-radius: 18px;
+    transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    transform-origin: right top;
+    transform: translate(0, 0);
+    padding: 12px;
+}
+
+.mini-card:hover {
+    box-shadow: var(--shadow-deep), 0 0 25px var(--secondary-color);
+}
+
+.mini-card::before {
+    content: attr(data-icon);
+    display: inline-block;
+    font-size: 32px;
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    text-align: center;
+    border-radius: 10px;
+    vertical-align: middle;
+    background: linear-gradient(135deg, #0072ff, #ff416c);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: opacity 0.3s;
+    opacity: 1;
+}
+
+.mini-card.active {
+    width: 320px;
+    min-height: 250px;
+    height: auto;
+    z-index: 150;
+    padding: 0;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 40px var(--primary-color);
+}
+
+.mini-card.active::before {
+    opacity: 0;
+}
+
+.mini-card-content {
+    opacity: 0;
+    pointer-events: none;
+    width: 320px;
+    padding: 20px;
+    padding-right: 10px;
+    box-sizing: border-box;
     position: absolute;
-    bottom: 45px;
     right: 0;
+    top: 0;
+    height: 100%;
+    transition: opacity 0.3s 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.mini-card.active .mini-card-content {
+    opacity: 1;
+    pointer-events: auto;
+    position: fixed;
+    overflow: auto;
+    overflow-x: hidden;
+}
+
+/* --- 11. Comment Modal (Social Media Slide-Up) --- */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--modal-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+    z-index: 2000;
+}
+
+.modal.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 750px;
+    max-height: 85vh;
+    background: var(--card-glass-bg);
+    backdrop-filter: blur(30px);
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border: 1px solid var(--card-glass-border);
+    padding: 25px 40px;
+    box-shadow: 0 -10px 50px rgba(0, 0, 0, 0.7);
+    transform: translateY(100%);
+    transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+}
+
+.commentModalPostBtn {
+    box-shadow: 0 5px 15px var(--secondary-color), inset 0 0 5px white;
+}
+
+.comment {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.comment .cavatar {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.comment .ctext {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.comment .ctext .meta {
+    font-size: 13px;
+    opacity: .85;
+}
+
+.comment .ctext .body {
+    font-size: 14px;
+    color: var(--text-color);
+    line-height: 1.45;
+}
+
+.comment:not(.mine) {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    color: rgba(233, 238, 248, 0.95);
+}
+
+.comment.mine {
+    background: linear-gradient(135deg, rgba(0, 114, 255, 0.16), rgba(255, 65, 108, 0.08));
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    color: #fff;
+    align-self: flex-end;
+}
+
+.comment .ctext .time {
+    font-size: 12px;
+    opacity: 0.65;
+}
+
+/* --- 12. Feedback Toast Message --- */
+#feedback-message {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translate(-50%, -100%);
+    background: var(--toast-bg);
+    color: var(--text-color);
+    padding: 12px 25px;
+    border-radius: 12px;
+    border: 1px solid var(--card-glass-border);
+    backdrop-filter: blur(25px);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4);
+    font-weight: 600;
+    opacity: 0;
+    visibility: hidden;
+    transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s, visibility 0.5s;
+    z-index: 3000;
+}
+
+#feedback-message.show {
+    transform: translate(-50%, 0);
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- 13. NOTIFICATIONS STYLING --- */
+
+/* Notification Badge Pulse Animation */
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0 2px 8px rgba(255, 65, 108, 0.6);
+    }
+
+    50% {
+        transform: scale(1.1);
+        box-shadow: 0 4px 16px rgba(255, 65, 108, 0.9);
+    }
+}
+
+/* Notification Badge */
+.notif-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(135deg, #ff416c, #ff4b2b);
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    box-shadow: 0 2px 8px rgba(255, 65, 108, 0.6);
+    animation: pulse 2s infinite;
+    z-index: 10;
+}
+
+/* Notification Item Styles */
+.notif-item {
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    list-style: none;
+}
+
+.notif-item:hover {
+    transform: translateX(-3px);
+    background: rgba(0, 114, 255, 0.15) !important;
+    box-shadow: 0 4px 12px rgba(0, 114, 255, 0.3);
+}
+
+.notif-item.unread {
+    border-left: 3px solid #0072ff;
+}
+
+/* Notification List Scrollbar */
+#notifList {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 5px;
+    list-style: none;
+    padding-left: 0;
+    margin: 10px 0;
+}
+
+#notifList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#notifList::-webkit-scrollbar-thumb {
+    background: rgba(0, 114, 255, 0.5);
+    border-radius: 10px;
+}
+
+#notifList::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+}
+
+/* Notification Icon Animation */
+.notif-item .notif-icon {
+    animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Clear All Button Enhancement */
+#closeNotifs {
+    transition: all 0.2s;
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: auto;
+    align-self: flex-end;
+}
+
+#closeNotifs:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 65, 108, 0.4);
+}
+
+#closeNotifs:active {
+    transform: scale(0.98);
+}
+
+/* Mini Card Active State Enhancement for Notifications */
+#notifsCard.active {
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6), 0 0 40px rgba(0, 114, 255, 0.5) !important;
+}
+
+/* --- 14. Share Menu --- */
+.share-menu {
+    opacity: 0;
+    transform: scale(0.8) translateY(10px);
+    transform-origin: bottom right;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 8px;
+    width: 180px;
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 55px;
+    left: 100px;
     background: var(--card-glass-bg);
     backdrop-filter: blur(15px);
     border: 1px solid var(--card-glass-border);
     border-radius: 12px;
-    padding: 10px;
     box-shadow: var(--shadow-deep);
     display: flex;
     flex-direction: column;
-    opacity: 0;
-    pointer-events: none;
-    transform: translateY(10px);
-    transition: opacity 0.3s, transform 0.3s;
-    z-index: 100; /* INCREASE THIS! Should be higher than other elements */
+    z-index: 1200;
 }
 
-/* Ensure these are present as well */
 .share-menu.show {
     opacity: 1;
     pointer-events: auto;
-    transform: translateY(0);
+    transform: scale(1) translateY(0);
+}
+
+.share-menu button {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    padding: 10px 14px;
+    text-align: left;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    width: 100%;
+    box-sizing: border-box;
+    transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
 .share-menu button:hover {
-    background-color: rgba(255, 255, 255, 0.1); /* Add a hover effect */
+    background-color: var(--secondary-glass);
+    transform: translateX(-3px);
+}
+
+.share-menu button:active {
+    transform: translateX(0);
+    opacity: 0.8;
+    transition-duration: 0.05s;
+}
+
+/* --- 15. Image Modal --- */
+.image-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(12, 12, 18, 0.92);
+    z-index: 5002;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .22s;
+}
+
+.image-modal.show {
+    opacity: 1;
+    pointer-events: auto;
+    display: flex;
+}
+
+.image-modal img {
+    max-width: 95vw;
+    max-height: 90vh;
+    border-radius: 14px;
+    box-shadow: 0 0 30px #222;
+    will-change: transform, opacity;
+    transition:
+        border-radius 0.27s cubic-bezier(.61, -0.13, .43, 1.38),
+        box-shadow 0.16s,
+        opacity 0.25s,
+        transform 0.62s cubic-bezier(.23, 1.43, .26, 1.01);
+    opacity: 0;
+    transform: scale(0.7) translateZ(0);
+}
+
+.image-modal.show .modal-image-animate-in {
+    opacity: 1;
+    transform: scale(1) translateZ(0);
+    transition:
+        border-radius 0.27s cubic-bezier(.61, -0.13, .43, 1.38),
+        box-shadow 0.16s,
+        opacity 0.29s 0.03s,
+        transform 0.62s cubic-bezier(.23, 1.43, .26, 1.01);
+}
+
+.image-modal .modal-image-animate-out {
+    opacity: 0;
+    transition:
+        border-radius 0.27s cubic-bezier(.61, -0.13, .43, 1.38),
+        box-shadow 0.16s,
+        opacity 0.22s,
+        transform 0.57s cubic-bezier(.16, 1.59, .19, .99);
+}
+
+.image-modal .modal-close-btn {
+    position: absolute;
+    top: 38px;
+    right: 52px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 2.15rem;
+    color: #fff;
+    background: linear-gradient(135deg, #0072ff 0%, #ff416c 100%);
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.27),
+        0 0 0 5px rgba(0, 114, 255, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 2;
+    border: none;
+    outline: none;
+    opacity: 0.94;
+    transition:
+        transform 0.21s cubic-bezier(.23, 1.54, .23, 1),
+        box-shadow 0.19s,
+        background 0.24s,
+        opacity 0.18s;
+}
+
+.image-modal .modal-close-btn:hover,
+.image-modal .modal-close-btn:focus {
+    background: linear-gradient(135deg, #ff416c 0%, #0072ff 100%);
+    box-shadow:
+        0 12px 28px 5px rgba(0, 114, 255, 0.12),
+        0 0 0 8px rgba(255, 65, 108, 0.1),
+        0 0 18px 7px rgba(255, 65, 108, 0.22);
+    color: #fff;
+    opacity: 1;
+    transform: scale(1.13) rotateZ(-8deg);
+    outline: none;
+    border: none;
+}
+
+.image-modal .modal-close-btn:active {
+    opacity: .77;
+    transform: scale(0.98);
+    background: linear-gradient(135deg, #407cfa, #ff416c 95%);
+}
+
+/* --- 16. Refresh Button --- */
+#refreshBtn {
+    background: var(--secondary-glass);
+    color: var(--text-color);
+    width: 54px;
+    height: 54px;
+    padding: 0;
+    border-radius: 50%;
+    border: 1px solid var(--card-glass-border);
+    cursor: pointer;
+    font-size: 24px;
+    font-weight: bold;
+    box-shadow: var(--shadow-light);
+    transition: transform 0.2s, opacity 0.2s, background 0.2s, box-shadow 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#refreshBtn:hover {
+    background: var(--card-glass-bg);
+    box-shadow: var(--shadow-deep);
+    transform: translateY(-2px);
+}
+
+#refreshBtn:active {
+    transform: translateY(0);
+    opacity: 0.8;
+}
+
+/* --- 17. Search Bar --- */
+#searchBar {
+    border: 2px solid #3a3a3a;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    padding: 10px 16px;
+    border-radius: 28px;
+    transition: box-shadow .18s, border .18s, background .18s;
+    position: relative;
+    /* ADD THIS */
+    z-index: 910;
+}
+
+#searchBar:focus {
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 3px rgba(0, 114, 255, 0.08);
+    background-image: linear-gradient(#151515, #151515), linear-gradient(135deg, #0072ff, #ff416c);
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+}
+
+/* --- 18. List Items in Mini Cards --- */
+#right-panel-wrapper .mini-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#right-panel-wrapper .mini-card li {
+    padding: 10px 15px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: var(--secondary-glass);
+    border: 1px solid var(--card-glass-border);
+    font-size: 14px;
+    line-height: 1.4;
+    cursor: default;
+    transition: all 0.2s ease-in-out;
+}
+
+#right-panel-wrapper .mini-card li:hover {
+    background: var(--card-glass-bg);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#right-panel-wrapper .mini-card li:last-child {
+    margin-bottom: 0;
+}
+
+/* --- 19. Entry Animations --- */
+@keyframes slideInDown {
+    from {
+        transform: translateY(-100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.sidebar {
+    animation: slideInLeft 0.7s 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0;
+}
+
+#right-panel-wrapper {
+    animation: slideInRight 0.7s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+    opacity: 0;
+}
+
+@media (max-width: 1200px) {
+    #right-panel-wrapper {
+        animation: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+        transform: translateX(90px) !important;
+        transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+            transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+            visibility 0.35s;
+    }
+
+    #right-panel-wrapper.mobile-active {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        visibility: visible !important;
+        transform: translateX(0) !important;
+    }
+}
+
+#searchContainer {
+    animation: fadeIn 0.8s 0.6s ease-out forwards;
+    opacity: 0;
+}
+
+#feed {
+    animation: fadeIn 0.8s 0.8s ease-out forwards;
+    opacity: 0;
+}
+
+/* --- 20. Volume Slider --- */
+.volume-container {
+    display: flex;
+    align-items: center;
+}
+
+.volume-slider {
+    width: 0;
+    max-width: 0;
+    opacity: 0;
+    margin-left: 0;
+    transition: max-width 0.3s ease, opacity 0.2s ease, margin-left 0.3s ease;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+    background: linear-gradient(to right, var(--primary-color) 100%, rgba(255, 255, 255, 0.4) 100%);
+    height: 18px;
+}
+
+.volume-container:hover .volume-slider {
+    max-width: 80px;
+    opacity: 1;
+    margin-left: 5px;
+    height: 10px;
+    width: 80px;
+    background: linear-gradient(to right, var(--primary-gradient) 45%, rgba(255, 255, 255, 0.4) 45%);
+    border-radius: 10px;
+}
+
+.volume-slider::-webkit-slider-runnable-track {
+    background: transparent;
+    height: 4px;
+    border-radius: 3px;
+}
+
+.volume-slider::-moz-range-track {
+    background: transparent;
+    height: 4px;
+    border-radius: 3px;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    margin-top: -6px;
+    border: 2px solid #fff;
+}
+
+.volume-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.8);
+    border: 2px solid #fff;
+}
+
+@media (max-width: 768px) {
+
+    /* Collapsed Sidebar */
+    .sidebar {
+        width: 70px;
+        padding: 10px;
+        overflow: hidden;
+    }
+
+    .sidebar .nav-item {
+        padding: 12px 10px;
+        text-align: center;
+        font-size: 0;
+    }
+
+    .sidebar .nav-item::before {
+        content: attr(data-icon);
+        font-size: 24px;
+        margin: 0;
+    }
+
+    .nav-underline {
+        display: none;
+    }
+
+    #main-content-wrapper {
+        margin-left: 90px;
+        padding-top: 90px;
+        width: calc(100% - 90px);
+    }
+
+    .header {
+        padding: 0 15px;
+    }
+
+    .modal-content {
+        max-width: 100%;
+        border-radius: 0;
+        padding: 15px;
+    }
+
+    #feed-container {
+        padding-right: 10px;
+    }
+}
+
+/* ============================================
+   MOBILE HEADER (hidden on desktop)
+============================================ */
+.mobile-header {
+    display: none;
+}
+
+/* ============================================
+   MOBILE BOTTOM BAR + DRAWER (hidden on desktop)
+============================================ */
+.mobile-bottom-bar,
+.mobile-menu-overlay {
+    display: none;
+}
+
+/* ============================================
+   TABLET  ≤ 1200px — hide right panels
+============================================ */
+@media (max-width: 1200px) {
+    #right-panel-wrapper {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+    }
+
+    #right-panel-wrapper.mobile-active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    #main-content-wrapper {
+        margin-left: 280px;
+        width: calc(100% - 280px);
+    }
+}
+
+/* ============================================
+   TABLET  ≤ 968px — collapse sidebar to icons
+============================================ */
+@media (max-width: 968px) {
+    .sidebar {
+        width: 80px;
+        padding: 10px 0;
+        overflow: hidden;
+    }
+
+    .nav-wrap {
+        bottom: 0;
+    }
+
+    .nav-item,
+    .nav-item-active {
+        padding: 14px 10px;
+        margin: 6px 8px;
+        justify-content: center;
+        font-size: 0;
+        /* hide text */
+        gap: 0;
+    }
+
+    /* Show only the emoji icon span */
+    .nav-item span:first-child,
+    .nav-item-active span:first-child {
+        font-size: 22px;
+    }
+
+    .nav-item span:last-child,
+    .nav-item-active span:last-child {
+        display: none;
+    }
+
+    .settings-wrap {
+        bottom: 80px;
+    }
+
+    #main-content-wrapper {
+        margin-left: 100px;
+        width: calc(100% - 100px);
+        padding-top: 100px;
+    }
+
+    #feed-container {
+        padding-right: 10px;
+    }
+}
+
+/* ============================================
+   MOBILE  ≤ 1023px — full mobile layout
+============================================ */
+@media (max-width: 1023px) {
+
+    /* Hide desktop sidebar & header */
+    .sidebar,
+    .header.glass-element.fixed-top-layer {
+        display: none !important;
+    }
+
+    /* Show mobile header */
+    .mobile-header {
+        display: flex;
+        position: fixed;
+        top: 10px;
+        left: 10px;
+        right: 10px;
+        height: 60px;
+        z-index: 1000;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 18px;
+        background: rgba(20, 20, 20, 0.85);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid var(--card-glass-border);
+        border-radius: 20px;
+        box-shadow: var(--shadow-deep);
+    }
+
+    .mobile-header-title {
+        font-size: 20px;
+        font-weight: 900;
+        margin: 0;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .mobile-theme-toggle-btn,
+    .mobile-hamburger-btn {
+        background: var(--secondary-glass);
+        border: 1px solid var(--card-glass-border);
+        color: var(--text-color);
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        transition: all 0.2s;
+    }
+
+    .mobile-theme-toggle-btn:hover,
+    .mobile-hamburger-btn:hover {
+        background: var(--primary-color);
+        color: white;
+    }
+
+    /* Main content fills full width under mobile header */
+    #main-content-wrapper {
+        margin-left: 0 !important;
+        width: 100% !important;
+        padding-top: 85px;
+    }
+
+    #feed-container {
+        max-width: 100%;
+        padding-right: 12px;
+        padding-left: 4px;
+        padding-bottom: 110px;
+        /* room for bottom bar */
+        top: 80px;
+        height: calc(100% - 80px);
+    }
+
+    #searchContainer {
+        padding: 10px !important;
+    }
+
+    #searchBar {
+        font-size: 15px !important;
+        padding: 10px 16px !important;
+    }
+
+    /* Posts */
+    .post {
+        padding: 16px;
+        margin-bottom: 16px;
+        border-radius: 16px;
+    }
+
+
+    /* all your existing mobile rules stay unchanged, just replace the right-panel block: */
+
+    #right-panel-wrapper {
+        position: fixed !important;
+        top: 80px !important;
+        right: 10px !important;
+        left: auto !important;
+        width: 68px !important;
+        flex-direction: column !important;
+        flex-wrap: nowrap !important;
+        justify-content: flex-start !important;
+        align-items: flex-end !important;
+        gap: 10px !important;
+        animation: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
+        transform: translateX(90px) !important;
+        transition: opacity 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+            transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1),
+            visibility 0.35s !important;
+        z-index: 900 !important;
+    }
+
+    #right-panel-wrapper.mobile-active {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        visibility: visible !important;
+        transform: translateX(0) !important;
+    }
+
+    #right-panel-wrapper .mini-card {
+        width: 58px !important;
+        height: 58px !important;
+        flex-shrink: 0;
+        cursor: pointer;
+        pointer-events: auto !important;
+    }
+
+    #right-panel-wrapper .mini-card.active {
+        width: 300px !important;
+        min-height: 220px !important;
+        height: auto !important;
+        z-index: 950 !important;
+    }
+
+    #right-panel-wrapper .mini-card.active .mini-card-content {
+        position: absolute !important;
+        right: 0 !important;
+        top: 0 !important;
+        width: 300px !important;
+        max-height: 65vh !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+        pointer-events: auto !important;
+    }
+
+    #right-panel-wrapper .mini-card.active .mini-card-content * {
+        pointer-events: auto !important;
+    }
+
+    /* Compact greeting card — mobile only */
+    #greetingCard {
+        padding: 14px 16px !important;
+        gap: 10px !important;
+        margin-bottom: 14px !important;
+        flex-wrap: wrap !important;
+        align-items: center !important;
+    }
+
+    #greetingAvatar {
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        font-size: 14px !important;
+    }
+
+    #greetingName {
+        font-size: 16px !important;
+    }
+
+    #greetingTime,
+    #greetingMeta {
+        font-size: 11px !important;
+    }
+
+    #greetingCard>div:last-child {
+        width: 100% !important;
+        justify-content: space-around !important;
+        padding-top: 8px !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+        gap: 0 !important;
+    }
+
+    #greetingPosts,
+    #greetingFollowers,
+    #greetingFollowing {
+        font-size: 18px !important;
+    }
+
+    /* Show mobile bottom bar */
+    .mobile-bottom-bar {
+        display: flex;
+        position: fixed;
+        bottom: 12px;
+        left: 10px;
+        right: 10px;
+        width: auto;
+        height: 64px;
+        z-index: 2000;
+        align-items: center;
+        justify-content: space-around;
+        padding: 0 10px;
+        background: rgba(20, 20, 20, 0.85);
+        backdrop-filter: blur(25px);
+        -webkit-backdrop-filter: blur(25px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        pointer-events: auto;
+        transition: transform 0.4s cubic-bezier(0.33, 1, 0.68, 1);
+    }
+
+    .mobile-bottom-bar.hide-bar {
+        transform: translateY(120px);
+    }
+
+    .mobile-nav-icon {
+        font-size: 22px;
+        color: rgba(255, 255, 255, 0.45);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+        position: relative;
+    }
+
+    .mobile-nav-icon:active {
+        transform: scale(0.88);
+    }
+
+    .mobile-nav-icon.active {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+        box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .mobile-nav-icon.active i {
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        transform: scale(1.1);
+    }
+
+    .mobile-nav-icon.active::after {
+        content: '';
+        position: absolute;
+        bottom: 6px;
+        width: 4px;
+        height: 4px;
+        background: var(--primary-color);
+        border-radius: 50%;
+        box-shadow: 0 0 5px var(--primary-color);
+    }
+
+    /* Mobile drawer */
+    .mobile-menu-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: transparent;
+        z-index: 1100;
+        transition: background 0.4s ease;
+    }
+
+    .mobile-menu-overlay.show {
+        display: block;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    .mobile-menu-drawer {
+        position: absolute;
+        bottom: 30px;
+        left: 25px;
+        width: 56px;
+        height: 56px;
+        background: rgba(20, 20, 20, 0.96);
+        backdrop-filter: blur(50px) saturate(180%);
+        -webkit-backdrop-filter: blur(50px) saturate(180%);
+        border-radius: 50%;
+        opacity: 0;
+        overflow: hidden;
+        transform-origin: bottom left;
+        will-change: width, height, border-radius;
+        transition:
+            width 0.65s cubic-bezier(0.2, 0.8, 0.2, 1.1),
+            height 0.65s cubic-bezier(0.2, 0.8, 0.2, 1.1) 0.05s,
+            border-radius 0.65s ease,
+            opacity 0.2s ease;
+    }
+
+    .mobile-menu-overlay.show .mobile-menu-drawer {
+        left: 15px;
+        bottom: 15px;
+        width: calc(100vw - 30px);
+        height: 380px;
+        border-radius: 30px;
+        opacity: 1;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border: 1px solid var(--card-glass-border);
+    }
+
+    .mobile-menu-header {
+        padding: 24px 24px 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.4s ease 0.1s;
+    }
+
+    .mobile-menu-overlay.show .mobile-menu-header {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .mobile-menu-header h3 {
+        font-size: 22px;
+        font-weight: 800;
+        margin: 0;
+        background: var(--primary-gradient);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .close-menu-btn {
+        background: rgba(120, 120, 120, 0.15);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        color: rgba(255, 255, 255, 0.7);
+        cursor: pointer;
+    }
+
+    .mobile-nav-items {
+        padding: 6px 16px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .mobile-nav-item {
+        display: flex;
+        align-items: center;
+        padding: 14px 20px;
+        background: transparent;
+        border: none;
+        border-radius: 14px;
+        color: var(--text-color);
+        font-size: 16px;
+        font-weight: 500;
+        text-decoration: none;
+        gap: 16px;
+        cursor: pointer;
+        opacity: 0;
+        transform: translateY(12px);
+        transition: opacity 0.35s ease, transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .mobile-menu-overlay.show .mobile-nav-item {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .mobile-menu-overlay.show .mobile-nav-item:nth-child(1) {
+        transition-delay: 0.08s;
+    }
+
+    .mobile-menu-overlay.show .mobile-nav-item:nth-child(2) {
+        transition-delay: 0.13s;
+    }
+
+    .mobile-menu-overlay.show .mobile-nav-item:nth-child(3) {
+        transition-delay: 0.18s;
+    }
+
+    .mobile-menu-overlay.show .mobile-nav-item:nth-child(4) {
+        transition-delay: 0.23s;
+    }
+
+    .mobile-menu-overlay.show .mobile-nav-item:nth-child(5) {
+        transition-delay: 0.28s;
+    }
+
+    .mobile-menu-overlay.show .mobile-nav-item:nth-child(6) {
+        transition-delay: 0.33s;
+    }
+
+    .mobile-nav-item:hover,
+    .mobile-nav-item.active {
+        background: var(--secondary-glass);
+        color: var(--primary-color);
+    }
+
+    .mobile-nav-item:active {
+        transform: scale(0.97);
+        background: rgba(120, 120, 120, 0.1);
+    }
+}
+
+/* ============================================
+   LARGE MONITOR  ≥ 1440px — wider feed
+============================================ */
+@media (min-width: 1440px) {
+    #feed-container {
+        max-width: 780px;
+    }
+
+    .sidebar {
+        width: 280px;
+    }
+
+    #main-content-wrapper {
+        margin-left: 300px;
+        width: calc(100% - 300px);
+    }
+}
+
+/* ============================================
+   EXTRA LARGE  ≥ 1800px
+============================================ */
+@media (min-width: 1800px) {
+    #feed-container {
+        max-width: 860px;
+    }
+
+    .header h1 {
+        font-size: 34px;
+    }
+}
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* =============================================
+   RESPONSIVE FIXES — addable patch
+   ============================================= */
+
+/* --- Toast: cap width on all screen sizes --- */
+#feedback-message {
+    max-width: calc(100% - 32px);
+}
+
+/* --- Mobile ≤ 1023px fixes --- */
+@media (max-width: 1023px) {
+
+    /* Post media height — 350px is too tall on small phones */
+    .post .media {
+        height: 220px;
+    }
+
+    /* Action buttons — enforce 44px touch target */
+    .actions .btn {
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 15px;
+    }
+
+    /* Share menu — prevent clipping off the right edge */
+    .share-menu {
+        left: auto;
+        right: 0;
+        width: 90vw;
+        max-width: 220px;
+    }
+
+    /* Image modal close button — pull it away from the image */
+    .image-modal .modal-close-btn {
+        top: 14px;
+        right: 14px;
+        width: 42px;
+        height: 42px;
+        font-size: 1.6rem;
+    }
+
+    /* Upload preview — don't let it collapse */
+    #epicPreview {
+        min-height: 120px;
+    }
+
+    /* Search dropdown — don't overflow short-screen viewports */
+    #searchDropdown {
+        max-height: 55vh !important;
+    }
+
+    /* Comment modal textarea — readable touch size */
+    #commentModalTextarea {
+        font-size: 16px;
+        padding: 12px 16px;
+    }
+
+    /* Comment modal post button — full touch target */
+    #commentModalPostBtn {
+        padding: 12px 18px;
+        min-height: 44px;
+    }
+}
+
+/* --- Tablet dead zone 1024–1200px: panels have no trigger ---
+   Add a subtle tab on the right edge so users can open the panel */
+@media (min-width: 1024px) and (max-width: 1200px) {
+    #right-panel-wrapper {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        visibility: visible !important;
+        transform: translateX(0) !important;
+        animation: slideInRight 0.7s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+    }
+}
+
+/* --- Large monitor ≥ 1440px: keep panels from drifting too far right --- */
+@media (min-width: 1440px) {
+    #right-panel-wrapper {
+        right: max(20px, calc((100vw - 1600px) / 2));
+    }
+}
+
+/* --- Extra large ≥ 1800px: scale blobs up so they still fill visually --- */
+@media (min-width: 1800px) {
+    .glass-blob {
+        width: 900px;
+        height: 900px;
+    }
+}
+
+/* --- Dynamically created reminder modal — mobile width fix ---
+   Override the inline max-width via specificity */
+#addReminderModal .modal-content {
+    width: min(500px, calc(100vw - 32px));
+}
+
+/* --- Greeting card stat dividers — remove border + padding on mobile/tablet --- */
+@media (max-width: 1023px) {
+    /* The 2nd and 3rd stat divs have inline border-left — clear them so space-around layout works cleanly */
+    #greetingCard>div:last-child>div:nth-child(n+2) {
+        border-left: none !important;
+        padding-left: 0 !important;
+    }
+}
+
+@media (max-width: 420px) {
+    #greetingCard>div:last-child>div {
+        padding-left: 0 !important;
+    }
+}
+
+/* =============================================
+   RESPONSIVE COMPLETE PATCH — append to end
+   ============================================= */
+
+/* --- Toast: cap width on all screen sizes --- */
+#feedback-message {
+    max-width: calc(100% - 32px);
+}
+
+/* --- Dynamically created reminder modal --- */
+#addReminderModal .modal-content {
+    width: min(500px, calc(100vw - 32px));
+}
+
+/* --- Mini card active: prevent overflow on short screens --- */
+.mini-card.active .mini-card-content {
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* --- Mini card lists: prevent infinite growth --- */
+#remindersList,
+#schedulesList,
+#testsList {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* --- Tablet dead zone 1024–1200px: restore panel visibility --- */
+@media (min-width: 1024px) and (max-width: 1200px) {
+    #right-panel-wrapper {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        visibility: visible !important;
+        transform: translateX(0) !important;
+        animation: slideInRight 0.7s 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+    }
+}
+
+/* --- Large monitor ≥ 1440px --- */
+@media (min-width: 1440px) {
+    #right-panel-wrapper {
+        right: max(20px, calc((100vw - 1600px) / 2));
+    }
+}
+
+/* --- Extra large ≥ 1800px: scale blobs --- */
+@media (min-width: 1800px) {
+    .glass-blob {
+        width: 900px;
+        height: 900px;
+    }
+}
+
+/* --- Mobile ≤ 1023px --- */
+@media (max-width: 1023px) {
+
+    /* Post media height */
+    .post .media {
+        height: 220px;
+    }
+
+    /* Disable sticky hover lift on touch */
+    .post:hover {
+        transform: none;
+        box-shadow: var(--shadow-deep);
+    }
+
+    /* Action buttons touch target */
+    .actions .btn {
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 15px;
+    }
+
+    /* Share menu prevent right-edge clip */
+    .share-menu {
+        left: auto;
+        right: 0;
+        width: 90vw;
+        max-width: 220px;
+    }
+
+    /* Image modal close button reposition */
+    .image-modal .modal-close-btn {
+        top: 14px;
+        right: 14px;
+        width: 42px;
+        height: 42px;
+        font-size: 1.6rem;
+    }
+
+    /* Upload preview min height */
+    #epicPreview {
+        min-height: 120px;
+    }
+
+    /* Search dropdown height cap */
+    #searchDropdown {
+        max-height: 55vh !important;
+    }
+
+    /* Comment modal textarea */
+    #commentModalTextarea {
+        font-size: 16px;
+        padding: 12px 16px;
+    }
+
+    /* Comment modal post button */
+    #commentModalPostBtn {
+        padding: 12px 18px;
+        min-height: 44px;
+    }
+
+    /* Comment list scroll cap */
+    #commentModalList {
+        max-height: 45vh;
+    }
+}
+
+/* --- Very small screens ≤ 380px --- */
+@media (max-width: 380px) {
+
+    /* Shrink refresh button so search bar doesn't overflow */
+    #refreshBtn {
+        width: 44px;
+        height: 44px;
+        font-size: 18px;
+    }
+
+    /* Greeting card stat divider padding */
+    #greetingCard>div:last-child>div {
+        padding-left: 12px !important;
+    }
+}
+
+/* --- Add Reminder Modal — mobile fixes --- */
+@media (max-width: 1023px) {
+
+    #addReminderModal .modal-content,
+    #addReminderModal>div {
+        width: calc(100vw - 32px) !important;
+        max-height: 85vh;
+        overflow-y: auto;
+        padding: 24px 20px !important;
+        border-radius: 20px !important;
+        gap: 16px;
+    }
+
+    /* Prevent keyboard from pushing modal off screen */
+    #addReminderModal {
+        align-items: center;
+        padding: 16px;
+    }
+}
+
+/* --- Priority buttons — stack on very small screens --- */
+@media (max-width: 380px) {
+    #addReminderModal .priority-btn {
+        font-size: 12px !important;
+        padding: 8px 4px !important;
+    }
+}
+
+/* ============================================
+   LARGE MONITOR  ≥ 1440px — dashboard layout
+============================================ */
+@media (min-width: 1440px) {
+    /* Sidebar wider for better proportion */
+    .sidebar {
+        width: 290px;
+    }
+
+    #main-content-wrapper {
+        margin-left: 310px;
+        width: calc(100% - 310px);
+    }
+
+    /* Feed slightly wider for readability */
+    #feed-container {
+        max-width: 820px;
+    }
+
+    /* Greeting card: larger avatar and name */
+    #greetingAvatar {
+        width: 60px !important;
+        height: 60px !important;
+        min-width: 60px !important;
+        font-size: 22px !important;
+    }
+
+    #greetingName {
+        font-size: 22px !important;
+    }
+
+    #greetingPosts,
+    #greetingFollowers,
+    #greetingFollowing {
+        font-size: 24px !important;
+    }
+}
+
+/* ============================================
+   EXTRA LARGE  ≥ 1800px — wider feed + larger sidebar
+============================================ */
+@media (min-width: 1800px) {
+    .sidebar {
+        width: 300px;
+    }
+
+    #main-content-wrapper {
+        margin-left: 320px;
+        width: calc(100% - 320px);
+    }
+
+    #feed-container {
+        max-width: 900px;
+    }
 }
