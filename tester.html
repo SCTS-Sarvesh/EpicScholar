@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EpicScholar - The Movement (Premium)</title>
+    <title>EpicScholar - The Movement (Premium Fullscreen)</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;600;900&display=swap');
 
@@ -34,37 +34,13 @@
             color: #fff;
         }
 
-        /* ── MOBILE CONTAINER ── */
-        .shorts-container {
+        /* ── FULLSCREEN CONTAINER ── */
+        .fullscreen-container {
             position: relative;
-            width: 100%;
-            max-width: 450px;
+            width: 100vw;
             height: 100vh;
-            max-height: 900px;
             background: #050508;
             overflow: hidden;
-            box-shadow: 0 0 80px rgba(0, 114, 255, 0.15);
-        }
-
-        /* ── TIMELINE PROGRESS BAR ── */
-        .timeline {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 4px;
-            background: var(--brand-gradient);
-            z-index: 100;
-            animation: progress 30s linear forwards;
-        }
-
-        @keyframes progress {
-            0% {
-                width: 0%;
-            }
-
-            100% {
-                width: 100%;
-            }
         }
 
         /* ── DRAMATIC DYNAMIC ORBS ── */
@@ -86,27 +62,27 @@
         }
 
         .orb-1 {
-            width: 350px;
-            height: 350px;
-            background: rgba(255, 65, 108, 0.4);
+            width: clamp(350px, 40vw, 600px);
+            height: clamp(350px, 40vw, 600px);
+            background: rgba(255, 65, 108, 0.3);
             top: -10%;
-            left: -20%;
+            left: -10%;
         }
 
         .orb-2 {
-            width: 400px;
-            height: 400px;
-            background: rgba(0, 114, 255, 0.3);
+            width: clamp(400px, 45vw, 700px);
+            height: clamp(400px, 45vw, 700px);
+            background: rgba(0, 114, 255, 0.25);
             bottom: -20%;
-            right: -20%;
+            right: -10%;
             animation-delay: -5s;
         }
 
         .orb-3 {
-            width: 250px;
-            height: 250px;
-            background: rgba(140, 65, 255, 0.3);
-            top: 40%;
+            width: clamp(250px, 30vw, 400px);
+            height: clamp(250px, 30vw, 400px);
+            background: rgba(140, 65, 255, 0.2);
+            top: 30%;
             left: 30%;
             animation-duration: 15s;
         }
@@ -117,7 +93,7 @@
             }
 
             100% {
-                transform: translate(30px, 50px) scale(1.1);
+                transform: translate(40px, 60px) scale(1.1);
             }
         }
 
@@ -148,15 +124,17 @@
             border-top: 1px solid rgba(255, 255, 255, 0.2);
             border-left: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 28px;
-            padding: 2.5rem 1.5rem;
-            width: 100%;
+            padding: clamp(2.5rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3rem);
+            width: 90%;
+            max-width: 650px;
+            /* Clean geometry on ultra-wide screens */
             box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 65, 108, 0.05);
             transform: translateY(40px) scale(0.95);
         }
 
         /* ── TYPOGRAPHY ── */
         .title-large {
-            font-size: clamp(26px, 7.5vw, 38px);
+            font-size: clamp(28px, 6vw, 48px);
             font-weight: 900;
             letter-spacing: -0.04em;
             line-height: 1.2;
@@ -165,7 +143,7 @@
         }
 
         .text-medium {
-            font-size: clamp(16px, 4.5vw, 20px);
+            font-size: clamp(16px, 3vw, 24px);
             font-weight: 300;
             color: rgba(255, 255, 255, 0.85);
             line-height: 1.5;
@@ -292,6 +270,10 @@
             animation: cinematicPop 1s var(--easing) forwards 18.2s;
         }
 
+        .scene-4 .reveal-text:nth-child(4) {
+            animation: cinematicPop 1s var(--easing) forwards 19.8s;
+        }
+
         @keyframes cinematicPop {
             to {
                 opacity: 1;
@@ -303,9 +285,9 @@
         /* ── SCENE 4: GLASS UI SCROLL SIMULATION ── */
         .glass-ui-scroll {
             position: absolute;
-            right: -20px;
+            right: 5%;
             top: 15%;
-            width: 120px;
+            width: clamp(120px, 15vw, 200px);
             height: 100%;
             display: flex;
             flex-direction: column;
@@ -340,7 +322,7 @@
             }
         }
 
-        /* ── SCENE 5: FINAL BRANDING (Fixed Visibility & Added URL) ── */
+        /* ── SCENE 5: FINAL BRANDING ── */
         .scene-5 .glass-panel {
             background: transparent;
             border: none;
@@ -355,7 +337,6 @@
             animation: brandReveal 1.8s var(--easing) 22.5s forwards;
         }
 
-        /* The wrapper handles the animation so it doesn't break the background-clip */
         .brand-final-wrapper {
             opacity: 0;
             transform: translateY(30px);
@@ -364,10 +345,9 @@
             animation: brandReveal 1.5s var(--easing) 23.2s forwards;
         }
 
-        /* The text handles the gradient color */
         .brand-final-text {
             display: inline-block;
-            font-size: clamp(48px, 11vw, 72px);
+            font-size: clamp(48px, 10vw, 86px);
             font-weight: 900;
             letter-spacing: -0.05em;
             background: var(--brand-gradient);
@@ -386,7 +366,7 @@
         }
 
         .cta-final {
-            font-size: 13px;
+            font-size: clamp(12px, 2vw, 16px);
             font-weight: 300;
             letter-spacing: 0.1em;
             text-transform: uppercase;
@@ -397,7 +377,7 @@
         }
 
         .url-highlight {
-            font-size: 18px;
+            font-size: clamp(18px, 3vw, 24px);
             font-weight: 600;
             color: #fff;
             text-transform: lowercase;
@@ -414,7 +394,7 @@
 
         @keyframes lineDraw {
             to {
-                width: 150px;
+                width: clamp(150px, 20vw, 250px);
             }
         }
     </style>
@@ -422,8 +402,7 @@
 
 <body>
 
-    <div class="shorts-container">
-        <div class="timeline"></div>
+    <div class="fullscreen-container">
 
         <div class="orb-container">
             <div class="orb orb-1"></div>
@@ -465,15 +444,19 @@
             </div>
             <div class="glass-panel" style="backdrop-filter: blur(30px); background: rgba(20,20,25,0.6);">
                 <h1 class="title-large reveal-text">No more toxic competition.</h1>
-                <p class="text-medium reveal-text">We are building an <br><span class="highlight">Educational
-                        Community.</span></p>
-                <p class="text-medium reveal-text">Where students actually lift each other up.</p>
+                <p class="text-medium reveal-text">We are building an <span class="highlight">Educational
+                        Community</span> where students lift each other up.</p>
+                <p class="text-medium reveal-text reveal-text highlight"
+                    style="margin-top: 1.5rem; font-weight: 900; font-size: clamp(18px, 4.5vw, 28px);">Because changing
+                    how we learn...</p>
+                <p class="text-medium reveal-text highlight"
+                    style="font-weight: 900; font-size: clamp(22px, 5.5vw, 34px);">changes society.</p>
             </div>
         </div>
 
         <div class="scene scene-5">
             <div class="glass-panel">
-                <svg class="logo-final" width="90" viewBox="0 0 110 88" fill="none">
+                <svg class="logo-final" width="clamp(90px, 10vw, 120px)" viewBox="0 0 110 88" fill="none">
                     <defs>
                         <linearGradient id="g" x1="0" y1="0" x2="110" y2="88" gradientUnits="userSpaceOnUse">
                             <stop offset="0%" stop-color="#ff416c" />
@@ -493,10 +476,11 @@
                 <div class="divider-final"></div>
 
                 <div class="cta-final">
-                    Available Now at<br><br>
+                    Join the Movement at<br><br>
                     <span class="url-highlight">epicscholar.cloud</span>
                     <br><br>
-                    <span style="font-size: 10px; opacity: 0.6;">Link in bio to join</span>
+                    <span style="font-size: 0.8em; opacity: 0.6; letter-spacing: 0.05em;">Shape your future. Shape our
+                        world.</span>
                 </div>
             </div>
         </div>
