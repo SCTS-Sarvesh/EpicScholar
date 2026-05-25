@@ -1,1 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EpicScholar - The Movement (Premium)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;600;900&display=swap');
+
+        :root {
+            --brand-gradient: linear-gradient(135deg, #ff416c 0%, #0072ff 100%);
+            --easing: cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background: #030305;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-family: 'Sora', sans-serif;
+            color: #fff;
+        }
+
+        /* ── MOBILE CONTAINER ── */
+        .shorts-container {
+            position: relative;
+            width: 100%;
+            max-width: 450px;
+            height: 100vh;
+            max-height: 900px;
+            background: #050508;
+            overflow: hidden;
+            box-shadow: 0 0 80px rgba(0, 114, 255, 0.15);
+        }
+
+        /* ── TIMELINE PROGRESS BAR ── */
+        .timeline {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: var(--brand-gradient);
+            z-index: 100;
+            animation: progress 30s linear forwards;
+        }
+
+        @keyframes progress {
+            0% {
+                width: 0%;
+            }
+
+            100% {
+                width: 100%;
+            }
+        }
+
+        /* ── DRAMATIC DYNAMIC ORBS ── */
+        .orb-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.5;
+            mix-blend-mode: screen;
+            animation: floatOrb 10s ease-in-out infinite alternate;
+        }
+
+        .orb-1 {
+            width: 350px;
+            height: 350px;
+            background: rgba(255, 65, 108, 0.4);
+            top: -10%;
+            left: -20%;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(0, 114, 255, 0.3);
+            bottom: -20%;
+            right: -20%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 250px;
+            height: 250px;
+            background: rgba(140, 65, 255, 0.3);
+            top: 40%;
+            left: 30%;
+            animation-duration: 15s;
+        }
+
+        @keyframes floatOrb {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(30px, 50px) scale(1.1);
+            }
+        }
+
+        /* ── SCENE MANAGEMENT ── */
+        .scene {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+            text-align: center;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* ── PREMIUM GLASSMORPHISM PANELS ── */
+        .glass-panel {
+            background: rgba(25, 25, 30, 0.4);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 28px;
+            padding: 2.5rem 1.5rem;
+            width: 100%;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 65, 108, 0.05);
+            transform: translateY(40px) scale(0.95);
+        }
+
+        /* ── TYPOGRAPHY ── */
+        .title-large {
+            font-size: clamp(26px, 7.5vw, 38px);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1.2;
+            margin-bottom: 1.2rem;
+            text-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .text-medium {
+            font-size: clamp(16px, 4.5vw, 20px);
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .highlight {
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 600;
+        }
+
+        /* ── TIMELINE ANIMATIONS (30s Total) ── */
+        .scene-1 {
+            animation: scenePlay 5s var(--easing) 0s forwards;
+        }
+
+        .scene-2 {
+            animation: scenePlay 5s var(--easing) 5s forwards;
+        }
+
+        .scene-3 {
+            animation: scenePlay 5s var(--easing) 10s forwards;
+        }
+
+        .scene-4 {
+            animation: scenePlay 7s var(--easing) 15s forwards;
+        }
+
+        .scene-5 {
+            animation: sceneEnd 8s var(--easing) 22s forwards;
+        }
+
+        @keyframes scenePlay {
+            0% {
+                opacity: 0;
+                filter: blur(20px);
+                transform: scale(1.1);
+            }
+
+            10%,
+            90% {
+                opacity: 1;
+                filter: blur(0);
+                transform: scale(1);
+            }
+
+            100% {
+                opacity: 0;
+                filter: blur(15px);
+                transform: scale(0.9);
+            }
+        }
+
+        @keyframes sceneEnd {
+            0% {
+                opacity: 0;
+                filter: blur(20px);
+                transform: scale(1.1);
+            }
+
+            15%,
+            100% {
+                opacity: 1;
+                filter: blur(0);
+                transform: scale(1);
+            }
+        }
+
+        /* ── CINEMATIC TEXT REVEALS (Blur to focus) ── */
+        .reveal-text {
+            opacity: 0;
+            filter: blur(10px);
+            transform: translateY(20px);
+        }
+
+        .scene-1 .reveal-text:nth-child(1) {
+            animation: cinematicPop 1s var(--easing) forwards 0.4s;
+        }
+
+        .scene-1 .reveal-text:nth-child(2) {
+            animation: cinematicPop 1s var(--easing) forwards 1.6s;
+        }
+
+        .scene-1 .reveal-text:nth-child(3) {
+            animation: cinematicPop 1s var(--easing) forwards 3.0s;
+        }
+
+        .scene-2 .reveal-text:nth-child(1) {
+            animation: cinematicPop 1s var(--easing) forwards 5.4s;
+        }
+
+        .scene-2 .reveal-text:nth-child(2) {
+            animation: cinematicPop 1s var(--easing) forwards 6.6s;
+        }
+
+        .scene-2 .reveal-text:nth-child(3) {
+            animation: cinematicPop 1s var(--easing) forwards 7.8s;
+        }
+
+        .scene-3 .reveal-text:nth-child(1) {
+            animation: cinematicPop 1s var(--easing) forwards 10.4s;
+        }
+
+        .scene-3 .reveal-text:nth-child(2) {
+            animation: cinematicPop 1s var(--easing) forwards 11.6s;
+        }
+
+        .scene-3 .reveal-text:nth-child(3) {
+            animation: cinematicPop 1s var(--easing) forwards 12.8s;
+        }
+
+        .scene-4 .reveal-text:nth-child(1) {
+            animation: cinematicPop 1s var(--easing) forwards 15.4s;
+        }
+
+        .scene-4 .reveal-text:nth-child(2) {
+            animation: cinematicPop 1s var(--easing) forwards 16.8s;
+        }
+
+        .scene-4 .reveal-text:nth-child(3) {
+            animation: cinematicPop 1s var(--easing) forwards 18.2s;
+        }
+
+        @keyframes cinematicPop {
+            to {
+                opacity: 1;
+                filter: blur(0);
+                transform: translateY(0);
+            }
+        }
+
+        /* ── SCENE 4: GLASS UI SCROLL SIMULATION ── */
+        .glass-ui-scroll {
+            position: absolute;
+            right: -20px;
+            top: 15%;
+            width: 120px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            opacity: 0;
+            z-index: -1;
+            transform: rotate(-10deg) translateY(100px);
+            animation: uiScrollSlide 7s linear 15s forwards;
+        }
+
+        .glass-card-mock {
+            width: 100%;
+            height: 80px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes uiScrollSlide {
+            10% {
+                opacity: 0.6;
+            }
+
+            90% {
+                opacity: 0.6;
+            }
+
+            100% {
+                opacity: 0;
+                transform: rotate(-10deg) translateY(-200px);
+            }
+        }
+
+        /* ── SCENE 5: FINAL BRANDING (Fixed Visibility & Added URL) ── */
+        .scene-5 .glass-panel {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            backdrop-filter: none;
+        }
+
+        .logo-final {
+            opacity: 0;
+            transform: scale(0.7) rotate(-10deg);
+            filter: blur(10px);
+            animation: brandReveal 1.8s var(--easing) 22.5s forwards;
+        }
+
+        /* The wrapper handles the animation so it doesn't break the background-clip */
+        .brand-final-wrapper {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(10px);
+            margin-top: 10px;
+            animation: brandReveal 1.5s var(--easing) 23.2s forwards;
+        }
+
+        /* The text handles the gradient color */
+        .brand-final-text {
+            display: inline-block;
+            font-size: clamp(48px, 11vw, 72px);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            background: var(--brand-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .divider-final {
+            width: 0;
+            height: 2px;
+            background: var(--brand-gradient);
+            margin: 20px auto;
+            border-radius: 2px;
+            animation: lineDraw 1.2s var(--easing) 24s forwards;
+        }
+
+        .cta-final {
+            font-size: 13px;
+            font-weight: 300;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.7);
+            opacity: 0;
+            transform: translateY(10px);
+            animation: brandReveal 1.2s var(--easing) 24.5s forwards;
+        }
+
+        .url-highlight {
+            font-size: 18px;
+            font-weight: 600;
+            color: #fff;
+            text-transform: lowercase;
+            letter-spacing: 0.05em;
+        }
+
+        @keyframes brandReveal {
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(0) translateY(0);
+                filter: blur(0);
+            }
+        }
+
+        @keyframes lineDraw {
+            to {
+                width: 150px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="shorts-container">
+        <div class="timeline"></div>
+
+        <div class="orb-container">
+            <div class="orb orb-1"></div>
+            <div class="orb orb-2"></div>
+            <div class="orb orb-3"></div>
+        </div>
+
+        <div class="scene scene-1">
+            <div class="glass-panel">
+                <h1 class="title-large reveal-text">Why is the system broken?</h1>
+                <p class="text-medium reveal-text">Standard classrooms treat everyone the same.</p>
+                <p class="text-medium reveal-text highlight">But you aren't like everyone else.</p>
+            </div>
+        </div>
+
+        <div class="scene scene-2">
+            <div class="glass-panel">
+                <h1 class="title-large reveal-text">Premium tools are locked behind paywalls.</h1>
+                <p class="text-medium reveal-text">Education isn't equal.</p>
+                <p class="text-medium reveal-text highlight">It's time to level the playing field.</p>
+            </div>
+        </div>
+
+        <div class="scene scene-3">
+            <div class="glass-panel"
+                style="box-shadow: 0 30px 60px rgba(0, 114, 255, 0.2), inset 0 0 20px rgba(0,114,255,0.1);">
+                <h1 class="title-large reveal-text highlight">Enter True Self-Study.</h1>
+                <p class="text-medium reveal-text">A personalized tutor in your pocket.</p>
+                <p class="text-medium reveal-text">Learn what you want. <br>At your own pace.</p>
+            </div>
+        </div>
+
+        <div class="scene scene-4">
+            <div class="glass-ui-scroll">
+                <div class="glass-card-mock"></div>
+                <div class="glass-card-mock"></div>
+                <div class="glass-card-mock"></div>
+                <div class="glass-card-mock"></div>
+            </div>
+            <div class="glass-panel" style="backdrop-filter: blur(30px); background: rgba(20,20,25,0.6);">
+                <h1 class="title-large reveal-text">No more toxic competition.</h1>
+                <p class="text-medium reveal-text">We are building an <br><span class="highlight">Educational
+                        Community.</span></p>
+                <p class="text-medium reveal-text">Where students actually lift each other up.</p>
+            </div>
+        </div>
+
+        <div class="scene scene-5">
+            <div class="glass-panel">
+                <svg class="logo-final" width="90" viewBox="0 0 110 88" fill="none">
+                    <defs>
+                        <linearGradient id="g" x1="0" y1="0" x2="110" y2="88" gradientUnits="userSpaceOnUse">
+                            <stop offset="0%" stop-color="#ff416c" />
+                            <stop offset="100%" stop-color="#0072ff" />
+                        </linearGradient>
+                    </defs>
+                    <polygon points="55,7 104,29 55,51 6,29" fill="url(#g)" />
+                    <line x1="104" y1="29" x2="104" y2="56" stroke="url(#g)" stroke-width="4" stroke-linecap="round" />
+                    <circle cx="104" cy="61" r="5.5" fill="url(#g)" />
+                    <path d="M25 36 Q25 68 55 77 Q85 68 85 36" fill="url(#g)" opacity=".85" />
+                </svg>
+
+                <div class="brand-final-wrapper">
+                    <span class="brand-final-text">EpicScholar</span>
+                </div>
+
+                <div class="divider-final"></div>
+
+                <div class="cta-final">
+                    Available Now at<br><br>
+                    <span class="url-highlight">epicscholar.cloud</span>
+                    <br><br>
+                    <span style="font-size: 10px; opacity: 0.6;">Link in bio to join</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
