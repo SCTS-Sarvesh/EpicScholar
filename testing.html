@@ -1,198 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<title>MacBook Air – Share Knowledge</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>EpicScholar - Join Us</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;900&display=swap');
 
-<style>
-    body {
-        margin: 0;
-        background: radial-gradient(circle at top, #0c0c0c, #000);
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        color: white;
-        overflow: hidden;
-    }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .layout {
-        display: flex;
-        height: 100vh;
-    }
+        html,
+        body {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            font-family: 'Sora', sans-serif;
+            color: #fff;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+        }
 
-    .left {
-        flex: 1;
-        display: flex;
-        align-items: center;
-        padding-left: 7vw;
-    }
+        /* ── MOBILE CONTAINER ── */
+        .phone-wrapper {
+            width: 100%;
+            max-width: 480px;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 24px;
+            position: relative;
+            z-index: 10;
+            text-align: center;
+        }
 
-    h1 {
-        font-size: 3.2rem;
-        font-weight: 600;
-        line-height: 1.25;
-        letter-spacing: -0.02em;
-    }
+        /* ── BACKGROUND ORBS ── */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            pointer-events: none;
+            filter: blur(120px);
+            opacity: 0;
+            animation: orbIn 3s ease 0.5s forwards;
+            z-index: 1;
+        }
 
-    h1 span {
-        display: block;
-        margin-top: 14px;
-        font-size: 1.7rem;
-        font-weight: 400;
-        opacity: 0.85;
-    }
+        @keyframes orbIn {
+            to { opacity: 1; }
+        }
 
-    .right {
-        flex: 1.2;
-    }
+        /* ── LOGO SVG ── */
+        .logo {
+            opacity: 0;
+            transform: scale(0.85);
+            animation: logoIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
+            margin-bottom: 40px;
+        }
 
-    canvas {
-        display: block;
-    }
-</style>
+        @keyframes logoIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* ── CINEMATIC TYPOGRAPHY REVEALS ── */
+        .title {
+            font-size: clamp(28px, 8vw, 36px);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1.15;
+            margin-bottom: 20px;
+            opacity: 0;
+            transform: translateY(30px);
+            animation: elementUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+        }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #ff416c, #0072ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .description {
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 48px;
+            max-width: 320px;
+            opacity: 0;
+            transform: translateY(25px);
+            animation: elementUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
+        }
+
+        /* ── CTA BUTTON WITH GRADIENT & BORDER GLOW ── */
+        .cta-button {
+            position: relative;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 300px;
+            padding: 18px 32px;
+            font-family: 'Sora', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            background: linear-gradient(90deg, #ff416c, #0072ff);
+            border-radius: 30px;
+            border: none;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: elementUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+            box-shadow: 0 10px 30px rgba(0, 114, 255, 0.3);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+        }
+
+        .cta-button:active {
+            transform: scale(0.97);
+            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.2);
+        }
+
+        /* Subtitle Free Badge Style */
+        .sub-badge {
+            display: block;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: #ff416c;
+            margin-top: 16px;
+            opacity: 0;
+            animation: fadeIn 1s ease 1.8s forwards;
+        }
+
+        @keyframes elementUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            to { opacity: 1; }
+        }
+    </style>
 </head>
 
 <body>
-<div class="layout">
-    <div class="left">
-        <h1>
-            Share Knowledge:
-            <span>Exchange ideas. Ignite curiosity. Socially.</span>
-        </h1>
+
+    <div class="orb"
+        style="width:80vw;height:80vw;background:radial-gradient(circle,rgba(255,65,108,.16) 0%,transparent 70%);top:-10%;right:-10%;">
     </div>
-    <div class="right" id="scene"></div>
-</div>
+    <div class="orb"
+        style="width:80vw;height:80vw;background:radial-gradient(circle,rgba(0,114,255,.14) 0%,transparent 70%);bottom:-10%;left:-10%;">
+    </div>
 
-<script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js";
-import { RGBELoader } from "https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/RGBELoader.js";
+    <div class="phone-wrapper">
 
-const container = document.getElementById("scene");
+        <svg class="logo" width="82" viewBox="0 0 110 88" fill="none">
+            <defs>
+                <linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"110\" y2=\"88\" gradientUnits=\"userSpaceOnUse\">
+                    <stop offset=\"0%\" stop-color=\"#ff416c\" />
+                    <stop offset=\"100%\" stop-color=\"#0072ff\" />
+                </linearGradient>
+            </defs>
+            <polygon points="55,7 104,29 55,51 6,29" fill="url(#g)" />
+            <line x1="104" y1="29" x2="104" y2="56" stroke="url(#g)" stroke-width="3" stroke-linecap="round" />
+            <path d="M23,45 C23,65 37,79 55,79 C73,79 87,65 87,45" stroke="url(#g)" stroke-width="6" stroke-linecap="round" fill="none" />
+        </svg>
 
-/* Renderer */
-const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-renderer.setSize(container.clientWidth, container.clientHeight);
-renderer.setPixelRatio(devicePixelRatio);
-renderer.outputColorSpace = THREE.SRGBColorSpace;
-renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.1;
-container.appendChild(renderer.domElement);
+        <h1 class="title">To enjoy this <br><span class="gradient-text">amazing experience</span></h1>
 
-/* Scene & Camera */
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(35, container.clientWidth / container.clientHeight, 0.1, 50);
-camera.position.set(0, 1.4, 6);
+        <p class="description">Join our premium educational platform today and redefine your learning journey.</p>
 
-/* Lighting */
-scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+        <a href="https://epicscholar.cloud" class="cta-button">
+            epicscholar.cloud
+        </a>
 
-const key = new THREE.DirectionalLight(0xffffff, 2.5);
-key.position.set(5, 6, 5);
-scene.add(key);
+        <span class="sub-badge">Join for Free</span>
 
-const rim = new THREE.DirectionalLight(0xffffff, 1.4);
-rim.position.set(-5, 3, -5);
-scene.add(rim);
+    </div>
 
-/* HDR Environment */
-new RGBELoader().load(
-    "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/studio_small_09_1k.hdr",
-    hdr => {
-        hdr.mapping = THREE.EquirectangularReflectionMapping;
-        scene.environment = hdr;
-    }
-);
-
-/* MACBOOK AIR GROUP */
-const macbook = new THREE.Group();
-
-/* Aluminum material */
-const aluminum = new THREE.MeshStandardMaterial({
-    color: 0xd6d6d6,
-    metalness: 0.95,
-    roughness: 0.25
-});
-
-/* Bottom chassis */
-const base = new THREE.Mesh(
-    new THREE.BoxGeometry(3.04, 0.11, 2.15),
-    aluminum
-);
-macbook.add(base);
-
-/* Trackpad */
-const trackpad = new THREE.Mesh(
-    new THREE.BoxGeometry(1.4, 0.01, 0.9),
-    new THREE.MeshStandardMaterial({ color: 0xbfbfbf, roughness: 0.4 })
-);
-trackpad.position.set(0, 0.065, 0.25);
-macbook.add(trackpad);
-
-/* Keyboard (simplified grid) */
-const keyMat = new THREE.MeshStandardMaterial({ color: 0x1c1c1c, roughness: 0.6 });
-for (let x = -1.2; x <= 1.2; x += 0.3) {
-    for (let z = -0.7; z <= -0.1; z += 0.25) {
-        const key = new THREE.Mesh(
-            new THREE.BoxGeometry(0.22, 0.02, 0.18),
-            keyMat
-        );
-        key.position.set(x, 0.065, z);
-        macbook.add(key);
-    }
-}
-
-/* Screen */
-const video = document.createElement("video");
-video.src = "";
-video.loop = true;
-video.muted = true;
-video.autoplay = true;
-video.playsInline = true;
-
-const screenMat = new THREE.MeshStandardMaterial({
-    map: new THREE.VideoTexture(video),
-    emissive: new THREE.Color(0xffffff),
-    emissiveIntensity: 0.4,
-    roughness: 0.05
-});
-
-const screen = new THREE.Mesh(
-    new THREE.PlaneGeometry(2.94, 1.91),
-    screenMat
-);
-screen.position.set(0, 1.05, -1.07);
-
-/* Screen back */
-const lid = new THREE.Mesh(
-    new THREE.BoxGeometry(3.0, 1.95, 0.05),
-    aluminum
-);
-lid.position.set(0, 1.05, -1.12);
-
-/* Screen group */
-const lidGroup = new THREE.Group();
-lidGroup.add(screen, lid);
-lidGroup.rotation.x = -0.92;
-macbook.add(lidGroup);
-
-/* Position */
-macbook.position.set(1.3, -0.6, 0);
-macbook.rotation.y = -0.35;
-scene.add(macbook);
-
-/* Animation */
-function animate() {
-    macbook.rotation.y += 0.0008;
-    renderer.render(scene, camera);
-    requestAnimationFrame(animate);
-}
-animate();
-
-/* Resize */
-window.addEventListener("resize", () => {
-    camera.aspect = container.clientWidth / container.clientHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(container.clientWidth, container.clientHeight);
-});
-</script>
 </body>
+
 </html>
