@@ -4,199 +4,334 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EpicScholar - Join Us</title>
+    <title>The Spider Library - Cinematic Gateway</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;900&display=swap');
+        :root {
+            /* Advanced Spatial Easing */
+            --spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.25);
+            --spring-snap: cubic-bezier(0.24, 1.35, 0.4, 1.05);
 
-        *,
-        *::before,
-        *::after {
+            /* High-Fidelity Palette */
+            --glass-bg: rgba(15, 15, 20, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --apple-red: #ff3b30;
+            --apple-blue: #0a84ff;
+        }
+
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            -webkit-font-smoothing: antialiased;
         }
 
-        html,
         body {
-            width: 100%;
-            height: 100%;
-            background: #000;
-            font-family: 'Sora', sans-serif;
-            color: #fff;
+            background-color: #050505;
+            color: #ffffff;
+            height: 100vh;
+            width: 100vw;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-        }
-
-        /* ── MOBILE CONTAINER ── */
-        .phone-wrapper {
-            width: 100%;
-            max-width: 480px;
-            height: 100%;
-            background: rgba(10, 10, 10, 0.6);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-left: 1px solid rgba(255, 255, 255, 0.05);
-            border-right: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 40px 24px;
             position: relative;
-            z-index: 10;
-            text-align: center;
         }
 
-        /* ── BACKGROUND ORBS ── */
-        .orb {
-            position: fixed;
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(120px);
-            opacity: 0;
-            animation: orbIn 3s ease 0.5s forwards;
-            z-index: 1;
-        }
-
-        @keyframes orbIn {
-            to { opacity: 1; }
-        }
-
-        /* ── LOGO SVG ── */
-        .logo {
-            opacity: 0;
-            transform: scale(0.85);
-            animation: logoIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
-            margin-bottom: 40px;
-        }
-
-        @keyframes logoIn {
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
-
-        /* ── CINEMATIC TYPOGRAPHY REVEALS ── */
-        .title {
-            font-size: clamp(28px, 8vw, 36px);
-            font-weight: 900;
-            letter-spacing: -0.04em;
-            line-height: 1.15;
-            margin-bottom: 20px;
-            opacity: 0;
-            transform: translateY(30px);
-            animation: elementUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
-        }
-
-        .gradient-text {
-            background: linear-gradient(90deg, #ff416c, #0072ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .description {
-            font-size: 16px;
-            font-weight: 300;
-            line-height: 1.6;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 48px;
-            max-width: 320px;
-            opacity: 0;
-            transform: translateY(25px);
-            animation: elementUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 0.9s forwards;
-        }
-
-        /* ── CTA BUTTON WITH GRADIENT & BORDER GLOW ── */
-        .cta-button {
-            position: relative;
-            display: inline-flex;
+        /* =========================================
+           BACKGROUND: SINGLE COLUMN HD STREAM
+           ========================================= */
+        .bg-stream-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
             justify-content: center;
-            align-items: center;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0.85;
+            /* Highly visible */
+        }
+
+        .scroll-track {
+            display: flex;
+            flex-direction: column;
+            width: 120vw;
+            /* Bleeds slightly off-screen for a cinematic crop */
+            max-width: 600px;
+            gap: 20px;
+            padding-top: 20px;
+            animation: streamUp 45s linear infinite;
+        }
+
+        /* High-Quality Book Thumbnails */
+        .book-thumb {
             width: 100%;
-            max-width: 300px;
-            padding: 18px 32px;
-            font-family: 'Sora', sans-serif;
-            font-size: 16px;
-            font-weight: 600;
-            color: #fff;
-            text-decoration: none;
-            background: linear-gradient(90deg, #ff416c, #0072ff);
-            border-radius: 30px;
-            border: none;
-            cursor: pointer;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: elementUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
-            box-shadow: 0 10px 30px rgba(0, 114, 255, 0.3);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+            aspect-ratio: 2/3;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+            flex-shrink: 0;
         }
 
-        .cta-button:active {
-            transform: scale(0.97);
-            box-shadow: 0 5px 15px rgba(0, 114, 255, 0.2);
-        }
-
-        /* Subtitle Free Badge Style */
-        .sub-badge {
-            display: block;
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: #ff416c;
-            margin-top: 16px;
-            opacity: 0;
-            animation: fadeIn 1s ease 1.8s forwards;
-        }
-
-        @keyframes elementUp {
-            to {
-                opacity: 1;
+        @keyframes streamUp {
+            0% {
                 transform: translateY(0);
             }
+
+            100% {
+                transform: translateY(-50%);
+            }
+
+            /* Scrolls exactly half the track to loop */
         }
 
-        @keyframes fadeIn {
-            to { opacity: 1; }
+        /* =========================================
+           VIGNETTE: FIXED FULL-SCREEN COVERAGE
+           ========================================= */
+        .bg-vignette {
+            position: fixed;
+            /* Guarantees it covers the entire viewport */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            /* Deep radial gradient to darken edges and make text pop */
+            background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0.95) 85%);
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* =========================================
+           FOREGROUND: INDIVIDUAL LIQUID GLASS UI
+           ========================================= */
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        /* Shared Glass Properties */
+        .glass-element {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(220%);
+            -webkit-backdrop-filter: blur(30px) saturate(220%);
+            border: 0.5px solid var(--glass-border);
+            box-shadow:
+                inset 0 1px 2px rgba(255, 255, 255, 0.2),
+                0 20px 40px rgba(0, 0, 0, 0.7);
+
+            /* Hidden State */
+            opacity: 0;
+            filter: blur(20px);
+            transform: translateY(50px) scale(0.85);
+
+            /* Entrance */
+            animation: cinematicPop 1.2s var(--spring-snap) forwards;
+        }
+
+        @keyframes cinematicPop {
+            0% {
+                opacity: 0;
+                filter: blur(20px);
+                transform: translateY(50px) scale(0.85);
+            }
+
+            100% {
+                opacity: 1;
+                filter: blur(0px);
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* 1. Logo Pill */
+        .logo-pill {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background-image: url('logo-library.png');
+            background-size: 80%;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-color: rgba(255, 59, 48, 0.5);
+            animation-delay: 3.0s;
+        }
+
+        /* 2. Title Pill */
+        .title-pill {
+            padding: 15px 35px;
+            border-radius: 24px;
+            text-align: center;
+            border-color: rgba(10, 132, 255, 0.4);
+            animation-delay: 3.15s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title-pill h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .text-red {
+            color: var(--apple-red);
+            text-shadow: 0 0 25px rgba(255, 59, 48, 0.5);
+        }
+
+        .text-blue {
+            color: var(--apple-blue);
+            text-shadow: 0 0 25px rgba(10, 132, 255, 0.5);
+        }
+
+        /* 3. Pricing Pill */
+        .price-pill {
+            padding: 12px 28px;
+            border-radius: 20px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            animation-delay: 3.3s;
+        }
+
+        .price-pill span {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.15rem;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        }
+
+        /* 4. Action Button */
+        .action-btn {
+            margin-top: 10px;
+            padding: 18px 45px;
+            border-radius: 35px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #ffffff;
+            cursor: pointer;
+            border: 0.5px solid rgba(255, 255, 255, 0.4);
+
+            /* Gradient overlay blending Red and Blue into the glass */
+            background: linear-gradient(135deg, rgba(10, 132, 255, 0.6) 0%, rgba(255, 59, 48, 0.4) 100%), var(--glass-bg);
+            box-shadow:
+                inset 0 1px 3px rgba(255, 255, 255, 0.5),
+                0 15px 35px rgba(10, 132, 255, 0.4);
+
+            animation-delay: 3.45s;
+            transition: transform 0.3s var(--spring-bounce);
+        }
+
+        .action-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* Glossy Specular Sweep */
+        .title-pill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: skewX(-20deg);
+            animation: sweep 6s infinite 4.5s;
+            pointer-events: none;
+        }
+
+        @keyframes sweep {
+            0% {
+                left: -100%;
+            }
+
+            20% {
+                left: 200%;
+            }
+
+            100% {
+                left: 200%;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="orb"
-        style="width:80vw;height:80vw;background:radial-gradient(circle,rgba(255,65,108,.16) 0%,transparent 70%);top:-10%;right:-10%;">
+    <div class="bg-stream-container">
+        <div class="scroll-track">
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
+            </div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
+            </div>
+
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
+            </div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
+
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
+            </div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
+            </div>
+
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
+            </div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
+        </div>
     </div>
-    <div class="orb"
-        style="width:80vw;height:80vw;background:radial-gradient(circle,rgba(0,114,255,.14) 0%,transparent 70%);bottom:-10%;left:-10%;">
-    </div>
 
-    <div class="phone-wrapper">
+    <div class="bg-vignette"></div>
 
-        <svg class="logo" width="82" viewBox="0 0 110 88" fill="none">
-            <defs>
-                <linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"110\" y2=\"88\" gradientUnits=\"userSpaceOnUse\">
-                    <stop offset=\"0%\" stop-color=\"#ff416c\" />
-                    <stop offset=\"100%\" stop-color=\"#0072ff\" />
-                </linearGradient>
-            </defs>
-            <polygon points="55,7 104,29 55,51 6,29" fill="url(#g)" />
-            <line x1="104" y1="29" x2="104" y2="56" stroke="url(#g)" stroke-width="3" stroke-linecap="round" />
-            <path d="M23,45 C23,65 37,79 55,79 C73,79 87,65 87,45" stroke="url(#g)" stroke-width="6" stroke-linecap="round" fill="none" />
-        </svg>
+    <div class="ui-layer">
 
-        <h1 class="title">To enjoy this <br><span class="gradient-text">amazing experience</span></h1>
+        <div class="glass-element logo-pill"></div>
 
-        <p class="description">Join our premium educational platform today and redefine your learning journey.</p>
+        <div class="glass-element title-pill">
+            <h1>
+                <span class="text-red">The Spider</span><br>
+                <span class="text-blue">Library</span>
+            </h1>
+        </div>
 
-        <a href="https://epicscholar.cloud" class="cta-button">
-            epicscholar.cloud
-        </a>
+        <div class="glass-element price-pill">
+            plans starting from just <span>₹75</span>
+        </div>
 
-        <span class="sub-badge">Join for Free</span>
+        <button class="glass-element action-btn">
+            Join us now
+        </button>
 
     </div>
 
