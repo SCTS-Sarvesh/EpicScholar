@@ -4,16 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Spider Library - Spatial Experience</title>
+    <title>The Spider Library - Reviews</title>
     <style>
         :root {
-            /* Apple-style Spring & Elastic curves for "Bubbly" motion */
-            --spring-bounce: cubic-bezier(0.34, 1.36, 0.64, 1);
-            --spring-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+            /* Ultra-bubbly Apple Spatial Spring Easing */
+            --spring-bounce: cubic-bezier(0.24, 1.35, 0.4, 1.15);
+            /* Increased overshoot for more bubble effect */
+            --spring-smooth: cubic-bezier(0.2, 1, 0.3, 1);
 
-            /* Timings */
-            --morph-speed: 1s;
-            --shift-speed: 1.2s;
+            --morph-speed: 1.2s;
+            --active-color: #0a84ff;
+            /* Apple Blue */
+            --idle-color: rgba(255, 60, 60, 0.2);
+            /* Very subtle red */
         }
 
         * {
@@ -26,17 +29,38 @@
 
         body {
             background-color: #000000;
-            background-image: radial-gradient(circle at 50% 50%, #1a1a24 0%, #000000 80%);
+            background-image: radial-gradient(circle at 50% 10%, #110505 0%, #000000 80%);
             color: #ffffff;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
+            /* Mobile locked */
             display: flex;
             flex-direction: column;
-            perspective: 1200px;
+            perspective: 1500px;
         }
 
-        /* Full-Width Top Bar with Ultra Minimal Glass */
+        /* Ambient blur now sits cleanly in the middle of the z-stack */
+        .ambient-blur {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 50;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s var(--spring-smooth);
+        }
+
+        body.is-focused .ambient-blur {
+            opacity: 1;
+        }
+
+        /* Full-Width Top Bar */
         header {
             position: absolute;
             top: 0;
@@ -45,23 +69,30 @@
             display: flex;
             align-items: center;
             padding: 20px 24px;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 100%);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0) 100%);
             z-index: 100;
         }
 
-        /* Logo Placeholder utilizing your uploaded image */
         .logo-placeholder {
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background-image: url('library-logo.webp');
+            background-image: url('library-logo.png');
+            /* Links to your local logo */
             background-size: cover;
             background-position: center;
             backdrop-filter: blur(20px) saturate(180%);
             -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 0.5px solid rgba(255, 100, 100, 0.4);
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(255, 0, 0, 0.3);
+            border: 0.5px solid rgba(255, 100, 100, 0.3);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(255, 0, 0, 0.2);
             margin-right: 16px;
+            transition: all var(--morph-speed) var(--spring-bounce);
+        }
+
+        /* Header turns subtle blue when review is active */
+        body.is-focused .logo-placeholder {
+            border-color: rgba(10, 132, 255, 0.4);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(10, 132, 255, 0.3);
         }
 
         header h1 {
@@ -71,313 +102,279 @@
             color: rgba(255, 255, 255, 0.9);
         }
 
-        /* Carousel Area */
+        /* Review Container List - Removed z-index to break the stacking context trap */
         main {
             flex: 1;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 40px;
-        }
-
-        .card {
-            position: absolute;
-            top: 45%;
-            left: 50%;
-            width: 300px;
-            height: 400px;
-            transition: all var(--shift-speed) var(--spring-smooth);
             display: flex;
             flex-direction: column;
+            justify-content: center;
             align-items: center;
-            transform-style: preserve-3d;
-        }
-
-        /* Spatial Carousel Positioning */
-        .card.left {
-            transform: translate(-105%, -50%) scale(0.65) rotateY(15deg);
-            z-index: 1;
-            opacity: 0.4;
-            filter: blur(6px);
-        }
-
-        .card.center {
-            transform: translate(-50%, -50%) scale(1) rotateY(0deg);
-            z-index: 10;
-            opacity: 1;
-            filter: blur(0);
-        }
-
-        .card.right {
-            transform: translate(5%, -50%) scale(0.65) rotateY(-15deg);
-            z-index: 1;
-            opacity: 0.4;
-            filter: blur(6px);
+            gap: 16px;
+            margin-top: 50px;
+            padding: 0 20px;
+            position: relative;
+            z-index: auto;
+            /* FIXED: Now children can freely float above the background blur */
         }
 
         /* =========================================
-           RED LIQUID GLASS WITH BOOK IMAGES
+           IDLE STATE: SUBTLE RED LIQUID GLASS PILLS
            ========================================= */
-        .glass-image {
-            width: 190px;
-            height: 280px;
-            border-radius: 22px;
-            position: absolute;
-            top: 20px;
+        .review-pill {
+            width: 100%;
+            max-width: 340px;
+            height: 64px;
 
-            /* Background layout for the book covers */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            /* Extremely minimal red tint */
+            background: rgba(20, 10, 10, 0.4);
+            backdrop-filter: blur(25px) saturate(150%);
+            -webkit-backdrop-filter: blur(25px) saturate(150%);
+            border: 0.5px solid var(--idle-color);
+            border-radius: 32px;
 
-            /* Complex multi-stop gradient overlay for volumetric depth and red tinting */
-            background-blend-mode: overlay;
-
-            /* Extreme blur and saturation for "liquid" glass edges */
-            backdrop-filter: blur(35px) saturate(220%);
-            -webkit-backdrop-filter: blur(35px) saturate(220%);
-
-            /* Multi-layered shadows: ambient + direct + inner reflections */
             box-shadow:
-                inset 1px 1px 2px rgba(255, 150, 150, 0.5),
-                inset -1px -2px 4px rgba(0, 0, 0, 0.8),
-                0 20px 40px rgba(0, 0, 0, 0.5),
-                0 0 40px rgba(255, 30, 30, 0.2);
+                inset 0 1px 3px rgba(255, 100, 100, 0.1),
+                0 4px 15px rgba(0, 0, 0, 0.5);
 
-            border: 0.5px solid rgba(255, 100, 100, 0.35);
-            transition: all var(--morph-speed) var(--spring-bounce);
-            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
             overflow: hidden;
+
+            /* Spatial & Color Transition */
+            transition:
+                transform var(--morph-speed) var(--spring-bounce),
+                height var(--morph-speed) var(--spring-bounce),
+                border-radius var(--morph-speed) var(--spring-bounce),
+                background var(--morph-speed) var(--spring-smooth),
+                border-color var(--morph-speed) var(--spring-smooth),
+                box-shadow var(--morph-speed) var(--spring-smooth);
+
+            position: relative;
+            z-index: 10;
+            /* Idle below the blur (50) */
+            transform: translateY(0) scale(1) rotateX(0deg);
+            --center-y: 0px;
         }
 
-        /* Specular highlight gloss overlay */
-        .glass-image::after {
+        .review-pill::after {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
-            bottom: 0;
+            height: 100%;
             background: linear-gradient(105deg,
-                    transparent 20%,
-                    rgba(255, 255, 255, 0.15) 25%,
-                    transparent 30%);
-            transition: transform var(--morph-speed) var(--spring-smooth);
-            transform: translateX(-100%);
-            z-index: 5;
-        }
-
-        /* Individual Book Image Setup (Red tint blended over the artwork) */
-        .book-1 {
-            background-image: linear-gradient(145deg, rgba(255, 40, 40, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%), url('book1-maze-runner.jpg');
-        }
-
-        .book-2 {
-            background-image: linear-gradient(145deg, rgba(255, 40, 40, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%), url('book2-scorch-trials.jpg');
-        }
-
-        .book-3 {
-            background-image: linear-gradient(145deg, rgba(255, 40, 40, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%), url('book3-death-cure.jpg');
-        }
-
-        /* =========================================
-           MORPHING BUBBLE TEXT BOX
-           ========================================= */
-        .morph-box {
-            position: absolute;
-            bottom: 75px;
-            width: 170px;
-            height: 48px;
-
-            background: rgba(18, 18, 24, 0.65);
-            backdrop-filter: blur(25px) saturate(150%);
-            -webkit-backdrop-filter: blur(25px) saturate(150%);
-            border: 0.5px solid rgba(77, 168, 218, 0.3);
-            border-radius: 24px;
-
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            overflow: hidden;
-
-            transition: all var(--morph-speed) var(--spring-bounce);
-            z-index: 4;
-            padding: 12px 15px;
-        }
-
-        .morph-box h2 {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #4da8da;
-            /* Vibrant Blue */
-            margin: 0;
-            white-space: nowrap;
-            transition: all var(--morph-speed) var(--spring-bounce);
-            text-shadow: 0 2px 10px rgba(77, 168, 218, 0.4);
-        }
-
-        .summary {
-            margin-top: 15px;
-            font-size: 0.9rem;
-            color: rgba(255, 255, 255, 0.85);
-            line-height: 1.5;
-            text-align: center;
-
-            /* Blurred Entry Initial State */
-            opacity: 0;
-            filter: blur(12px);
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.6s var(--spring-smooth);
+                    transparent 10%,
+                    rgba(255, 255, 255, 0.08) 25%,
+                    transparent 40%);
             pointer-events: none;
+            transition: transform var(--morph-speed) var(--spring-smooth);
+            transform: translateX(-150%);
+        }
+
+        .pill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            height: 64px;
+            padding: 0 24px;
+            flex-shrink: 0;
+        }
+
+        .source-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #ffffff;
+            transition: all var(--morph-speed) var(--spring-bounce);
+        }
+
+        /* PERFECT HALF-STAR RENDERING VIA CSS GRADIENTS */
+        .stars {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            --fill-color: #ff453a;
+
+            background: linear-gradient(90deg,
+                    var(--fill-color) var(--rating),
+                    rgba(255, 255, 255, 0.15) var(--rating));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            transition: --fill-color var(--morph-speed) var(--spring-smooth);
+        }
+
+        @property --fill-color {
+            syntax: '<color>';
+            inherits: true;
+            initial-value: #ff453a;
+        }
+
+        .review-text {
+            padding: 0 25px 25px 25px;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.6;
+            text-align: left;
+
+            opacity: 0;
+            filter: blur(15px);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.7s var(--spring-smooth);
         }
 
         /* =========================================
-           EXPANDED (ACTIVE) STATE ANIMATIONS 
+           ACTIVE STATE: CENTERED, BLUE LIQUID GLASS
            ========================================= */
+        .review-pill.expanded {
+            height: 200px;
+            border-radius: 22px;
+            z-index: 999;
+            /* FIXED: Rockets past the blur layer (50) */
 
-        /* 1. Image enlarges and floats up */
-        .card.center.expanded .glass-image {
-            transform: scale(1.08) translateY(-30px);
+            /* Physically pulls to the center of the screen */
+            transform: translateY(var(--center-y)) scale(1.12) translateZ(50px);
+
+            /* Shifts to Vibrant Apple Blue */
+            background: rgba(10, 25, 45, 0.85);
+            border-color: rgba(10, 132, 255, 0.6);
             box-shadow:
-                inset 1px 1px 3px rgba(255, 180, 180, 0.6),
-                inset -1px -2px 5px rgba(0, 0, 0, 0.9),
-                0 30px 60px rgba(0, 0, 0, 0.7),
-                0 10px 50px rgba(255, 50, 50, 0.3);
+                inset 0 2px 6px rgba(100, 180, 255, 0.4),
+                0 40px 80px rgba(0, 0, 0, 0.9),
+                0 15px 50px rgba(10, 132, 255, 0.35);
         }
 
-        .card.center.expanded .glass-image::after {
-            transform: translateX(100%);
+        .review-pill.expanded::after {
+            transform: translateX(150%);
             transition: transform 1.5s ease-out;
         }
 
-        /* 2. Pill Morphs into full Text Panel */
-        .card.center.expanded .morph-box {
-            width: 260px;
-            height: 180px;
-            border-radius: 20px;
-            bottom: -30px;
-            background: rgba(18, 18, 24, 0.85);
-            padding: 20px;
+        .review-pill.expanded .source-name {
+            transform: scale(1.08) translateX(5px);
+            color: var(--active-color);
+            text-shadow: 0 2px 15px rgba(10, 132, 255, 0.5);
         }
 
-        .card.center.expanded .morph-box h2 {
-            font-size: 1.25rem;
-            transform: scale(1.05);
+        .review-pill.expanded .stars {
+            --fill-color: var(--active-color);
         }
 
-        /* 3. Text Appears via Apple-style Blurred Entry */
-        .card.center.expanded .summary {
+        .review-pill.expanded .review-text {
             opacity: 1;
             filter: blur(0);
             transform: translateY(0) scale(1);
-            transition: all 0.8s var(--spring-bounce) 0.2s;
-        }
-
-        /* Update these with your local image filenames */
-        .logo-placeholder {
-            background-image: url('logo-library.png');
-            /* Already matches your uploaded logo */
-        }
-
-        .book-1 {
-            background-image: linear-gradient(145deg, rgba(255, 40, 40, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%),
-                url('the-maze-runner-1.jpg');
-            /* Rename your local file or change this text */
-        }
-
-        .book-2 {
-            background-image: linear-gradient(145deg, rgba(255, 40, 40, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%),
-                url('maze-runner-2.jpg');
-        }
-
-        .book-3 {
-            background-image: linear-gradient(145deg, rgba(255, 40, 40, 0.3) 0%, rgba(0, 0, 0, 0.5) 100%),
-                url('maze-runner-3.jpg');
+            transition: all 0.9s var(--spring-bounce) 0.3s;
         }
     </style>
 </head>
 
 <body>
 
+    <div class="ambient-blur"></div>
+
     <header>
         <div class="logo-placeholder"></div>
         <h1>The Spider Library</h1>
     </header>
 
-    <main id="carousel">
-        <div class="card center" data-index="0">
-            <div class="glass-image book-1"></div>
-            <div class="morph-box">
-                <h2>The Maze Runner</h2>
-                <div class="summary">
-                    When Thomas wakes up in the lift, the only thing he remembers is his name. Outside the stone walls
-                    is a limitless, ever-changing maze.
-                </div>
+    <main id="reviews-container">
+        <div class="review-pill" data-index="0">
+            <div class="pill-header">
+                <span class="source-name">Kirkus Reviews</span>
+                <span class="stars" style="--rating: 90%;">★★★★★</span>
+            </div>
+            <div class="review-text">
+                "Dashner knows how to spin a tale and make the unbelievable realistic. Hard to put down... it will leave
+                readers dying to find out what comes next."
             </div>
         </div>
 
-        <div class="card right" data-index="1">
-            <div class="glass-image Open book-2"></div>
-            <div class="morph-box">
-                <h2>The Scorch Trials</h2>
-                <div class="summary">
-                    Solving the Maze was supposed to be the end. But WICKED isn't done. Now, the Gladers have two weeks
-                    to cross through the Scorch.
-                </div>
+        <div class="review-pill" data-index="1">
+            <div class="pill-header">
+                <span class="source-name">The Guardian</span>
+                <span class="stars" style="--rating: 100%;">★★★★★</span>
+            </div>
+            <div class="review-text">
+                "Dashner created the perfect mystery... Thrilling and you can't help but keep turning the pages even
+                after it's gone midnight."
             </div>
         </div>
 
-        <div class="card left" data-index="2">
-            <div class="glass-image book-3"></div>
-            <div class="morph-box">
-                <h2>The Death Cure</h2>
-                <div class="summary">
-                    It’s the end of the line. WICKED has taken everything from Thomas. But it’s finally over. The trials
-                    are complete.
-                </div>
+        <div class="review-pill" data-index="2">
+            <div class="pill-header">
+                <span class="source-name">The New York Times</span>
+                <span class="stars" style="--rating: 80%;">★★★★★</span>
+            </div>
+            <div class="review-text">
+                "Reminiscent of books like The Lord of the Flies and The Hunger Games... With constant action, suspense,
+                and mystery."
+            </div>
+        </div>
+
+        <div class="review-pill" data-index="3">
+            <div class="pill-header">
+                <span class="source-name">Independent Review</span>
+                <span class="stars" style="--rating: 90%;">★★★★★</span>
+            </div>
+            <div class="review-text">
+                "Gripping, fast-paced, and entertaining. The concept of fighting for your life against vicious creatures
+                sounds incredibly refreshing."
+            </div>
+        </div>
+
+        <div class="review-pill" data-index="4">
+            <div class="pill-header">
+                <span class="source-name">Shelf Awareness</span>
+                <span class="stars" style="--rating: 70%;">★★★★★</span>
+            </div>
+            <div class="review-text">
+                "Breathless, cinematic action. Heart pounding to the very last moment. This post-apocalyptic phenomenon
+                is a must-read."
             </div>
         </div>
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const cards = Array.from(document.querySelectorAll('.card'));
-            let states = ['center', 'right', 'left'];
+            const pills = Array.from(document.querySelectorAll('.review-pill'));
+            const body = document.body;
+            let currentIndex = 0;
 
-            const viewDuration = 5000;    // 5 seconds open
-            const settleDuration = 1000;  // Time to return to pill shape
-            const shiftDuration = 1200;   // Carousel rotation speed
+            const viewDuration = 5000;    // Time to read
+            const settleDuration = 1200;  // Collapse time
 
-            function runSequence() {
-                const centerIndex = states.indexOf('center');
-                const centerCard = cards[centerIndex];
+            function sequenceReviews() {
+                pills.forEach(pill => pill.classList.remove('expanded'));
+                const currentPill = pills[currentIndex];
+
+                // KINETIC CENTERING MATH
+                const rect = currentPill.getBoundingClientRect();
+                const viewportCenterY = window.innerHeight / 2;
+                const pillCenterY = rect.top + (rect.height / 2);
+                const distanceToCenter = viewportCenterY - pillCenterY;
+
+                currentPill.style.setProperty('--center-y', `${distanceToCenter}px`);
+
+                body.classList.add('is-focused');
+
+                requestAnimationFrame(() => {
+                    currentPill.classList.add('expanded');
+                });
 
                 setTimeout(() => {
-                    centerCard.classList.add('expanded');
+                    currentPill.classList.remove('expanded');
+                    body.classList.remove('is-focused');
 
-                    // Holds expanded for exactly 5 seconds
-                    setTimeout(() => {
-                        centerCard.classList.remove('expanded');
+                    currentIndex = (currentIndex + 1) % pills.length;
+                    setTimeout(sequenceReviews, settleDuration);
 
-                        setTimeout(() => {
-                            shiftCarousel();
-                            setTimeout(runSequence, shiftDuration);
-                        }, settleDuration);
-                    }, viewDuration);
-                }, 400);
+                }, viewDuration);
             }
 
-            function shiftCarousel() {
-                states.unshift(states.pop());
-                cards.forEach((card, i) => {
-                    card.className = `card ${states[i]}`;
-                });
-            }
-
-            setTimeout(runSequence, 800);
+            // Start the sequence
+            setTimeout(sequenceReviews, 1000);
         });
     </script>
 </body>
