@@ -12,7 +12,7 @@
             --spring-snap: cubic-bezier(0.24, 1.35, 0.4, 1.05);
 
             /* High-Fidelity Palette */
-            --glass-bg: rgba(15, 15, 20, 0.55);
+            --glass-bg: rgba(15, 15, 20, 0.65);
             --glass-border: rgba(255, 255, 255, 0.15);
         }
 
@@ -58,11 +58,11 @@
         }
 
         .row-left {
-            animation: scrollLeft 35s linear infinite;
+            animation: scrollLeft 45s linear infinite;
         }
 
         .row-right {
-            animation: scrollRight 40s linear infinite;
+            animation: scrollRight 50s linear infinite;
             transform: translate3d(-50%, 0, 0);
         }
 
@@ -109,10 +109,9 @@
             height: 100%;
             border-radius: inherit;
             object-fit: cover;
-            /* Replaces background-size: cover safely */
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            background-color: #1a1a1a;
+            background-color: #111113;
         }
 
         /* Background Vignette */
@@ -136,14 +135,13 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             z-index: 100;
             display: flex;
             justify-content: center;
             align-items: center;
-
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.6s var(--spring-snap);
@@ -162,19 +160,21 @@
             box-shadow:
                 inset 0 1px 2px rgba(255, 255, 255, 0.2),
                 0 30px 60px rgba(0, 0, 0, 0.9);
-
-            padding: 24px 45px;
-            border-radius: 28px;
+            padding: 35px 55px;
+            border-radius: 32px;
             font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: -0.5px;
             color: rgba(255, 255, 255, 0.95);
             text-align: center;
-
             transform: translateY(60px) scale(0.85);
             filter: blur(20px);
             opacity: 0;
             transition: all 0.8s var(--spring-snap);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
         }
 
         .overlay.active .glass-element {
@@ -188,6 +188,13 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
+        .library-logo {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 
@@ -197,114 +204,147 @@
 
         <div class="scroll-row row-left">
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591161783-L.jpg" alt="Naruto" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591166207-L.jpg" alt="One Piece" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439136358-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781421587189-L.jpg" alt="Black Clover"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439139595-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg"
+                    alt="Harry Potter and the Sorcerer's Stone" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439358064-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Keeper of the Lost Cities"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Alex Rider: Stormbreaker"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="The Maze Runner"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406144-L.jpg" alt="Book" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142401644-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9788171842391-L.jpg" alt="Kalki: Ponniyin Selvan Tamil"
+                    loading="lazy"></a>
 
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591161783-L.jpg" alt="Naruto" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591166207-L.jpg" alt="One Piece" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439136358-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781421587189-L.jpg" alt="Black Clover"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439139595-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Harry Potter"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439358064-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Keeper of the Lost Cities"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Alex Rider" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="The Maze Runner"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406144-L.jpg" alt="Book" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142401644-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9788171842391-L.jpg" alt="Kalki: Ponniyin Selvan Tamil"
+                    loading="lazy"></a>
         </div>
 
         <div class="scroll-row row-right">
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142405789-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781421535845-L.jpg" alt="Naruto Vol. 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591166214-L.jpg" alt="One Piece Vol. 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781421591155-L.jpg" alt="Black Clover Vol. 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385738776-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg"
+                    alt="Harry Potter and the Chamber of Secrets" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg"
+                    alt="Keeper of the Lost Cities: Exile" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg" alt="Alex Rider: Point Blank"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442446007-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg" alt="The Scorch Trials"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781481432290-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9788123408330-L.jpg"
+                    alt="Kalki: Sivagamiyin Sabatham Tamil" loading="lazy"></a>
 
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142405789-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781421535845-L.jpg" alt="Naruto Vol. 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591166214-L.jpg" alt="One Piece Vol. 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781421591155-L.jpg" alt="Black Clover Vol. 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385738776-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg" alt="Harry Potter 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg" alt="Keeper of the Lost Cities 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg" alt="Alex Rider 2"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442446007-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg" alt="The Scorch Trials"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781481432290-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9788123408330-L.jpg"
+                    alt="Kalki: Sivagamiyin Sabatham Tamil" loading="lazy"></a>
         </div>
 
         <div class="scroll-row row-left">
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781849410076-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591161783-L.jpg" alt="Naruto" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781849410083-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591166207-L.jpg" alt="One Piece" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781849410090-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781421587189-L.jpg" alt="Black Clover"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780099512288-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Harry Potter"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780099512325-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Keeper of the Lost Cities"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780099512295-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Alex Rider" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780099512332-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="The Maze Runner"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385742889-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9788171842391-L.jpg" alt="Kalki Tamil"
+                    loading="lazy"></a>
 
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781849410076-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591161783-L.jpg" alt="Naruto" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781849410083-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781591166207-L.jpg" alt="One Piece" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781849410090-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781421587189-L.jpg" alt="Black Clover"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780099512288-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Harry Potter"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780099512325-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Keeper of the Lost Cities"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780099512295-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Alex Rider" loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780099512332-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="The Maze Runner"
+                    loading="lazy"></a>
             <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385742889-L.jpg" alt="Book" loading="lazy"></a>
+                    src="https://covers.openlibrary.org/b/isbn/9788171842391-L.jpg" alt="Kalki Tamil"
+                    loading="lazy"></a>
         </div>
     </div>
 
@@ -312,22 +352,23 @@
 
     <div id="actionOverlay" class="overlay">
         <div class="glass-element">
-            over <span>15000 books</span> for all ages
+            <img src="logo-library.png" alt="Library Logo" class="library-logo">
+            <div>over <span>14,000 books</span> available</div>
         </div>
     </div>
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // Automatically launch the interactive display layer exactly 8 seconds after initialization
+            // Automatically launch glass sheet modal layer precisely 8 seconds after assembly
             setTimeout(() => {
                 const overlay = document.getElementById('actionOverlay');
                 if (overlay) {
                     overlay.classList.add('active');
                 }
-            }, 8000); // 8000 milliseconds = 8 seconds
+            }, 8000);
         });
 
-        // Close overlay smoothly if clicked anywhere on the screen
+        // Click anywhere across backdrop element canvas to securely drop activation layer
         document.getElementById('actionOverlay').addEventListener('click', function () {
             this.classList.remove('active');
         });
