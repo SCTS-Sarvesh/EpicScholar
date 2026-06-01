@@ -4,379 +4,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Spider Library - Reviews</title>
+    <title>The Spider Library - Cinematic Gateway</title>
     <style>
         :root {
-            /* Ultra-bubbly Apple Spatial Spring Easing */
-            --spring-bounce: cubic-bezier(0.24, 1.35, 0.4, 1.15);
-            /* Increased overshoot for more bubble effect */
-            --spring-smooth: cubic-bezier(0.2, 1, 0.3, 1);
+            /* Advanced Spatial Easing */
+            --spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.25);
+            --spring-snap: cubic-bezier(0.24, 1.35, 0.4, 1.05);
 
-            --morph-speed: 1.2s;
-            --active-color: #0a84ff;
-            /* Apple Blue */
-            --idle-color: rgba(255, 60, 60, 0.2);
-            /* Very subtle red */
+            /* High-Fidelity Palette */
+            --glass-bg: rgba(15, 15, 20, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --apple-red: #ff3b30;
+            --apple-blue: #0a84ff;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
         body {
-            background-color: #000000;
-            background-image: radial-gradient(circle at 50% 10%, #110505 0%, #000000 80%);
+            background-color: #050505;
             color: #ffffff;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
-            /* Mobile locked */
             display: flex;
             flex-direction: column;
-            perspective: 1500px;
+            justify-content: center;
+            align-items: center;
+            position: relative;
         }
 
-        /* Ambient blur now sits cleanly in the middle of the z-stack */
-        .ambient-blur {
+        /* =========================================
+           BACKGROUND: SINGLE COLUMN HD STREAM
+           ========================================= */
+        .bg-stream-container {
             position: absolute;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            z-index: 50;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 1s var(--spring-smooth);
-        }
-
-        body.is-focused .ambient-blur {
-            opacity: 1;
-        }
-
-        /* Full-Width Top Bar */
-        header {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
+            width: 100vw;
+            height: 100vh;
             display: flex;
-            align-items: center;
-            padding: 20px 24px;
-            background: linear-gradient(180deg, rgba(0, 0, 0, 0.95) 0%, rgba(0, 0, 0, 0) 100%);
-            z-index: 100;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0.85;
         }
 
-        .logo-placeholder {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background-image: url('logo-library.png');
-            /* Links to your local logo */
+        .scroll-track {
+            display: flex;
+            flex-direction: column;
+            width: 120vw;
+            max-width: 600px;
+            gap: 20px;
+            padding-top: 20px;
+            animation: streamUp 45s linear infinite;
+        }
+
+        /* High-Quality Book Thumbnails */
+        .book-thumb {
+            width: 100%;
+            aspect-ratio: 2/3;
+            border-radius: 12px;
             background-size: cover;
             background-position: center;
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border: 0.5px solid rgba(255, 100, 100, 0.3);
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(255, 0, 0, 0.2);
-            margin-right: 16px;
-            transition: all var(--morph-speed) var(--spring-bounce);
-        }
-
-        /* Header turns subtle blue when review is active */
-        body.is-focused .logo-placeholder {
-            border-color: rgba(10, 132, 255, 0.4);
-            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), 0 4px 12px rgba(10, 132, 255, 0.3);
-        }
-
-        header h1 {
-            font-size: 1.25rem;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        /* Review Container List - Removed z-index to break the stacking context trap */
-        main {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 16px;
-            margin-top: 50px;
-            padding: 0 20px;
-            position: relative;
-            z-index: auto;
-            /* FIXED: Now children can freely float above the background blur */
-        }
-
-        /* =========================================
-           IDLE STATE: SUBTLE RED LIQUID GLASS PILLS
-           ========================================= */
-        .review-pill {
-            width: 100%;
-            max-width: 340px;
-            height: 64px;
-
-            /* Extremely minimal red tint */
-            background: rgba(20, 10, 10, 0.4);
-            backdrop-filter: blur(25px) saturate(150%);
-            -webkit-backdrop-filter: blur(25px) saturate(150%);
-            border: 0.5px solid var(--idle-color);
-            border-radius: 32px;
-
-            box-shadow:
-                inset 0 1px 3px rgba(255, 100, 100, 0.1),
-                0 4px 15px rgba(0, 0, 0, 0.5);
-
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-start;
-            overflow: hidden;
-
-            /* Spatial & Color Transition */
-            transition:
-                transform var(--morph-speed) var(--spring-bounce),
-                height var(--morph-speed) var(--spring-bounce),
-                border-radius var(--morph-speed) var(--spring-bounce),
-                background var(--morph-speed) var(--spring-smooth),
-                border-color var(--morph-speed) var(--spring-smooth),
-                box-shadow var(--morph-speed) var(--spring-smooth);
-
-            position: relative;
-            z-index: 10;
-            /* Idle below the blur (50) */
-            transform: translateY(0) scale(1) rotateX(0deg);
-            --center-y: 0px;
-        }
-
-        .review-pill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 100%;
-            background: linear-gradient(105deg,
-                    transparent 10%,
-                    rgba(255, 255, 255, 0.08) 25%,
-                    transparent 40%);
-            pointer-events: none;
-            transition: transform var(--morph-speed) var(--spring-smooth);
-            transform: translateX(-150%);
-        }
-
-        .pill-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-            height: 64px;
-            padding: 0 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
             flex-shrink: 0;
         }
 
-        .source-name {
-            font-size: 1.05rem;
-            font-weight: 600;
-            color: #ffffff;
-            transition: all var(--morph-speed) var(--spring-bounce);
-        }
+        @keyframes streamUp {
+            0% {
+                transform: translateY(0);
+            }
 
-        /* PERFECT HALF-STAR RENDERING VIA CSS GRADIENTS */
-        .stars {
-            font-size: 1.2rem;
-            letter-spacing: 2px;
-            --fill-color: #ff453a;
-
-            background: linear-gradient(90deg,
-                    var(--fill-color) var(--rating),
-                    rgba(255, 255, 255, 0.15) var(--rating));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            color: transparent;
-            transition: --fill-color var(--morph-speed) var(--spring-smooth);
-        }
-
-        @property --fill-color {
-            syntax: '<color>';
-            inherits: true;
-            initial-value: #ff453a;
-        }
-
-        .review-text {
-            padding: 0 25px 25px 25px;
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.9);
-            line-height: 1.6;
-            text-align: left;
-
-            opacity: 0;
-            filter: blur(15px);
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.7s var(--spring-smooth);
+            100% {
+                transform: translateY(-50%);
+            }
         }
 
         /* =========================================
-           ACTIVE STATE: CENTERED, BLUE LIQUID GLASS
+           VIGNETTE: FIXED FULL-SCREEN COVERAGE
            ========================================= */
-        .review-pill.expanded {
-            height: 200px;
-            border-radius: 22px;
-            z-index: 999;
-            /* FIXED: Rockets past the blur layer (50) */
+        .bg-vignette {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0.95) 85%);
+            z-index: 2;
+            pointer-events: none;
+        }
 
-            /* Physically pulls to the center of the screen */
-            transform: translateY(var(--center-y)) scale(1.12) translateZ(50px);
+        /* =========================================
+           FOREGROUND: INDIVIDUAL LIQUID GLASS UI
+           ========================================= */
+        .ui-layer {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            padding: 0 20px;
+        }
 
-            /* Shifts to Vibrant Apple Blue */
-            background: rgba(10, 25, 45, 0.85);
-            border-color: rgba(10, 132, 255, 0.6);
+        /* Shared Glass Properties */
+        .glass-element {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(220%);
+            -webkit-backdrop-filter: blur(30px) saturate(220%);
+            border: 0.5px solid var(--glass-border);
             box-shadow:
-                inset 0 2px 6px rgba(100, 180, 255, 0.4),
-                0 40px 80px rgba(0, 0, 0, 0.9),
-                0 15px 50px rgba(10, 132, 255, 0.35);
+                inset 0 1px 2px rgba(255, 255, 255, 0.2),
+                0 20px 40px rgba(0, 0, 0, 0.7);
+
+            /* Hidden State */
+            opacity: 0;
+            filter: blur(20px);
+            transform: translateY(50px) scale(0.85);
+
+            /* Entrance */
+            animation: cinematicPop 1.2s var(--spring-snap) forwards;
         }
 
-        .review-pill.expanded::after {
-            transform: translateX(150%);
-            transition: transform 1.5s ease-out;
+        @keyframes cinematicPop {
+            0% {
+                opacity: 0;
+                filter: blur(20px);
+                transform: translateY(50px) scale(0.85);
+            }
+
+            100% {
+                opacity: 1;
+                filter: blur(0px);
+                transform: translateY(0) scale(1);
+            }
         }
 
-        .review-pill.expanded .source-name {
-            transform: scale(1.08) translateX(5px);
-            color: var(--active-color);
-            text-shadow: 0 2px 15px rgba(10, 132, 255, 0.5);
+        /* 1. Logo Pill */
+        .logo-pill {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background-image: url('logo-library.png');
+            background-size: 80%;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-color: rgba(255, 59, 48, 0.5);
+            animation-delay: 3.0s;
         }
 
-        .review-pill.expanded .stars {
-            --fill-color: var(--active-color);
+        /* 2. Title Pill */
+        .title-pill {
+            padding: 15px 35px;
+            border-radius: 24px;
+            text-align: center;
+            border-color: rgba(10, 132, 255, 0.4);
+            animation-delay: 3.15s;
+            position: relative;
+            overflow: hidden;
         }
 
-        .review-pill.expanded .review-text {
-            opacity: 1;
-            filter: blur(0);
-            transform: translateY(0) scale(1);
-            transition: all 0.9s var(--spring-bounce) 0.3s;
+        .title-pill h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .text-red {
+            color: var(--apple-red);
+            text-shadow: 0 0 25px rgba(255, 59, 48, 0.5);
+        }
+
+        .text-blue {
+            color: var(--apple-blue);
+            text-shadow: 0 0 25px rgba(10, 132, 255, 0.5);
+        }
+
+        /* 3. Description Info Pill (Replaced Pricing/Action Buttons) */
+        .info-pill {
+            padding: 18px 32px;
+            border-radius: 24px;
+            font-size: 1.1rem;
+            font-weight: 500;
+            max-width: 420px;
+            text-align: center;
+            line-height: 1.4;
+            color: rgba(255, 255, 255, 0.95);
+            border-color: rgba(255, 255, 255, 0.25);
+            animation-delay: 3.3s;
+            box-shadow:
+                inset 0 1px 3px rgba(255, 255, 255, 0.3),
+                0 20px 45px rgba(0, 0, 0, 0.8);
+        }
+
+        /* Glossy Specular Sweep */
+        .title-pill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: skewX(-20deg);
+            animation: sweep 6s infinite 4.5s;
+            pointer-events: none;
+        }
+
+        @keyframes sweep {
+            0% {
+                left: -100%;
+            }
+
+            20% {
+                left: 200%;
+            }
+
+            100% {
+                left: 200%;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="ambient-blur"></div>
-
-    <header>
-        <div class="logo-placeholder"></div>
-        <h1>The Spider Library</h1>
-    </header>
-
-    <main id="reviews-container">
-        <div class="review-pill" data-index="0">
-            <div class="pill-header">
-                <span class="source-name">Kirkus Reviews</span>
-                <span class="stars" style="--rating: 90%;">★★★★★</span>
+    <div class="bg-stream-container">
+        <div class="scroll-track">
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
             </div>
-            <div class="review-text">
-                "Dashner knows how to spin a tale and make the unbelievable realistic. Hard to put down... it will leave
-                readers dying to find out what comes next."
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
             </div>
+
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
+            </div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
+
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
+            </div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
+            </div>
+
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
+            </div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
+        </div>
+    </div>
+
+    <div class="bg-vignette"></div>
+
+    <div class="ui-layer">
+
+        <div class="glass-element logo-pill"></div>
+
+        <div class="glass-element title-pill">
+            <h1>
+                <span class="text-red">The Spider</span><br>
+                <span class="text-blue">Library</span>
+            </h1>
         </div>
 
-        <div class="review-pill" data-index="1">
-            <div class="pill-header">
-                <span class="source-name">The Guardian</span>
-                <span class="stars" style="--rating: 100%;">★★★★★</span>
-            </div>
-            <div class="review-text">
-                "Dashner created the perfect mystery... Thrilling and you can't help but keep turning the pages even
-                after it's gone midnight."
-            </div>
+        <div class="glass-element info-pill">
+            A library that has more books available for less money
         </div>
 
-        <div class="review-pill" data-index="2">
-            <div class="pill-header">
-                <span class="source-name">The New York Times</span>
-                <span class="stars" style="--rating: 80%;">★★★★★</span>
-            </div>
-            <div class="review-text">
-                "Reminiscent of books like The Lord of the Flies and The Hunger Games... With constant action, suspense,
-                and mystery."
-            </div>
-        </div>
+    </div>
 
-        <div class="review-pill" data-index="3">
-            <div class="pill-header">
-                <span class="source-name">Independent Review</span>
-                <span class="stars" style="--rating: 90%;">★★★★★</span>
-            </div>
-            <div class="review-text">
-                "Gripping, fast-paced, and entertaining. The concept of fighting for your life against vicious creatures
-                sounds incredibly refreshing."
-            </div>
-        </div>
-
-        <div class="review-pill" data-index="4">
-            <div class="pill-header">
-                <span class="source-name">Shelf Awareness</span>
-                <span class="stars" style="--rating: 70%;">★★★★★</span>
-            </div>
-            <div class="review-text">
-                "Breathless, cinematic action. Heart pounding to the very last moment. This post-apocalyptic phenomenon
-                is a must-read."
-            </div>
-        </div>
-    </main>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const pills = Array.from(document.querySelectorAll('.review-pill'));
-            const body = document.body;
-            let currentIndex = 0;
-
-            const viewDuration = 5000;    // Time to read
-            const settleDuration = 1200;  // Collapse time
-
-            function sequenceReviews() {
-                pills.forEach(pill => pill.classList.remove('expanded'));
-                const currentPill = pills[currentIndex];
-
-                // KINETIC CENTERING MATH
-                const rect = currentPill.getBoundingClientRect();
-                const viewportCenterY = window.innerHeight / 2;
-                const pillCenterY = rect.top + (rect.height / 2);
-                const distanceToCenter = viewportCenterY - pillCenterY;
-
-                currentPill.style.setProperty('--center-y', `${distanceToCenter}px`);
-
-                body.classList.add('is-focused');
-
-                requestAnimationFrame(() => {
-                    currentPill.classList.add('expanded');
-                });
-
-                setTimeout(() => {
-                    currentPill.classList.remove('expanded');
-                    body.classList.remove('is-focused');
-
-                    currentIndex = (currentIndex + 1) % pills.length;
-                    setTimeout(sequenceReviews, settleDuration);
-
-                }, viewDuration);
-            }
-
-            // Start the sequence
-            setTimeout(sequenceReviews, 1000);
-        });
-    </script>
 </body>
 
 </html>
