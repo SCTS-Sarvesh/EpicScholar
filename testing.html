@@ -4,267 +4,545 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Spider Library - Cinematic Gateway</title>
+    <title>The Spider Library - Active Classes</title>
     <style>
         :root {
-            /* Advanced Spatial Easing */
-            --spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.25);
+            /* Apple-style Spring & Elastic curves */
+            --spring-bounce: cubic-bezier(0.34, 1.36, 0.64, 1.15);
+            --spring-smooth: cubic-bezier(0.22, 1, 0.36, 1);
             --spring-snap: cubic-bezier(0.24, 1.35, 0.4, 1.05);
 
-            /* High-Fidelity Palette */
-            --glass-bg: rgba(15, 15, 20, 0.4);
+            /* Timings */
+            --morph-speed: 1s;
+            --shift-speed: 1.2s;
+
+            /* Liquid Glass Palette */
+            --glass-bg: rgba(15, 15, 20, 0.55);
             --glass-border: rgba(255, 255, 255, 0.15);
-            --apple-red: #ff3b30;
-            --apple-blue: #0a84ff;
+            --theme-blue: #0a84ff;
+            --theme-red: #ff3b30;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, sans-serif;
             -webkit-font-smoothing: antialiased;
         }
 
         body {
             background-color: #050505;
+            background-image: radial-gradient(circle at 50% 50%, #111118 0%, #050505 80%);
             color: #ffffff;
             height: 100vh;
             width: 100vw;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            position: relative;
+            perspective: 1200px;
+        }
+
+        /* Initial state of main layout elements (Hidden for chronological loop) */
+        .ambient-bg,
+        header,
+        main {
+            opacity: 0;
+            transition: opacity 1s var(--spring-smooth);
+        }
+
+        /* Triggered via JS once intro sequence completes */
+        .elements-visible .ambient-bg,
+        .elements-visible header,
+        .elements-visible main {
+            opacity: 1;
         }
 
         /* =========================================
-           BACKGROUND: SINGLE COLUMN HD STREAM
+           AMBIENT NEON GLOWS
            ========================================= */
-        .bg-stream-container {
+        .ambient-bg {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            overflow: hidden;
-            z-index: 1;
-            opacity: 0.85;
-            /* Highly visible */
-        }
-
-        .scroll-track {
-            display: flex;
-            flex-direction: column;
-            width: 120vw;
-            /* Bleeds slightly off-screen for a cinematic crop */
-            max-width: 600px;
-            gap: 20px;
-            padding-top: 20px;
-            animation: streamUp 45s linear infinite;
-        }
-
-        /* High-Quality Book Thumbnails */
-        .book-thumb {
             width: 100%;
-            aspect-ratio: 2/3;
-            border-radius: 12px;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-            flex-shrink: 0;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
         }
 
-        @keyframes streamUp {
+        .glow-blue {
+            position: absolute;
+            top: 10%;
+            left: 5%;
+            width: 40vw;
+            height: 40vw;
+            max-width: 400px;
+            max-height: 400px;
+            background: radial-gradient(circle, rgba(10, 132, 255, 0.15) 0%, transparent 70%);
+            filter: blur(60px);
+            border-radius: 50%;
+            animation: pulse 8s infinite alternate ease-in-out;
+        }
+
+        .glow-red {
+            position: absolute;
+            bottom: 10%;
+            right: 5%;
+            width: 40vw;
+            height: 40vw;
+            max-width: 400px;
+            max-height: 400px;
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.15) 0%, transparent 70%);
+            filter: blur(60px);
+            border-radius: 50%;
+            animation: pulse 8s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes pulse {
             0% {
-                transform: translateY(0);
+                transform: scale(0.8) translate(0, 0);
+                opacity: 0.6;
             }
 
             100% {
-                transform: translateY(-50%);
+                transform: scale(1.2) translate(30px, -30px);
+                opacity: 1;
             }
-
-            /* Scrolls exactly half the track to loop */
         }
 
         /* =========================================
-           VIGNETTE: FIXED FULL-SCREEN COVERAGE
+           TOP BAR & LOGO
            ========================================= */
-        .bg-vignette {
-            position: fixed;
-            /* Guarantees it covers the entire viewport */
+        header {
+            position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 20px 24px;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            z-index: 100;
+        }
+
+        .logo-placeholder {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background-image: url('logo-library.png');
+            background-size: cover;
+            background-position: center;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            border: 0.5px solid rgba(10, 132, 255, 0.4);
+            box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.2), 0 4px 15px rgba(10, 132, 255, 0.3);
+            margin-right: 16px;
+        }
+
+        header h1 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        /* =========================================
+           INTRO OVERLAY (TIMELINE SEQUENCING)
+           ========================================= */
+        .intro-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100vw;
             height: 100vh;
-            /* Deep radial gradient to darken edges and make text pop */
-            background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0.95) 85%);
-            z-index: 2;
+            background: #050505;
+            z-index: 200;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s var(--spring-smooth), visibility 0.8s;
+        }
+
+        .intro-overlay.hidden {
+            opacity: 0;
+            visibility: hidden;
             pointer-events: none;
         }
 
-        /* =========================================
-           FOREGROUND: INDIVIDUAL LIQUID GLASS UI
-           ========================================= */
-        .ui-layer {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            width: 100%;
-            padding: 0 20px;
-        }
-
-        /* Shared Glass Properties */
-        .glass-element {
+        .intro-pill {
             background: var(--glass-bg);
-            backdrop-filter: blur(30px) saturate(220%);
-            -webkit-backdrop-filter: blur(30px) saturate(220%);
+            backdrop-filter: blur(40px) saturate(220%);
+            -webkit-backdrop-filter: blur(40px) saturate(220%);
             border: 0.5px solid var(--glass-border);
-            box-shadow:
-                inset 0 1px 2px rgba(255, 255, 255, 0.2),
-                0 20px 40px rgba(0, 0, 0, 0.7);
-
-            /* Hidden State */
-            opacity: 0;
-            filter: blur(20px);
-            transform: translateY(50px) scale(0.85);
-
-            /* Entrance */
-            animation: cinematicPop 1.2s var(--spring-snap) forwards;
-        }
-
-        @keyframes cinematicPop {
-            0% {
-                opacity: 0;
-                filter: blur(20px);
-                transform: translateY(50px) scale(0.85);
-            }
-
-            100% {
-                opacity: 1;
-                filter: blur(0px);
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* 1. Logo Pill */
-        .logo-pill {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background-image: url('logo-library.png');
-            background-size: 80%;
-            background-repeat: no-repeat;
-            background-position: center;
-            border-color: rgba(255, 59, 48, 0.5);
-            animation-delay: 3.0s;
-        }
-
-        /* 2. Title Pill */
-        .title-pill {
-            padding: 15px 35px;
-            border-radius: 24px;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.2), 0 30px 60px rgba(0, 0, 0, 0.9);
+            padding: 30px 50px;
+            border-radius: 32px;
             text-align: center;
-            border-color: rgba(10, 132, 255, 0.4);
-            animation-delay: 3.15s;
-            position: relative;
-            overflow: hidden;
+
+            opacity: 0;
+            transform: translateY(50px) scale(0.85);
+            filter: blur(25px);
+            transition: transform 1.2s var(--spring-snap), filter 1.2s var(--spring-smooth), opacity 1s ease;
         }
 
-        .title-pill h1 {
+        .intro-pill.animate-glass {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
+
+        .intro-pill span,
+        .intro-pill p {
+            display: block;
+            opacity: 0;
+            filter: blur(15px);
+            transition: filter 1s var(--spring-smooth), opacity 1s ease;
+        }
+
+        .intro-pill.animate-glass span {
+            opacity: 1;
+            filter: blur(0);
+            transition-delay: 0.4s;
+        }
+
+        .intro-pill.animate-glass p {
+            opacity: 1;
+            filter: blur(0);
+            transition-delay: 0.7s;
+        }
+
+        .intro-pill span {
             font-size: 2.2rem;
             font-weight: 800;
             letter-spacing: -0.5px;
-            line-height: 1.1;
+            background: linear-gradient(135deg, var(--theme-blue), var(--theme-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .text-red {
-            color: var(--apple-red);
-            text-shadow: 0 0 25px rgba(255, 59, 48, 0.5);
-        }
-
-        .text-blue {
-            color: var(--apple-blue);
-            text-shadow: 0 0 25px rgba(10, 132, 255, 0.5);
-        }
-
-        /* 3. Pricing Pill */
-        .price-pill {
-            padding: 12px 28px;
-            border-radius: 20px;
-            font-size: 1.05rem;
+        .intro-pill p {
+            margin-top: 8px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
             font-weight: 500;
-            color: rgba(255, 255, 255, 0.9);
-            animation-delay: 3.3s;
         }
 
-        .price-pill span {
-            color: #ffffff;
-            font-weight: 700;
-            font-size: 1.15rem;
-            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        /* =========================================
+           3D SPATIAL CAROUSEL ENGINE
+           ========================================= */
+        main {
+            flex: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 40px;
+            z-index: 10;
         }
 
-        /* 4. Action Button */
-        .action-btn {
-            margin-top: 10px;
-            padding: 18px 45px;
-            border-radius: 35px;
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: #ffffff;
-            cursor: pointer;
-            border: 0.5px solid rgba(255, 255, 255, 0.4);
-
-            /* Gradient overlay blending Red and Blue into the glass */
-            background: linear-gradient(135deg, rgba(10, 132, 255, 0.6) 0%, rgba(255, 59, 48, 0.4) 100%), var(--glass-bg);
-            box-shadow:
-                inset 0 1px 3px rgba(255, 255, 255, 0.5),
-                0 15px 35px rgba(10, 132, 255, 0.4);
-
-            animation-delay: 3.45s;
-            transition: transform 0.3s var(--spring-bounce);
-        }
-
-        .action-btn:active {
-            transform: scale(0.92);
-        }
-
-        /* Glossy Specular Sweep */
-        .title-pill::after {
-            content: '';
+        .card {
             position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: skewX(-20deg);
-            animation: sweep 6s infinite 4.5s;
+            top: 45%;
+            left: 50%;
+            width: 300px;
+            height: 400px;
+            transition: all var(--shift-speed) var(--spring-smooth);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transform-style: preserve-3d;
+        }
+
+        /* Expanded State Positioning Map for 12 Elements */
+        .card.hidden-back {
+            transform: translate(-50%, -50%) scale(0.3) rotateY(0deg);
+            z-index: 0;
+            opacity: 0;
+            filter: blur(15px);
             pointer-events: none;
         }
 
-        @keyframes sweep {
-            0% {
-                left: -100%;
+        .card.hidden-left {
+            transform: translate(-170%, -50%) scale(0.4) rotateY(35deg);
+            z-index: 1;
+            opacity: 0;
+            filter: blur(12px);
+            pointer-events: none;
+        }
+
+        .card.left {
+            transform: translate(-105%, -50%) scale(0.65) rotateY(15deg);
+            z-index: 2;
+            opacity: 0.4;
+            filter: blur(6px);
+        }
+
+        .card.center {
+            transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+            z-index: 10;
+            opacity: 1;
+            filter: blur(0);
+        }
+
+        .card.right {
+            transform: translate(5%, -50%) scale(0.65) rotateY(-15deg);
+            z-index: 2;
+            opacity: 0.4;
+            filter: blur(6px);
+        }
+
+        .card.hidden-right {
+            transform: translate(70%, -50%) scale(0.4) rotateY(-35deg);
+            z-index: 1;
+            opacity: 0;
+            filter: blur(12px);
+            pointer-events: none;
+        }
+
+        /* =========================================
+           LIQUID GLASS MEDIA CARDS
+           ========================================= */
+        .glass-image {
+            width: 190px;
+            height: 280px;
+            border-radius: 22px;
+            position: absolute;
+            top: 20px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.3), 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(10, 132, 255, 0.15);
+            border: 0.5px solid var(--glass-border);
+            transition: all var(--morph-speed) var(--spring-bounce);
+            z-index: 3;
+            overflow: hidden;
+        }
+
+        .glass-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(105deg, transparent 20%, rgba(255, 255, 255, 0.15) 25%, transparent 30%);
+            transition: transform var(--morph-speed) var(--spring-smooth);
+            transform: translateX(-100%);
+            z-index: 5;
+        }
+
+        /* =========================================
+           MORPHING MAC OS TEXT WINDOWS
+           ========================================= */
+        .morph-box {
+            position: absolute;
+            bottom: 95px;
+            width: 180px;
+            height: auto;
+            min-height: 48px;
+            max-height: 48px;
+            background: rgba(18, 18, 24, 0.85);
+            backdrop-filter: blur(35px) saturate(180%);
+            -webkit-backdrop-filter: blur(35px) saturate(180%);
+            border: 0.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            overflow: hidden;
+            transition: all var(--morph-speed) var(--spring-bounce);
+            z-index: 4;
+            padding: 12px 15px;
+        }
+
+        .morph-box h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0;
+            white-space: nowrap;
+            transition: all var(--morph-speed) var(--spring-bounce);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .status-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 1px;
+            color: var(--theme-red);
+            text-transform: uppercase;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.4s ease;
+            position: absolute;
+            top: 12px;
+        }
+
+        .summary {
+            margin-top: 18px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.5;
+            text-align: center;
+            opacity: 0;
+            filter: blur(12px);
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.6s var(--spring-smooth);
+            pointer-events: none;
+        }
+
+        /* =========================================
+           EXPANDED HERO MODIFIERS
+           ========================================= */
+        .card.center.expanded .glass-image {
+            transform: scale(1.06) translateY(-40px);
+            box-shadow: inset 1px 1px 3px rgba(255, 255, 255, 0.4), 0 35px 70px rgba(0, 0, 0, 0.9), 0 15px 50px rgba(10, 132, 255, 0.25);
+        }
+
+        .card.center.expanded .glass-image::after {
+            transform: translateX(100%);
+            transition: transform 1.5s ease-out;
+        }
+
+        .card.center.expanded .morph-box {
+            width: 280px;
+            max-height: 300px;
+            border-radius: 20px;
+            bottom: 10px;
+            background: rgba(15, 15, 22, 0.95);
+            padding: 35px 20px 20px 20px;
+            border-color: rgba(10, 132, 255, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(10, 132, 255, 0.15);
+        }
+
+        .card.center.expanded .morph-box h2 {
+            font-size: 1.25rem;
+            background: linear-gradient(135deg, #fff, #ccc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card.center.expanded .status-badge {
+            opacity: 1;
+            transform: translateY(0);
+            transition-delay: 0.2s;
+        }
+
+        .card.center.expanded .summary {
+            opacity: 1;
+            filter: blur(0);
+            transform: translateY(0) scale(1);
+            transition: all 0.8s var(--spring-bounce) 0.15s;
+        }
+
+        /* Premium Photography Global CDN Resource Directory */
+        .img-french {
+            background-image: url('https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-python {
+            background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-voice {
+            background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-robotics {
+            background-image: url('https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-speakup {
+            background-image: url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-arts {
+            background-image: url('https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-reading {
+            background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-writing {
+            background-image: url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-handwriting {
+            background-image: url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-japanese {
+            background-image: url('https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-story {
+            background-image: url('https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-tamil {
+            background-image: url('thiruvalluvar.png');
+            background-size: cover;
+            background-position: center top;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                width: 240px;
+                height: 340px;
             }
 
-            20% {
-                left: 200%;
+            .card.hidden-left {
+                transform: translate(-130%, -50%) scale(0.35) rotateY(30deg);
             }
 
-            100% {
-                left: 200%;
+            .card.left {
+                transform: translate(-90%, -50%) scale(0.6) rotateY(15deg);
+            }
+
+            .card.center {
+                transform: translate(-50%, -50%) scale(1) rotateY(0deg);
+            }
+
+            .card.right {
+                transform: translate(-10%, -50%) scale(0.6) rotateY(-15deg);
+            }
+
+            .card.hidden-right {
+                transform: translate(30%, -50%) scale(0.35) rotateY(-30deg);
+            }
+
+            .glass-image {
+                width: 150px;
+                height: 220px;
+                top: 15px;
+            }
+
+            .morph-box {
+                bottom: 85px;
+                width: 160px;
+                min-height: 40px;
+                max-height: 40px;
+                padding: 10px;
+            }
+
+            .morph-box h2 {
+                font-size: 0.95rem;
+            }
+
+            .card.center.expanded .morph-box {
+                width: 240px;
+                max-height: 280px;
+                bottom: 5px;
+                padding: 30px 15px 15px 15px;
+            }
+
+            .card.center.expanded .glass-image {
+                transform: scale(1.02) translateY(-45px);
             }
         }
     </style>
@@ -272,69 +550,208 @@
 
 <body>
 
-    <div class="bg-stream-container">
-        <div class="scroll-track">
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
-            </div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
-            </div>
+    <div class="ambient-bg">
+        <div class="glow-blue"></div>
+        <div class="glow-red"></div>
+    </div>
 
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
-            </div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
-
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
-            </div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
-            </div>
-
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
-            </div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
+    <div id="introLayer" class="intro-overlay">
+        <div class="intro-pill">
+            <span>10+ Active Classes</span>
+            <p>Ongoing sessions for all ages</p>
         </div>
     </div>
 
-    <div class="bg-vignette"></div>
+    <header>
+        <div class="logo-placeholder"></div>
+        <h1>The Spider Library</h1>
+    </header>
 
-    <div class="ui-layer">
-
-        <div class="glass-element logo-pill"></div>
-
-        <div class="glass-element title-pill">
-            <h1>
-                <span class="text-red">The Spider</span><br>
-                <span class="text-blue">Library</span>
-            </h1>
+    <main id="carousel">
+        <div class="card center">
+            <div class="glass-image img-french"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>French Class</h2>
+                <div class="summary">Interactive French class designed specifically for beginners. Build your vocabulary
+                    and conversational skills.</div>
+            </div>
         </div>
 
-        <div class="glass-element price-pill">
-            plans starting from just <span>₹150</span>
+        <div class="card right">
+            <div class="glass-image img-python"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Python Coding</h2>
+                <div class="summary">Dive into the world of programming. Hands-on Python coding classes to build logic
+                    and create digital projects.</div>
+            </div>
         </div>
 
-        <button class="glass-element action-btn">
-            Join us now
-        </button>
+        <div class="card hidden-right">
+            <div class="glass-image img-voice"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Own Your Voice</h2>
+                <div class="summary">A dedicated public speaking program for children to build confidence, articulation,
+                    and stage presence.</div>
+            </div>
+        </div>
 
-    </div>
+        <div class="card hidden-back">
+            <div class="glass-image img-story"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Story Telling</h2>
+                <div class="summary">Immersive storytelling sessions utilizing color-rich children's picture books to
+                    spark early imagination, childhood curiosity, and creative expression.</div>
+            </div>
+        </div>
 
+        <div class="card hidden-back">
+            <div class="glass-image img-robotics"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Robotics Workshop</h2>
+                <div class="summary">Hands-on robotics and AI fundamentals. Build, code, and control physical tech
+                    modules.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-speakup"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Speak Up!</h2>
+                <div class="summary">Impromptu speaking sessions designed to help members think on their feet and
+                    communicate clearly.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-japanese"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Japanese Class</h2>
+                <div class="summary">Master beautiful Japanese writing systems (Kanji, Hiragana, Katakana) and learn
+                    exquisite traditional etiquette.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-arts"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Arts & Drawing</h2>
+                <div class="summary">Explore real-world sketching, forms, painting, and shading styles to express visual
+                    creativity.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-reading"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Reading (Phonics)</h2>
+                <div class="summary">Master key phonetic sounds, complex blending strategies, and reading pronunciation
+                    patterns.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-writing"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Creative Writing</h2>
+                <div class="summary">Unlock narrative structures, dynamic characters, and prompt frameworks to write
+                    engaging stories.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-left">
+            <div class="glass-image img-handwriting"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Handwriting Class</h2>
+                <div class="summary">Perfect the smooth flow of standard English cursive handwriting with spatial
+                    spacing and loop techniques.</div>
+            </div>
+        </div>
+
+        <div class="card left">
+            <div class="glass-image img-tamil"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Tamil Class</h2>
+                <div class="summary">Learn the fundamental basics, basic alphabet characters, script foundations, and
+                    simple vocabulary of the classical Tamil language.</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const introLayer = document.getElementById('introLayer');
+            const introPill = document.querySelector('.intro-pill');
+            const cards = Array.from(document.querySelectorAll('.card'));
+
+            // 12-Card Carousel Dynamic Map State Array configuration
+            let states = [
+                'center', 'right', 'hidden-right',
+                'hidden-back', 'hidden-back', 'hidden-back',
+                'hidden-back', 'hidden-back', 'hidden-back', 'hidden-back',
+                'hidden-left', 'left'
+            ];
+
+            const blackoutDuration = 2000;
+            const introPillDuration = 2800;
+            const viewDuration = 4500;
+            const settleDuration = 1000;
+            const shiftDuration = 1200;
+
+            // Chronological Animation Sequence Controller
+            setTimeout(() => {
+                introPill.classList.add('animate-glass');
+
+                setTimeout(() => {
+                    introLayer.classList.add('hidden');
+
+                    setTimeout(() => {
+                        document.body.classList.add('elements-visible');
+                        setTimeout(runSequence, 600);
+                    }, 200);
+
+                }, introPillDuration);
+
+            }, blackoutDuration);
+
+            // Infinite Engine Loop Execution
+            function runSequence() {
+                const centerIndex = states.indexOf('center');
+                const centerCard = cards[centerIndex];
+
+                setTimeout(() => {
+                    centerCard.classList.add('expanded');
+
+                    setTimeout(() => {
+                        centerCard.classList.remove('expanded');
+
+                        setTimeout(() => {
+                            shiftCarousel();
+                            setTimeout(runSequence, shiftDuration);
+                        }, settleDuration);
+                    }, viewDuration);
+                }, 300);
+            }
+
+            function shiftCarousel() {
+                states.unshift(states.pop());
+                cards.forEach((card, i) => {
+                    card.className = `card ${states[i]}`;
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
