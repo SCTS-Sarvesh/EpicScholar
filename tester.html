@@ -4,18 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Spider Library - Cinematic Gateway</title>
+    <title>The Spider Library - Member Stats</title>
     <style>
         :root {
             /* Advanced Spatial Easing */
             --spring-bounce: cubic-bezier(0.175, 0.885, 0.32, 1.25);
             --spring-snap: cubic-bezier(0.24, 1.35, 0.4, 1.05);
+            --cinematic-ease: cubic-bezier(0.25, 1, 0.3, 1);
 
             /* High-Fidelity Palette */
-            --glass-bg: rgba(15, 15, 20, 0.4);
+            --glass-bg: rgba(15, 15, 20, 0.55);
             --glass-border: rgba(255, 255, 255, 0.15);
-            --apple-red: #ff3b30;
-            --apple-blue: #0a84ff;
+
+            /* Theme Colors */
+            --theme-blue: #0a84ff;
+            --theme-red: #ff3b30;
         }
 
         * {
@@ -33,115 +36,245 @@
             width: 100vw;
             overflow: hidden;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             position: relative;
         }
 
         /* =========================================
-           BACKGROUND: SINGLE COLUMN HD STREAM
+           AMBIENT BACKGROUND
            ========================================= */
-        .bg-stream-container {
+        .ambient-bg {
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            overflow: hidden;
-            z-index: 1;
-            opacity: 0.85;
-        }
-
-        .scroll-track {
-            display: flex;
-            flex-direction: column;
-            width: 120vw;
-            max-width: 600px;
-            gap: 20px;
-            padding-top: 20px;
-            animation: streamUp 45s linear infinite;
-        }
-
-        /* High-Quality Book Thumbnails */
-        .book-thumb {
             width: 100%;
-            aspect-ratio: 2/3;
-            border-radius: 12px;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
-            flex-shrink: 0;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
         }
 
-        @keyframes streamUp {
+        .glow-blue {
+            position: absolute;
+            top: 20%;
+            left: 10%;
+            width: 50vw;
+            height: 50vw;
+            max-width: 400px;
+            max-height: 400px;
+            background: radial-gradient(circle, rgba(10, 132, 255, 0.15) 0%, rgba(10, 132, 255, 0) 70%);
+            filter: blur(60px);
+            border-radius: 50%;
+            animation: pulseGlow 8s infinite alternate ease-in-out;
+        }
+
+        .glow-red {
+            position: absolute;
+            bottom: 20%;
+            right: 10%;
+            width: 50vw;
+            height: 50vw;
+            max-width: 400px;
+            max-height: 400px;
+            background: radial-gradient(circle, rgba(255, 59, 48, 0.15) 0%, rgba(255, 59, 48, 0) 70%);
+            filter: blur(60px);
+            border-radius: 50%;
+            animation: pulseGlow 8s infinite alternate-reverse ease-in-out;
+        }
+
+        @keyframes pulseGlow {
             0% {
-                transform: translateY(0);
+                transform: scale(0.8) translate(0, 0);
+                opacity: 0.5;
             }
 
             100% {
-                transform: translateY(-50%);
+                transform: scale(1.2) translate(20px, -20px);
+                opacity: 1;
             }
         }
 
         /* =========================================
-           VIGNETTE: FIXED FULL-SCREEN COVERAGE
+           LIQUID GLASS CONTAINER
            ========================================= */
-        .bg-vignette {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            width: 100vw;
-            height: 100vh;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0.95) 85%);
-            z-index: 2;
-            pointer-events: none;
-        }
-
-        /* =========================================
-           FOREGROUND: INDIVIDUAL LIQUID GLASS UI
-           ========================================= */
-        .ui-layer {
+        .glass-box {
             position: relative;
             z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            width: 100%;
-            padding: 0 20px;
-        }
-
-        /* Shared Glass Properties */
-        .glass-element {
+            width: 90%;
+            max-width: 420px;
             background: var(--glass-bg);
-            backdrop-filter: blur(30px) saturate(220%);
-            -webkit-backdrop-filter: blur(30px) saturate(220%);
+            backdrop-filter: blur(40px) saturate(220%);
+            -webkit-backdrop-filter: blur(40px) saturate(220%);
             border: 0.5px solid var(--glass-border);
             box-shadow:
                 inset 0 1px 2px rgba(255, 255, 255, 0.2),
-                0 20px 40px rgba(0, 0, 0, 0.7);
+                inset 0 -1px 2px rgba(0, 0, 0, 0.5),
+                0 30px 60px rgba(0, 0, 0, 0.8),
+                0 0 40px rgba(10, 132, 255, 0.1);
+            border-radius: 32px;
+            padding: 50px 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
 
-            /* Hidden State */
+            /* Blur Reveal Initial State */
             opacity: 0;
-            filter: blur(20px);
-            transform: translateY(50px) scale(0.85);
-
-            /* Entrance */
-            animation: cinematicPop 1.2s var(--spring-snap) forwards;
+            filter: blur(30px);
+            transform: translateY(50px) scale(0.9);
+            animation: blurReveal 1.2s var(--spring-snap) forwards;
         }
 
-        @keyframes cinematicPop {
+        /* =========================================
+           PROGRESS CIRCLE & CENTERED LOGO
+           ========================================= */
+        .circle-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+            margin-bottom: 35px;
+
+            /* Staggered Reveal */
+            opacity: 0;
+            filter: blur(20px);
+            transform: scale(0.8);
+            animation: blurReveal 1s var(--spring-snap) 0.3s forwards;
+        }
+
+        .progress-ring {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+            /* Start at top */
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 6;
+        }
+
+        .ring-fill {
+            fill: none;
+            stroke: url(#gradient);
+            stroke-width: 6;
+            stroke-linecap: round;
+            /* Circumference = 2 * PI * 74 = ~465 */
+            stroke-dasharray: 465;
+            stroke-dashoffset: 0;
+            /* 100% filled initially */
+            transition: stroke-dashoffset 2s var(--cinematic-ease);
+        }
+
+        /* Inner Glass Orb Layout */
+        .circle-inner-orb {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1), transparent);
+            box-shadow: inset 0 2px 10px rgba(255, 255, 255, 0.15), 0 10px 20px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+
+            /* Flex center alignment for the logo */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Centered Logo Aesthetic */
+        .center-logo {
+            width: 130px;
+            height: 130px;
+            object-fit: contain;
+            opacity: 0.95;
+            filter: drop-shadow(0 4px 12px rgba(10, 132, 255, 0.4)) drop-shadow(0 2px 4px rgba(255, 59, 48, 0.2));
+            transition: transform 0.5s var(--spring-bounce);
+        }
+
+        .glass-box:hover .center-logo {
+            transform: scale(1.08);
+        }
+
+        /* =========================================
+           TYPOGRAPHY & CROSSFADE STATES
+           ========================================= */
+        .text-container {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            /* Fixed height to prevent layout shift */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            /* Staggered Reveal */
+            opacity: 0;
+            filter: blur(20px);
+            transform: translateY(20px);
+            animation: blurReveal 1s var(--spring-snap) 0.5s forwards;
+        }
+
+        .text-state {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            /* Cinematic Transition Base */
+            opacity: 0;
+            filter: blur(15px);
+            transform: scale(0.95) translateY(10px);
+            transition: all 1.2s var(--cinematic-ease);
+            pointer-events: none;
+        }
+
+        .text-state.active {
+            opacity: 1;
+            filter: blur(0px);
+            transform: scale(1) translateY(0);
+        }
+
+        .text-state.exit {
+            opacity: 0;
+            filter: blur(15px);
+            transform: scale(1.05) translateY(-10px);
+        }
+
+        .gradient-text {
+            font-size: 2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--theme-blue), var(--theme-red));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            line-height: 1.2;
+        }
+
+        .sub-text {
+            font-size: 1rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.7);
+            letter-spacing: 0.5px;
+        }
+
+        /* =========================================
+           ANIMATIONS
+           ========================================= */
+        @keyframes blurReveal {
             0% {
                 opacity: 0;
-                filter: blur(20px);
-                transform: translateY(50px) scale(0.85);
+                filter: blur(30px);
+                transform: translateY(40px) scale(0.85);
             }
 
             100% {
@@ -150,156 +283,79 @@
                 transform: translateY(0) scale(1);
             }
         }
-
-        /* 1. Logo Pill */
-        .logo-pill {
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            background-image: url('logo-library.png');
-            background-size: 80%;
-            background-repeat: no-repeat;
-            background-position: center;
-            border-color: rgba(255, 59, 48, 0.5);
-            animation-delay: 3.0s;
-        }
-
-        /* 2. Title Pill */
-        .title-pill {
-            padding: 15px 35px;
-            border-radius: 24px;
-            text-align: center;
-            border-color: rgba(10, 132, 255, 0.4);
-            animation-delay: 3.15s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .title-pill h1 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            line-height: 1.1;
-        }
-
-        .text-red {
-            color: var(--apple-red);
-            text-shadow: 0 0 25px rgba(255, 59, 48, 0.5);
-        }
-
-        .text-blue {
-            color: var(--apple-blue);
-            text-shadow: 0 0 25px rgba(10, 132, 255, 0.5);
-        }
-
-        /* 3. Description Info Pill (Replaced Pricing/Action Buttons) */
-        .info-pill {
-            padding: 18px 32px;
-            border-radius: 24px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            max-width: 420px;
-            text-align: center;
-            line-height: 1.4;
-            color: rgba(255, 255, 255, 0.95);
-            border-color: rgba(255, 255, 255, 0.25);
-            animation-delay: 3.3s;
-            box-shadow:
-                inset 0 1px 3px rgba(255, 255, 255, 0.3),
-                0 20px 45px rgba(0, 0, 0, 0.8);
-        }
-
-        /* Glossy Specular Sweep */
-        .title-pill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 50%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transform: skewX(-20deg);
-            animation: sweep 6s infinite 4.5s;
-            pointer-events: none;
-        }
-
-        @keyframes sweep {
-            0% {
-                left: -100%;
-            }
-
-            20% {
-                left: 200%;
-            }
-
-            100% {
-                left: 200%;
-            }
-        }
     </style>
 </head>
 
 <body>
 
-    <div class="bg-stream-container">
-        <div class="scroll-track">
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
-            </div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
-            </div>
-
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
-            </div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
-
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
-            </div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
-            </div>
-
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
-            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
-            </div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
-            <div class="book-thumb"
-                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
-        </div>
+    <!-- Ambient Glowing Background -->
+    <div class="ambient-bg">
+        <div class="glow-blue"></div>
+        <div class="glow-red"></div>
     </div>
 
-    <div class="bg-vignette"></div>
+    <!-- Main Liquid Glass Box -->
+    <div class="glass-box">
 
-    <div class="ui-layer">
+        <!-- Animated Circle with Centered Logo -->
+        <div class="circle-container">
+            <svg class="progress-ring" viewBox="0 0 160 160">
+                <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#0a84ff" />
+                        <stop offset="100%" stop-color="#ff3b30" />
+                    </linearGradient>
+                </defs>
+                <circle class="ring-bg" cx="80" cy="80" r="74"></circle>
+                <circle class="ring-fill" cx="80" cy="80" r="74"></circle>
+            </svg>
 
-        <div class="glass-element logo-pill"></div>
-
-        <div class="glass-element title-pill">
-            <h1>
-                <span class="text-red">The Spider</span><br>
-                <span class="text-blue">Library</span>
-            </h1>
+            <!-- Glass Orb containing your custom Image Logo -->
+            <div class="circle-inner-orb">
+                <img src="logo-library.png" class="center-logo" alt="Logo">
+            </div>
         </div>
 
-        <div class="glass-element info-pill">
-            A library that has more books available for less money
+        <!-- Text States -->
+        <div class="text-container">
+            <!-- Initial State (0s to 2s) -->
+            <div id="state-1" class="text-state active">
+                <h1 class="gradient-text">1000+ members</h1>
+            </div>
+
+            <!-- Second State (After 2s) -->
+            <div id="state-2" class="text-state">
+                <h1 class="gradient-text">700+ active members</h1>
+                <p class="sub-text">and growing daily</p>
+            </div>
         </div>
 
     </div>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Trigger the cinematic transition after 2 seconds
+            setTimeout(() => {
+
+                // 1. Crossfade the text using cinematic blur & scale
+                const state1 = document.getElementById('state-1');
+                const state2 = document.getElementById('state-2');
+
+                state1.classList.remove('active');
+                state1.classList.add('exit');
+
+                state2.classList.add('active');
+
+                // 2. Animate the circle to 70%
+                // Total circumference is ~465. 
+                // 100% filled = offset 0.
+                // 70% filled = 30% empty. 465 * 0.30 = 139.5
+                const ring = document.querySelector('.ring-fill');
+                ring.style.strokeDashoffset = '139.5';
+
+            }, 2000); // 2000ms = 2 seconds
+        });
+    </script>
 </body>
 
 </html>
