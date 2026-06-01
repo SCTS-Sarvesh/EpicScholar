@@ -43,7 +43,7 @@
             perspective: 1200px;
         }
 
-        /* Initial state of main layout elements (Hidden for sequence) */
+        /* Initial state of main layout elements (Hidden for chronological loop) */
         .ambient-bg,
         header,
         main {
@@ -149,7 +149,7 @@
         }
 
         /* =========================================
-           INTRO OVERLAY TIMELINE CHANGES
+           INTRO OVERLAY (TIMELINE SEQUENCING)
            ========================================= */
         .intro-overlay {
             position: fixed;
@@ -158,7 +158,6 @@
             width: 100vw;
             height: 100vh;
             background: #050505;
-            /* Pitch black environment initially */
             z-index: 200;
             display: flex;
             justify-content: center;
@@ -172,7 +171,6 @@
             pointer-events: none;
         }
 
-        /* Liquid glass design entry properties */
         .intro-pill {
             background: var(--glass-bg);
             backdrop-filter: blur(40px) saturate(220%);
@@ -183,21 +181,18 @@
             border-radius: 32px;
             text-align: center;
 
-            /* Structural Hidden defaults */
             opacity: 0;
             transform: translateY(50px) scale(0.85);
             filter: blur(25px);
             transition: transform 1.2s var(--spring-snap), filter 1.2s var(--spring-smooth), opacity 1s ease;
         }
 
-        /* Liquid Glass Entrance activation state */
         .intro-pill.animate-glass {
             opacity: 1;
             transform: translateY(0) scale(1);
             filter: blur(0);
         }
 
-        /* Staged text blur reveal system */
         .intro-pill span,
         .intro-pill p {
             display: block;
@@ -235,7 +230,7 @@
         }
 
         /* =========================================
-           3D SPATIAL CAROUSEL
+           3D SPATIAL CAROUSEL ENGINE
            ========================================= */
         main {
             flex: 1;
@@ -260,7 +255,7 @@
             transform-style: preserve-3d;
         }
 
-        /* 6-State Positioning System */
+        /* Expanded State Positioning Map for 12 Elements */
         .card.hidden-back {
             transform: translate(-50%, -50%) scale(0.3) rotateY(0deg);
             z-index: 0;
@@ -307,7 +302,7 @@
         }
 
         /* =========================================
-           LIQUID GLASS IMAGES
+           LIQUID GLASS MEDIA CARDS
            ========================================= */
         .glass-image {
             width: 190px;
@@ -338,7 +333,7 @@
         }
 
         /* =========================================
-           MORPHING TEXT BOX
+           MORPHING MAC OS TEXT WINDOWS
            ========================================= */
         .morph-box {
             position: absolute;
@@ -401,7 +396,7 @@
         }
 
         /* =========================================
-           EXPANDED (ACTIVE) STATE 
+           EXPANDED HERO MODIFIERS
            ========================================= */
         .card.center.expanded .glass-image {
             transform: scale(1.06) translateY(-40px);
@@ -444,12 +439,11 @@
             transition: all 0.8s var(--spring-bounce) 0.15s;
         }
 
-        /* High-Res Image Directories */
+        /* Premium Photography Global CDN Resource Directory */
         .img-french {
             background-image: url('https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&w=600&q=80');
         }
 
-        /* FIXED LOGISTICS FOR PREVIOUSLY BLANK IMAGES */
         .img-python {
             background-image: url('https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&w=600&q=80');
         }
@@ -468,6 +462,31 @@
 
         .img-speakup {
             background-image: url('https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-arts {
+            background-image: url('https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-reading {
+            background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-writing {
+            background-image: url('https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-handwriting {
+            background-image: url('https://images.unsplash.com/photo-1506784983877-45594efa4cbe?auto=format&fit=crop&w=600&q=80');
+        }
+
+        /* FIXED & CULTURALLY RELEVANT REPLACEMENTS */
+        .img-japanese {
+            background-image: url('https://images.unsplash.com/photo-1480796927426-f609979314bd?auto=format&fit=crop&w=600&q=80');
+        }
+
+        .img-tamil {
+            background-image: url('https://images.unsplash.com/photo-1581012771300-224937651c42?auto=format&fit=crop&w=600&q=80');
         }
 
         @media (max-width: 768px) {
@@ -537,7 +556,7 @@
 
     <div id="introLayer" class="intro-overlay">
         <div class="intro-pill">
-            <span>5+ Active Classes</span>
+            <span>10+ Active Classes</span>
             <p>Ongoing sessions for all ages</p>
         </div>
     </div>
@@ -588,7 +607,7 @@
             </div>
         </div>
 
-        <div class="card hidden-left">
+        <div class="card hidden-back">
             <div class="glass-image img-robotics"></div>
             <div class="morph-box">
                 <div class="status-badge">● Ongoing</div>
@@ -598,13 +617,73 @@
             </div>
         </div>
 
-        <div class="card left">
+        <div class="card hidden-back">
             <div class="glass-image img-speakup"></div>
             <div class="morph-box">
                 <div class="status-badge">● Ongoing</div>
                 <h2>Speak Up!</h2>
                 <div class="summary">Impromptu speaking sessions designed to help members think on their feet and
                     communicate clearly.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-japanese"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Japanese Class</h2>
+                <div class="summary">Master beautiful Japanese writing systems (Kanji, Hiragana, Katakana) and learn
+                    exquisite traditional etiquette.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-arts"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Arts & Drawing</h2>
+                <div class="summary">Explore real-world sketching, forms, painting, and shading styles to express visual
+                    creativity.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-reading"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Reading (Phonics)</h2>
+                <div class="summary">Master key phonetic sounds, complex blending strategies, and reading pronunciation
+                    patterns.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-back">
+            <div class="glass-image img-writing"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Creative Writing</h2>
+                <div class="summary">Unlock narrative structures, dynamic characters, and prompt frameworks to write
+                    engaging stories.</div>
+            </div>
+        </div>
+
+        <div class="card hidden-left">
+            <div class="glass-image img-handwriting"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Handwriting Class</h2>
+                <div class="summary">Perfect the smooth flow of standard English cursive handwriting with spatial
+                    spacing and loop techniques.</div>
+            </div>
+        </div>
+
+        <div class="card left">
+            <div class="glass-image img-tamil"></div>
+            <div class="morph-box">
+                <div class="status-badge">● Ongoing</div>
+                <h2>Tamil Class</h2>
+                <div class="summary">Tamil is a language of ancient origins. Learn it's basics through this program.
+                </div>
             </div>
         </div>
     </main>
@@ -615,30 +694,29 @@
             const introPill = document.querySelector('.intro-pill');
             const cards = Array.from(document.querySelectorAll('.card'));
 
-            // 6-Card Carousel State Management
-            let states = ['center', 'right', 'hidden-right', 'hidden-back', 'hidden-left', 'left'];
+            // 12-Card Carousel Dynamic Map State Array configuration
+            let states = [
+                'center', 'right', 'hidden-right',
+                'hidden-back', 'hidden-back', 'hidden-back',
+                'hidden-back', 'hidden-back', 'hidden-back', 'hidden-back',
+                'hidden-left', 'left'
+            ];
 
-            const blackoutDuration = 2000; // Duration of absolute black screen
-            const introPillDuration = 2800;// Duration the liquid glass panel remains active
-            const viewDuration = 4500;     // How long a card stays expanded to read
-            const settleDuration = 1000;   // How long it takes to retract before shifting
-            const shiftDuration = 1200;    // How long the 3D rotation shift takes
+            const blackoutDuration = 2000;
+            const introPillDuration = 2800;
+            const viewDuration = 4500;
+            const settleDuration = 1000;
+            const shiftDuration = 1200;
 
-            // Chronological Animation Timeline
-
-            // Phase 1: Wait 2s in total darkness, then prompt the Liquid Glass panel
+            // Chronological Animation Sequence Controller
             setTimeout(() => {
                 introPill.classList.add('animate-glass');
 
-                // Phase 2: Wait out the glass pill review window, then start the layout transition
                 setTimeout(() => {
                     introLayer.classList.add('hidden');
 
-                    // Phase 3: Dissolve layer and activate global body visibility
                     setTimeout(() => {
                         document.body.classList.add('elements-visible');
-
-                        // Fire core engine loop
                         setTimeout(runSequence, 600);
                     }, 200);
 
@@ -646,24 +724,19 @@
 
             }, blackoutDuration);
 
-            // Engine Rotation Loop Logic
+            // Infinite Engine Loop Execution
             function runSequence() {
                 const centerIndex = states.indexOf('center');
                 const centerCard = cards[centerIndex];
 
-                // Expand the center card
                 setTimeout(() => {
                     centerCard.classList.add('expanded');
 
-                    // Wait for reading time, then retract
                     setTimeout(() => {
                         centerCard.classList.remove('expanded');
 
-                        // Wait for retraction to finish, then rotate carousel
                         setTimeout(() => {
                             shiftCarousel();
-
-                            // Wait for rotation to finish, then repeat loop
                             setTimeout(runSequence, shiftDuration);
                         }, settleDuration);
                     }, viewDuration);
@@ -671,7 +744,6 @@
             }
 
             function shiftCarousel() {
-                // Move the last state to the front of the array to rotate right-to-left
                 states.unshift(states.pop());
                 cards.forEach((card, i) => {
                     card.className = `card ${states[i]}`;
