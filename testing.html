@@ -34,7 +34,7 @@
         }
 
         /* =========================================
-           BACKGROUND: MULTI-DIRECTIONAL BANDS
+            BACKGROUND: MULTI-DIRECTIONAL BANDS
            ========================================= */
         .viewport-container {
             position: absolute;
@@ -108,12 +108,11 @@
             width: 100%;
             height: 100%;
             border-radius: inherit;
-            background-size: cover;
-            background-position: center;
+            object-fit: cover;
+            /* Replaces background-size: cover safely */
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.05);
             background-color: #1a1a1a;
-            /* Fallback color while loading */
         }
 
         /* Background Vignette */
@@ -129,7 +128,7 @@
         }
 
         /* =========================================
-           FOREGROUND OVERLAY (TRIGGERED BY SPACEBAR)
+            FOREGROUND OVERLAY (AUTOMATED SEQUENCE)
            ========================================= */
         .overlay {
             position: fixed;
@@ -197,187 +196,115 @@
     <div class="viewport-container">
 
         <div class="scroll-row row-left">
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780439136358-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780439139595-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780439358064-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142406144-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142401644-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780439136358-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780439139595-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780439358064-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142406144-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142401644-L.jpg');"></div>
-            </a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780439136358-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780439139595-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780439358064-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142406144-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142401644-L.jpg" alt="Book" loading="lazy"></a>
+
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780439136358-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780439139595-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780439358064-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142406144-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142401644-L.jpg" alt="Book" loading="lazy"></a>
         </div>
 
         <div class="scroll-row row-right">
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142405789-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780385738776-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781442446007-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781481432290-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780142405789-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780385738776-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781442446007-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781481432290-L.jpg');"></div>
-            </a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142405789-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780385738776-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781442446007-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781481432290-L.jpg" alt="Book" loading="lazy"></a>
+
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780142405789-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780385738776-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781442446007-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781481432290-L.jpg" alt="Book" loading="lazy"></a>
         </div>
 
         <div class="scroll-row row-left">
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781849410076-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781849410083-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781849410090-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780099512288-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780099512325-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780099512295-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780099512332-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780385742889-L.jpg');"></div>
-            </a> <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781849410076-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781849410083-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9781849410090-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780099512288-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780099512325-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780099512295-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780099512332-L.jpg');"></div>
-            </a>
-            <a href="#" class="book-link">
-                <div class="book-thumb"
-                    style="background-image: url('https://covers.openlibrary.org/b/isbn/9780385742889-L.jpg');"></div>
-            </a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781849410076-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781849410083-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781849410090-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780099512288-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780099512325-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780099512295-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780099512332-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780385742889-L.jpg" alt="Book" loading="lazy"></a>
+
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781849410076-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781849410083-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9781849410090-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780099512288-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780099512325-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780099512295-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780099512332-L.jpg" alt="Book" loading="lazy"></a>
+            <a href="#" class="book-link"><img class="book-thumb"
+                    src="https://covers.openlibrary.org/b/isbn/9780385742889-L.jpg" alt="Book" loading="lazy"></a>
         </div>
     </div>
 
@@ -390,21 +317,17 @@
     </div>
 
     <script>
-        // Listen for Spacebar press
-        document.addEventListener('keydown', function (event) {
-            if (event.code === 'Space' || event.key === ' ') {
-                event.preventDefault(); // Prevents page scroll
-
+        document.addEventListener("DOMContentLoaded", () => {
+            // Automatically launch the interactive display layer exactly 8 seconds after initialization
+            setTimeout(() => {
                 const overlay = document.getElementById('actionOverlay');
-                if (overlay.classList.contains('active')) {
-                    overlay.classList.remove('active');
-                } else {
+                if (overlay) {
                     overlay.classList.add('active');
                 }
-            }
+            }, 8000); // 8000 milliseconds = 8 seconds
         });
 
-        // Close overlay if clicked
+        // Close overlay smoothly if clicked anywhere on the screen
         document.getElementById('actionOverlay').addEventListener('click', function () {
             this.classList.remove('active');
         });
