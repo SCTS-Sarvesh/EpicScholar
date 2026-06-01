@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>The Spider Library - Cinematic Scroll</title>
+    <title>The Spider Library - Cinematic Gateway</title>
     <style>
         :root {
             /* Advanced Spatial Easing */
@@ -12,8 +12,10 @@
             --spring-snap: cubic-bezier(0.24, 1.35, 0.4, 1.05);
 
             /* High-Fidelity Palette */
-            --glass-bg: rgba(15, 15, 20, 0.65);
+            --glass-bg: rgba(15, 15, 20, 0.4);
             --glass-border: rgba(255, 255, 255, 0.15);
+            --apple-red: #ff3b30;
+            --apple-blue: #0a84ff;
         }
 
         * {
@@ -30,349 +32,309 @@
             height: 100vh;
             width: 100vw;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             position: relative;
         }
 
         /* =========================================
-            BACKGROUND: MULTI-DIRECTIONAL BANDS
+           BACKGROUND: SINGLE COLUMN HD STREAM
            ========================================= */
-        .viewport-container {
+        .bg-stream-container {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            gap: 3vh;
-            padding: 5vh 0;
-            z-index: 1;
-            transform: perspective(1000px) rotateX(2deg);
-        }
-
-        .scroll-row {
-            display: flex;
-            width: 200%;
-            gap: 20px;
-        }
-
-        .row-left {
-            animation: scrollLeft 45s linear infinite;
-        }
-
-        .row-right {
-            animation: scrollRight 50s linear infinite;
-            transform: translate3d(-50%, 0, 0);
-        }
-
-        @keyframes scrollLeft {
-            0% {
-                transform: translate3d(0, 0, 0);
-            }
-
-            100% {
-                transform: translate3d(-50%, 0, 0);
-            }
-        }
-
-        @keyframes scrollRight {
-            0% {
-                transform: translate3d(-50%, 0, 0);
-            }
-
-            100% {
-                transform: translate3d(0, 0, 0);
-            }
-        }
-
-        /* High-Quality Book Links/Thumbnails */
-        .book-link {
-            display: block;
-            width: 14vw;
-            min-width: 120px;
-            max-width: 200px;
-            aspect-ratio: 2/3;
-            border-radius: 12px;
-            flex-shrink: 0;
-            text-decoration: none;
-            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        }
-
-        .book-link:hover {
-            transform: scale(1.05) translateY(-10px);
-            z-index: 10;
-        }
-
-        .book-thumb {
-            width: 100%;
-            height: 100%;
-            border-radius: inherit;
-            object-fit: cover;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            background-color: #111113;
-        }
-
-        /* Background Vignette */
-        .bg-vignette {
-            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.95) 90%);
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+            z-index: 1;
+            opacity: 0.85;
+            /* Highly visible */
+        }
+
+        .scroll-track {
+            display: flex;
+            flex-direction: column;
+            width: 120vw;
+            /* Bleeds slightly off-screen for a cinematic crop */
+            max-width: 600px;
+            gap: 20px;
+            padding-top: 20px;
+            animation: streamUp 45s linear infinite;
+        }
+
+        /* High-Quality Book Thumbnails */
+        .book-thumb {
+            width: 100%;
+            aspect-ratio: 2/3;
+            border-radius: 12px;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9);
+            flex-shrink: 0;
+        }
+
+        @keyframes streamUp {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-50%);
+            }
+
+            /* Scrolls exactly half the track to loop */
+        }
+
+        /* =========================================
+           VIGNETTE: FIXED FULL-SCREEN COVERAGE
+           ========================================= */
+        .bg-vignette {
+            position: fixed;
+            /* Guarantees it covers the entire viewport */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            width: 100vw;
+            height: 100vh;
+            /* Deep radial gradient to darken edges and make text pop */
+            background: radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.3) 10%, rgba(0, 0, 0, 0.95) 85%);
             z-index: 2;
             pointer-events: none;
         }
 
         /* =========================================
-            FOREGROUND OVERLAY (AUTOMATED SEQUENCE)
+           FOREGROUND: INDIVIDUAL LIQUID GLASS UI
            ========================================= */
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 100;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.6s var(--spring-snap);
-        }
-
-        .overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .glass-element {
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(220%);
-            -webkit-backdrop-filter: blur(40px) saturate(220%);
-            border: 0.5px solid var(--glass-border);
-            box-shadow:
-                inset 0 1px 2px rgba(255, 255, 255, 0.2),
-                0 30px 60px rgba(0, 0, 0, 0.9);
-            padding: 35px 55px;
-            border-radius: 32px;
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.5px;
-            color: rgba(255, 255, 255, 0.95);
-            text-align: center;
-            transform: translateY(60px) scale(0.85);
-            filter: blur(20px);
-            opacity: 0;
-            transition: all 0.8s var(--spring-snap);
+        .ui-layer {
+            position: relative;
+            z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
+            width: 100%;
+            padding: 0 20px;
         }
 
-        .overlay.active .glass-element {
-            transform: translateY(0) scale(1);
-            filter: blur(0px);
-            opacity: 1;
+        /* Shared Glass Properties */
+        .glass-element {
+            background: var(--glass-bg);
+            backdrop-filter: blur(30px) saturate(220%);
+            -webkit-backdrop-filter: blur(30px) saturate(220%);
+            border: 0.5px solid var(--glass-border);
+            box-shadow:
+                inset 0 1px 2px rgba(255, 255, 255, 0.2),
+                0 20px 40px rgba(0, 0, 0, 0.7);
+
+            /* Hidden State */
+            opacity: 0;
+            filter: blur(20px);
+            transform: translateY(50px) scale(0.85);
+
+            /* Entrance */
+            animation: cinematicPop 1.2s var(--spring-snap) forwards;
         }
 
-        .glass-element span {
-            background: linear-gradient(135deg, #0a84ff, #ff3b30);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        @keyframes cinematicPop {
+            0% {
+                opacity: 0;
+                filter: blur(20px);
+                transform: translateY(50px) scale(0.85);
+            }
+
+            100% {
+                opacity: 1;
+                filter: blur(0px);
+                transform: translateY(0) scale(1);
+            }
         }
 
-        .library-logo {
-            height: 55px;
-            width: auto;
-            object-fit: contain;
-            margin-bottom: 5px;
+        /* 1. Logo Pill */
+        .logo-pill {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background-image: url('logo-library.png');
+            background-size: 80%;
+            background-repeat: no-repeat;
+            background-position: center;
+            border-color: rgba(255, 59, 48, 0.5);
+            animation-delay: 3.0s;
+        }
+
+        /* 2. Title Pill */
+        .title-pill {
+            padding: 15px 35px;
+            border-radius: 24px;
+            text-align: center;
+            border-color: rgba(10, 132, 255, 0.4);
+            animation-delay: 3.15s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .title-pill h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            line-height: 1.1;
+        }
+
+        .text-red {
+            color: var(--apple-red);
+            text-shadow: 0 0 25px rgba(255, 59, 48, 0.5);
+        }
+
+        .text-blue {
+            color: var(--apple-blue);
+            text-shadow: 0 0 25px rgba(10, 132, 255, 0.5);
+        }
+
+        /* 3. Pricing Pill */
+        .price-pill {
+            padding: 12px 28px;
+            border-radius: 20px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            animation-delay: 3.3s;
+        }
+
+        .price-pill span {
+            color: #ffffff;
+            font-weight: 700;
+            font-size: 1.15rem;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+        }
+
+        /* 4. Action Button */
+        .action-btn {
+            margin-top: 10px;
+            padding: 18px 45px;
+            border-radius: 35px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #ffffff;
+            cursor: pointer;
+            border: 0.5px solid rgba(255, 255, 255, 0.4);
+
+            /* Gradient overlay blending Red and Blue into the glass */
+            background: linear-gradient(135deg, rgba(10, 132, 255, 0.6) 0%, rgba(255, 59, 48, 0.4) 100%), var(--glass-bg);
+            box-shadow:
+                inset 0 1px 3px rgba(255, 255, 255, 0.5),
+                0 15px 35px rgba(10, 132, 255, 0.4);
+
+            animation-delay: 3.45s;
+            transition: transform 0.3s var(--spring-bounce);
+        }
+
+        .action-btn:active {
+            transform: scale(0.92);
+        }
+
+        /* Glossy Specular Sweep */
+        .title-pill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: skewX(-20deg);
+            animation: sweep 6s infinite 4.5s;
+            pointer-events: none;
+        }
+
+        @keyframes sweep {
+            0% {
+                left: -100%;
+            }
+
+            20% {
+                left: 200%;
+            }
+
+            100% {
+                left: 200%;
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="viewport-container">
+    <div class="bg-stream-container">
+        <div class="scroll-track">
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
+            </div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
+            </div>
 
-        <div class="scroll-row row-left">
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591161783-L.jpg" alt="Naruto" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591166207-L.jpg" alt="One Piece" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781421587189-L.jpg" alt="Black Clover"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg"
-                    alt="Harry Potter and the Sorcerer's Stone" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Keeper of the Lost Cities"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Alex Rider: Stormbreaker"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="The Maze Runner"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9788171842391-L.jpg" alt="Kalki: Ponniyin Selvan Tamil"
-                    loading="lazy"></a>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
+            </div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
 
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591161783-L.jpg" alt="Naruto" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591166207-L.jpg" alt="One Piece" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781421587189-L.jpg" alt="Black Clover"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Harry Potter"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Keeper of the Lost Cities"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Alex Rider" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="The Maze Runner"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9788171842391-L.jpg" alt="Kalki: Ponniyin Selvan Tamil"
-                    loading="lazy"></a>
-        </div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10521270-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10416922-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8404791-L.jpg');">
+            </div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8231853-L.jpg');">
+            </div>
 
-        <div class="scroll-row row-right">
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781421535845-L.jpg" alt="Naruto Vol. 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591166214-L.jpg" alt="One Piece Vol. 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781421591155-L.jpg" alt="Black Clover Vol. 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg"
-                    alt="Harry Potter and the Chamber of Secrets" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg"
-                    alt="Keeper of the Lost Cities: Exile" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg" alt="Alex Rider: Point Blank"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg" alt="The Scorch Trials"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9788123408330-L.jpg"
-                    alt="Kalki: Sivagamiyin Sabatham Tamil" loading="lazy"></a>
-
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781421535845-L.jpg" alt="Naruto Vol. 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591166214-L.jpg" alt="One Piece Vol. 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781421591155-L.jpg" alt="Black Clover Vol. 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780439064866-L.jpg" alt="Harry Potter 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445970-L.jpg" alt="Keeper of the Lost Cities 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406120-L.jpg" alt="Alex Rider 2"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385738752-L.jpg" alt="The Scorch Trials"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9788123408330-L.jpg"
-                    alt="Kalki: Sivagamiyin Sabatham Tamil" loading="lazy"></a>
-        </div>
-
-        <div class="scroll-row row-left">
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591161783-L.jpg" alt="Naruto" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591166207-L.jpg" alt="One Piece" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781421587189-L.jpg" alt="Black Clover"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Harry Potter"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Keeper of the Lost Cities"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Alex Rider" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="The Maze Runner"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9788171842391-L.jpg" alt="Kalki Tamil"
-                    loading="lazy"></a>
-
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591161783-L.jpg" alt="Naruto" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781591166207-L.jpg" alt="One Piece" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781421587189-L.jpg" alt="Black Clover"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780590353403-L.jpg" alt="Harry Potter"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9781442445949-L.jpg" alt="Keeper of the Lost Cities"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780142406113-L.jpg" alt="Alex Rider" loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9780385737946-L.jpg" alt="The Maze Runner"
-                    loading="lazy"></a>
-            <a href="#" class="book-link"><img class="book-thumb"
-                    src="https://covers.openlibrary.org/b/isbn/9788171842391-L.jpg" alt="Kalki Tamil"
-                    loading="lazy"></a>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/10574565-L.jpg');"></div>
+            <div class="book-thumb" style="background-image: url('https://covers.openlibrary.org/b/id/8282361-L.jpg');">
+            </div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/12818862-L.jpg');"></div>
+            <div class="book-thumb"
+                style="background-image: url('https://covers.openlibrary.org/b/id/14418659-L.jpg');"></div>
         </div>
     </div>
 
     <div class="bg-vignette"></div>
 
-    <div id="actionOverlay" class="overlay">
-        <div class="glass-element">
-            <img src="logo-library.png" alt="Library Logo" class="library-logo">
-            <div>over <span>14,000 books</span> available</div>
+    <div class="ui-layer">
+
+        <div class="glass-element logo-pill"></div>
+
+        <div class="glass-element title-pill">
+            <h1>
+                <span class="text-red">The Spider</span><br>
+                <span class="text-blue">Library</span>
+            </h1>
         </div>
+
+        <div class="glass-element price-pill">
+            plans starting from just <span>₹150</span>
+        </div>
+
+        <button class="glass-element action-btn">
+            Join us now
+        </button>
+
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Automatically launch glass sheet modal layer precisely 8 seconds after assembly
-            setTimeout(() => {
-                const overlay = document.getElementById('actionOverlay');
-                if (overlay) {
-                    overlay.classList.add('active');
-                }
-            }, 8000);
-        });
-
-        // Click anywhere across backdrop element canvas to securely drop activation layer
-        document.getElementById('actionOverlay').addEventListener('click', function () {
-            this.classList.remove('active');
-        });
-    </script>
 </body>
 
 </html>
