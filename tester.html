@@ -3,279 +3,695 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>EpicScholar - Please Hold</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EpicScholar Cinematic Sequence</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght=300;600;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght=300;400;600;700;800;900&display=swap');
 
-        :root {
-            /* Brand Color System matching testing-1.html */
-            --theme-pink: #ff416c;
-            --theme-blue: #0072ff;
-            --spring-snap: cubic-bezier(0.24, 1.35, 0.4, 1.05);
-            
-            /* High contrast dark liquid glass properties */
-            --glass-bg: rgba(10, 10, 14, 0.82);
-            --glass-border: rgba(255, 255, 255, 0.08);
-        }
-
-        *,
-        *::before,
-        *::after {
+        *, *::before, *::after {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Prevent system overflow canvas edge lines on mobile viewport bounds */
-        html,
-        body {
+        :root {
+            --accent-1: #ff416c;
+            --accent-2: #0072ff;
+            --glass-bg: rgba(255, 255, 255, 0.02);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --liquid-grad: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
+            --ease-cinematic: cubic-bezier(0.8, 0, 0.2, 1);
+        }
+
+        html, body {
             width: 100%;
             height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: #000000;
             overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-family: 'Sora', sans-serif;
-            color: #ffffff;
+            background: #030303;
+            color: #fff;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ── ISOLATED BACKGROUND ORB SYSTEM (No white edges) ── */
-        .orb-wrapper {
+        /* ─── STAGE & 3D CAMERA ─── */
+        #stage {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            inset: 0;
+            perspective: 1000px;
             overflow: hidden;
-            pointer-events: none;
-            z-index: 0;
-            background: #000000;
         }
 
-        .orb {
+        .scene {
             position: absolute;
-            border-radius: 50%;
-            pointer-events: none;
-            filter: blur(90px);
-            opacity: 0;
-            animation: orbIn 3s ease 0.5s forwards;
-        }
-
-        @keyframes orbIn {
-            to { opacity: 1; }
-        }
-
-        /* Desktop Positioning Proportions */
-        @media (min-width: 769px) {
-            .orb-pink {
-                width: 52vw; height: 52vw;
-                background: radial-gradient(circle, rgba(255,65,108,.22) 0%, transparent 70%);
-                top: -12%; right: -5%;
-            }
-            .orb-blue {
-                width: 46vw; height: 46vw;
-                background: radial-gradient(circle, rgba(0,114,255,.18) 0%, transparent 70%);
-                bottom: -12%; left: -5%;
-                animation-delay: 0.8s;
-            }
-        }
-
-        /* Mobile Scale Optimization */
-        @media (max-width: 768px) {
-            .orb-pink {
-                width: 115vw; height: 115vw;
-                background: radial-gradient(circle, rgba(255,65,108,.26) 0%, transparent 65%);
-                top: -22%; right: -25%;
-            }
-            .orb-blue {
-                width: 105vw; height: 105vw;
-                background: radial-gradient(circle, rgba(0,114,255,.22) 0%, transparent 65%);
-                bottom: -18%; left: -25%;
-                animation-delay: 0.6s;
-            }
-        }
-
-        /* ── LAYOUT CONTAINER ── */
-        .wrap {
-            position: relative;
-            z-index: 10;
+            inset: 0;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            width: 100%;
-            max-width: 620px;
-            padding: 0 20px;
-        }
-
-        /* ── SINGLE LIQUID GLASS BOX PANEL ── */
-        .glass-box {
-            width: 100%;
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(220%);
-            -webkit-backdrop-filter: blur(40px) saturate(220%);
-            border: 1px solid var(--glass-border);
-            border-top: 1px solid rgba(255, 65, 108, 0.35);
-            border-bottom: 1px solid rgba(0, 114, 255, 0.35);
-            
-            box-shadow: 
-                inset 1px 1px 3px rgba(255, 255, 255, 0.08),
-                inset -1px -2px 6px rgba(0, 0, 0, 0.95),
-                0 30px 60px rgba(0, 0, 0, 0.85);
-
-            display: flex;
-            flex-direction: column;
             justify-content: center;
-            position: relative;
-            overflow: hidden;
-
+            flex-direction: column;
             opacity: 0;
-            filter: blur(20px);
-            transform: translateY(40px) scale(0.95);
-            animation: cinematicPop 1.2s var(--spring-snap) 0.4s forwards;
+            pointer-events: none;
+            transform-style: preserve-3d;
+            padding: 20px;
+            text-align: center;
+            will-change: transform, opacity, filter;
         }
 
-        @keyframes cinematicPop {
-            0% { opacity: 0; filter: blur(20px); transform: translateY(40px) scale(0.95); }
-            100% { opacity: 1; filter: blur(0px); transform: translateY(0) scale(1); }
+        .scene.active {
+            opacity: 1;
+            pointer-events: auto;
         }
 
-        /* Fluid Form Factor Spacing Layout Rules */
-        @media (min-width: 769px) {
-            .glass-box { padding: 44px 48px; border-radius: 24px; }
+        /* ─── CINEMATIC LIGHT LEAK ─── */
+        #light-leak {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.8), rgba(0, 114, 255, 0.4), transparent 70%);
+            mix-blend-mode: overlay;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 999;
+            will-change: opacity, transform;
         }
 
-        @media (max-width: 768px) {
-            .glass-box { padding: 32px 26px; border-radius: 20px; }
+        .flash {
+            animation: lightFlash 0.6s var(--ease-cinematic) forwards;
         }
 
-        /* ── PREMIUM HIGH-CONTRAST TYPOGRAPHY ── */
-        .tag-text {
-            font-size: clamp(13px, 3.2vw, 15px);
-            font-weight: 900;
-            letter-spacing: 0.24em;
-            text-transform: uppercase;
-            margin-bottom: 16px;
+        @keyframes lightFlash {
+            0% { opacity: 0; transform: scale(0.8); }
+            30% { opacity: 0.6; transform: scale(1.2); }
+            100% { opacity: 0; transform: scale(1.5); }
         }
 
-        .main-text {
-            font-size: clamp(21px, 5.4vw, 28px);
-            font-weight: 600;
-            line-height: 1.35;
-            letter-spacing: -0.02em;
-            color: rgba(255, 255, 255, 0.98);
-            margin-bottom: 18px;
-        }
-
-        .sub-text {
-            font-size: clamp(14px, 3.6vw, 16px);
-            font-weight: 300;
-            line-height: 1.7;
-            color: rgba(255, 255, 255, 0.76);
-        }
-
-        /* ── BRAND SIGNATURE TEXT GRADIENT (Bug-proof rendering) ── */
-        .brand-gradient {
-            background: linear-gradient(90deg, #ff416c, #0072ff);
+        /* ─── TYPOGRAPHY & EFFECTS ─── */
+        .text-grad {
+            background: var(--liquid-grad);
+            background-size: 200% 200%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            /* Structural filters guarantee visibility against deep backdrops */
-            filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.95)) drop-shadow(0px 4px 12px rgba(0, 114, 255, 0.2));
+            animation: gradFlow 6s ease infinite;
         }
 
-        /* ── REVEAL SYSTEM ANIMATION ROUTINES ── */
-        .char {
-            display: inline-block;
-            opacity: 0;
-            filter: blur(12px);
-            transform: translate3d(0, 10px, 0);
-            animation: blurReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        .text-glow {
+            text-shadow: 0 0 40px rgba(0, 114, 255, 0.5);
         }
 
-        /* Avoids clip stacking context collision bugs during letters blur runtime */
-        .word-reveal {
-            display: inline-block;
-            opacity: 0;
-            filter: blur(12px);
-            transform: translate3d(0, 10px, 0);
-            animation: blurReveal 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-            animation-delay: var(--delay);
+        @keyframes gradFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
-        @keyframes blurReveal {
-            0% { opacity: 0; filter: blur(12px); transform: translate3d(0, 10px, 0); }
-            100% { opacity: 1; filter: blur(0px); transform: translate3d(0, 0, 0); }
+        /* ─── LIQUID GLASS ─── */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(40px);
+            -webkit-backdrop-filter: blur(40px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.03);
+            border-radius: 32px;
         }
+
+        .liquid-orb {
+            position: absolute;
+            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+            pointer-events: none;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: morph 12s ease-in-out infinite alternate, float 15s ease-in-out infinite;
+        }
+
+        @keyframes morph {
+            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(5vw, -5vh) rotate(15deg); }
+        }
+
+        /* ─── ANIMATIONS ─── */
+        @keyframes textRise {
+            from { opacity: 0; transform: translateY(30px) translateZ(50px); }
+            to { opacity: 1; transform: translateY(0) translateZ(0); }
+        }
+
+        @keyframes letterSpace {
+            from { letter-spacing: 0.3em; opacity: 0; filter: blur(10px); }
+            to { letter-spacing: -0.05em; opacity: 1; filter: blur(0); }
+        }
+
+        @keyframes badgePop {
+            from { transform: scale(0.6) translateZ(100px); opacity: 0; }
+            to { transform: scale(1) translateZ(0); opacity: 1; }
+        }
+
+        /* ═══════════════════════════════════════
+           SCENE STYLES (STRICTLY MOBILE RESPONSIVE)
+           ═══════════════════════════════════════ */
         
+        /* SCENE 0 */
+        #s0 .big-stat {
+            font-size: clamp(60px, 18vw, 150px);
+            font-weight: 900;
+            letter-spacing: -0.04em;
+            line-height: 1;
+            transition: color 0.4s ease;
+        }
+        #s0 .sub-stat {
+            font-size: clamp(14px, 4vw, 24px);
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-top: 10px;
+            animation: textRise 1s ease 0.4s both;
+        }
+        #s0 .sub-stat-extra {
+            font-size: clamp(11px, 3.5vw, 18px);
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-top: 6px;
+            animation: textRise 1s ease 0.6s both;
+        }
+
+        /* SCENE 1 */
+        #s1 .orb-red {
+            width: 90vw; height: 90vw; max-width: 600px; max-height: 600px;
+            background: radial-gradient(circle, rgba(255, 65, 108, 0.2), transparent 60%);
+            top: -10%; left: -10%;
+        }
+        #s1 .stat-num {
+            font-size: clamp(70px, 20vw, 180px);
+            font-weight: 900;
+            line-height: 0.9;
+        }
+        #s1 .stat-label {
+            font-size: clamp(22px, 6vw, 42px);
+            font-weight: 600;
+            margin-top: 15px;
+            animation: textRise 0.8s ease 0.4s both;
+        }
+        #s1 .stat-desc {
+            font-size: clamp(13px, 3.5vw, 20px);
+            color: rgba(255, 255, 255, 0.4);
+            margin-top: 20px;
+            max-width: 500px;
+            line-height: 1.6;
+            animation: textRise 0.8s ease 0.6s both;
+        }
+
+        /* SCENE 2 */
+        #s2 .orb-blue {
+            width: 80vw; height: 80vw; max-width: 500px; max-height: 500px;
+            background: radial-gradient(circle, rgba(0, 114, 255, 0.2), transparent 60%);
+            bottom: -10%; right: -10%;
+        }
+        #s2 .question {
+            font-size: clamp(28px, 7vw, 64px);
+            font-weight: 300;
+            line-height: 1.3;
+        }
+        #s2 .q-line1 { display: block; color: rgba(255, 255, 255, 0.5); animation: textRise 1s ease 0.2s both; }
+        #s2 .q-line2 { display: block; font-weight: 800; font-size: 1.2em; margin-top: 10px; animation: textRise 1.2s var(--ease-elastic) 0.6s both; }
+
+        /* SCENE 3 */
+        #s3 .orb-main {
+            width: 100vw; height: 100vw; max-width: 800px; max-height: 800px;
+            background: radial-gradient(circle, rgba(255, 65, 108, 0.2), rgba(0, 114, 255, 0.2), transparent 65%);
+        }
+        #s3 .hero-brand {
+            font-size: clamp(42px, 12vw, 140px);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+            animation: letterSpace 1.5s var(--ease-elastic) 0.2s both;
+        }
+        #s3 .coming-badge {
+            margin-top: 25px;
+            padding: 14px 32px;
+            font-size: clamp(11px, 3vw, 14px);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: #fff;
+            border-radius: 100px;
+            position: relative;
+            animation: badgePop 1s var(--ease-elastic) 0.8s both;
+        }
+        #s3 .coming-badge::before {
+            content: ''; position: absolute; inset: 0;
+            background: var(--liquid-grad); opacity: 0.2; z-index: -1;
+            border-radius: 100px;
+        }
+        #s3 .coming-badge::after {
+            content: ''; position: absolute; inset: 0;
+            border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 100px; z-index: -1;
+        }
+
+        /* SCENE 4: 3D CARDS (RESPONSIVE) */
+        #s4 .section-eyebrow {
+            font-size: clamp(11px, 3vw, 13px);
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.3);
+            margin-bottom: 30px;
+            animation: textRise 0.8s ease both;
+        }
+        #s4 .cards-container {
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+            width: 100%;
+            max-width: 900px;
+            justify-content: center;
+        }
+        #s4 .glass-card {
+            flex: 1;
+            padding: 30px 24px;
+            text-align: left;
+            transition: transform 0.5s var(--ease-elastic), border-color 0.3s;
+        }
+        #s4 .card-icon {
+            font-size: clamp(26px, 6vw, 32px);
+            margin-bottom: 16px;
+        }
+        #s4 .card-title {
+            font-size: clamp(18px, 4.5vw, 22px);
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.03em;
+        }
+        #s4 .card-desc {
+            font-size: clamp(12px, 3vw, 14px);
+            color: rgba(255, 255, 255, 0.4);
+            line-height: 1.6;
+        }
+
+        /* Desktop 3D setup */
+        @media (min-width: 769px) {
+            #s4 .glass-card:nth-child(1) { transform: rotateY(-10deg) translateZ(-40px); }
+            #s4 .glass-card:nth-child(2) { transform: translateZ(20px); }
+            #s4 .glass-card:nth-child(3) { transform: rotateY(10deg) translateZ(-40px); }
+            #s4 .glass-card:hover { transform: translateY(-10px) translateZ(40px) scale(1.05); border-color: rgba(255,255,255,0.2); }
+        }
+
+        /* Mobile Flex Column Override */
+        @media (max-width: 768px) {
+            #s4 .cards-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 16px;
+            }
+            #s4 .glass-card {
+                width: 90vw;
+                max-width: 380px;
+                padding: 24px 20px;
+                transform: none !important;
+                animation: textRise 0.8s var(--ease-elastic) both;
+            }
+            #s4 .glass-card:nth-child(1) { animation-delay: 0.2s; }
+            #s4 .glass-card:nth-child(2) { animation-delay: 0.35s; }
+            #s4 .glass-card:nth-child(3) { animation-delay: 0.5s; }
+        }
+
+        /* SCENE 5 */
+        #s5 .mantra {
+            font-size: clamp(40px, 10vw, 100px);
+            font-weight: 900;
+            line-height: 1.1;
+            letter-spacing: -0.04em;
+        }
+        #s5 .m-w1 { display: block; color: rgba(255, 255, 255, 0.2); animation: textRise 1s ease 0.2s both; }
+        #s5 .m-w2 { display: block; animation: textRise 1s ease 0.5s both; }
+        #s5 .m-w3 { display: block; margin-top: 10px; animation: textRise 1s var(--ease-elastic) 0.9s both; }
+
+        /* SCENE 6 */
+        #s6 .final-brand {
+            font-size: clamp(36px, 12vw, 70px);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            margin-bottom: 24px;
+            animation: textRise 1s var(--ease-elastic) 0.3s both;
+        }
+        #s6 .glass-button {
+            padding: 16px 36px;
+            font-size: clamp(14px, 4vw, 16px);
+            font-weight: 600;
+            border-radius: 100px;
+            color: #fff;
+            cursor: pointer;
+            position: relative;
+            border: none;
+            outline: none;
+            animation: badgePop 1s var(--ease-elastic) 0.8s both;
+        }
+        #s6 .glass-button::before {
+            content: ''; position: absolute; inset: 0;
+            background: var(--liquid-grad); opacity: 0.8; z-index: -1;
+            border-radius: 100px; transition: opacity 0.3s ease;
+        }
+        #s6 .glass-button:hover::before { opacity: 1; }
+        #s6 .sub-text {
+            margin-top: 24px;
+            font-size: clamp(12px, 3.5vw, 14px);
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.1em;
+            animation: textRise 1s ease 1.2s both;
+        }
+        #s6 .free-badge {
+            margin-top: 12px;
+            font-size: clamp(11px, 3vw, 13px);
+            color: var(--accent-1);
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            animation: textRise 1s ease 1.5s both;
+        }
     </style>
 </head>
 
 <body>
 
-    <div class="orb-wrapper">
-        <div class="orb orb-pink"></div>
-        <div class="orb orb-blue"></div>
-    </div>
+    <div id="light-leak"></div>
 
-    <div class="wrap">
+    <div id="stage">
+        
+        <div class="scene" id="s0">
+            <div class="big-stat">0</div>
+            <div class="sub-stat">Hours in a classroom</div>
+            <div class="sub-stat-extra">before graduation</div>
+        </div>
 
-        <div class="glass-box">
-            
-            <div class="tag-text brand-gradient word-reveal" style="--delay: 1.1s;">Take a deep breath</div>
-            
-            <div class="main-text blur-text" data-start="1.6">Still waiting on that elusive OTP?</div>
-            
-            <div class="sub-text">
-                <span class="blur-text" data-start="3.4">In the meantime, feel free to sit back and marvel at the breathtaking design of our </span>
-                <strong class="brand-gradient word-reveal" style="--delay: 5.4s;">website</strong>
-                <span class="blur-text" data-start="5.8">. Or, if you're actually trying to get things done today, go rummage through the dark depths of your Gmail's </span>
-                <strong class="brand-gradient word-reveal" style="--delay: 8.2s;">spam section</strong>
-                <span class="blur-text" data-start="8.6">—where our poor code is likely trapped hosting a solo party until we upgrade our email servers. It's in there. We promise.</span>
+        <div class="scene" id="s1">
+            <div class="liquid-orb orb-red"></div>
+            <div class="stat-num text-grad">85%</div>
+            <div class="stat-label">Forgotten in a week.</div>
+            <div class="stat-desc">The current education system relies on rigid, factory-style rote memorization. It drains creativity and kills retention.</div>
+        </div>
+
+        <div class="scene" id="s2">
+            <div class="liquid-orb orb-blue"></div>
+            <div class="question">
+                <span class="q-line1">What if learning felt...</span>
+                <span class="q-line2 text-glow">Effortless?</span>
             </div>
-            
+        </div>
+
+        <div class="scene" id="s3">
+            <div class="liquid-orb orb-main"></div>
+            <div class="hero-brand text-grad">EpicScholar</div>
+            <div class="coming-badge">Connect · Study · Thrive</div>
+        </div>
+
+        <div class="scene" id="s4">
+            <div class="section-eyebrow">A new standard</div>
+            <div class="cards-container">
+                <div class="glass-panel glass-card">
+                    <div class="card-icon">🧠</div>
+                    <div class="card-title">Dynamic<br>Retention</div>
+                    <div class="card-desc">Algorithms that adapt to how quickly you learn, focusing only on what you're about to forget.</div>
+                </div>
+                <div class="glass-panel glass-card">
+                    <div class="card-icon">✨</div>
+                    <div class="card-title">Spatial<br>Focus</div>
+                    <div class="card-desc">Immersive, distraction-free UI designed specifically to lower cognitive load.</div>
+                </div>
+                <div class="glass-panel glass-card">
+                    <div class="card-icon">⚡</div>
+                    <div class="card-title">Instant<br>Clarity</div>
+                    <div class="card-desc">No more endlessly searching for answers. AI-driven explanations mapped perfectly to your syllabus.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="scene" id="s5">
+            <div class="mantra">
+                <span class="m-w1">Don't just</span>
+                <span class="m-w2">memorize.</span>
+                <span class="m-w3 text-grad">Understand.</span>
+            </div>
+        </div>
+
+        <div class="scene" id="s6">
+            <div class="liquid-orb orb-main" style="width: 150vw; height: 150vw; bottom: -60%; opacity: 0.2;"></div>
+            <div class="final-brand text-grad">EpicScholar</div>
+            <button class="glass-button">Experience the Platform</button>
+            <div class="sub-text">Built for the future of learning.</div>
+            <div class="free-badge">Available at epicscholar.cloud for free</div>
         </div>
 
     </div>
 
+    <div id="dots"></div>
+
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const blurTexts = document.querySelectorAll('.blur-text');
-            
-            blurTexts.forEach(el => {
-                const text = el.innerText;
-                const baseDelay = parseFloat(el.getAttribute('data-start')) || 0;
-                
-                el.innerHTML = '';
-                
-                let charCount = 0;
-                const words = text.split(' ');
-                
-                words.forEach((word, index) => {
-                    const wordSpan = document.createElement('span');
-                    wordSpan.style.display = 'inline-block';
-                    
-                    word.split('').forEach(char => {
-                        const charSpan = document.createElement('span');
-                        charSpan.textContent = char;
-                        charSpan.className = 'char';
-                        charSpan.style.animationDelay = `${baseDelay + (charCount * 0.025)}s`;
-                        wordSpan.appendChild(charSpan);
-                        charCount++;
+        // Mix-and-match Timeline Transitions config reflecting specific content nature
+        const TL = [
+            { 
+                id: 's0', 
+                dur: 5000,
+                enter: (el) => {
+                    el.style.opacity = '1';
+                    // Run Scroll Count up on layout arrival
+                    const numEl = el.querySelector('.big-stat');
+                    numEl.classList.remove('text-grad');
+                    animateNumber(numEl, 0, 15000, 2200);
+                },
+                exit: (el) => { // Institutional Weight: Drop down heavily like a concrete pillar
+                    el.style.transition = 'transform 0.8s cubic-bezier(0.6, -0.28, 0.735, 0.045), opacity 0.5s ease, filter 0.6s ease';
+                    el.style.transform = 'translateY(100vh) scale(0.9) rotate(3deg)';
+                    el.style.filter = 'blur(10px)';
+                    el.style.opacity = '0';
+                }
+            },
+            { 
+                id: 's1', 
+                dur: 5500,
+                enter: (el) => { // Dissolve rise from dark classroom depths
+                    el.style.transform = 'translateY(-40px) scale(1.05)';
+                    el.style.filter = 'blur(20px)';
+                    el.style.opacity = '0';
+                    el.style.transition = 'all 0.8s cubic-bezier(0.215, 0.610, 0.355, 1)';
+                    requestAnimationFrame(() => {
+                        el.style.transform = 'translateY(0) scale(1)';
+                        el.style.filter = 'blur(0)';
+                        el.style.opacity = '1';
                     });
-                    
-                    el.appendChild(wordSpan);
-                    
-                    if (index < words.length - 1) {
-                        el.appendChild(document.createTextNode('\u00A0'));
-                    }
-                });
-            });
+                },
+                exit: (el) => { // Forgotten: Dissipates and sweeps laterally out into the past
+                    el.style.transition = 'all 0.7s cubic-bezier(0.55, 0.055, 0.675, 0.19)';
+                    el.style.transform = 'translateX(-100vw) blur(20px)';
+                    el.style.opacity = '0';
+                }
+            },
+            { 
+                id: 's2', 
+                dur: 4500,
+                enter: (el) => { // The Pivot: Slides smoothly like an airy modern paradigm shift
+                    el.style.transform = 'translateX(100vw) scale(0.95)';
+                    el.style.filter = 'blur(15px)';
+                    el.style.opacity = '0';
+                    el.style.transition = 'all 0.9s cubic-bezier(0.25, 1, 0.5, 1)';
+                    requestAnimationFrame(() => {
+                        el.style.transform = 'translateX(0) scale(1)';
+                        el.style.filter = 'blur(0)';
+                        el.style.opacity = '1';
+                    });
+                },
+                exit: (el) => { // Portal Breakthrough: Expands directly outwards through the camera lenses
+                    el.style.transition = 'all 0.7s cubic-bezier(0.85, 0, 0.15, 1)';
+                    el.style.transform = 'scale(2.2) translateZ(300px)';
+                    el.style.filter = 'blur(35px)';
+                    el.style.opacity = '0';
+                }
+            },
+            { 
+                id: 's3', 
+                dur: 5500,
+                enter: (el) => { // High-Energy Reveal: Snaps forcefully forward from center space depth
+                    el.style.transform = 'translateZ(-800px) scale(0.2)';
+                    el.style.filter = 'blur(25px)';
+                    el.style.opacity = '0';
+                    el.style.transition = 'all 1.1s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                    requestAnimationFrame(() => {
+                        el.style.transform = 'translateZ(0) scale(1)';
+                        el.style.filter = 'blur(0)';
+                        el.style.opacity = '1';
+                    });
+                },
+                exit: (el) => { // Grid recess: Drops back slightly to frame workspace environment layout
+                    el.style.transition = 'all 0.8s cubic-bezier(0.76, 0, 0.24, 1)';
+                    el.style.transform = 'translateZ(-300px) scale(0.75)';
+                    el.style.filter = 'blur(8px)';
+                    el.style.opacity = '0';
+                }
+            },
+            { 
+                id: 's4', 
+                dur: 7000,
+                enter: (el) => { // Interface Reveal: Unrolls cards downward neatly into focus view
+                    el.style.transform = 'translateY(-100px) scale(0.9)';
+                    el.style.opacity = '0';
+                    el.style.transition = 'all 0.9s cubic-bezier(0.34, 1.2, 0.64, 1)';
+                    requestAnimationFrame(() => {
+                        el.style.transform = 'translateY(0) scale(1)';
+                        el.style.opacity = '1';
+                    });
+                },
+                exit: (el) => { // Slide Clean: Shifts out sideways like a moving viewport pane
+                    el.style.transition = 'all 0.7s cubic-bezier(0.6, -0.28, 0.735, 0.045)';
+                    el.style.transform = 'translateX(100vw) rotate(4deg)';
+                    el.style.opacity = '0';
+                }
+            },
+            { 
+                id: 's5', 
+                dur: 5000,
+                enter: (el) => { // Clear Focus: Pierces directly through center screen layer
+                    el.style.transform = 'scale(0.6) translateZ(200px)';
+                    el.style.filter = 'blur(15px)';
+                    el.style.opacity = '0';
+                    el.style.transition = 'all 1s cubic-bezier(0.8, 0, 0.2, 1)';
+                    requestAnimationFrame(() => {
+                        el.style.transform = 'scale(1) translateZ(0)';
+                        el.style.filter = 'blur(0)';
+                        el.style.opacity = '1';
+                    });
+                },
+                exit: (el) => { // Ultimate Elevation: Glides clean upwards out of sight
+                    el.style.transition = 'all 0.7s cubic-bezier(0.83, 0, 0.17, 1)';
+                    el.style.transform = 'translateY(-100vh) scale(1.05)';
+                    el.style.opacity = '0';
+                }
+            },
+            { 
+                id: 's6', 
+                dur: 99999,
+                enter: (el) => { // Outro Resolution: Smooth settling deceleration into final equilibrium rest
+                    el.style.transform = 'translateY(60px)';
+                    el.style.opacity = '0';
+                    el.style.transition = 'all 1.2s cubic-bezier(0.22, 1, 0.36, 1)';
+                    requestAnimationFrame(() => {
+                        el.style.transform = 'translateY(0)';
+                        el.style.opacity = '1';
+                    });
+                },
+                exit: (el) => {}
+            }
+        ];
+
+        // Number scroll engine function
+        function animateNumber(el, start, end, duration) {
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                // Cubic ease out curve
+                const easeProgress = 1 - Math.pow(1 - progress, 3);
+                const currentVal = Math.floor(easeProgress * (end - start) + start);
+                el.textContent = currentVal.toLocaleString();
+                
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                } else {
+                    // Click into place color transition
+                    el.classList.add('text-grad');
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        const dotsEl = document.getElementById('dots');
+        TL.forEach((_, i) => {
+            const d = document.createElement('div');
+            d.className = 'dot'; d.id = 'dot' + i;
+            dotsEl.appendChild(d);
+        });
+
+        function setDot(i) {
+            document.querySelectorAll('.dot').forEach(d => d.classList.remove('on'));
+            const d = document.getElementById('dot' + i);
+            if (d) d.classList.add('on');
+        }
+
+        let cur = 0, timer = null;
+        const lightLeak = document.getElementById('light-leak');
+
+        function transitionTo(idx) {
+            if (idx >= TL.length || idx < 0) return;
+
+            const outIdx = cur;
+            const outEl = document.getElementById(TL[outIdx]?.id);
+            const inEl = document.getElementById(TL[idx].id);
+            if (!inEl) return;
+
+            // Trigger Cinematic Light Flash
+            lightLeak.classList.remove('flash');
+            void lightLeak.offsetWidth; 
+            lightLeak.classList.add('flash');
+
+            // Trigger Contextual Exit Transition
+            if (outEl && outIdx !== idx) {
+                TL[outIdx].exit(outEl);
+                const oldIdx = outIdx;
+                setTimeout(() => {
+                    const el = document.getElementById(TL[oldIdx].id);
+                    el.classList.remove('active');
+                    el.style.cssText = ''; // Flush transient styles completely
+                }, 800);
+            }
+
+            // Trigger Contextual Entry Transition
+            inEl.style.display = 'none';
+            void inEl.offsetWidth;
+            inEl.style.display = 'flex';
+            
+            inEl.classList.add('active');
+            TL[idx].enter(inEl);
+
+            cur = idx;
+            setDot(idx);
+
+            if (timer) clearTimeout(timer);
+            if (TL[idx].dur < 99999) {
+                timer = setTimeout(() => { transitionTo(cur + 1); }, TL[idx].dur);
+            }
+        }
+
+        // Init Sequence
+        window.addEventListener('load', () => {
+            setTimeout(() => { transitionTo(0); }, 300);
+        });
+
+        // Tap to advance (Mobile friendly)
+        document.getElementById('stage').addEventListener('click', (e) => {
+            if(e.target.tagName.toLowerCase() === 'button') return;
+            
+            if (cur < TL.length - 1) {
+                if (timer) clearTimeout(timer);
+                transitionTo(cur + 1);
+            }
+        });
+
+        // Keyboard navigation
+        window.addEventListener('keydown', e => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                if (cur < TL.length - 1) { 
+                    if (timer) clearTimeout(timer); 
+                    transitionTo(cur + 1); 
+                }
+            }
+            if (e.key === 'ArrowLeft') {
+                if (cur > 0) { 
+                    if (timer) clearTimeout(timer); 
+                    transitionTo(cur - 1); 
+                }
+            }
         });
     </script>
 </body>
-
 </html>
