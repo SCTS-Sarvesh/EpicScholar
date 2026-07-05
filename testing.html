@@ -4,459 +4,871 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EpicScholar - Spatial Cinematic Reveal</title>
+    <title>Postable — Image Screening (Gemini)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800;900&display=swap');
+        :root {
+            --ink: #14161a;
+            --panel: #1c1f25;
+            --panel-raised: #23272f;
+            --line: #33383f;
+            --paper: #f2f0ec;
+            --muted: #9aa1ab;
+            --safe: #3fb68b;
+            --safe-dim: rgba(63, 182, 139, 0.12);
+            --block: #e2543d;
+            --block-dim: rgba(226, 84, 61, 0.12);
+            --review: #e8a93e;
+            --review-dim: rgba(232, 169, 62, 0.12);
+            --accent: #5b8ca8;
+        }
 
-        *, *::before, *::after {
-            margin: 0;
-            padding: 0;
+        * {
             box-sizing: border-box;
         }
 
-        :root {
-            --color-1: #ff416c;
-            --color-2: #0072ff;
-            --brand-grad: linear-gradient(90deg, var(--color-1), var(--color-2));
-            --glass-bg: rgba(20, 20, 25, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
-            --ease-cinematic: cubic-bezier(0.8, 0, 0.2, 1);
+        html,
+        body {
+            margin: 0;
+            padding: 0;
         }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Sora', sans-serif;
-            background: #020204;
-            color: #fff;
-            user-select: none;
+        body {
+            background: var(--ink);
+            color: var(--paper);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 56px 20px 80px;
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ─── STAGE & 3D CAMERA ─── */
-        #stage {
-            position: fixed;
-            inset: 0;
-            perspective: 1200px;
-            overflow: hidden;
-            z-index: 10;
+        .wrap {
+            width: 100%;
+            max-width: 560px;
         }
 
-        .scene {
-            position: absolute;
-            inset: 0;
+        .eyebrow {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--accent);
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex-direction: column;
-            opacity: 0;
-            pointer-events: none;
-            transform-style: preserve-3d;
-            padding: 24px;
-            text-align: center;
-            will-change: transform, opacity, filter;
+            gap: 8px;
+            margin-bottom: 14px;
         }
 
-        .scene.active {
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        /* ─── NEW VISUAL: SPATIAL RINGS ─── */
-        .spatial-bg {
-            position: fixed;
-            inset: -50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            perspective: 1000px;
-            z-index: 0;
-            pointer-events: none;
-            opacity: 0.3;
-        }
-
-        .ring {
-            position: absolute;
+        .eyebrow .dot {
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            transform-style: preserve-3d;
-            animation: spinRing linear infinite;
+            background: var(--accent);
         }
 
-        .ring-1 { width: 40vw; height: 40vw; border-top: 2px solid var(--color-1); animation-duration: 20s; }
-        .ring-2 { width: 60vw; height: 60vw; border-bottom: 2px solid var(--color-2); animation-duration: 25s; animation-direction: reverse; }
-        .ring-3 { width: 80vw; height: 80vw; border-left: 1px solid rgba(255,255,255,0.2); animation-duration: 30s; }
-
-        @keyframes spinRing {
-            0% { transform: rotateX(70deg) rotateY(-10deg) rotateZ(0deg); }
-            100% { transform: rotateX(70deg) rotateY(-10deg) rotateZ(360deg); }
+        h1 {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 32px;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+            margin: 0 0 8px;
         }
 
-        /* ─── CINEMATIC LIGHT LEAK ─── */
-        #light-leak {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(255,65,108,0.3), rgba(0,114,255,0.3), transparent 70%);
-            mix-blend-mode: screen;
+        .sub {
+            color: var(--muted);
+            font-size: 14.5px;
+            line-height: 1.55;
+            margin: 0 0 36px;
+            max-width: 46ch;
+        }
+
+        .dropzone {
+            position: relative;
+            border: 1.5px dashed var(--line);
+            border-radius: 14px;
+            background: var(--panel);
+            padding: 0;
+            min-height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: border-color .18s ease, background .18s ease;
+        }
+
+        .dropzone:hover {
+            border-color: #454b54;
+        }
+
+        .dropzone.dragging {
+            border-color: var(--accent);
+            background: #1f2733;
+        }
+
+        .dropzone.has-image {
+            cursor: default;
+            border-style: solid;
+            border-color: var(--line);
+        }
+
+        .dz-empty {
+            text-align: center;
+            color: var(--muted);
+            padding: 40px 24px;
+        }
+
+        .dz-icon {
+            width: 44px;
+            height: 44px;
+            margin: 0 auto 18px;
+            color: #4a515b;
+        }
+
+        .dz-empty p {
+            margin: 0;
+            font-size: 14.5px;
+        }
+
+        .dz-empty .small {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11.5px;
+            color: #5b626c;
+            margin-top: 10px;
+            letter-spacing: 0.02em;
+        }
+
+        .dz-empty .small strong {
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .preview-frame {
+            position: relative;
+            width: 100%;
+        }
+
+        .preview-frame img {
+            display: block;
+            width: 100%;
+            max-height: 420px;
+            object-fit: contain;
+            background: #0f1114;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(20, 22, 26, 0.75);
+            border: 1px solid var(--line);
+            color: var(--paper);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+            backdrop-filter: blur(4px);
+        }
+
+        .remove-btn:hover {
+            background: rgba(226, 84, 61, 0.85);
+            border-color: var(--block);
+        }
+
+        .scanline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            box-shadow: 0 0 12px 2px var(--accent);
+            top: 0;
             opacity: 0;
             pointer-events: none;
-            z-index: 999;
         }
 
-        .flash {
-            animation: lightFlash 0.7s var(--ease-cinematic) forwards;
+        .scanline.active {
+            animation: sweep 1.6s ease-in-out infinite;
+            opacity: 1;
         }
 
-        @keyframes lightFlash {
-            0% { opacity: 0; transform: scale(0.8); }
-            30% { opacity: 0.8; transform: scale(1.2); filter: blur(20px); }
-            100% { opacity: 0; transform: scale(1.5); }
+        @keyframes sweep {
+            0% {
+                top: 0;
+            }
+
+            50% {
+                top: calc(100% - 2px);
+            }
+
+            100% {
+                top: 0;
+            }
         }
 
-        /* ─── TYPOGRAPHY & EFFECTS ─── */
-        .text-grad {
-            background: var(--brand-grad);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        input[type=file] {
+            display: none;
         }
 
-        .text-glow {
-            text-shadow: 0 0 40px rgba(0, 114, 255, 0.6);
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
         }
 
-        /* ─── LIQUID GLASS & ORBS ─── */
-        .glass-panel {
-            background: var(--glass-bg);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1);
-            border-radius: 28px;
+        button {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 14.5px;
+            border-radius: 9px;
+            border: 1px solid transparent;
+            padding: 13px 20px;
+            cursor: pointer;
+            transition: transform .12s ease, background .15s ease, border-color .15s ease;
+            letter-spacing: 0.005em;
         }
 
-        .liquid-orb {
-            position: absolute;
-            border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
-            pointer-events: none;
-            filter: blur(90px);
-            opacity: 0.4;
-            animation: morph 12s ease-in-out infinite alternate, float 15s ease-in-out infinite;
+        button:active {
+            transform: scale(0.98);
         }
 
-        @keyframes morph {
-            0% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
-            100% { border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%; }
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.5;
+            transform: none;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(5vw, -5vh) rotate(15deg); }
+        .btn-primary {
+            background: var(--paper);
+            color: var(--ink);
+            flex: 1;
         }
 
-        @keyframes textRise {
-            from { opacity: 0; transform: translateY(30px) translateZ(50px); }
-            to { opacity: 1; transform: translateY(0) translateZ(0); }
+        .btn-primary:hover:not(:disabled) {
+            background: #ffffff;
         }
 
-        @keyframes letterSpace {
-            from { letter-spacing: 0.4em; opacity: 0; filter: blur(12px); }
-            to { letter-spacing: -0.05em; opacity: 1; filter: blur(0); }
+        .btn-ghost {
+            background: transparent;
+            border-color: var(--line);
+            color: var(--muted);
         }
 
-        @keyframes badgePop {
-            from { transform: scale(0.5) translateZ(150px); opacity: 0; }
-            to { transform: scale(1) translateZ(0); opacity: 1; }
+        .btn-ghost:hover:not(:disabled) {
+            border-color: #565d67;
+            color: var(--paper);
         }
 
-        /* ═══════════════════════════════════════
-           SCENE STYLES (STRICTLY MOBILE RESPONSIVE)
-        ═══════════════════════════════════════ */
-        
-        /* SCENE 0: Hook */
-        #s0 .big-stat { font-size: clamp(60px, 18vw, 160px); font-weight: 900; letter-spacing: -0.04em; line-height: 1; }
-        #s0 .sub-stat { font-size: clamp(14px, 4vw, 24px); color: rgba(255, 255, 255, 0.4); letter-spacing: 0.1em; text-transform: uppercase; margin-top: 10px; animation: textRise 1s ease 0.4s both; }
-
-        /* SCENE 1: Problem */
-        #s1 .orb-red { width: 90vw; height: 90vw; max-width: 600px; max-height: 600px; background: radial-gradient(circle, rgba(255, 65, 108, 0.3), transparent 60%); top: -10%; left: -10%; }
-        #s1 .stat-num { font-size: clamp(50px, 12vw, 120px); font-weight: 900; line-height: 1; }
-        #s1 .stat-label { font-size: clamp(22px, 6vw, 42px); font-weight: 600; margin-top: 15px; animation: textRise 0.8s ease 0.4s both; }
-        #s1 .stat-desc { font-size: clamp(13px, 3.5vw, 18px); color: rgba(255, 255, 255, 0.4); margin-top: 20px; max-width: 500px; line-height: 1.6; animation: textRise 0.8s ease 0.6s both; }
-
-        /* SCENE 2: Agitation */
-        #s2 .orb-dark { width: 100vw; height: 100vw; background: radial-gradient(circle, rgba(100, 100, 100, 0.1), transparent 60%); }
-        #s2 .stat-num { font-size: clamp(40px, 10vw, 90px); font-weight: 900; }
-
-        /* SCENE 3: Pivot */
-        #s3 .orb-blue { width: 80vw; height: 80vw; max-width: 500px; max-height: 500px; background: radial-gradient(circle, rgba(0, 114, 255, 0.3), transparent 60%); bottom: -10%; right: -10%; }
-        #s3 .question { font-size: clamp(28px, 7vw, 64px); font-weight: 300; line-height: 1.3; }
-        #s3 .q-line1 { display: block; color: rgba(255, 255, 255, 0.5); animation: textRise 1s ease 0.2s both; }
-        #s3 .q-line2 { display: block; font-weight: 800; font-size: 1.2em; margin-top: 10px; animation: textRise 1.2s var(--ease-elastic) 0.6s both; }
-
-        /* SCENE 4: Reveal */
-        #s4 .orb-main { width: 100vw; height: 100vw; max-width: 800px; max-height: 800px; background: radial-gradient(circle, rgba(255, 65, 108, 0.2), rgba(0, 114, 255, 0.15), transparent 65%); }
-        #s4 .hero-brand { font-size: clamp(42px, 12vw, 140px); font-weight: 900; letter-spacing: -0.05em; animation: letterSpace 1.5s var(--ease-elastic) 0.2s both; }
-        #s4 .coming-badge { margin-top: 25px; padding: 14px 32px; font-size: clamp(11px, 3vw, 14px); font-weight: 700; text-transform: uppercase; letter-spacing: 0.2em; color: #fff; border-radius: 100px; position: relative; animation: badgePop 1s var(--ease-elastic) 0.8s both; }
-        #s4 .coming-badge::before { content: ''; position: absolute; inset: 0; background: var(--brand-grad); opacity: 0.2; z-index: -1; border-radius: 100px; }
-        #s4 .coming-badge::after { content: ''; position: absolute; inset: 0; border: 1px solid rgba(255, 255, 255, 0.4); border-radius: 100px; z-index: -1; }
-
-        /* SCENE 5 & 6: 3D CARDS (RESPONSIVE) */
-        .section-eyebrow { font-size: clamp(11px, 3vw, 13px); letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255, 255, 255, 0.3); margin-bottom: 30px; animation: textRise 0.8s ease both; }
-        .cards-container { display: flex; gap: 20px; z-index: 10; width: 100%; max-width: 900px; justify-content: center; }
-        .glass-card { flex: 1; padding: 30px 24px; text-align: left; transition: transform 0.5s var(--ease-elastic), border-color 0.3s; }
-        .card-icon { font-size: clamp(26px, 6vw, 32px); margin-bottom: 16px; }
-        .card-title { font-size: clamp(18px, 4.5vw, 22px); font-weight: 800; margin-bottom: 10px; letter-spacing: -0.03em; }
-        .card-desc { font-size: clamp(12px, 3vw, 14px); color: rgba(255, 255, 255, 0.4); line-height: 1.6; }
-
-        /* Desktop 3D setup */
-        @media (min-width: 769px) {
-            .glass-card:nth-child(1) { transform: rotateY(-10deg) translateZ(-40px); }
-            .glass-card:nth-child(2) { transform: rotateY(10deg) translateZ(-40px); }
-            .glass-card:hover { transform: translateY(-10px) translateZ(40px) scale(1.05); border-color: rgba(255,255,255,0.3); }
+        .spinner {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid rgba(20, 22, 26, 0.25);
+            border-top-color: var(--ink);
+            display: inline-block;
+            animation: spin .7s linear infinite;
+            margin-right: 8px;
+            vertical-align: -2px;
         }
 
-        /* Mobile Flex Column Override */
-        @media (max-width: 768px) {
-            .cards-container { flex-direction: column; align-items: center; gap: 16px; }
-            .glass-card { width: 90vw; max-width: 380px; padding: 24px 20px; transform: none !important; animation: textRise 0.8s var(--ease-elastic) both; }
-            .glass-card:nth-child(1) { animation-delay: 0.2s; }
-            .glass-card:nth-child(2) { animation-delay: 0.35s; }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
 
-        /* SCENE 7: Mantra */
-        #s7 .mantra { font-size: clamp(40px, 10vw, 100px); font-weight: 900; line-height: 1.1; letter-spacing: -0.04em; }
-        #s7 .m-w1 { display: block; color: rgba(255, 255, 255, 0.2); animation: textRise 1s ease 0.2s both; }
-        #s7 .m-w2 { display: block; animation: textRise 1s ease 0.5s both; }
-        #s7 .m-w3 { display: block; margin-top: 10px; animation: textRise 1s var(--ease-elastic) 0.9s both; }
+        /* ---- Report ---- */
+        .report {
+            margin-top: 28px;
+            border-radius: 14px;
+            border: 1px solid var(--line);
+            background: var(--panel);
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(6px);
+            animation: rise .35s ease forwards;
+        }
 
-        /* SCENE 8: OUTRO CTA */
-        #s8 .final-brand { font-size: clamp(40px, 12vw, 80px); font-weight: 900; letter-spacing: -0.03em; margin-bottom: 24px; animation: textRise 1s var(--ease-elastic) 0.3s both; }
-        #s8 .glass-button { padding: 16px 36px; font-size: clamp(14px, 4vw, 16px); font-weight: 700; border-radius: 100px; color: #fff; cursor: pointer; position: relative; border: none; outline: none; animation: badgePop 1s var(--ease-elastic) 0.8s both; box-shadow: 0 10px 30px rgba(0, 114, 255, 0.3); }
-        #s8 .glass-button::before { content: ''; position: absolute; inset: 0; background: var(--brand-grad); opacity: 0.9; z-index: -1; border-radius: 100px; transition: opacity 0.3s ease; }
-        #s8 .glass-button:hover::before { opacity: 1; }
-        
-        /* Specific requirement styling */
-        #s8 .sub-text { margin-top: 30px; font-size: clamp(14px, 3.8vw, 18px); color: rgba(255, 255, 255, 0.5); letter-spacing: 0.05em; animation: textRise 1s ease 1.2s both; }
-        #s8 .url-link { font-weight: 900; }
+        @keyframes rise {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-        /* ── PROGRESS DOTS ── */
-        #dots { position: fixed; bottom: clamp(20px, 5vh, 30px); left: 50%; transform: translateX(-50%); display: flex; gap: 6px; z-index: 100; }
-        .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255, 255, 255, 0.15); transition: all 0.5s var(--ease-elastic); }
-        .dot.on { width: 24px; border-radius: 4px; background: var(--brand-grad); }
+        .verdict-bar {
+            padding: 22px 22px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .verdict-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .verdict-icon svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .verdict-text .label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .verdict-text .headline {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 19px;
+            font-weight: 600;
+        }
+
+        .verdict-bar.safe {
+            background: var(--safe-dim);
+        }
+
+        .verdict-bar.safe .verdict-icon {
+            background: rgba(63, 182, 139, 0.18);
+            color: var(--safe);
+        }
+
+        .verdict-bar.safe .label,
+        .verdict-bar.safe .headline {
+            color: var(--safe);
+        }
+
+        .verdict-bar.block {
+            background: var(--block-dim);
+        }
+
+        .verdict-bar.block .verdict-icon {
+            background: rgba(226, 84, 61, 0.18);
+            color: var(--block);
+        }
+
+        .verdict-bar.block .label,
+        .verdict-bar.block .headline {
+            color: var(--block);
+        }
+
+        .verdict-bar.review {
+            background: var(--review-dim);
+        }
+
+        .verdict-bar.review .verdict-icon {
+            background: rgba(232, 169, 62, 0.18);
+            color: var(--review);
+        }
+
+        .verdict-bar.review .label,
+        .verdict-bar.review .headline {
+            color: var(--review);
+        }
+
+        .report-body {
+            padding: 20px 22px 22px;
+        }
+
+        .reasoning {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #cdd1d6;
+            margin: 0 0 20px;
+        }
+
+        .checks {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            background: var(--line);
+            border-radius: 9px;
+            overflow: hidden;
+            border: 1px solid var(--line);
+        }
+
+        .check-row {
+            background: var(--panel-raised);
+            padding: 13px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .check-name {
+            font-size: 13.5px;
+            color: var(--paper);
+        }
+
+        .check-name .desc {
+            display: block;
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .check-status {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 0.05em;
+            padding: 4px 9px;
+            border-radius: 6px;
+            white-space: nowrap;
+            text-transform: uppercase;
+            flex-shrink: 0;
+        }
+
+        .check-status.clear {
+            background: var(--safe-dim);
+            color: var(--safe);
+        }
+
+        .check-status.flagged {
+            background: var(--block-dim);
+            color: var(--block);
+        }
+
+        .confidence {
+            margin-top: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .confidence .track {
+            flex: 1;
+            height: 4px;
+            background: var(--line);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .confidence .fill {
+            height: 100%;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .error-box {
+            margin-top: 20px;
+            border: 1px solid var(--block);
+            background: var(--block-dim);
+            border-radius: 10px;
+            padding: 14px 16px;
+            font-size: 13.5px;
+            color: #f3b6ac;
+            line-height: 1.5;
+        }
+
+        .key-panel {
+            border: 1px solid var(--line);
+            background: var(--panel);
+            border-radius: 12px;
+            padding: 16px 18px;
+            margin-bottom: 24px;
+        }
+
+        .key-panel.saved {
+            border-color: var(--safe);
+            background: var(--safe-dim);
+        }
+
+        .key-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .key-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .key-row input {
+            flex: 1;
+            background: var(--panel-raised);
+            border: 1px solid var(--line);
+            color: var(--paper);
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 13px;
+            padding: 10px 12px;
+            border-radius: 8px;
+        }
+
+        .key-row input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .key-row button {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 0 16px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--panel-raised);
+            color: var(--paper);
+            cursor: pointer;
+        }
+
+        .key-row button:hover {
+            border-color: #565d67;
+        }
+
+        .key-note {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin: 10px 0 0;
+        }
+
+        .key-note a {
+            color: var(--accent);
+        }
+
+        .key-clear {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 10.5px;
+            color: var(--muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0;
+        }
+
+        footer {
+            margin-top: 34px;
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 11px;
+            color: #565d67;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
     </style>
 </head>
 
 <body>
+    <div class="wrap">
 
-    <div class="spatial-bg">
-        <div class="ring ring-1"></div>
-        <div class="ring ring-2"></div>
-        <div class="ring ring-3"></div>
+        <div class="eyebrow"><span class="dot"></span>PRE-POST SCREENING</div>
+        <h1>Can this go up?</h1>
+        <p class="sub">Drop an image in below. It gets checked against three gates before it's cleared to post:
+            political content, adult content, and anything unsuitable for a teen audience posting alone.</p>
+
+        <div class="dropzone" id="dropzone">
+            <div class="dz-empty" id="dzEmpty">
+                <svg class="dz-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <p>Drag an image here, or click to browse</p>
+                <div class="small">Accepts <strong>JPG · PNG · WEBP</strong></div>
+            </div>
+            <input type="file" id="fileInput" accept="image/*">
+        </div>
+
+        <div class="actions">
+            <button class="btn-primary" id="analyzeBtn" disabled>Check this image</button>
+            <button class="btn-ghost" id="resetBtn" style="display:none;">Start over</button>
+        </div>
+
+        <div id="reportSlot"></div>
+
+        <footer>RUNS LOCALLY IN YOUR BROWSER · API KEY IS EMBEDDED IN THIS FILE</footer>
     </div>
-
-    <div id="light-leak"></div>
-
-    <div id="stage">
-        
-        <div class="scene" id="s0">
-            <div class="big-stat">1:00 AM</div>
-            <div class="sub-stat">Staring at the same problem.</div>
-        </div>
-
-        <div class="scene" id="s1">
-            <div class="liquid-orb orb-red"></div>
-            <div class="stat-num text-grad">Isolated.</div>
-            <div class="stat-desc">Standard platforms connect you to content, but leave you completely disconnected from context and peers when you actually get stuck.</div>
-        </div>
-
-        <div class="scene" id="s2">
-            <div class="liquid-orb orb-dark"></div>
-            <div class="stat-num text-grad">The Chaos.</div>
-            <div class="stat-desc">Group chats are spam. Video comments are noise. Forums are dead. You waste hours searching for one simple explanation.</div>
-        </div>
-
-        <div class="scene" id="s3">
-            <div class="liquid-orb orb-blue"></div>
-            <div class="question">
-                <span class="q-line1">What if you could plug into...</span>
-                <span class="q-line2 text-glow">A Focused Hive Mind?</span>
-            </div>
-        </div>
-
-        <div class="scene" id="s4">
-            <div class="liquid-orb orb-main"></div>
-            <div class="hero-brand text-grad">EpicScholar</div>
-            <div class="coming-badge">Connect · Study · Thrive</div>
-        </div>
-
-        <div class="scene" id="s5">
-            <div class="section-eyebrow">Spatial Intelligence</div>
-            <div class="cards-container">
-                <div class="glass-panel glass-card">
-                    <div class="card-icon">🤖</div>
-                    <div class="card-title">Groq AI Tutor</div>
-                    <div class="card-desc">Ask a doubt at 2 AM. Get an instant, perfectly structured NCERT-aligned answer that actually makes sense.</div>
-                </div>
-                <div class="glass-panel glass-card">
-                    <div class="card-icon">🗺️</div>
-                    <div class="card-title">Guided Maps</div>
-                    <div class="card-desc">Don't know where to start? Generate a step-by-step learning path tailored to your exact syllabus.</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="scene" id="s6">
-            <div class="section-eyebrow">A verified network</div>
-            <div class="cards-container">
-                <div class="glass-panel glass-card">
-                    <div class="card-icon">✅</div>
-                    <div class="card-title">Verified Peers</div>
-                    <div class="card-desc">Collaborate safely. A feed filled exclusively with students helping each other master concepts.</div>
-                </div>
-                <div class="glass-panel glass-card">
-                    <div class="card-icon">🔇</div>
-                    <div class="card-title">Zero Noise</div>
-                    <div class="card-desc">No infinite scrolling algorithms. No unrelated memes. A premium space engineered strictly for focus.</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="scene" id="s7">
-            <div class="mantra">
-                <span class="m-w1">Stop struggling.</span>
-                <span class="m-w2">Start</span>
-                <span class="m-w3 text-grad">Sharing.</span>
-            </div>
-        </div>
-
-        <div class="scene" id="s8">
-            <div class="liquid-orb orb-main" style="width: 150vw; height: 150vw; bottom: -60%; opacity: 0.15;"></div>
-            <div class="final-brand text-grad">EpicScholar</div>
-            <button class="glass-button">Join the Network</button>
-            <div class="sub-text">Available at <span class="url-link text-grad">epicscholar.cloud</span> for free.</div>
-        </div>
-
-    </div>
-
-    <div id="dots"></div>
 
     <script>
-        const TL = [
-            { id: 's0', dur: 4500 },
-            { id: 's1', dur: 5500 },
-            { id: 's2', dur: 5500 },
-            { id: 's3', dur: 4500 },
-            { id: 's4', dur: 5500 },
-            { id: 's5', dur: 6500 },
-            { id: 's6', dur: 6500 },
-            { id: 's7', dur: 4500 },
-            { id: 's8', dur: 99999 }
-        ];
+        const dropzone = document.getElementById('dropzone');
+        const dzEmpty = document.getElementById('dzEmpty');
+        const fileInput = document.getElementById('fileInput');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const reportSlot = document.getElementById('reportSlot');
 
-        const dotsEl = document.getElementById('dots');
-        TL.forEach((_, i) => {
-            const d = document.createElement('div');
-            d.className = 'dot'; d.id = 'dot' + i;
-            dotsEl.appendChild(d);
-        });
+        let currentBase64 = null;
+        let currentMediaType = null;
 
-        function setDot(i) {
-            document.querySelectorAll('.dot').forEach(d => d.classList.remove('on'));
-            const d = document.getElementById('dot' + i);
-            if (d) d.classList.add('on');
+        // Paste your Gemini API key below. Get one free at https://aistudio.google.com/apikey
+        // WARNING: anyone who can view this file's source (e.g. via a public GitHub repo
+        // or "view page source") can read this key and use it against your quota.
+        // Only put a real key here for a local file or a private repo.
+        const GEMINI_API_KEY = "AIzaSyAe5fckk40jX71RGSz71bT-51J1pGvP-PU";
+
+        function resetAll() {
+            currentBase64 = null;
+            currentMediaType = null;
+            dropzone.classList.remove('has-image');
+            dropzone.innerHTML = '';
+            dropzone.appendChild(dzEmpty);
+            dzEmpty.style.display = '';
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = 'Check this image';
+            resetBtn.style.display = 'none';
+            reportSlot.innerHTML = '';
+            fileInput.value = '';
         }
 
-        let cur = 0, timer = null;
-        const lightLeak = document.getElementById('light-leak');
+        function loadFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const dataUrl = e.target.result;
+                currentMediaType = file.type;
+                currentBase64 = dataUrl.split(',')[1];
 
-        function transitionTo(idx) {
-            if (idx >= TL.length) return;
-
-            const outEl = document.getElementById(TL[cur]?.id);
-            const inEl = document.getElementById(TL[idx].id);
-            if (!inEl) return;
-
-            // Trigger Cinematic Light Flash
-            lightLeak.classList.remove('flash');
-            void lightLeak.offsetWidth; 
-            lightLeak.classList.add('flash');
-
-            // Kinetic "Zoom-Through" Out-Transition
-            if (outEl) {
-                outEl.style.transition = 'opacity 0.5s cubic-bezier(0.8, 0, 0.2, 1), transform 0.6s cubic-bezier(0.8, 0, 0.2, 1), filter 0.4s ease';
-                outEl.style.transform = 'translateZ(500px) scale(1.5)'; 
-                outEl.style.filter = 'blur(20px)';
-                outEl.style.opacity = '0';
-                
-                setTimeout(() => {
-                    outEl.classList.remove('active');
-                    outEl.style.transform = '';
-                    outEl.style.transition = '';
-                    outEl.style.filter = '';
-                }, 600);
-            }
-
-            // Incoming reset
-            inEl.style.display = 'none';
-            void inEl.offsetWidth;
-            inEl.style.display = 'flex';
-
-            // Elastic "Snap-In" Transition
-            setTimeout(() => {
-                inEl.classList.add('active');
-                inEl.style.opacity = '0';
-                inEl.style.transform = 'translateZ(-400px) scale(0.7)';
-                inEl.style.filter = 'blur(15px)';
-                
-                inEl.style.transition = 'opacity 0.6s ease, transform 1.2s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.8s ease';
-                
-                requestAnimationFrame(() => {
-                    inEl.style.opacity = '1';
-                    inEl.style.transform = 'translateZ(0) scale(1)';
-                    inEl.style.filter = 'blur(0)';
+                dzEmpty.style.display = 'none';
+                dropzone.classList.add('has-image');
+                dropzone.innerHTML = `
+      <div class="preview-frame">
+        <div class="scanline" id="scanline"></div>
+        <img src="${dataUrl}" alt="Uploaded image preview">
+        <button class="remove-btn" id="removeBtn" title="Remove image">&times;</button>
+      </div>
+    `;
+                document.getElementById('removeBtn').addEventListener('click', (ev) => {
+                    ev.stopPropagation();
+                    resetAll();
                 });
-            }, 150); 
-
-            cur = idx;
-            setDot(idx);
-
-            if (timer) clearTimeout(timer);
-            if (TL[idx].dur < 99999) {
-                timer = setTimeout(() => { transitionTo(cur + 1); }, TL[idx].dur);
-            }
+                analyzeBtn.disabled = false;
+                resetBtn.style.display = '';
+                reportSlot.innerHTML = '';
+            };
+            reader.readAsDataURL(file);
         }
 
-        // Init Sequence
-        window.addEventListener('load', () => {
-            setTimeout(() => { transitionTo(0); }, 300);
+        dropzone.addEventListener('click', (e) => {
+            if (!dropzone.classList.contains('has-image')) fileInput.click();
+        });
+        fileInput.addEventListener('change', (e) => loadFile(e.target.files[0]));
+
+        ['dragenter', 'dragover'].forEach(evt => {
+            dropzone.addEventListener(evt, (e) => {
+                e.preventDefault(); e.stopPropagation();
+                dropzone.classList.add('dragging');
+            });
+        });
+        ['dragleave', 'drop'].forEach(evt => {
+            dropzone.addEventListener(evt, (e) => {
+                e.preventDefault(); e.stopPropagation();
+                dropzone.classList.remove('dragging');
+            });
+        });
+        dropzone.addEventListener('drop', (e) => {
+            const file = e.dataTransfer.files[0];
+            loadFile(file);
         });
 
-        // Tap to advance
-        document.getElementById('stage').addEventListener('click', (e) => {
-            if(e.target.tagName.toLowerCase() === 'button') return;
-            if (cur < TL.length - 1) {
-                if (timer) clearTimeout(timer);
-                transitionTo(cur + 1);
+        // Stop the browser from trying to navigate to a dropped file if it lands
+        // anywhere outside the dropzone (this is what causes the file:// "unsafe
+        // load" warning when running this page from disk).
+        ['dragover', 'drop'].forEach(evt => {
+            window.addEventListener(evt, (e) => { e.preventDefault(); });
+        });
+
+        resetBtn.addEventListener('click', resetAll);
+
+        const ICONS = {
+            safe: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            block: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+            review: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01" stroke-linecap="round"/><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>'
+        };
+
+        const CATEGORY_META = {
+            political: { name: 'Political content', desc: 'Politicians, campaigns, protest symbols, partisan messaging' },
+            adult: { name: 'Adult content', desc: 'Nudity, sexual content, or sexually suggestive material' },
+            unsafe_for_teen: { name: 'Unsafe for a teen posting alone', desc: 'Danger, self-harm cues, identifying info, or predatory bait' }
+        };
+
+        analyzeBtn.addEventListener('click', async () => {
+            if (!currentBase64) return;
+            const apiKey = GEMINI_API_KEY;
+            if (!apiKey || apiKey === "PASTE_YOUR_GEMINI_API_KEY_HERE") {
+                reportSlot.innerHTML = `<div class="error-box">Open this file and paste your Gemini API key into the GEMINI_API_KEY constant near the top of the script.</div>`;
+                return;
+            }
+            analyzeBtn.disabled = true;
+            analyzeBtn.innerHTML = '<span class="spinner"></span>Scanning…';
+            reportSlot.innerHTML = '';
+            const scanline = document.getElementById('scanline');
+            if (scanline) scanline.classList.add('active');
+
+            try {
+                const result = await analyzeImage(currentBase64, currentMediaType, apiKey);
+                renderReport(result);
+            } catch (err) {
+                reportSlot.innerHTML = `<div class="error-box">Couldn't complete the scan — ${escapeHtml(err.message || 'unknown error')}. Try again in a moment.</div>`;
+            } finally {
+                analyzeBtn.disabled = false;
+                analyzeBtn.innerHTML = 'Check this image';
+                if (scanline) scanline.classList.remove('active');
             }
         });
 
-        // Keyboard navigation
-        window.addEventListener('keydown', e => {
-            if (e.key === 'ArrowRight' || e.key === ' ') {
-                if (cur < TL.length - 1) { 
-                    if (timer) clearTimeout(timer); 
-                    transitionTo(cur + 1); 
-                }
+        function escapeHtml(str) {
+            const d = document.createElement('div');
+            d.innerText = str;
+            return d.innerHTML;
+        }
+
+        async function analyzeImage(base64, mediaType, apiKey) {
+            const systemPrompt = `You are a strict, careful content-safety reviewer deciding whether an image is fit to post on a social media account belonging to a teenager who posts alone, unsupervised.
+
+Evaluate the image against exactly three gates:
+1. "political" — any political figures, campaign material, partisan slogans, protest/movement symbols, national political controversy.
+2. "adult" — nudity, sexual content, sexually suggestive posing or framing, adult products.
+3. "unsafe_for_teen" — anything unsafe specifically because the poster is a teen alone: visible weapons, drugs/alcohol use, self-harm imagery, dangerous stunts, precise identifying details (home address, school name/uniform with location, license plates, live location signals), content that could invite predatory attention, or anything else no responsible adult would want a young teen posting unsupervised.
+
+For each gate return true if the image trips it, false if it's clear.
+
+If verdict is "block", also set "severity":
+- "moderate" for a clear but ordinary violation
+- "severe" for content that is extreme or egregious on any gate (e.g. explicit nudity/sexual content, graphic violence, hate symbols, clear predatory bait, dangerous illegal activity) — the kind of thing a platform would treat as a serious policy violation, not just a soft miss
+For "safe" or "review" verdicts, set "severity" to "none".
+
+Respond with ONLY raw JSON, no markdown fences, no commentary, matching exactly this shape:
+{
+  "can_post": boolean,
+  "verdict": "safe" | "block" | "review",
+  "severity": "none" | "moderate" | "severe",
+  "headline": "short 3-6 word verdict phrase",
+  "reasoning": "2-3 sentence plain-language explanation of what you saw and why it does or doesn't clear each gate",
+  "categories": {
+    "political": boolean,
+    "adult": boolean,
+    "unsafe_for_teen": boolean
+  },
+  "confidence": number between 0 and 1
+}
+
+Use "review" only when the image is borderline/ambiguous on a gate rather than a clean pass or clear violation. Be conservative: when genuinely unsure, prefer "review" over "safe".`;
+
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "x-goog-api-key": apiKey
+                },
+                body: JSON.stringify({
+                    system_instruction: { parts: [{ text: systemPrompt }] },
+                    contents: [
+                        {
+                            role: "user",
+                            parts: [
+                                { inline_data: { mime_type: mediaType, data: base64 } },
+                                { text: "Screen this image for posting to a lone teenager's social media account. Return only the JSON object." }
+                            ]
+                        }
+                    ],
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    }
+                })
+            });
+
+            if (!response.ok) {
+                if (response.status === 400) throw new Error('Request rejected — check your API key is valid');
+                if (response.status === 403) throw new Error('API key was rejected — check it was copied correctly');
+                if (response.status === 429) throw new Error('Rate limited — wait a moment and try again');
+                throw new Error(`API returned ${response.status}`);
             }
-            if (e.key === 'ArrowLeft') {
-                if (cur > 0) { 
-                    if (timer) clearTimeout(timer); 
-                    transitionTo(cur - 1); 
-                }
+
+            const data = await response.json();
+            const candidate = (data.candidates || [])[0];
+            const part = candidate && candidate.content && candidate.content.parts && candidate.content.parts[0];
+            const text = part && part.text;
+            if (!text) throw new Error('No response text from model');
+
+            let cleaned = text.trim().replace(/^```json/i, '').replace(/^```/, '').replace(/```$/, '').trim();
+            let parsed;
+            try {
+                parsed = JSON.parse(cleaned);
+            } catch (e) {
+                throw new Error('Could not parse the model response');
             }
-        });
+            return parsed;
+        }
+
+        function renderReport(result) {
+            const verdict = result.verdict || (result.can_post ? 'safe' : 'block');
+            const severity = result.severity || 'none';
+            const headline = result.headline || (verdict === 'safe' ? 'Clear to post' : verdict === 'block' ? 'Do not post' : 'Needs a human look');
+            const labelText = verdict === 'safe' ? 'RESULT · CLEARED' : verdict === 'block' ? 'RESULT · BLOCKED' : 'RESULT · FLAGGED FOR REVIEW';
+            const icon = verdict === 'safe' ? ICONS.safe : verdict === 'block' ? ICONS.block : ICONS.review;
+
+            const cats = result.categories || {};
+            const rows = Object.keys(CATEGORY_META).map(key => {
+                const meta = CATEGORY_META[key];
+                const flagged = !!cats[key];
+                return `
+      <div class="check-row">
+        <div class="check-name">${meta.name}<span class="desc">${meta.desc}</span></div>
+        <div class="check-status ${flagged ? 'flagged' : 'clear'}">${flagged ? 'Flagged' : 'Clear'}</div>
+      </div>`;
+            }).join('');
+
+            const confidence = typeof result.confidence === 'number' ? Math.max(0, Math.min(1, result.confidence)) : 0.75;
+
+            const banWarning = (verdict === 'block' && severity === 'severe') ? `
+    <div style="margin-top:14px; border:1px solid var(--block); background:rgba(226,84,61,0.16); border-radius:10px; padding:12px 14px; font-size:13px; color:#f6c2ba; line-height:1.55; display:flex; gap:10px; align-items:flex-start;">
+      <span style="flex-shrink:0; margin-top:1px;">⚠</span>
+      <span><strong style="color:#f8d3cc;">Serious violation.</strong> This crosses well past a normal miss. Posting content like this again could get this account suspended or permanently banned.</span>
+    </div>` : '';
+
+            reportSlot.innerHTML = `
+    <div class="report">
+      <div class="verdict-bar ${verdict}">
+        <div class="verdict-icon">${icon}</div>
+        <div class="verdict-text">
+          <div class="label">${labelText}${severity === 'severe' ? ' · SEVERE' : ''}</div>
+          <div class="headline">${escapeHtml(headline)}</div>
+        </div>
+      </div>
+      <div class="report-body">
+        <p class="reasoning">${escapeHtml(result.reasoning || '')}</p>
+        <div class="checks">${rows}</div>
+        <div class="confidence">
+          <span>CONFIDENCE</span>
+          <div class="track"><div class="fill" style="width:${Math.round(confidence * 100)}%"></div></div>
+          <span>${Math.round(confidence * 100)}%</span>
+        </div>
+        ${banWarning}
+      </div>
+    </div>
+  `;
+        }
     </script>
 </body>
+
 </html>
